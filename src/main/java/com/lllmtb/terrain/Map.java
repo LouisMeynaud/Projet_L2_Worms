@@ -34,6 +34,10 @@ public class Map {
         this.mapMatrix[i][j] = bloc;}
     }
 
+    public boolean inMap(int x,int y){
+        return (0<= x && 0 <= y && x< this.width && y<this.height);
+    }
+
     @Override
     public String toString() {
         String string = "width : " + this.width + ", height : " + this.height + ", matrice : \n";
