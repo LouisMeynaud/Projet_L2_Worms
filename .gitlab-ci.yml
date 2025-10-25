@@ -6,7 +6,7 @@ stages:
   - package
 
 variables:
-  MAVEN_CLI_OPTS: "-B -ntp" # non-interactive, no progress bars
+  MAVEN_CLI_OPTS: "-B -ntp -e" # non-interactive, no progress bars, show errors
   MAVEN_OPTS: "-Dhttps.proxyHost=194.254.199.96 -Dhttps.proxyPort=3128 -Djava.awt.headless=true"  # proxy + disable gui
 
 cache:
