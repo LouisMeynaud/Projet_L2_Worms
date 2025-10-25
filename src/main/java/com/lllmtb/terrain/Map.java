@@ -18,15 +18,20 @@ public class Map {
     }
 
     public int getWidth() {
-        return width;
+        return this.width;
     }
 
     public int getHeight() {
-        return height;
+        return this.height;
     }
 
     public Bloc[][] getMapMatrix() {
-        return mapMatrix;
+        return this.mapMatrix;
+    }
+
+    public void setMap(int i,int j,Bloc bloc){
+        if(i<this.height && j<this.width){
+        this.mapMatrix[i][j] = bloc;}
     }
 
     @Override
