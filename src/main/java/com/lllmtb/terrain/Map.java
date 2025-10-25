@@ -1,17 +1,15 @@
 package com.lllmtb.terrain;
 
-import java.io.IOException;
 
-public class Map {
-    public enum Bloc {
-        DIRT, WATER, AIR
-    };
+public class Map implements Imap{
+
+
 
     private int width;
     private int height;
     private Bloc[][] mapMatrix;
 
-    public Map(int width, int height) throws IOException {
+    public Map(int width, int height) {
         this.mapMatrix = new Bloc[height][width];
         this.width = width;
         this.height = height;
@@ -28,13 +26,17 @@ public class Map {
     public Bloc[][] getMapMatrix() {
         return this.mapMatrix;
     }
-
+    
     public void setMap(int i,int j,Bloc bloc){
         if(i<this.height && j<this.width){
         this.mapMatrix[i][j] = bloc;}
     }
 
-    public boolean inMap(int x,int y){
+    public boolean isBloc(Bloc bloc,int x,int y){ //prend des int , dans colision on regarderas que lorsque il 'change de case' par apport a la map
+        return this.mapMatrix[x][y]==bloc;
+    }
+    
+    public boolean inMap(double x,double y){
         return (0<= x && 0 <= y && x< this.width && y<this.height);
     }
 
