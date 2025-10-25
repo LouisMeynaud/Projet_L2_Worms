@@ -30,7 +30,7 @@ public class MapLoader {
 
     public static Map createMatrix(String nameMap) {
         try {
-        String path = "src/main/java/com/lllmtb/terrain/FichierCarte/" + nameMap;
+        String path = "src/main/java/com/lllmtb/terrain/MapFile/" + nameMap;
         String mapText = Files.readString(Path.of(path));
 
         Map blocMatrix = new Map(heightCalcul(mapText),widthCalcul(mapText));

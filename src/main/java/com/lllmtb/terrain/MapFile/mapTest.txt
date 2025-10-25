@@ -1,0 +1,6 @@
+[[T,T,A,A,T],
+[T,T,A,E,T],
+[T,T,A,A,T],
+[A,T,E,A,T],
+[T,T,A,E,T],
+[T,T,A,A,T]]
