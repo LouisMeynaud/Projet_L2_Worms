@@ -16,4 +16,28 @@ public class Map {
         this.width = width;
         this.height = height;
     }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
+    public Bloc[][] getMapMatrix() {
+        return mapMatrix;
+    }
+
+    @Override
+    public String toString() {
+        String string = "width : " + this.width + ", height : " + this.height + ", matrice : \n";
+        for (int i = 0; i < this.height; i++) {
+            string += "\n";
+            for (int j = 0; j < this.width; j++) {
+                string += this.mapMatrix[i][j];
+            }
+        }
+        return string;
+    }
 }
