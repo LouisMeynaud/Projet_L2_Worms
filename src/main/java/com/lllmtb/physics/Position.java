@@ -17,7 +17,7 @@ public class Position {
     }
     
     public void setPos(double x, double y){
-        if(inMap(x,y)) {
+        if(isInScreen(x,y)) {
             this.x = x;
             this.y = y;
         }
