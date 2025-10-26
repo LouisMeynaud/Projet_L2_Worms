@@ -1,4 +1,5 @@
 package com.lllmtb.physics;
+import com.lllmtb.terrain.Map;
 
 public class Position {
     private double x, y;
@@ -16,8 +17,8 @@ public class Position {
         return this.y;
     }
     
-    public void setPos(double x, double y){
-        if(inMap(x,y)) {
+    public void setPos(Map m,double x, double y){
+        if(m.inMap(x,y)) {
             this.x = x;
             this.y = y;
         }
