@@ -42,11 +42,11 @@ public class MapLoader {
                     && mapText.charAt(i) != '\n') {
                 switch (mapText.charAt(i)) {
                     case 'T':
-                        blocMatrix.getMapMatrix()[z][a] = Map.Bloc.valueOf("DIRT");break;
+                        blocMatrix.getMapMatrix()[z][a] = Map.BLOC.valueOf("DIRT");break;
                     case 'E':
-                        blocMatrix.getMapMatrix()[z][a] = Map.Bloc.valueOf("WATER");break;
+                        blocMatrix.getMapMatrix()[z][a] = Map.BLOC.valueOf("WATER");break;
                     case 'A':
-                        blocMatrix.getMapMatrix()[z][a] = Map.Bloc.valueOf("AIR");break;
+                        blocMatrix.getMapMatrix()[z][a] = Map.BLOC.valueOf("AIR");break;
                 default: throw new IllegalArgumentException("attention,la lettre"+mapText.charAt(i)+"ne correspond a aucun bloc");
                 }
 
