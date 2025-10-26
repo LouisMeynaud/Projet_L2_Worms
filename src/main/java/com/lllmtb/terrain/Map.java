@@ -6,7 +6,7 @@ public class Map implements Imap {
     private int height;
     private BLOC[][] mapMatrix;
 
-    public Map(int width, int height) {
+    public Map(int height, int width) {
         this.mapMatrix = new BLOC[height][width];
         this.width = width;
         this.height = height;

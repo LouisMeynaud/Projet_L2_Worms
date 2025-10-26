@@ -1,7 +1,7 @@
 package com.lllmtb.terrain;
 
 public class Testtempo {
-    public void main(String[] args){
+    public static void main(String[] args){
         Map m = MapLoader.createMatrix("mapTest");
         System.out.println(m.getHeight());
         System.out.println(m.getWidth());

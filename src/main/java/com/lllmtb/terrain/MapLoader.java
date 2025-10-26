@@ -17,9 +17,12 @@ public class MapLoader {
 
     private static int widthCalcul(String matrice) {
         int compteurLargeur = 1;
-        int j = 0;
+        int j = 1;
         while (matrice.charAt(j) != ']') {
+            //System.out.println(compteurLargeur);
+            //System.out.println(matrice.charAt(j));
             if (matrice.charAt(j) == ',') {
+                System.out.println(matrice.charAt(j));
                 compteurLargeur += 1;
             }
             j++;
@@ -32,7 +35,7 @@ public class MapLoader {
         try {
         String path = "src/main/java/com/lllmtb/terrain/MapFile/" + nameMap+ ".txt";
         String mapText = Files.readString(Path.of(path));
-
+            System.out.println(mapText);
         Map blocMatrix = new Map(heightCalcul(mapText),widthCalcul(mapText));
         int z = 0;
         int a = 0;
