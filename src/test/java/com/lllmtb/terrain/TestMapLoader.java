@@ -15,13 +15,13 @@ public class TestMapLoader {
     public static String mapText;
     public static Map m;
     public static String path;
-    public static Imap.BLOC[][] map_attendu = {
-        {Imap.BLOC.AIR,  Imap.BLOC.AIR,  Imap.BLOC.AIR,  Imap.BLOC.AIR,  Imap.BLOC.AIR},
-        {Imap.BLOC.AIR,  Imap.BLOC.AIR,  Imap.BLOC.AIR,  Imap.BLOC.AIR,  Imap.BLOC.AIR},
-        {Imap.BLOC.DIRT, Imap.BLOC.DIRT, Imap.BLOC.DIRT, Imap.BLOC.DIRT, Imap.BLOC.DIRT},
-        {Imap.BLOC.DIRT, Imap.BLOC.WATER, Imap.BLOC.WATER, Imap.BLOC.DIRT, Imap.BLOC.DIRT},
-        {Imap.BLOC.WATER, Imap.BLOC.WATER, Imap.BLOC.WATER, Imap.BLOC.WATER, Imap.BLOC.WATER},
-        {Imap.BLOC.WATER, Imap.BLOC.WATER, Imap.BLOC.WATER, Imap.BLOC.WATER, Imap.BLOC.WATER}
+    public static Tile.TILES[][] map_attendu = {
+        {Tile.TILES.AIR,  Tile.TILES.AIR,  Tile.TILES.AIR,  Tile.TILES.AIR,  Tile.TILES.AIR},
+        {Tile.TILES.AIR,  Tile.TILES.AIR,  Tile.TILES.AIR,  Tile.TILES.AIR,  Tile.TILES.AIR},
+        {Tile.TILES.DIRT, Tile.TILES.DIRT, Tile.TILES.DIRT, Tile.TILES.DIRT, Tile.TILES.DIRT},
+        {Tile.TILES.DIRT, Tile.TILES.WATER, Tile.TILES.WATER, Tile.TILES.DIRT, Tile.TILES.DIRT},
+        {Tile.TILES.WATER, Tile.TILES.WATER, Tile.TILES.WATER, Tile.TILES.WATER, Tile.TILES.WATER},
+        {Tile.TILES.WATER, Tile.TILES.WATER, Tile.TILES.WATER, Tile.TILES.WATER, Tile.TILES.WATER}
     };
     @BeforeAll
     public static void setup() {

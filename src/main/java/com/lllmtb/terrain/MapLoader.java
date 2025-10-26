@@ -36,7 +36,7 @@ public class MapLoader {
         String path = "src/main/java/com/lllmtb/terrain/MapFile/" + nameMap+ ".txt";
         String mapText = Files.readString(Path.of(path));
             System.out.println(mapText);
-        Map blocMatrix = new Map(heightCalcul(mapText),widthCalcul(mapText));
+        Map TILESMatrix = new Map(heightCalcul(mapText),widthCalcul(mapText));
         int z = 0;
         int a = 0;
 
@@ -44,23 +44,23 @@ public class MapLoader {
             if ((mapText.charAt(i) != '[' && mapText.charAt(i) != ']') && mapText.charAt(i) != ','
                     && mapText.charAt(i) != '\n') {
                 switch (mapText.charAt(i)) {
-                    case 'T':
-                        blocMatrix.getMapMatrix()[z][a] = Map.BLOC.valueOf("DIRT");break;
-                    case 'E':
-                        blocMatrix.getMapMatrix()[z][a] = Map.BLOC.valueOf("WATER");break;
+                    case 'D':
+                        TILESMatrix.getMapMatrix()[z][a] = Tile.TILES.DIRT;break;
+                    case 'W':
+                        TILESMatrix.getMapMatrix()[z][a] = Tile.TILES.valueOf("WATER");break;
                     case 'A':
-                        blocMatrix.getMapMatrix()[z][a] = Map.BLOC.valueOf("AIR");break;
-                default: throw new IllegalArgumentException("attention,la lettre"+mapText.charAt(i)+"ne correspond a aucun bloc");
+                        TILESMatrix.getMapMatrix()[z][a] = Tile.TILES.valueOf("AIR");break;
+                default: throw new IllegalArgumentException("attention,la lettre"+mapText.charAt(i)+"ne correspond a aucun TILES");
                 }
 
                 a++;
-                if (a % blocMatrix.getMapMatrix()[0].length == 0) {
+                if (a % TILESMatrix.getMapMatrix()[0].length == 0) {
                     z++;
                     a = 0;
                 }
             }
         }
-        return blocMatrix;
+        return TILESMatrix;
     } catch (IOException e) {
             System.out.println(e);
             return null;

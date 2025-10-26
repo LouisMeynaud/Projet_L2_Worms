@@ -1,13 +1,13 @@
 package com.lllmtb.terrain;
 
-public class Map implements Imap {
+public class Map implements IMap {
 
     private int width;
     private int height;
-    private BLOC[][] mapMatrix;
+    private Tile.TILES[][] mapMatrix;
 
     public Map(int height, int width) {
-        this.mapMatrix = new BLOC[height][width];
+        this.mapMatrix = new Tile.TILES[height][width];
         this.width = width;
         this.height = height;
     }
@@ -20,7 +20,7 @@ public class Map implements Imap {
         return this.height;
     }
 
-    public BLOC[][] getMapMatrix() {
+    public Tile.TILES[][] getMapMatrix() {
         return this.mapMatrix;
     }
 
@@ -28,16 +28,16 @@ public class Map implements Imap {
 
         return new Position(position.getPosx(),this.height -position.getPosy()-1);
     }
-    public void setMap(Position position, BLOC bloc) {
+    public void setMap(Position position, Tile.TILES tile) {
             Position posmatrix = cooMapToCooMatrix(position);
-            this.mapMatrix[(int) posmatrix.getPosy()][(int) posmatrix.getPosx()] = bloc; 
+            this.mapMatrix[(int) posmatrix.getPosy()][(int) posmatrix.getPosx()] = tile; 
     
         }
         
 
-    public boolean isBloc(BLOC bloc,Position position) { 
+    public boolean isTILES(Tile.TILES tile,Position position) { 
         Position posmatrix = cooMapToCooMatrix(position);
-        return this.mapMatrix[(int)posmatrix.getPosy()][(int)posmatrix.getPosx()] == bloc; }
+        return this.mapMatrix[(int)posmatrix.getPosy()][(int)posmatrix.getPosx()] == tile; }
 
     public boolean inMap(double x, double y) {
         return (0 <= x && 0 <= y && x < this.width && y < this.height);

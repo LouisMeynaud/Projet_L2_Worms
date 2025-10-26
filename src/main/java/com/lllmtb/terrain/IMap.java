@@ -1,35 +1,31 @@
 package com.lllmtb.terrain;
 
 /**
- * Représente les cartes du jeu sous forme d'une matrice de blocs,
+ * Représente les cartes du jeu sous forme d'une matrice de TILESs,
  * représentant les différents éléments présents à une position x y.
  * Une case de la matrice est représentée par une coordonnée x y entière (0,0)
  * en bas à gauche.
  */
 
-public interface Imap {
+public interface IMap {
     /**
      * Enum représentant les différents éléments de la carte. Si un élément est
      * ajouté,pensez à l'ajouter au switch de la méthode CreateMatrix de MapLoader.
      */
 
-    public static enum BLOC {
-        DIRT, WATER, AIR
-    };
-
     /** getteur ordinair */
     public int getWidth();
     public int getHeight();
-    public BLOC[][] getMapMatrix();
+    public Tile.TILES[][] getMapMatrix();
 
     /**
      * Setteur modifiant une case de la matrice.
      * 
      * @param x    la coordonée x en int
      * @param y    la coordonée y en int
-     * @param bloc , le bloc par lequel la base sera changer
+     * @param TILES , le TILES par lequel la base sera changer
      */
-    public void setMap(Position position, BLOC bloc);
+    public void setMap(Position position, Tile.TILES tile);
 
     /**
      * @param position
@@ -39,10 +35,10 @@ public interface Imap {
     public Position cooMapToCooMatrix(Position position);
     /**
      * 
-     * @param bloc Le bloc dont on verif la presence.
+     * @param TILES Le TILES dont on verif la presence.
      * @param position la position a verif
      */
-    public boolean isBloc(BLOC bloc,Position position);
+    public boolean isTILES(Tile.TILES tile,Position position);
 
     /**
      * verif que la coordonée x,y est bien dans la map (la matrix)

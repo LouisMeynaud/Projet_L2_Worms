@@ -19,10 +19,10 @@ public class TestMap {
     }
     
     @Test
-    public void TestisBloc(){
+    public void TestisTILES(){
         Position position = new Position(2,2);
-        assertFalse(m.isBloc(Imap.BLOC.AIR,position));
-        assertTrue(m.isBloc(Imap.BLOC.WATER,position));
+        assertFalse(m.isTILES(Tile.TILES.AIR,position));
+        assertTrue(m.isTILES(Tile.TILES.WATER,position));
     }
 
     @Test

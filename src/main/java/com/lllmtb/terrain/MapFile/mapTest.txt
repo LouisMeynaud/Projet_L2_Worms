@@ -1,6 +1,6 @@
 [[A,A,A,A,A],
 [A,A,A,A,A],
-[T,T,T,T,T],
-[T,E,E,T,T],
-[E,E,E,E,E],
-[E,E,E,E,E]]
+[D,D,D,D,D],
+[D,W,W,D,D],
+[W,W,W,W,W],
+[W,W,W,W,W]]
