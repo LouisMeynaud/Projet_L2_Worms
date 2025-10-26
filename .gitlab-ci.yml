@@ -1,0 +1,46 @@
+image: maven:3.8.5-openjdk-17
+
+stages:
+  - build
+  - test
+  - package
+
+variables:
+  MAVEN_CLI_OPTS: "-B -ntp -e" # non-interactive, no progress bars, show errors
+  MAVEN_OPTS: "-Dhttps.proxyHost=194.254.199.96 -Dhttps.proxyPort=3128 -Djava.awt.headless=true"  # proxy + disable gui
+
+cache:
+  key: "${CI_PROJECT_ID}-${CI_COMMIT_REF_SLUG}"
+  paths:
+    - $HOME/.m2/repository
+    - .mvn/wrapper
+
+# Compile - validates pom and compiles sources
+compile:
+  stage: build
+  script:
+    - mvn $MAVEN_CLI_OPTS -DskipTests clean compile
+
+# Tests
+test:
+  stage: test
+  script:
+    - mvn $MAVEN_CLI_OPTS test
+  artifacts:
+    expire_in: 3 days
+    reports:
+      junit: target/surefire-reports/*.xml
+
+# Package - produce final jar (-DskipTests to save time, comes after `test` anyway)
+package:
+  stage: package
+  script:
+    - mvn $MAVEN_CLI_OPTS -DskipTests clean package
+  artifacts:
+    when: on_success
+    paths:
+      - target/*.jar
+    expire_in: 1 week
+  only:
+    - main
+    - dev
