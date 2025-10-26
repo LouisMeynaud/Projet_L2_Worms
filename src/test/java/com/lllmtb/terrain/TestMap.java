@@ -37,4 +37,19 @@ public class TestMap {
         assertFalse(m.inMap(xdehors,ydehors));
         assertTrue(m.inMap(xbordure,ybordure));
     }
+
+    @Test
+    public void TestcooMapToCooMatrix(){
+        Position position1 = new Position(0,0);
+        Position position2 = new Position(4,5);
+        Position position3 = new Position(2,2);
+        assertEquals(m.cooMapToCooMatrix(position1).getPosx(),0 );
+        assertEquals(m.cooMapToCooMatrix(position1).getPosy(),5 );
+
+        assertEquals(m.cooMapToCooMatrix(position2).getPosx(),4 );
+        assertEquals(m.cooMapToCooMatrix(position2).getPosy(),0 );
+
+        assertEquals(m.cooMapToCooMatrix(position3).getPosx(),2 );
+        assertEquals(m.cooMapToCooMatrix(position3).getPosy(),3 );
+    }
 }

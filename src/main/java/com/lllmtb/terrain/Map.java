@@ -26,7 +26,7 @@ public class Map implements Imap {
 
     public Position cooMapToCooMatrix(Position position){
 
-        return new Position(position.getPosx(),this.height -position.getPosy());
+        return new Position(position.getPosx(),this.height -position.getPosy()-1);
     }
     public void setMap(Position position, BLOC bloc) {
             Position posmatrix = cooMapToCooMatrix(position);
