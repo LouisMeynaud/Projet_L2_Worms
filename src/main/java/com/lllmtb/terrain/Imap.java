@@ -29,20 +29,23 @@ public interface Imap {
      * @param y    la coordonée y en int
      * @param bloc , le bloc par lequel la base sera changer
      */
-    public void setMap(int x, int y, BLOC bloc);
+    public void setMap(Position position, BLOC bloc);
 
+    /**
+     * @param position
+     * @return une nouvelle position correspondant a la case de la matrice 
+     * (car dans le jeu 0,0 est en bas a gauche or dans la matrix (0,0) est en haut a gauche)
+     */
+    public Position cooMaptocooMatrix(Position position);
     /**
      * 
      * @param bloc Le bloc dont on verif la presence.
-     * @param x    La coordonée x en int.
-     * @param y    La coordonée y en int.
+     * @param position la position a verif
      */
-    public boolean isBloc(BLOC bloc, int x, int y);
+    public boolean isBloc(BLOC bloc,Position position);
 
     /**
-     * 
-     * @param x la coordonée x en int.
-     * @param y la coordonée y en int.
+     * verif que la coordonée x,y est bien dans la map (la matrix)
      */
     public boolean inMap(double x, double y);
 

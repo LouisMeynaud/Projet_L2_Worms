@@ -24,15 +24,20 @@ public class Map implements Imap {
         return this.mapMatrix;
     }
 
-    public void setMap(int x, int y, BLOC bloc) {
-            this.mapMatrix[y][x] = bloc; // A priori pas besoin de verif si x,y appartient a la map , les methode appelante appelerons inMap au preablable
+    public Position cooMaptocooMatrix(Position position){
+
+        return new Position(position.getPosx(),this.height -position.getPosy());
+    }
+    public void setMap(Position position, BLOC bloc) {
+            Position posmatrix = cooMaptocooMatrix(position);
+            this.mapMatrix[(int) posmatrix.getPosy()][(int) posmatrix.getPosx()] = bloc; 
     
         }
         
 
-    public boolean isBloc(BLOC bloc, int x, int y) { // Prend des int , dans colision on regarderas lorsque l'item 'change de case' par apport a la map
-        return this.mapMatrix[y][x] == bloc; // A priori pas besoin de verif si x,y appartient a la map , collision appeleras inMap avant cette methode
-    }
+    public boolean isBloc(BLOC bloc,Position position) { 
+        Position posmatrix = cooMaptocooMatrix(position);
+        return this.mapMatrix[(int)posmatrix.getPosy()][(int)posmatrix.getPosx()] == bloc; }
 
     public boolean inMap(double x, double y) {
         return (0 <= x && 0 <= y && x < this.width && y < this.height);
