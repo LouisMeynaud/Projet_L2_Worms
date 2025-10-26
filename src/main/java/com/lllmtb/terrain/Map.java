@@ -24,19 +24,19 @@ public class Map implements Imap {
         return this.mapMatrix;
     }
 
-    public Position cooMaptocooMatrix(Position position){
+    public Position cooMapToCooMatrix(Position position){
 
         return new Position(position.getPosx(),this.height -position.getPosy());
     }
     public void setMap(Position position, BLOC bloc) {
-            Position posmatrix = cooMaptocooMatrix(position);
+            Position posmatrix = cooMapToCooMatrix(position);
             this.mapMatrix[(int) posmatrix.getPosy()][(int) posmatrix.getPosx()] = bloc; 
     
         }
         
 
     public boolean isBloc(BLOC bloc,Position position) { 
-        Position posmatrix = cooMaptocooMatrix(position);
+        Position posmatrix = cooMapToCooMatrix(position);
         return this.mapMatrix[(int)posmatrix.getPosy()][(int)posmatrix.getPosx()] == bloc; }
 
     public boolean inMap(double x, double y) {

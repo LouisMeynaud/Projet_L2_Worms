@@ -36,7 +36,7 @@ public interface Imap {
      * @return une nouvelle position correspondant a la case de la matrice 
      * (car dans le jeu 0,0 est en bas a gauche or dans la matrix (0,0) est en haut a gauche)
      */
-    public Position cooMaptocooMatrix(Position position);
+    public Position cooMapToCooMatrix(Position position);
     /**
      * 
      * @param bloc Le bloc dont on verif la presence.
