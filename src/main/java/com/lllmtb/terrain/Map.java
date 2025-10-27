@@ -1,15 +1,21 @@
 package com.lllmtb.terrain;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+
 public class Map implements IMap {
 
     private int width;
     private int height;
     private Tile.TILES[][] mapMatrix;
+    private String filesTxt;
 
-    public Map(int height, int width) {
+    public Map(int height, int width, String filesTxt) {
         this.mapMatrix = new Tile.TILES[height][width];
         this.width = width;
         this.height = height;
+        this.filesTxt = filesTxt;
     }
 
     public int getWidth() {
@@ -24,23 +30,8 @@ public class Map implements IMap {
         return this.mapMatrix;
     }
 
-    public Position cooMapToCooMatrix(Position position){
-
-        return new Position(position.getPosx(),this.height -position.getPosy()-1);
-    }
-    public void setMap(Position position, Tile.TILES tile) {
-            Position posmatrix = cooMapToCooMatrix(position);
-            this.mapMatrix[(int) posmatrix.getPosy()][(int) posmatrix.getPosx()] = tile; 
-    
-        }
-        
-
-    public boolean isTILES(Tile.TILES tile,Position position) { 
-        Position posmatrix = cooMapToCooMatrix(position);
-        return this.mapMatrix[(int)posmatrix.getPosy()][(int)posmatrix.getPosx()] == tile; }
-
-    public boolean inMap(double x, double y) {
-        return (0 <= x && 0 <= y && x < this.width && y < this.height);
+    public String getFilesTxt() {
+        return filesTxt;
     }
 
     @Override
@@ -54,4 +45,25 @@ public class Map implements IMap {
         }
         return string;
     }
+
+    public Position cooMapToCooMatrix(Position position) {
+
+        return new Position(position.getPosx(), this.height - position.getPosy() - 1);
+    }
+
+    public void setMap(Position position, Tile.TILES tile) {
+        Position posmatrix = cooMapToCooMatrix(position);
+        this.mapMatrix[(int) posmatrix.getPosy()][(int) posmatrix.getPosx()] = tile;
+
+    }
+
+    public boolean isTILES(Tile.TILES tile, Position position) {
+        Position posmatrix = cooMapToCooMatrix(position);
+        return this.mapMatrix[(int) posmatrix.getPosy()][(int) posmatrix.getPosx()] == tile;
+    }
+
+    public boolean inMap(double x, double y) {
+        return (0 <= x && 0 <= y && x < this.width && y < this.height);
+    }
+
 }

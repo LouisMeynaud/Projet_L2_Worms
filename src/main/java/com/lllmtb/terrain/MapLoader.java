@@ -12,11 +12,10 @@ public class MapLoader {
             System.out.println(mapText);
             String[] ligne = mapText.split("\n");
 
-            Map TILESMatrix = new Map(ligne.length, ligne[0].length());
+            Map TILESMatrix = new Map(ligne.length, ligne[0].length(),maptext);
             for (int i = 0; i < ligne.length; i++) {
                 for (int j = 0; j < ligne[0].length(); j++) {
                     if (ligne[i].charAt(j) != '\n') {
-                        System.out.println(ligne[i].charAt(j));
                         switch (ligne[i].charAt(j)) {
                             case 'D':
                                 TILESMatrix.getMapMatrix()[i][j] = Tile.TILES.DIRT;
