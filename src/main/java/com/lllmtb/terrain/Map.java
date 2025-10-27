@@ -1,8 +1,7 @@
 package com.lllmtb.terrain;
+import com.lllmtb.physics.Position;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+
 
 public class Map implements IMap {
 
@@ -48,18 +47,18 @@ public class Map implements IMap {
 
     public Position cooMapToCooMatrix(Position position) {
 
-        return new Position(position.getPosx(), this.height - position.getPosy() - 1);
+        return new Position(position.getX(), this.height - position.getY() - 1);
     }
 
     public void setMap(Position position, Tile.TILES tile) {
         Position posmatrix = cooMapToCooMatrix(position);
-        this.mapMatrix[(int) posmatrix.getPosy()][(int) posmatrix.getPosx()] = tile;
+        this.mapMatrix[(int) posmatrix.getY()][(int) posmatrix.getX()] = tile;
 
     }
 
     public boolean isTILES(Tile.TILES tile, Position position) {
         Position posmatrix = cooMapToCooMatrix(position);
-        return this.mapMatrix[(int) posmatrix.getPosy()][(int) posmatrix.getPosx()] == tile;
+        return this.mapMatrix[(int) posmatrix.getY()][(int) posmatrix.getY()] == tile;
     }
 
     public boolean inMap(double x, double y) {

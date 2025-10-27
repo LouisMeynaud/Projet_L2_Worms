@@ -1,7 +1,5 @@
 package com.lllmtb.terrain;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.Scanner;
 import java.io.File;
 import java.io.FileWriter;
@@ -38,6 +36,7 @@ public class SaveMap {
                 }
             } while (existe);
             writeText(m,files);
+            scanner.close();
         } else {
             writeText(m,m.getFilesTxt());
         }

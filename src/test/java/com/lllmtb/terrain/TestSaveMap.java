@@ -1,12 +1,10 @@
 package com.lllmtb.terrain;
-
+import com.lllmtb.physics.Position;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import java.util.Arrays;
-
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+
 
 public class TestSaveMap {
     public static Map m;

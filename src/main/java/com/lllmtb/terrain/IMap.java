@@ -1,4 +1,5 @@
 package com.lllmtb.terrain;
+import com.lllmtb.physics.Position;
 
 /**
  * Représente les cartes du jeu sous forme d'une matrice de TILESs,
