@@ -1,4 +1,4 @@
-package com.lllmtb;
+package com.lllmtb.model_items;
 
 public abstract class Tool implements IItems {
 
