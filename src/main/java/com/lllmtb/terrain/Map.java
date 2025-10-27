@@ -46,7 +46,6 @@ public class Map implements IMap {
     }
 
     public Position cooMapToCooMatrix(Position position) {
-
         return new Position(position.getX(), this.height - position.getY() - 1);
     }
 
@@ -58,7 +57,7 @@ public class Map implements IMap {
 
     public boolean isTILES(Tile.TILES tile, Position position) {
         Position posmatrix = cooMapToCooMatrix(position);
-        return this.mapMatrix[(int) posmatrix.getY()][(int) posmatrix.getY()] == tile;
+        return this.mapMatrix[(int) posmatrix.getY()][(int) posmatrix.getX()] == tile;
     }
 
     public boolean inMap(double x, double y) {

@@ -9,7 +9,6 @@ public class MapLoader {
         try {
             String path = "src/main/java/com/lllmtb/terrain/MapFile/" + maptext + ".txt";
             String mapText = Files.readString(Path.of(path));
-            System.out.println(mapText);
             String[] ligne = mapText.split("\n");
 
             Map TILESMatrix = new Map(ligne.length, ligne[0].length(),maptext);
