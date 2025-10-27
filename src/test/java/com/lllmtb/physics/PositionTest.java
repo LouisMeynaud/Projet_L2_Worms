@@ -10,7 +10,7 @@ public class PositionTest {
         int x = 10;
         int y = 10;
         Position pos = new Position(x, y);
-        assertEquals(x,pos.getPosx());
-        assertEquals(y,pos.getPosy());
+        assertEquals(x,pos.getX());
+        assertEquals(y,pos.getY());
     }
 }
