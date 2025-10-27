@@ -3,17 +3,14 @@ package com.lllmtb.terrain;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Arrays;
 
 public class MapLoader {
-    public static Map createMatrix2(String maptext) {
+    public static Map createMatrix(String maptext) {
         try {
             String path = "src/main/java/com/lllmtb/terrain/MapFile/" + maptext + ".txt";
             String mapText = Files.readString(Path.of(path));
             System.out.println(mapText);
             String[] ligne = mapText.split("\n");
-            System.out.println(Arrays.toString(ligne));
-            System.out.println(ligne.length);
 
             Map TILESMatrix = new Map(ligne.length, ligne[0].length());
             for (int i = 0; i < ligne.length; i++) {

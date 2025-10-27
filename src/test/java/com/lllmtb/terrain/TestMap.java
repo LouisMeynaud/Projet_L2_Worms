@@ -15,7 +15,7 @@ public class TestMap {
 
     @BeforeAll
     public static void setup() {
-            m = MapLoader.createMatrix2("mapTest");
+            m = MapLoader.createMatrix("mapTest");
     }
     
     @Test
