@@ -28,7 +28,7 @@ public class TestMapLoader {
         try {
             path = "src/main/java/com/lllmtb/terrain/MapFile/mapTest.txt";
             mapText = Files.readString(Path.of(path));
-            m = MapLoader.createMatrix("mapTest");
+            m = MapLoader.createMatrix2("mapTest");
             
 
         } catch (

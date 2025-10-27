@@ -1,6 +1,6 @@
-[[A,A,A,A,A],
-[A,A,A,A,A],
-[D,D,D,D,D],
-[D,W,W,D,D],
-[W,W,W,W,W],
-[W,W,W,W,W]]
+AAAAA
+AAAAA
+DDDDD
+DWWDD
+WWWWW
+WWWWW
