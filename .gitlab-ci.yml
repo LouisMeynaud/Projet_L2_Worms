@@ -24,6 +24,7 @@ test:
     expire_in: 3 days
     paths:
       - target/site/jacoco/jacoco.xml
+      - target/site/jacoco/**
       - target/surefire-reports/*.xml
     reports:
       junit: target/surefire-reports/*.xml
