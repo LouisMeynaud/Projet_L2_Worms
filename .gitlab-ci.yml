@@ -13,7 +13,6 @@ cache:
   key: "${CI_PROJECT_ID}-${CI_COMMIT_REF_SLUG}"
   paths:
     - ~/.m2/repository
-  expire_in: 1 week
 
 # Compile - validates pom and compiles sources
 compile:
