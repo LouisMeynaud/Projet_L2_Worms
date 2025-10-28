@@ -21,6 +21,7 @@ test:
   script:
     - mvn $MAVEN_CLI_OPTS clean verify
   artifacts:
+    when: always
     expire_in: 3 days
     paths:
       - target/site/jacoco/jacoco.xml
