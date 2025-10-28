@@ -1,7 +1,7 @@
 package com.model.entity;
 import com.lllmtb.physics.PhysicsBody;
 
-public class Entity {
+public abstract class Entity {
 
     // Champs
     protected PhysicsBody body;
