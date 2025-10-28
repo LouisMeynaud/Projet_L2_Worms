@@ -30,7 +30,7 @@ public class EntityTest {
 
     @Test
     public void TestConstructorBody(){
-        assertEquals(worm.getBody(), pB);
+        assertEquals(pB, worm.getBody());
     }
 
     @Test
