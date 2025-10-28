@@ -48,4 +48,13 @@ public class TestMap {
         assertEquals(m.cooMapToCooMatrix(position3).getX(), 2);
         assertEquals(m.cooMapToCooMatrix(position3).getY(), 3);
     }
+    @Test
+    public void TestsetMap(){
+        Position position = new Position(2, 2);
+        assertFalse(m.isTILES(Tile.TILES.DIRT , position));
+        m.setMap(position, Tile.TILES.DIRT);
+        assertTrue(m.isTILES(Tile.TILES.DIRT , position));
+        m.setMap(position, Tile.TILES.WATER);
+
+    }
 }
