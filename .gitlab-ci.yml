@@ -21,15 +21,21 @@ compile:
   script:
     - mvn $MAVEN_CLI_OPTS -DskipTests clean compile
 
-# Tests
+# Tests - runs jUnit tests & verifies JaCoCo coverage threshold + publish reports
 test:
   stage: test
   script:
-    - mvn $MAVEN_CLI_OPTS test
+    - mvn $MAVEN_CLI_OPTS clean verify
   artifacts:
     expire_in: 3 days
+    paths:
+      - target/site/jacoco/jacoco.xml
+      - target/surefire-reports/*.xml
     reports:
       junit: target/surefire-reports/*.xml
+      coverage_report:
+        coverage_format: jacoco
+        path: target/site/jacoco/jacoco.xml
 
 # Package - produce final jar (-DskipTests to save time, comes after `test` anyway)
 package:
