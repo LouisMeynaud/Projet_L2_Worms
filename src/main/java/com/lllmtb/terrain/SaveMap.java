@@ -7,7 +7,7 @@ import java.io.FileWriter;
 
 public class SaveMap {
     public static void saveMap(Map m) {
-        if (m.getClass().equals("undefined")) {
+        if (m.getClass().equals("undefined")) {     // ?? This should never be possible since m is a Map
             Scanner scanner = new Scanner(System.in);
             System.out.println("entré le nom du fichier d'enregistrement"); // ceci sera gerer par la classe event une fois crée
 
@@ -54,15 +54,23 @@ public class SaveMap {
     }
     public static String mapToString(Map m){
         Tile[][] mMapMatrix = m.getMapMatrix();
-        String mapString = "";
-        for(int i = 0;i<mMapMatrix.length;i++){
-            for(int j = 0;j<mMapMatrix[0].length;j++){
-                switch (mMapMatrix[i][j]){
-                    case AIR: mapString += "A";break;
-                    case WATER: mapString += "W";break;
-                    case DIRT: mapString += "D";break;
+        StringBuilder mapString = new StringBuilder();
+        for (Tile[] mapRow : mMapMatrix) {
+            for (Tile t : mapRow) {
+                switch (t) {
+                    case AIR:
+                        mapString.append("A");
+                        break;
+                    case WATER:
+                        mapString.append("W");
+                        break;
+                    case DIRT:
+                        mapString.append("D");
+                        break;
                 }
-            }mapString += "\n";
-        }return mapString;
+            }
+            mapString.append("\n");
+        }
+        return mapString.toString();
     }
 }

@@ -35,14 +35,14 @@ public class Map implements IMap {
 
     @Override
     public String toString() {
-        String string = "width : " + this.width + ", height : " + this.height + ", matrice : \n";
+        StringBuilder string = new StringBuilder("width : " + this.width + ", height : " + this.height + ", matrice : \n");
         for (int i = 0; i < this.height; i++) {
-            string += "\n";
+            string.append("\n");
             for (int j = 0; j < this.width; j++) {
-                string += this.mapMatrix[i][j];
+                string.append(this.mapMatrix[i][j]);
             }
         }
-        return string;
+        return string.toString();
     }
 
     public Position cooMapToCooMatrix(Position position) {
