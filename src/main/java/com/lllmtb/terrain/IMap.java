@@ -17,16 +17,22 @@ public interface IMap {
     /** getteur ordinair */
     public int getWidth();
     public int getHeight();
-    public Tile.TILES[][] getMapMatrix();
+    public Tile[][] getMapMatrix();
+
+    /**
+     * Get a tile at a specified position
+     * @param position
+     */
+    public Tile getTile(Position position);
 
     /**
      * Setteur modifiant une case de la matrice.
      * 
      * @param x    la coordonée x en int
      * @param y    la coordonée y en int
-     * @param TILES , le TILES par lequel la base sera changer
+     * @param TILES , le Tile par lequel la base sera changer
      */
-    public void setMap(Position position, Tile.TILES tile);
+    public void setTile(Position position, Tile tile);
 
     /**
      * @param position
@@ -35,11 +41,11 @@ public interface IMap {
      */
     public Position cooMapToCooMatrix(Position position);
     /**
-     * 
-     * @param TILES Le TILES dont on verif la presence.
+     *
+     * @param TILES    Le Tile dont on verif la presence.
      * @param position la position a verif
      */
-    public boolean isTILES(Tile.TILES tile,Position position);
+    public boolean isTileAt(Position position, Tile tile);
 
     /**
      * verif que la coordonée x,y est bien dans la map (la matrix)

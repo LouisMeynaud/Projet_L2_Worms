@@ -5,38 +5,37 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 public class MapLoader {
-    public static Map createMatrix(String maptext) {
+    public static Map createMatrix(String mapName) {
         try {
-            String path = "src/main/java/com/lllmtb/terrain/MapFile/" + maptext + ".txt";
-            String mapText = Files.readString(Path.of(path));
-            String[] ligne = mapText.split("\n");
+            String path = "src/main/java/com/lllmtb/terrain/MapFile/" + mapName + ".txt";
+            String content = Files.readString(Path.of(path));
+            String[] row = content.split("\n");
 
-            Map TILESMatrix = new Map(ligne.length, ligne[0].length(),maptext);
-            for (int i = 0; i < ligne.length; i++) {
-                for (int j = 0; j < ligne[0].length(); j++) {
-                    if (ligne[i].charAt(j) != '\n') {
-                        switch (ligne[i].charAt(j)) {
+            Map tileMatrix = new Map(row.length, row[0].length(), mapName);
+            for (int i = 0; i < row.length; i++) {
+                for (int j = 0; j < row[0].length(); j++) {
+                    if (row[i].charAt(j) != '\n') {
+                        switch (row[i].charAt(j)) {
                             case 'D':
-                                TILESMatrix.getMapMatrix()[i][j] = Tile.TILES.DIRT;
+                                tileMatrix.getMapMatrix()[i][j] = Tile.DIRT;
                                 break;
                             case 'W':
-                                TILESMatrix.getMapMatrix()[i][j] = Tile.TILES.valueOf("WATER");
+                                tileMatrix.getMapMatrix()[i][j] = Tile.WATER;
                                 break;
                             case 'A':
-                                TILESMatrix.getMapMatrix()[i][j] = Tile.TILES.valueOf("AIR");
+                                tileMatrix.getMapMatrix()[i][j] = Tile.AIR;
                                 break;
                             default:
-                                throw new IllegalArgumentException(
-                                        "attention,la lettre" + mapText.charAt(i) + "ne correspond a aucun TILES");
+                                throw new IllegalArgumentException("attention,la lettre" + content.charAt(i) + "ne correspond a aucun Tile");
                         }
                     }
 
                 }
             }
-            return TILESMatrix;
+            return tileMatrix;
 
         } catch (IOException e) {
-            System.out.println(e);
+            System.out.println(e);      // NB. Il faudra mieux gérer cette exception
             return null;
         }
     }

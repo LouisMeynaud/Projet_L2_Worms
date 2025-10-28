@@ -7,11 +7,11 @@ public class Map implements IMap {
 
     private int width;
     private int height;
-    private Tile.TILES[][] mapMatrix;
+    private Tile[][] mapMatrix;
     private String filesTxt;
 
     public Map(int height, int width, String filesTxt) {
-        this.mapMatrix = new Tile.TILES[height][width];
+        this.mapMatrix = new Tile[height][width];
         this.width = width;
         this.height = height;
         this.filesTxt = filesTxt;
@@ -25,7 +25,7 @@ public class Map implements IMap {
         return this.height;
     }
 
-    public Tile.TILES[][] getMapMatrix() {
+    public Tile[][] getMapMatrix() {
         return this.mapMatrix;
     }
 
@@ -49,15 +49,19 @@ public class Map implements IMap {
         return new Position(position.getX(), this.height - position.getY() - 1);
     }
 
-    public void setMap(Position position, Tile.TILES tile) {
-        Position posmatrix = cooMapToCooMatrix(position);
-        this.mapMatrix[(int) posmatrix.getY()][(int) posmatrix.getX()] = tile;
+    public Tile getTile(Position position) {
+        Position posMatrix = cooMapToCooMatrix(position);
+        return this.mapMatrix[(int) posMatrix.getY()][(int) posMatrix.getX()];
+    }
+
+    public void setTile(Position position, Tile tile) {
+        Position posMatrix = cooMapToCooMatrix(position);
+        this.mapMatrix[(int) posMatrix.getY()][(int) posMatrix.getX()] = tile;
 
     }
 
-    public boolean isTILES(Tile.TILES tile, Position position) {
-        Position posmatrix = cooMapToCooMatrix(position);
-        return this.mapMatrix[(int) posmatrix.getY()][(int) posmatrix.getX()] == tile;
+    public boolean isTileAt(Position position, Tile tile) {
+        return getTile(position) == tile;
     }
 
     public boolean inMap(double x, double y) {

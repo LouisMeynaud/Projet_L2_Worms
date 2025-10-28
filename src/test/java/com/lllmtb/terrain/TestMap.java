@@ -2,51 +2,65 @@ package com.lllmtb.terrain;
 
 import com.lllmtb.physics.Position;
 import static org.junit.jupiter.api.Assertions.*;
-
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class TestMap {
-    static Map m;
+public class MapTest {
+    private Map m;
 
-    @BeforeAll
-    public static void setup() {
+    @BeforeEach
+    public void setUp() {
         m = MapLoader.createMatrix("mapTest");
     }
 
+    @AfterEach
+    public void tearDown() {
+        m = null;
+    }
+
     @Test
-    public void TestisTILES() {
+    public void isTileAt_returnsCorrectResultForGivenPositionAndTile() {
         Position position = new Position(2, 2);
-        assertFalse(m.isTILES(Tile.TILES.AIR, position));
-        assertTrue(m.isTILES(Tile.TILES.WATER, position));
+        assertFalse(m.isTileAt(position, Tile.AIR));
+        assertTrue(m.isTileAt(position, Tile.WATER));
+    }
+
+    // Test Map size is 5x6
+    @Test
+    public void inMap_returnsTrueForPositionInsideMap() {
+        int xInside = 3;
+        int yInside = 3;
+        assertTrue(m.inMap(xInside, yInside));
     }
 
     @Test
-    public void TestinMap() {
-        int xdedans = 3;
-        int ydedans = 3;
-        int xbordure = 4;
-        int ybordure = 5;
-        int xdehors = 20;
-        int ydehors = 20;
-        assertTrue(m.inMap(xdedans, ydedans));
-        assertFalse(m.inMap(xdehors, ydehors));
-        assertTrue(m.inMap(xbordure, ybordure));
+    public void inMap_returnsFalseForPositionOutsideMap() {
+        int xOutside = 20;
+        int yOutside = 20;
+        assertFalse(m.inMap(xOutside, yOutside));
     }
 
     @Test
-    public void TestcooMapToCooMatrix() {
+    public void inMap_returnsTrueForPositionOnBorder() {
+        int xBorder = 4;
+        int yBorder = 5;
+        assertTrue(m.inMap(xBorder, yBorder));
+    }
+
+    @Test
+    public void cooMapToCooMatrix_convertsCoordinatesCorrectly() {
         Position position1 = new Position(0, 0);
         Position position2 = new Position(4, 5);
         Position position3 = new Position(2, 2);
-        assertEquals(m.cooMapToCooMatrix(position1).getX(), 0);
-        assertEquals(m.cooMapToCooMatrix(position1).getY(), 5);
+        assertEquals(0, m.cooMapToCooMatrix(position1).getX());
+        assertEquals(5, m.cooMapToCooMatrix(position1).getY());
 
-        assertEquals(m.cooMapToCooMatrix(position2).getX(), 4);
-        assertEquals(m.cooMapToCooMatrix(position2).getY(), 0);
+        assertEquals(4, m.cooMapToCooMatrix(position2).getX());
+        assertEquals(0, m.cooMapToCooMatrix(position2).getY());
 
-        assertEquals(m.cooMapToCooMatrix(position3).getX(), 2);
-        assertEquals(m.cooMapToCooMatrix(position3).getY(), 3);
+        assertEquals(2, m.cooMapToCooMatrix(position3).getX());
+        assertEquals(3, m.cooMapToCooMatrix(position3).getY());
     }
     @Test
     public void TestsetMap(){

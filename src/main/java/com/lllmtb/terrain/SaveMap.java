@@ -19,7 +19,7 @@ public class SaveMap {
                 String dossier = "src/main/java/com/lllmtb/terrain/MapFile/";
 
                 File folder = new File(dossier);
-                File[] fichiers = folder.listFiles(); 
+                File[] fichiers = folder.listFiles();
 
                 if (fichiers != null) {
                     for (File f : fichiers) {
@@ -43,7 +43,6 @@ public class SaveMap {
     }
 
     private static void writeText(Map m,String saveFile) {
-
         try (FileWriter writer = new FileWriter("src/main/java/com/lllmtb/terrain/MapFile/" + saveFile + ".txt")) {
             String texte = mapToString(m);
             writer.write(texte); 
@@ -54,7 +53,7 @@ public class SaveMap {
 
     }
     public static String mapToString(Map m){
-        Tile.TILES[][] mMapMatrix = m.getMapMatrix();
+        Tile[][] mMapMatrix = m.getMapMatrix();
         String mapString = "";
         for(int i = 0;i<mMapMatrix.length;i++){
             for(int j = 0;j<mMapMatrix[0].length;j++){
