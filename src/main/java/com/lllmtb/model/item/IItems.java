@@ -1,4 +1,4 @@
-package com.lllmtb.model_items;
+package com.lllmtb.model.item;
 
 public interface IItems {
 
