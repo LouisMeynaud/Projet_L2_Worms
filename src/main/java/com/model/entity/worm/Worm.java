@@ -22,6 +22,13 @@ public class Worm extends Entity {
         this.team = team;
     }
 
+    // Constructeur Worm solitaire 
+    public Worm(PhysicsBody body, String name, Statistics stats){
+        super(body);
+        this.name = name;
+        this.stats = stats;
+    }
+
     //Methods
      // Bloc Weapon, shoot
 

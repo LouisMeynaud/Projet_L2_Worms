@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 
 import com.lllmtb.physics.PhysicsBody;
 import com.lllmtb.physics.Position;
+import com.model.entity.worm.Statistics;
 import com.model.entity.worm.Worm;
 
 
@@ -25,7 +26,8 @@ public class EntityTest {
         Position pos1 = new Position(x1, y1);
         Position pos2 = new Position(x2, y2);
         pB = new PhysicsBody(pos1,pos2);
-        worm = new Worm(pB);
+        Statistics stats = new Statistics(10, 1, 1);
+        worm = new Worm(pB, "Robert", stats);
     }
 
     @Test
