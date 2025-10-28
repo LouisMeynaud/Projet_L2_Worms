@@ -63,12 +63,10 @@ public class MapTest {
         assertEquals(3, m.cooMapToCooMatrix(position3).getY());
     }
     @Test
-    public void TestsetMap(){
+    public void setMap_editsMapCorrectly(){
         Position position = new Position(2, 2);
-        assertFalse(m.isTILES(Tile.TILES.DIRT , position));
-        m.setMap(position, Tile.TILES.DIRT);
-        assertTrue(m.isTILES(Tile.TILES.DIRT , position));
-        m.setMap(position, Tile.TILES.WATER);
-
+        assertFalse(m.isTileAt(position, Tile.DIRT));
+        m.setTile(position, Tile.DIRT);
+        assertTrue(m.isTileAt(position, Tile.DIRT));
     }
 }
