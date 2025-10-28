@@ -1,8 +1,6 @@
 package com.lllmtb.terrain;
 import com.lllmtb.physics.Position;
 
-
-
 public class Map implements IMap {
 
     private int width;

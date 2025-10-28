@@ -15,7 +15,7 @@ public class MapLoader {
             for (int i = 0; i < row.length; i++) {
                 for (int j = 0; j < row[0].length(); j++) {
                     if (row[i].charAt(j) != '\n') {     // could be improved ; this is impossible given we already .split by \n
-                        switch (row[i].charAt(j)) {
+                        switch (row[i].charAt(j)) {     // perhaps create another `Map.setTile(x, y)` that could be used here
                             case 'D':
                                 tileMatrix.getMapMatrix()[i][j] = Tile.DIRT;
                                 break;
