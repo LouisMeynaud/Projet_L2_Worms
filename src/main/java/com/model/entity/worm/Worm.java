@@ -43,7 +43,7 @@ public class Worm extends Entity {
      * @param target : Worm targeted
      */
     public void damageToWorm(Worm target){
-        this.stats.setHp(this.selfItem.getDamage); 
+        this.stats.setHp(this.selfItem.getDamage()); 
     }
 
     /*
