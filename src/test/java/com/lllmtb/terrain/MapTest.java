@@ -49,6 +49,27 @@ public class MapTest {
     }
 
     @Test
+    public void inMap_returnsfalseForXinYOut() {
+        int xIn = 3;
+        int yOut = 6;
+        assertFalse(m.inMap(xIn, yOut));
+    }
+
+    @Test
+    public void inMap_returnsfalseForXOutYIn() {
+        int xOut = 3;
+        int yIn= 6;
+        assertFalse(m.inMap(xOut, yIn));
+    }
+
+    @Test
+    public void inMap_returnsfalseForPositionNegatif() {
+        int xOut = -1;
+        int yIn= -1;
+        assertFalse(m.inMap(xOut, yIn));
+    }
+
+    @Test
     public void cooMapToCooMatrix_convertsCoordinatesCorrectly() {
         Position position1 = new Position(0, 0);
         Position position2 = new Position(4, 5);
