@@ -41,8 +41,6 @@ public class Map implements IMap {
                     case AIR: string.append(" ");break;
                     case DIRT : string.append("#");break;
                     case WATER : string.append("o");break;
-                    default:
-                        break;
                 }
             }
         }
