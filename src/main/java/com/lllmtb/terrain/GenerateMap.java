@@ -1,4 +1,5 @@
 package com.lllmtb.terrain;
+import com.lllmtb.physics.*;
 
 import java.io.File;
 import java.util.Scanner;
@@ -6,7 +7,28 @@ import java.util.Arrays;
 import java.util.Random;
 
 public class GenerateMap {
-    
+    public static Map createMatrix(int width, int height, int pentemax, int longeurmax) {
+        //Map map = new Map(height, width, saveFile());
+        Map map = new Map(height, width, "coucou");
+
+        int[] ligneHaute = ligne(width, height, pentemax, longeurmax);
+        int[] ligneBasse = ligne(width, height, pentemax, longeurmax);
+
+        for(int i =0;i<width;i++){
+            if(ligneBasse[i] > ligneHaute[i]){
+                int temp =ligneBasse[i];
+                ligneBasse[i] = ligneHaute[i];
+                ligneHaute[i] = temp;
+            }
+        }
+        System.out.println(Arrays.toString(ligneHaute));
+        System.out.println(Arrays.toString(ligneBasse));
+
+        remplissage(map,ligneHaute,ligneBasse);
+        System.out.println("test");
+        return map;
+
+    }
 
     public static String saveFile() {
         Scanner scanner = new Scanner(System.in);
@@ -61,8 +83,18 @@ public class GenerateMap {
         return ligne;
     }
 
-    public void remplissage(Map map,int[] lignehaute,int[] ligne_bassse){
-        //
+    public static void remplissage(Map map,int[] ligneHaute,int[] ligneBassse){
+        for(int i = 0;i<map.getHeight();i++){
+            for(int j =0;j<map.getWidth();j++){
+                Position position = new Position(j,i);
+                if(i>ligneHaute[j]||i<ligneBassse[j]){
+                    map.setTile(position, Tile.AIR);
+                }
+                else{
+                    map.setTile(position, Tile.DIRT);
+                }
+            }
+        }
     }
 
 
