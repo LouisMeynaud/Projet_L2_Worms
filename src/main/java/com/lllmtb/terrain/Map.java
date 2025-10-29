@@ -31,6 +31,9 @@ public class Map implements IMap {
         return filesTxt;
     }
 
+    protected void setFilesTxt(String files){
+        this.filesTxt = files;
+    }
     @Override
     public String toString() {
         StringBuilder string = new StringBuilder("width : " + this.width + ", height : " + this.height + ", matrice : \n");
@@ -41,6 +44,7 @@ public class Map implements IMap {
                     case AIR: string.append(" ");break;
                     case DIRT : string.append("#");break;
                     case WATER : string.append("o");break;
+                    default : throw new IllegalStateException("Tile inconnue : " + mapMatrix[i][j]);
                 }
             }
         }

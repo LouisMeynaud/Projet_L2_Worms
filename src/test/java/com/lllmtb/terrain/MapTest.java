@@ -28,45 +28,28 @@ public class MapTest {
 
     // Test Map size is 5x6
     @Test
-    public void inMap_returnsTrueForPositionInsideMap() {
-        int xInside = 3;
-        int yInside = 3;
-        assertTrue(m.inMap(xInside, yInside));
+    public void inMap_allTrue() {
+        assertTrue(m.inMap(3, 3)); // toutes conditions true
     }
 
     @Test
-    public void inMap_returnsFalseForPositionOutsideMap() {
-        int xOutside = 20;
-        int yOutside = 20;
-        assertFalse(m.inMap(xOutside, yOutside));
+    public void inMap_xFalse() {
+        assertFalse(m.inMap(-1, 3)); // 0<=x false
     }
 
     @Test
-    public void inMap_returnsTrueForPositionOnBorder() {
-        int xBorder = 4;
-        int yBorder = 5;
-        assertTrue(m.inMap(xBorder, yBorder));
+    public void inMap_yFalse() {
+        assertFalse(m.inMap(3, -1)); // 0<=y false
     }
 
     @Test
-    public void inMap_returnsfalseForXinYOut() {
-        int xIn = 3;
-        int yOut = 6;
-        assertFalse(m.inMap(xIn, yOut));
+    public void inMap_xBorderFalse() {
+        assertFalse(m.inMap(5, 3)); // x < width false
     }
 
     @Test
-    public void inMap_returnsfalseForXOutYIn() {
-        int xOut = 3;
-        int yIn= 6;
-        assertFalse(m.inMap(xOut, yIn));
-    }
-
-    @Test
-    public void inMap_returnsfalseForPositionNegatif() {
-        int xOut = -1;
-        int yIn= -1;
-        assertFalse(m.inMap(xOut, yIn));
+    public void inMap_yBorderFalse() {
+        assertFalse(m.inMap(3, 6)); // y < height false
     }
 
     @Test
@@ -102,8 +85,22 @@ public class MapTest {
                 "#oo##\n" +
                 "ooooo\n" +
                 "ooooo";
-            System.out.println(attentue);
-            System.out.println(m);
-            assertEquals(attentue, m.toString());
+        System.out.println(attentue);
+        System.out.println(m);
+        assertEquals(attentue, m.toString());
+    }
+
+    @Test
+    void testInvalideElementMapToString() {
+        Map fakeMap = new Map(1, 1, "test");
+
+        Position position = new Position(0, 0);
+        fakeMap.setTile(position, Tile.UNKNOWN);
+
+        try {
+            fakeMap.toString();
+            fail("IllegalStateException attendue mais non levée");
+        } catch (IllegalStateException e) {
+        }
     }
 }
