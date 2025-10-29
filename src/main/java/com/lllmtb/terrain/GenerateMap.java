@@ -4,7 +4,6 @@ import com.lllmtb.physics.*;
 
 import java.io.File;
 import java.util.Scanner;
-import java.util.Arrays;
 import java.util.Random;
 
 // note tempo 
@@ -16,7 +15,7 @@ import java.util.Random;
 //verification a faire lors de la creation de la map ; espace de terrain remplie ; meme quantité de terre des deux coter , crée un moyen de faire des petite 'ile' sans que sa soit le bordel
 public class GenerateMap {
     public static Map createMatrix(int width, int height, int pentemax, int longeurmax, int heightWater) {
-        Map map = new Map(height, width, saveFile());
+        Map map = new Map(height, width, newMapSaveFile());
 
         int[] ligneHaute = ligne(width, height, pentemax, longeurmax);
         int[] ligneBasse = ligne(width, height, pentemax, longeurmax);
@@ -28,9 +27,7 @@ public class GenerateMap {
                 ligneHaute[i] = temp;
             }
         }
-        System.out.println(Arrays.toString(ligneHaute));
-        System.out.println(Arrays.toString(ligneBasse));
-
+        equilibrageGaucheDroite(ligneBasse, ligneHaute, width, height);
         remplissage(map, ligneHaute, ligneBasse);
         System.out.println("test");
         for (int i = 0; i <= heightWater; i++) {
@@ -45,7 +42,7 @@ public class GenerateMap {
 
     }
 
-    public static String saveFile() {
+    public static String newMapSaveFile() {
         Scanner scanner = new Scanner(System.in);
         System.out.println("entré le nom du fichier d'enregistrement");
 
@@ -115,6 +112,48 @@ public class GenerateMap {
                 }
             }
         }
+    }
+
+    private static void equilibrageGaucheDroite(int[] ligneBasse, int[] ligneHaute, int width, int height) {
+        int mid = width / 2;
+
+        // calcul des moyennes
+        int moyenneGauche = moyenneEpaisseur(ligneBasse, ligneHaute, 0, mid);
+        int moyenneDroite = moyenneEpaisseur(ligneBasse, ligneHaute, mid, width);
+
+        int diff = moyenneGauche - moyenneDroite;
+
+        if (Math.abs(diff) > 5) { // si diff epaisseur trop grande.
+            if (diff > 0) {
+                // gauche plus épaisse
+                for (int x = 0; x < mid; x++)
+                    if (ligneHaute[x] + diff / 2 < height) {
+                        ligneHaute[x] += diff / 2;
+                    } else if (ligneBasse[x] - diff / 2 > 0) {
+                        ligneBasse[x] -= diff / 2;
+                    }
+            } else {
+                // droite plus épaisse
+                for (int x = mid; x < width; x++)
+                    if (ligneHaute[x] + diff / 2 < height) {
+                        ligneHaute[x] += diff / 2;
+                    } else if (ligneBasse[x] - diff / 2 > 0) {
+                        ligneBasse[x] -= diff / 2;
+                    }
+            }
+        }
+    }
+
+    private static int moyenneEpaisseur(int[] ligneBasse, int[] ligneHaute, int debut, int fin) {
+        int somme = 0;
+        for (int x = debut; x < fin; x++) {
+            somme += (ligneHaute[x] - ligneBasse[x]);
+        }
+        return somme / (fin - debut);
+    }
+
+    public static void main(String[] args) {
+        System.out.println(createMatrix(120, 60, 3, 5, 4));
     }
 
 }
