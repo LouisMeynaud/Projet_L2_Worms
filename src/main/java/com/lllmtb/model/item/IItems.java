@@ -2,9 +2,9 @@ package com.lllmtb.model.item;
 
 public interface IItems {
 
-    public boolean inInventory();
+    boolean inInventory();
 
-    public boolean useable();
+    boolean useable();
 
-    public void oneUse();
+    void use(Entity e, double angle);
 }

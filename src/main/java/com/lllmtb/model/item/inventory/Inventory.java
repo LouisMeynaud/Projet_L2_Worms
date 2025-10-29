@@ -5,5 +5,9 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class Inventory {
-    public final Set<IItems> inventory = new HashSet<>();
+    public final Set<IItems> inventory = new HashSet<IItems>();
+
+    public void shoot(IItems i, Entity e, double angle) {
+        i.use(e, angle);
+    }
 }

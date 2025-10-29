@@ -4,12 +4,10 @@ import com.lllmtb.model.item.IItems;
 public abstract class Weapon implements IItems {
 
     private int ammunations;
-    private final Projectile projectileType;
     private boolean unlocked;
 
-    public Weapon (int ammunations, Projectile type, boolean unlocked) {
+    public Weapon (int ammunations, boolean unlocked) {
         this.ammunations = ammunations;
-        this.projectileType = type;
         this.unlocked = unlocked;
     }
 
@@ -24,11 +22,5 @@ public abstract class Weapon implements IItems {
     }
 
     @Override
-    public void oneUse() {
-        if (this.useable()) {
-            this.ammunations--;
-        } else {
-            throw new IllegalArgumentException("You can't use this weapon!");
-        }
-    }
+    abstract public void use(Entity e, double angle);
 }

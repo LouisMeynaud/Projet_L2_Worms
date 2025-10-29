@@ -22,11 +22,5 @@ public abstract class Tool implements IItems {
     }
 
     @Override
-    public void oneUse() {
-        if (this.useable()) {
-            this.ammunations--;
-        } else {
-            throw new IllegalArgumentException("You can't use this tool!");
-        }
-    }
+    abstract public void use(Entity e, double angle);
 }
