@@ -62,11 +62,27 @@ public class MapTest {
         assertEquals(2, m.cooMapToCooMatrix(position3).getX());
         assertEquals(3, m.cooMapToCooMatrix(position3).getY());
     }
+
     @Test
-    public void setMap_editsMapCorrectly(){
+    public void setMap_editsMapCorrectly() {
         Position position = new Position(2, 2);
         assertFalse(m.isTileAt(position, Tile.DIRT));
         m.setTile(position, Tile.DIRT);
         assertTrue(m.isTileAt(position, Tile.DIRT));
+    }
+
+    @Test
+    public void toStringTest() {
+        String attentue = "width : 5, height : 6, matrice : \n" +
+                "\n" +
+                "     \n" +
+                "     \n" +
+                "#####\n" +
+                "#oo##\n" +
+                "ooooo\n" +
+                "ooooo";
+            System.out.println(attentue);
+            System.out.println(m);
+            assertEquals(attentue, m.toString());
     }
 }

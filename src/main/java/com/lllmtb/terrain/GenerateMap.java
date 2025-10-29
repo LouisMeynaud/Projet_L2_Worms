@@ -10,6 +10,8 @@ import java.util.Random;
 // note tempo 
 //pente + forte = plus chaotique
 //longueur plus haute = terrain plus valoner
+//mieux gerer les parametre par la suite.
+//le code sera changer
 
 //verification a faire lors de la creation de la map ; espace de terrain remplie ; meme quantité de terre des deux coter , crée un moyen de faire des petite 'ile' sans que sa soit le bordel
 public class GenerateMap {

@@ -33,4 +33,16 @@ public class MapLoaderTest {
     void createMatrix_createsCorrectMatrixFromFile() {
         assertTrue(Arrays.deepEquals(expectedMatrix, m.getMapMatrix()));
     }
+
+    @Test
+    void createMatrix_createsIncorrectMatrixFromFile() {
+        m = MapLoader.createMatrix("mapIncorrectTest");
+        assertEquals(m, null);;
+    }
+
+    @Test
+    void createMatrix_createsInexistantMatrixFromFile() {
+        m = MapLoader.createMatrix("mapinexistante");
+        assertEquals(m, null);;
+    }
 }

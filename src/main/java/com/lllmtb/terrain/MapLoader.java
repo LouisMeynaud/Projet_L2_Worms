@@ -3,6 +3,7 @@ package com.lllmtb.terrain;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import com.lllmtb.physics.*;
 
 public class MapLoader {
     public static Map createMatrix(String mapName) {
@@ -14,8 +15,10 @@ public class MapLoader {
             Map tileMatrix = new Map(row.length, row[0].length(), mapName);
             for (int i = 0; i < row.length; i++) {
                 for (int j = 0; j < row[0].length(); j++) {
-                    if (row[i].charAt(j) != '\n') {     // could be improved ; this is impossible given we already .split by \n
-                        switch (row[i].charAt(j)) {     // perhaps create another `Map.setTile(x, y)` that could be used here
+                    if (row[i].charAt(j) != '\n') { // could be improved ; this is impossible given we already .split by
+                                                    // \n
+                        switch (row[i].charAt(j)) { // perhaps create another `Map.setTile(x, y)` that could be used
+                                                    // here
                             case 'D':
                                 tileMatrix.getMapMatrix()[i][j] = Tile.DIRT;
                                 break;
@@ -26,7 +29,8 @@ public class MapLoader {
                                 tileMatrix.getMapMatrix()[i][j] = Tile.AIR;
                                 break;
                             default:
-                                throw new IllegalArgumentException("attention,la lettre" + content.charAt(i) + "ne correspond a aucun Tile");
+                                throw new IllegalArgumentException(
+                                        "attention,la lettre" + content.charAt(i) + "ne correspond a aucun Tile");
                         }
                     }
 
@@ -35,8 +39,11 @@ public class MapLoader {
             return tileMatrix;
 
         } catch (IOException e) {
-            System.out.println(e);      // NB. Il faudra mieux gérer cette exception
+            System.out.println(e); // NB. Il faudra mieux gérer cette exception
             return null;
+        } catch (IllegalArgumentException e) {
+            System.out.println("IllegalArgumentException : " + e.getMessage());
+            return null; // il faudra gerer cette erreur par la suite;
         }
     }
 }

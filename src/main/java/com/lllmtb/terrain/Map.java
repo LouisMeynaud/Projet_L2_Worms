@@ -37,7 +37,13 @@ public class Map implements IMap {
         for (int i = 0; i < this.height; i++) {
             string.append("\n");
             for (int j = 0; j < this.width; j++) {
-                string.append(this.mapMatrix[i][j]);
+                switch (this.mapMatrix[i][j]) {
+                    case AIR: string.append(" ");break;
+                    case DIRT : string.append("#");break;
+                    case WATER : string.append("o");break;
+                    default:
+                        break;
+                }
             }
         }
         return string.toString();
