@@ -1,4 +1,4 @@
-package com.lllmtb.terrain;
+package com.lllmtb.terrain.map;
 
 public enum Tile {
     DIRT, WATER, AIR , UNKNOWN

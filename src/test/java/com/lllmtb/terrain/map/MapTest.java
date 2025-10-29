@@ -1,6 +1,10 @@
-package com.lllmtb.terrain;
+package com.lllmtb.terrain.map;
 
 import com.lllmtb.physics.Position;
+import com.lllmtb.terrain.map.Map;
+import com.lllmtb.terrain.map.MapLoader;
+import com.lllmtb.terrain.map.Tile;
+
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;

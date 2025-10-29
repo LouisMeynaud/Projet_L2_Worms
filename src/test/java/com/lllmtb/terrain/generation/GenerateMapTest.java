@@ -1,4 +1,4 @@
-package com.lllmtb.terrain;
+package com.lllmtb.terrain.generation;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -6,6 +6,9 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
 import org.junit.jupiter.api.Test;
+
+import com.lllmtb.terrain.generation.GenerateMap;
+import com.lllmtb.terrain.map.Map;
 
 public class GenerateMapTest {
     @Test

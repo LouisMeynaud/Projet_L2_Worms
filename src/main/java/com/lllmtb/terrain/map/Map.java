@@ -1,4 +1,4 @@
-package com.lllmtb.terrain;
+package com.lllmtb.terrain.map;
 import com.lllmtb.physics.Position;
 
 public class Map implements IMap {

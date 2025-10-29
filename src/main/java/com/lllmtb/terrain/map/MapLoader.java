@@ -1,4 +1,4 @@
-package com.lllmtb.terrain;
+package com.lllmtb.terrain.map;
 
 import java.io.IOException;
 import java.nio.file.Files;
