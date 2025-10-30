@@ -6,7 +6,7 @@ package com.lllmtb.physics;
  * Une implémentation de cette interface sera utilisée pour la gestion des déplacements/trajectoires des objets Entity associés aux PhysicsBody de la collection
  * mais également pour le déclenchement des effets procurés par une collision aux objets Entity associés aux PhysicsBody de la collection.
  */
-public interface IPhysicsEngine {
+public interface PhysicsEngine {
 
     /**
      * Ajoute un PhysicsBody à la collection.
