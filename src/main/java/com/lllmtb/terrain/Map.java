@@ -31,13 +31,21 @@ public class Map implements IMap {
         return filesTxt;
     }
 
+    protected void setFilesTxt(String files){
+        this.filesTxt = files;
+    }
     @Override
     public String toString() {
         StringBuilder string = new StringBuilder("width : " + this.width + ", height : " + this.height + ", matrice : \n");
         for (int i = 0; i < this.height; i++) {
             string.append("\n");
             for (int j = 0; j < this.width; j++) {
-                string.append(this.mapMatrix[i][j]);
+                switch (this.mapMatrix[i][j]) {
+                    case AIR: string.append(" ");break;
+                    case DIRT : string.append("#");break;
+                    case WATER : string.append("o");break;
+                    default : throw new IllegalStateException("Tile inconnue : " + mapMatrix[i][j]);
+                }
             }
         }
         return string.toString();
