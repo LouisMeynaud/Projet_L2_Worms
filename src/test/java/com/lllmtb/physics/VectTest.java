@@ -6,7 +6,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class VectTest {
     @Test
-    void test1() {
+    void testConstructor() {
         Vect v1 = new Vect();
         Vect v2 = new Vect(1,1);
         assertEquals(0,v1.getX());
@@ -15,7 +15,7 @@ public class VectTest {
         assertEquals(1,v2.getY());
     }
     @Test
-    void test2() {
+    void testSubAddScaleEquals() {
         Vect v1 = new Vect(3,4);
         Vect v2 = new Vect(1,1);
         Vect v3 = new Vect(5,6);
@@ -29,11 +29,11 @@ public class VectTest {
         assertEquals(5,v3.getY());
         assertEquals(2,v4.getX());
         assertEquals(4,v4.getY());
-        assertTrue(v1.same(v3));
-        assertFalse(v1.same(v2));
+        assertTrue(v1.equals(v3));
+        assertFalse(v1.equals(v2));
     }
     @Test
-    void test3() {
+    void testNewPos() {
         Vect v1 = new Vect(3,4);
         Position pos = new Position(1,1);
         Position pos2 = v1.newPos(pos,1);
