@@ -41,21 +41,21 @@ public class SaveMapTest {
         Files.copy(originalFile, tempFile, StandardCopyOption.REPLACE_EXISTING);
         tempFileName = tempFile.getFileName().toString().replaceFirst("\\.[^.]+$", "");
 
-        m = MapLoader.createMatrix(tempFileName);
+        m = MapLoader.loadMatrix(tempFileName);
     }
 
     @Test
     void saveMap_preservesModifications() {
         m.setTile(position, Tile.AIR);
         SaveMap.saveMap(m);
-        m = MapLoader.createMatrix(tempFileName); // reload the map from the save file
+        m = MapLoader.loadMatrix(tempFileName); // reload the map from the save file
         Assertions.assertNotNull(m); // assert createMatrix doesn't return null
         assertTrue(Arrays.deepEquals(expectedMatrix, m.getMapMatrix()));
     }
 
     @Test
     void testIncorrectNameSaveMap() {
-        Map fakeMap = MapLoader.createMatrix("mapTest");
+        Map fakeMap = MapLoader.loadMatrix("mapTest");
         fakeMap.setFilesTxt("inexistantFolder/test");
         System.out.println(fakeMap.getFilesTxt());
         assertFalse(SaveMap.saveMap(fakeMap));

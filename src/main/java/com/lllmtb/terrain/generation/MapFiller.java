@@ -5,7 +5,7 @@ import com.lllmtb.terrain.map.Tile;
 import com.lllmtb.physics.*;
 
 public class MapFiller {
-    public static void remplissageWater(Map map,int heightWater){
+    public static void fillingWater(Map map,int heightWater){
         for (int i = 0; i <= heightWater; i++) {
             for (int j = 0; j < map.getWidth(); j++) {
                 Position position = new Position(j, i);
@@ -16,11 +16,11 @@ public class MapFiller {
         }
     }
 
-    public static void remplissageDirt(Map map, int[] ligneHaute, int[] ligneBassse) {
+    public static void fillingDirt(Map map, int[] hightLine, int[] lowLine) {
         for (int i = 0; i < map.getHeight(); i++) {
             for (int j = 0; j < map.getWidth(); j++) {
                 Position position = new Position(j, i);
-                if (i > ligneHaute[j] || i < ligneBassse[j]) {
+                if (i > hightLine[j] || i < lowLine[j]) {
                     map.setTile(position, Tile.AIR);
                 } else {
                     map.setTile(position, Tile.DIRT);

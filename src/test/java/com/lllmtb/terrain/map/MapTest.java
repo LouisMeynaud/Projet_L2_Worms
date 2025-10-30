@@ -15,7 +15,7 @@ public class MapTest {
 
     @BeforeEach
     public void setUp() {
-        m = MapLoader.createMatrix("mapTest");
+        m = MapLoader.loadMatrix("mapTest");
     }
 
     @AfterEach

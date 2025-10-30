@@ -18,19 +18,19 @@ public class GenerateMap {
     public static Map createMatrix(int width, int height, int pentemax, int longeurmax, int heightWater) {
         Map map = new Map(height, width, SaveMap.newMapSaveFile());
 
-        int[] ligneHaute = MapGenerator.creationligne(width, height, pentemax, longeurmax);
-        int[] ligneBasse = MapGenerator.creationligne(width, height, pentemax, longeurmax);
+        int[] tallLine = MapGenerator.createLine(width, height, pentemax, longeurmax);
+        int[] lowLine = MapGenerator.createLine(width, height, pentemax, longeurmax);
 
         for (int i = 0; i < width; i++) {
-            if (ligneBasse[i] > ligneHaute[i]) {
-                int temp = ligneBasse[i];
-                ligneBasse[i] = ligneHaute[i];
-                ligneHaute[i] = temp;
+            if (lowLine[i] > tallLine[i]) {
+                int temp = lowLine[i];
+                lowLine[i] = tallLine[i];
+                tallLine[i] = temp;
             }
         }
-        MapBalancer.equilibrageGaucheDroite(ligneBasse, ligneHaute, width, height);
-        MapFiller.remplissageDirt(map, ligneHaute, ligneBasse);
-        MapFiller.remplissageWater(map, heightWater);
+        MapBalancer.leftRightBalancing(lowLine, tallLine, width, height);
+        MapFiller.fillingDirt(map, tallLine, lowLine);
+        MapFiller.fillingWater(map, heightWater);
         return map;
     }
 
