@@ -3,7 +3,6 @@ package com.lllmtb.terrain.map;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import com.lllmtb.physics.*;
 
 public class MapLoader {
     public static Map loadMatrix(String mapName) {

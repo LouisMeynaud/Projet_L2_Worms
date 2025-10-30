@@ -1,5 +1,4 @@
 package com.lllmtb.physics;
-import java.lang.Math;
 public class PhysicsBody {
     private  Position pos;
     private  Position vect   ;
