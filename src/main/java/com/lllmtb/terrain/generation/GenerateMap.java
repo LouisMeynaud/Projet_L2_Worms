@@ -1,6 +1,8 @@
 package com.lllmtb.terrain.generation;
 
 
+import java.util.Arrays;
+
 import com.lllmtb.terrain.map.Map;
 import com.lllmtb.terrain.map.SaveMap;
 
@@ -21,21 +23,20 @@ public class GenerateMap {
         int[] tallLine = MapGenerator.createLine(width, height, pentemax, longeurmax);
         int[] lowLine = MapGenerator.createLine(width, height, pentemax, longeurmax);
 
+
         for (int i = 0; i < width; i++) {
-            if (lowLine[i] > tallLine[i]) {
+            if (lowLine[i] < tallLine[i]) {
                 int temp = lowLine[i];
                 lowLine[i] = tallLine[i];
                 tallLine[i] = temp;
-            }
+            } 
+
         }
+        System.out.println(Arrays.toString(tallLine)); // a des plus petite valeur que low line (car 0 en haut)
+        System.out.println(Arrays.toString(lowLine)); // a des plus grande valeur que tall line (car 0 en haut)
         MapBalancer.leftRightBalancing(lowLine, tallLine, width, height);
         MapFiller.fillingDirt(map, tallLine, lowLine);
         MapFiller.fillingWater(map, heightWater);
         return map;
     }
-
-    public static void main(String[] args) {
-        System.out.println(createMatrix(120, 60, 3, 5, 4));
-    }
-
 }
