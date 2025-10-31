@@ -1,12 +1,6 @@
 package com.lllmtb.terrain.generation;
-
-
-import java.util.Arrays;
-
 import com.lllmtb.terrain.map.Map;
 import com.lllmtb.terrain.map.SaveMap;
-
-
 
 // note tempo 
 //pente + forte = plus chaotique
@@ -17,26 +11,24 @@ import com.lllmtb.terrain.map.SaveMap;
 //verification a faire lors de la creation de la map ; espace de terrain remplie ; meme quantité de terre des deux coter , crée un moyen de faire des petite 'ile' sans que sa soit le bordel
 public class GenerateMap {
 
-    public static Map createMatrix(int width, int height, int pentemax, int longeurmax, int heightWater) {
+    public static Map createMatrix(int width, int height, int maxSlope, int maxLength, int waterHeight) {
         Map map = new Map(height, width, SaveMap.newMapSaveFile());
 
-        int[] tallLine = MapGenerator.createLine(width, height, pentemax, longeurmax);
-        int[] lowLine = MapGenerator.createLine(width, height, pentemax, longeurmax);
-
+        int[] topLine = MapGenerator.createLine(width, height, maxSlope, maxLength); // has smaller values than bottomLine (because 0 is at the top)
+        int[] bottomLine = MapGenerator.createLine(width, height, maxSlope, maxLength); // has larger values than topLine (because 0 is at the top)
 
         for (int i = 0; i < width; i++) {
-            if (lowLine[i] < tallLine[i]) {
-                int temp = lowLine[i];
-                lowLine[i] = tallLine[i];
-                tallLine[i] = temp;
-            } 
-
+            if (bottomLine[i] < topLine[i]) {
+                int temp = bottomLine[i];
+                bottomLine[i] = topLine[i];
+                topLine[i] = temp;
+            }
         }
-        System.out.println(Arrays.toString(tallLine)); // a des plus petite valeur que low line (car 0 en haut)
-        System.out.println(Arrays.toString(lowLine)); // a des plus grande valeur que tall line (car 0 en haut)
-        MapBalancer.leftRightBalancing(lowLine, tallLine, width, height);
-        MapFiller.fillingDirt(map, tallLine, lowLine);
-        MapFiller.fillingWater(map, heightWater);
+
+        MapBalancer.leftRightBalancing(bottomLine, topLine, width, height);
+        MapFiller.fillingDirt(map, topLine, bottomLine);
+        MapFiller.fillingWater(map, waterHeight);
         return map;
     }
+
 }

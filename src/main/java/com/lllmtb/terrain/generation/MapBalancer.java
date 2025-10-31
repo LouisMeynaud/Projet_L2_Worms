@@ -1,34 +1,34 @@
 package com.lllmtb.terrain.generation;
 
 public class MapBalancer {
-    public static void leftRightBalancing(int[] lowLine, int[] TallLine, int width, int height) {
+
+
+    public static void leftRightBalancing(int[] lowLine, int[] tallLine, int width, int height) {
         int mid = width / 2;
+        int diffAccepted = 3;
 
-        int leftAverage = averageThickness(lowLine, TallLine, 0, mid);
-        int rightAverage = averageThickness(lowLine, TallLine, mid, width);
-        System.out.println("moyenne gauche" + leftAverage);
-        System.out.println("moyenne droite" + rightAverage);
+        int leftAverage = averageThickness(lowLine, tallLine, 0, mid);
+        int rightAverage = averageThickness(lowLine, tallLine, mid, width);
         int diff = leftAverage - rightAverage;
-        System.out.println("diff" + diff);
 
-        if (diff >= 3) {
-            // gauche plus épaisse → équilibrer en augmentant le côté droit
+        if (diff >= diffAccepted) {//parametre a changer , plus diff est grand , moin le terrain risque d'etre equilibrer.
+            // gauche plus épaisse , équilibrer en augmentant le côté droit
             for (int x = mid; x < width; x++) {
                 int adjust = diff;
                 System.out.println(diff);
-                if (TallLine[x] - adjust > 0) {
-                    TallLine[x] -= adjust;
+                if (tallLine[x] - adjust > 0) {
+                    tallLine[x] -= adjust;
                 } else if (lowLine[x] + adjust < height) { 
                     lowLine[x] += adjust; // on agrandit vers le bas
                 }
             }
-        } else if (diff <= -3){
-            // droite plus épaisse → équilibrer en augmentant le côté gauche
+        } else if (diff <= -diffAccepted){
+            // droite plus épaisse , équilibrer en augmentant le côté gauche
             for (int x = 0; x < mid; x++) {
                 int adjust = (-diff);
                 System.out.println("adjust" + adjust);
-                if (TallLine[x] - adjust > 0) {
-                    TallLine[x] -= adjust;
+                if (tallLine[x] - adjust > 0) {
+                    tallLine[x] -= adjust;
                 } else if (lowLine[x] + adjust < height) {
                     lowLine[x] += adjust;
                 }

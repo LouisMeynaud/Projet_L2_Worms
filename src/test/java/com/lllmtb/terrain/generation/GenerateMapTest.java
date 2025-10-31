@@ -10,10 +10,10 @@ import com.lllmtb.terrain.map.Map;
 
 public class GenerateMapTest {
     @Test
-    public void testcreateMatrix() {
+    public void createMatrixTest() {
         String inputSimule = "mapTest\nN\nmapTest\nN\nnomTest\n";
 
-        InputStream originalIn = System.in;
+        InputStream originalIn = System.in;//on garde de coter l'entrer original pour la retablir apres
 
         System.setIn(new ByteArrayInputStream(inputSimule.getBytes())); // getbytes transforme le string en tableau d' octet pour byteArrayInpustream qui prend un tableau d'octect
 
