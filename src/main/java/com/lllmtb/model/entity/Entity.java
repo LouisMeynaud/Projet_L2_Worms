@@ -1,4 +1,4 @@
-package com.model.entity;
+package com.lllmtb.model.entity;
 import com.lllmtb.physics.PhysicsBody;
 
 public abstract class Entity {

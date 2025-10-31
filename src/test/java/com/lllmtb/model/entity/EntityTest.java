@@ -2,12 +2,11 @@ package com.lllmtb.model.entity;
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import com.lllmtb.model.entity.worm.Worm;
 import com.lllmtb.physics.PhysicsBody;
 import com.lllmtb.physics.Position;
-import com.model.entity.worm.Worm;
 
 
 

@@ -1,7 +1,7 @@
-package com.model.entity.worm;
+package com.lllmtb.model.entity.worm;
 
+import com.lllmtb.model.entity.Entity;
 import com.lllmtb.physics.PhysicsBody;
-import com.model.entity.Entity;
 
 public class Worm extends Entity {
 
