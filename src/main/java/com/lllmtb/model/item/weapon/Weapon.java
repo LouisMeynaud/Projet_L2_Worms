@@ -17,10 +17,20 @@ public abstract class Weapon implements IItems {
     }
 
     @Override
-    public boolean useable() {
+    public boolean usable() {
         return this.inInventory() && this.ammunations > 0;
     }
 
     @Override
     abstract public void use(Entity e, double angle);
+
+    @Override
+    public void unlockItem() {
+        this.unlocked = true;
+    }
+
+    @Override
+    public void addAmmo(int n) {
+        this.ammunations += n;
+    }
 }

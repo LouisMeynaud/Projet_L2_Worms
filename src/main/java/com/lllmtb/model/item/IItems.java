@@ -4,7 +4,11 @@ public interface IItems {
 
     boolean inInventory();
 
-    boolean useable();
+    boolean usable();
 
     void use(Entity e, double angle);
+
+    void unlockItem();
+
+    void addAmmo(int n);
 }
