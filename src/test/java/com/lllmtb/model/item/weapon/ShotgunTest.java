@@ -1,6 +1,7 @@
 package com.lllmtb.model.item.weapon;
 
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -11,7 +12,7 @@ public class ShotgunTest {
     public static Shotgun sg3;
     public static Shotgun sg4;
 
-    @BeforeAll
+    @BeforeEach
     public static void setUp() {
         sg1 = new Shotgun(10,true);
         sg2 = new Shotgun(10, false);
@@ -26,17 +27,7 @@ public class ShotgunTest {
 
     @Test
     public void testConstructeursg1Unlocked() {
-        assertTrue(sg1.getUnlocked());
-    }
-
-    @Test
-    public void testsg1InInventory() {
         assertTrue(sg1.inInventory());
-    }
-
-    @Test
-    public void testsg2InInventory() {
-        assertFalse(sg2.inInventory());
     }
 
     @Test

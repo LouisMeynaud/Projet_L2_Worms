@@ -18,11 +18,6 @@ public abstract class Tool implements IItems {
     }
 
     @Override
-    public boolean getUnlocked() {
-        return this.unlocked;
-    }
-
-    @Override
     public boolean inInventory() {
         return unlocked;
     }

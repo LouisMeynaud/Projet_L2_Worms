@@ -6,8 +6,6 @@ public interface IItems {
 
     int getAmmunations();
 
-    boolean getUnlocked();
-
     boolean inInventory();
 
     boolean usable();
