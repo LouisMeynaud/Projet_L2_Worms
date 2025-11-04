@@ -40,7 +40,8 @@ public class MapBalancer {
     public static void thicknessBalencer(int thicknessMin,int epaisseur,int[] hightLine) {
         if(thicknessMin>epaisseur){
             for(int i =0;i<hightLine.length;i++){
-                hightLine[i] += thicknessMin-epaisseur;
+                if(hightLine[i] - (thicknessMin - epaisseur) > 0 ){
+                hightLine[i] -= thicknessMin-epaisseur;}
             }
         }
     }
@@ -52,6 +53,6 @@ public class MapBalancer {
         for (int x = start; x < end; x++) {
             somme += (lowLine[x] - hightLine[x]);
         }
-        return somme / (end - start);
+        return (int) somme / (end - start);
     }
 }

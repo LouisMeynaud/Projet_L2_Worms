@@ -102,6 +102,14 @@ public class MapBalancerTest {
     }
 
     @Test
+    void thicknessBalencerTest(){
+        int[] highLine = { 5,5,1,5 };
+        int[] hightLinebis = {3,3,1,3 };
+        MapBalancer.thicknessBalencer(2, 0, highLine);
+            assertArrayEquals(highLine, hightLinebis);
+    }
+
+    @Test
     void classDeclarationTest() {
         new MapBalancer(); // useless since class is static, but covers declaration line
     }

@@ -1,10 +1,6 @@
 package com.lllmtb.terrain.map;
 
 import com.lllmtb.physics.Position;
-import com.lllmtb.terrain.map.Map;
-import com.lllmtb.terrain.map.MapLoader;
-import com.lllmtb.terrain.map.SaveMap;
-import com.lllmtb.terrain.map.Tile;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
