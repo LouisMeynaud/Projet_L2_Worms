@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import com.lllmtb.model.entity.worm.Worm;
 import com.lllmtb.physics.PhysicsBody;
 import com.lllmtb.physics.Position;
+import com.lllmtb.physics.Vector;
 
 
 
@@ -22,8 +23,8 @@ public class EntityTest {
         int x2 = 20;
         int y2 = 20;
         Position pos1 = new Position(x1, y1);
-        Position pos2 = new Position(x2, y2);
-        pB = new PhysicsBody(pos1,pos2);
+        Vector vect1 = new Vector(x2, y2);
+        pB = new PhysicsBody(pos1,vect1);
         worm = new Worm(pB);
     }
 
