@@ -1,4 +1,5 @@
 package com.lllmtb.model.item.weapon;
+import com.lllmtb.model.entity.Entity;
 import com.lllmtb.model.item.IItems;
 
 public abstract class Weapon implements IItems {

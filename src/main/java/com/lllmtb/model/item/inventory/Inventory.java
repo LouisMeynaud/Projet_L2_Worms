@@ -1,5 +1,6 @@
 package com.lllmtb.model.item.inventory;
 
+import com.lllmtb.model.entity.Entity;
 import com.lllmtb.model.item.IItems;
 import java.util.HashSet;
 import java.util.Set;
@@ -8,7 +9,9 @@ public class Inventory {
     private final Set<IItems> inventory = new HashSet<IItems>();
 
     public void shoot(IItems i, Entity e, double angle) {
-        i.use(e, angle);
+        if (i.usable()) {
+            i.use(e, angle);
+        }
     }
 
     public IItems selectItems(int id) throws Unusable {
