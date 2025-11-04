@@ -1,5 +1,4 @@
 package com.lllmtb.physics;
-
 public class PhysicsBody {
     private  Position position;
     private Vector vector ;

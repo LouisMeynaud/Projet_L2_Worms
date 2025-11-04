@@ -1,6 +1,7 @@
-package com.lllmtb.terrain;
+package com.lllmtb.terrain.map;
 
 import java.io.IOException;
+import java.util.Scanner;
 import java.io.File;
 import java.io.FileWriter;
 
@@ -41,5 +42,40 @@ public class SaveMap {
             mapString.append("\n");
         }
         return mapString.toString();
+    }
+
+    //methode demandant le fichie d'enregistrement de save quand une map est crée
+    public static String newMapSaveFile() {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("entré le nom du fichier d'enregistrement");
+
+        boolean existe = false;
+        String files;
+        do {
+            existe = false;
+            files = scanner.nextLine() + ".txt";
+
+            String dossier = "src/main/java/com/lllmtb/terrain/MapFile/";
+
+            File folder = new File(dossier);
+            File[] fichiers = folder.listFiles();
+
+            if (fichiers != null) {
+                for (File f : fichiers) {
+                    if (f.getName().equals(files)) {
+                        System.out
+                                .println("Fichier déjà existant. Entrez O pour l’écraser, N pour en créer un nouveau.");
+                        if (scanner.nextLine().equals("N")) {
+                            existe = true;
+                            System.out.println("merci d'entré un nouveaux nom de fichier");
+                        }
+                    }
+
+                }
+            }
+        } while (existe);
+        scanner.close();
+        return files;
+
     }
 }
