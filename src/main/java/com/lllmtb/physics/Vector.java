@@ -33,6 +33,7 @@ public class Vect {
         this.y *= s;
     }
 
+
     public boolean equals(Vect other){
         return this.x == other.x && this.y == other.y;
     }
