@@ -1,20 +1,18 @@
 package com.lllmtb.physics;
 public class PhysicsBody {
-    private  Position position;
-    private Vector vector ;
+    private  Position pos;
+    private  Position vect   ;
 
-    public  PhysicsBody(Position position, Vector vector){
-        this.position = position;
-        this.vector = vector;
+    public  PhysicsBody(Position position, Position vector){
+        this.pos = position;
+        this.vect = vector;
     }
 
-    public Vector getVector() {return vector;}
+    public Position getVect() {
+        return vect;
+    }
 
     public Position getPos() {
-        return position;
+        return pos;
     }
-
-    public void setPos(Position position) {this.position = position;}
-    public void setVector(Vector vector) {this.vector = vector;}
 }
-
