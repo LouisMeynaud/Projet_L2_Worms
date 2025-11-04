@@ -1,58 +1,27 @@
 package com.lllmtb.terrain;
+
 import java.io.IOException;
-import java.util.Scanner;
 import java.io.File;
 import java.io.FileWriter;
 
-
 public class SaveMap {
-    public static void saveMap(Map m) {
-        if (m.getClass().equals("undefined")) {     // ?? This should never be possible since m is a Map
-            Scanner scanner = new Scanner(System.in);
-            System.out.println("entré le nom du fichier d'enregistrement"); // ceci sera gerer par la classe event une fois crée
+   public static boolean saveMap(Map m) {
+    try {
+        File file = new File("src/main/java/com/lllmtb/terrain/MapFile/" + m.getFilesTxt() + ".txt");
+        file.createNewFile();    //crée le fichier quand il existe pas      
+        FileWriter writer = new FileWriter(file);
+        writer.write(mapToString(m));
+        writer.close();
 
-            boolean existe = false;
-            String files;
-            do {
-                files = scanner.nextLine() + ".txt";
-
-                String dossier = "src/main/java/com/lllmtb/terrain/MapFile/";
-
-                File folder = new File(dossier);
-                File[] fichiers = folder.listFiles();
-
-                if (fichiers != null) {
-                    for (File f : fichiers) {
-                        if (f.getName().equals(files)) {
-                            System.out.println(
-                                    "Fichier déjà existant. Entrez O pour l’écraser, N pour en créer un nouveau.");
-                            if (scanner.nextLine().equals("N")) {
-                                existe = true;
-                                System.out.println("merci d'entré un nouveaux nom de fichier");
-                            }
-                        }
-
-                    }
-                }
-            } while (existe);
-            writeText(m,files);
-            scanner.close();
-        } else {
-            writeText(m,m.getFilesTxt());
-        }
+        System.out.println("Map enregistrée");
+        return true;
+    } catch (IOException e) {
+        System.out.println("Erreur : " + e.getMessage());
+        return false;
     }
+}
 
-    private static void writeText(Map m,String saveFile) {
-        try (FileWriter writer = new FileWriter("src/main/java/com/lllmtb/terrain/MapFile/" + saveFile + ".txt")) {
-            String texte = mapToString(m);
-            writer.write(texte); 
-            System.out.println("Map enregistrer");
-        } catch (IOException e) {
-            System.out.println(e);
-        }
-
-    }
-    public static String mapToString(Map m){
+    public static String mapToString(Map m) {
         Tile[][] mMapMatrix = m.getMapMatrix();
         StringBuilder mapString = new StringBuilder();
         for (Tile[] mapRow : mMapMatrix) {
@@ -65,8 +34,8 @@ public class SaveMap {
                         mapString.append("W");
                         break;
                     case DIRT:
-                        mapString.append("D");
-                        break;
+                        mapString.append("D");break;
+                    default : throw new IllegalStateException("Tile inconnue : " + t);
                 }
             }
             mapString.append("\n");
