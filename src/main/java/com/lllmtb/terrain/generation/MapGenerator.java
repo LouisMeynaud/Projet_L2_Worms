@@ -3,8 +3,8 @@ package com.lllmtb.terrain.generation;
 import java.util.Random;
 
 public class MapGenerator {
-    public static int[] createLine(int width, int height, int slopeMax, int lengthMax) {
-        int LineHeight = height / 5;
+    public static int[] createLine(int width, int height, int slopeMax, int lengthMax,int heightStart) {
+        int LineHeight = heightStart;
         int x = 0;
         int slope = 0;
         int length = 0;

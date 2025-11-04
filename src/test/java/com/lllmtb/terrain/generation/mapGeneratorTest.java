@@ -9,14 +9,14 @@ public class mapGeneratorTest {
     @Test
     void correctlength() {
         int width = 50;
-        int[] ligne = MapGenerator.createLine(width, 20, 3, 5);
+        int[] ligne = MapGenerator.createLine(width, 20, 3, 5,2);
         assertEquals(width, ligne.length);
     }
 
     @Test
     void heightMaxAndMinRespected() {
         int height = 20;
-        int[] ligne = MapGenerator.createLine(50, height, 3, 5);
+        int[] ligne = MapGenerator.createLine(50, height, 3, 5,2);
         for (int h : ligne) {
             assertTrue(h >= 0 && h < height);
         }

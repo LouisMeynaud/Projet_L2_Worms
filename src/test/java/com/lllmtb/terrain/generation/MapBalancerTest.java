@@ -17,7 +17,7 @@ public class MapBalancerTest {
         int[] highLine = { 10, 10, 10, 10 };
         int[] lowLineCopy = { 5, 5, 5, 5 };
         int[] highLineCopy = { 10, 10, 10, 10 };
-        MapBalancer.leftRightBalancing(lowLine, highLine, 4, 20);
+        MapBalancer.leftRightBalancing(lowLine, highLine, 20);
         assertArrayEquals(lowLineCopy, lowLine);
         assertArrayEquals(highLineCopy, highLine);
     }
@@ -26,14 +26,14 @@ public class MapBalancerTest {
     void leftSideThickerCorrection() {
         int[] highLine = { 100, 100, 100, 100 };
         int[] lowLine = { 120, 120, 105, 105 };
-        MapBalancer.leftRightBalancing(lowLine, highLine, 4, 300);
+        MapBalancer.leftRightBalancing(lowLine, highLine, 300);
         assertTrue(highLine[3] < 100);}
 
     @Test
     void rightSideThickerCorrection() {
         int[] highLine = { 100, 100, 100, 100 };
         int[] lowLine = { 105, 105, 120, 120 };
-        MapBalancer.leftRightBalancing(lowLine, highLine, 4, 300);
+        MapBalancer.leftRightBalancing(lowLine, highLine, 300);
         assertTrue(highLine[0] < 100);
     }
 
@@ -50,9 +50,8 @@ public class MapBalancerTest {
         int maxHeight = 100;
         int[] highLine = { 2, 2, 20, 20 };
         int[] lowLine = { 50, 50, 90, 90 }; // right thicker, left high should decrease but too small
-        int width = 4;
 
-        MapBalancer.leftRightBalancing(lowLine, highLine, width, maxHeight);
+        MapBalancer.leftRightBalancing(lowLine, highLine,maxHeight);
         System.out.println(Arrays.toString(highLine));
         System.out.println(Arrays.toString(lowLine));
 
@@ -66,9 +65,8 @@ public class MapBalancerTest {
         int maxHeight = 100;
         int[] highLine = { 20, 20, 2, 2 };
         int[] lowLine = { 90, 90, 50, 50 }; // left thicker than right, right high should decrease but too small
-        int width = 4;
 
-        MapBalancer.leftRightBalancing(lowLine, highLine, width, maxHeight);
+        MapBalancer.leftRightBalancing(lowLine, highLine, maxHeight);
         // check that the right low line has been increased
         assertTrue(lowLine[3] > 50);
     }
@@ -79,9 +77,7 @@ public class MapBalancerTest {
         int[] highLine = { 0, 5, 1, 1 };
         int[] lowLine = { 10, 5, 9, 9 };
 
-        int width = 4;
-
-        MapBalancer.leftRightBalancing(lowLine, highLine, width, maxHeight);
+        MapBalancer.leftRightBalancing(lowLine, highLine, maxHeight);
         System.out.println(Arrays.toString(highLine));
         System.out.println(Arrays.toString(lowLine));
 
@@ -97,9 +93,8 @@ public class MapBalancerTest {
         int[] highLine = { 1, 1, 5, 0 };
         int[] lowLine = { 9, 9, 5, 10 };
 
-        int width = 4;
 
-        MapBalancer.leftRightBalancing(lowLine, highLine, width, maxHeight);
+        MapBalancer.leftRightBalancing(lowLine, highLine, maxHeight);
 
         // verify that far-right column didn’t change
         assertTrue(highLine[3] == 0);

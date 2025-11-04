@@ -16,8 +16,8 @@ public class GenerateMapTest {
         InputStream originalIn = System.in;//on garde de coter l'entrer original pour la retablir apres
 
         System.setIn(new ByteArrayInputStream(inputSimule.getBytes())); // getbytes transforme le string en tableau d' octet pour byteArrayInpustream qui prend un tableau d'octect
-
-        Map m =GenerateMap.createMatrix(60, 100, 2, 5, 5);
+        ConfigMap configtest = new ConfigMap(60, 100, 2, 5, 5, 0, false, 20);
+        Map m =GenerateMap.createMatrix(configtest);
         assertEquals(60, m.getWidth());
         assertEquals(100, m.getHeight());
         assertEquals("nomTest.txt", m.getFilesTxt());
