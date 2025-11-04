@@ -1,29 +1,29 @@
 package com.lllmtb.physics;
 
-public class Vect {
+public class Vector {
 
     private double x;
     private double y;
 
 
-    public Vect(double x, double y) {
+    public Vector(double x, double y) {
         this.x = x;
         this.y = y;
     }
 
-    public Vect(){
+    public Vector(){
         this(0, 0);
     }
 
     public double getX() {  return this.x;  }
     public double getY() { return this.y; }
 
-    public void add(Vect other) {
+    public void add(Vector other) {
         this.x += other.x;
         this.y += other.y;
     }
 
-    public void sub(Vect other) {
+    public void sub(Vector other) {
         this.x -= other.x;
         this.y -= other.y;
     }
@@ -34,7 +34,7 @@ public class Vect {
     }
 
 
-    public boolean equals(Vect other){
+    public boolean equals(Vector other){
         return this.x == other.x && this.y == other.y;
     }
 

@@ -4,11 +4,11 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class VectTest {
+public class VectorTest {
     @Test
     void testConstructor() {
-        Vect v1 = new Vect();
-        Vect v2 = new Vect(1,1);
+        Vector v1 = new Vector();
+        Vector v2 = new Vector(1,1);
         assertEquals(0,v1.getX());
         assertEquals(0,v1.getY());
         assertEquals(1,v2.getX());
@@ -16,10 +16,10 @@ public class VectTest {
     }
     @Test
     void testSubAddScaleEquals() {
-        Vect v1 = new Vect(3,4);
-        Vect v2 = new Vect(1,1);
-        Vect v3 = new Vect(5,6);
-        Vect v4 = new Vect(1,2);
+        Vector v1 = new Vector(3,4);
+        Vector v2 = new Vector(1,1);
+        Vector v3 = new Vector(5,6);
+        Vector v4 = new Vector(1,2);
         v4.scale(2);
         v1.add(v2);
         v3.sub(v2);
@@ -34,7 +34,7 @@ public class VectTest {
     }
     @Test
     void testNewPos() {
-        Vect v1 = new Vect(3,4);
+        Vector v1 = new Vector(3,4);
         Position pos = new Position(1,1);
         Position pos2 = v1.newPos(pos,1);
         assertEquals(4,pos2.getX());
@@ -42,7 +42,7 @@ public class VectTest {
     }
     @Test
     void test4() {
-        Vect v1 = new Vect(3,4);
+        Vector v1 = new Vector(3,4);
         assertEquals("Vect(3.0,4.0)",v1.toString());
     }
 }
