@@ -4,6 +4,10 @@ import com.lllmtb.model.entity.Entity;
 
 public interface IItems {
 
+    int getAmmunations();
+
+    boolean getUnlocked();
+
     boolean inInventory();
 
     boolean usable();

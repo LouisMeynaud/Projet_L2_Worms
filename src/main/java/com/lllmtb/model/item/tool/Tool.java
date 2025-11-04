@@ -13,6 +13,16 @@ public abstract class Tool implements IItems {
     }
 
     @Override
+    public int getAmmunations() {
+        return this.ammunations;
+    }
+
+    @Override
+    public boolean getUnlocked() {
+        return this.unlocked;
+    }
+
+    @Override
     public boolean inInventory() {
         return unlocked;
     }
@@ -32,6 +42,8 @@ public abstract class Tool implements IItems {
 
     @Override
     public void addAmmo(int n) {
-        this.ammunations += n;
+        if (n > 0) {
+            this.ammunations += n;
+        }
     }
 }
