@@ -15,11 +15,12 @@ public class VectorTest {
         assertEquals(1,v2.getY());
     }
     @Test
-    void testSubAddScaleEquals() {
+    void testSubAddScale() {
         Vector v1 = new Vector(3,4);
         Vector v2 = new Vector(1,1);
         Vector v3 = new Vector(5,6);
         Vector v4 = new Vector(1,2);
+
         v4.scale(2);
         v1.add(v2);
         v3.sub(v2);
@@ -29,8 +30,20 @@ public class VectorTest {
         assertEquals(5,v3.getY());
         assertEquals(2,v4.getX());
         assertEquals(4,v4.getY());
-        assertTrue(v1.equals(v3));
-        assertFalse(v1.equals(v2));
+    }
+    @Test
+    void testEquals() {
+        Vector v  = new Vector(-1,1);
+        Vector v1 = new Vector(-1,1);
+        Vector v2 = new Vector(-1,0);
+        Vector v3 = new Vector(Double.MIN_VALUE,1);
+        Vector v4 = new Vector(2,Double.POSITIVE_INFINITY);
+
+        assertFalse(v.equals(null));
+        assertTrue(v.equals(v1));  // true && true
+        assertFalse(v.equals(v2)); // true && false
+        assertFalse(v.equals(v3)); // false && true
+        assertFalse(v.equals(v4)); // false && false
     }
     @Test
     void testNewPos() {
