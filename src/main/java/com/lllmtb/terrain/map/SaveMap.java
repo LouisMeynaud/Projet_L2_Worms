@@ -8,7 +8,7 @@ import java.io.FileWriter;
 public class SaveMap {
    public static boolean saveMap(Map m) {
     try {
-        File file = new File("src/main/java/com/lllmtb/terrain/MapFile/" + m.getFilesTxt()+ ".txt");
+        File file = new File("src/main/java/com/lllmtb/terrain/MapFile/" + m.getFilesTxt());
         file.createNewFile();    //crée le fichier quand il existe pas      
         FileWriter writer = new FileWriter(file);
         writer.write(mapToString(m));
@@ -53,7 +53,7 @@ public class SaveMap {
         String files;
         do {
             existe = false;
-            files = scanner.nextLine() + ".txt";
+            files = scanner.nextLine()+".txt";;
 
             String dossier = "src/main/java/com/lllmtb/terrain/MapFile/";
 
