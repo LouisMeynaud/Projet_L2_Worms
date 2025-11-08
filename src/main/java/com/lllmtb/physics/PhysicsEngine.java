@@ -1,34 +1,35 @@
 package com.lllmtb.physics;
 
 /**
- * Permet le stockage d'une collection d'objets de type PhysicsBody (ceux associés aux objets Enity existants au moment présent).
- * Permet la gestion de cette collection et notamment sa mise à jour.
- * Une implémentation de cette interface sera utilisée pour la gestion des déplacements/trajectoires des objets Entity associés aux PhysicsBody de la collection
- * mais également pour le déclenchement des effets procurés par une collision aux objets Entity associés aux PhysicsBody de la collection.
+ * Allows storage of a collection of PhysicsBody objects (those associated with Entity objects that currently exist).
+ * Allows management of this collection, including updating it.
+ * An implementation of this interface will be used to manage the movements/trajectories of Entity objects associated with the PhysicsBody objects in the collection,
+ * as well as to trigger the effects caused by a collision with Entity objects associated with the PhysicsBody objects in the collection.
  */
+
 public interface PhysicsEngine {
 
     /**
-     * Ajoute un PhysicsBody à la collection.
-     * @param body le PhysicsBody à ajouter (s'il est null, la collection de PhysicsBody reste inchangée)
+     * Adds a PhysicsBody to the collection.
+     * @param body The PhysicsBody to add (if null, the PhysicsBody collection remains unchanged)
      */
     void add(PhysicsBody body);
 
     /**
-     * Supprime un PhysicsBody de la collection.
-     * @param body le PhysicsBody à supprimer (s'il n'est pas présent, la collection de PhysicsBody reste inchangée)
+     * Removes a PhysicsBody from the collection.
+     * @param body The PhysicsBody to be removed (if not present, the PhysicsBody collection remains unchanged).
      */
     void remove(PhysicsBody body);
 
     /**
-     * Supprime tous les PhysicsBody de la collecion.
+     * Removes all PhysicsBodies from the collection.
      */
     void clear();
 
     /**
-     * Met à jour l’état de tous les PhysicsBody de la collection en appliquant les lois physiques (mouvement, forces, collisions, etc.)
-     * et en déclenchants des effets (explosion, etc.).
-     * Cette méthode est appelée à chaque tick du jeu.
+     * Updates the state of all PhysicsBodies in the collection by applying physical laws (motion, forces, collisions, and so on.)
+     * and triggering effects (explosions, and so on.)
+     * This method is called every tick of the game.
      */
     void next();
 }
