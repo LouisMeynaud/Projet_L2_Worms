@@ -1,11 +1,12 @@
 package com.lllmtb.model.item.weapon;
 
 import com.lllmtb.model.entity.Entity;
+import com.lllmtb.model.item.weapon.Ammos.Ammos;
 
 public class Shotgun extends Weapon {
 
-    public Shotgun(int ammunations, boolean unlocked) {
-        super(ammunations, unlocked);
+    public Shotgun(Ammos ammos) {
+        super(ammos);
     }
 
     @Override

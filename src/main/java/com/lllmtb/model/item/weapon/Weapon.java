@@ -1,44 +1,30 @@
 package com.lllmtb.model.item.weapon;
 import com.lllmtb.model.entity.Entity;
 import com.lllmtb.model.item.IItems;
+import com.lllmtb.model.item.weapon.Ammos.Ammos;
 
 public abstract class Weapon implements IItems {
 
-    private int ammunations;
-    private boolean unlocked;
+    private final Ammos ammosType;
 
-    public Weapon (int ammunations, boolean unlocked) {
-        this.ammunations = ammunations;
-        this.unlocked = unlocked;
-    }
-
-    @Override
-    public int getAmmunations() {
-        return this.ammunations;
-    }
-
-    @Override
-    public boolean inInventory() {
-        return unlocked;
+    public Weapon(Ammos ammosType) {
+        this.ammosType = ammosType;
     }
 
     @Override
     public boolean usable() {
-        return this.inInventory() && this.ammunations > 0;
+        return this.ammosType.getNumberOfAmmos() > 0;
     }
 
     @Override
-    abstract public void use(Entity e, double angle);
-
-    @Override
-    public void unlockItem() {
-        this.unlocked = true;
+    public void use(Entity e, double angle) {
+        this.ammosType.shoot(e, angle);
     }
 
     @Override
     public void addAmmo(int n) {
         if (n > 0) {
-            this.ammunations += n;
+            this.ammosType.addAmmos(n);
         }
     }
 }
