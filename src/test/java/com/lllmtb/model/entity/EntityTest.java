@@ -22,9 +22,10 @@ public class EntityTest {
         int y1 = 10;
         int x2 = 20;
         int y2 = 20;
+        double mass = 100;
         Position pos1 = new Position(x1, y1);
         Vector vect1 = new Vector(x2, y2);
-        pB = new PhysicsBody(pos1,vect1);
+        pB = new PhysicsBody(pos1,vect1, mass);
         worm = new Worm(pB);
     }
 

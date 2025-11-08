@@ -3,11 +3,15 @@ package com.lllmtb.physics;
 public class PhysicsBody {
     private  Position position;
     private Vector vector ;
+    private double mass;
 
-    public  PhysicsBody(Position position, Vector vector){
+    public  PhysicsBody(Position position, Vector vector, double mass) {
         this.position = position;
         this.vector = vector;
+        this.mass = mass;
     }
+
+    public double getMass() {return mass;}
 
     public Vector getVector() {return vector;}
 
