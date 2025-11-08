@@ -2,7 +2,6 @@ package com.lllmtb.model.item.weapon.ammos;
 
 import com.lllmtb.model.entity.Entity;
 import com.lllmtb.model.item.weapon.Ammos.ShotgunAmmo;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
