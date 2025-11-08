@@ -23,12 +23,6 @@ public class Inventory {
         throw new Unusable();
     }
 
-    public void unlockItem(IItems item) {
-        if (this.inventory.contains(item)) {
-            item.unlockItem();
-        }
-    }
-
     public void addAmmo(IItems item, int n) {
         if (this.inventory.contains(item)) {
             item.addAmmo(n);
