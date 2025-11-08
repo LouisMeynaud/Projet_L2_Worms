@@ -4,8 +4,8 @@ import com.lllmtb.model.entity.Entity;
 
 public class Parachute extends Tool {
 
-    public Parachute(int ammunations, boolean unlocked) {
-        super(ammunations, unlocked);
+    public Parachute(int ammunations) {
+        super(ammunations);
     }
 
     @Override

@@ -11,6 +11,10 @@ public abstract class Weapon implements IItems {
         this.ammosType = ammosType;
     }
 
+    public Ammos getAmmosType() {
+        return ammosType;
+    }
+
     @Override
     public boolean usable() {
         return this.ammosType.getNumberOfAmmos() > 0;
