@@ -1,21 +1,19 @@
-package com.lllmtb.terrain;
+package com.lllmtb.terrain.map;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import com.lllmtb.physics.*;
 
 public class MapLoader {
-    public static Map createMatrix(String mapName) {
+    public static Map loadMatrix(String mapName) {
         try {
             String path = "src/main/java/com/lllmtb/terrain/MapFile/" + mapName + ".txt";
             String content = Files.readString(Path.of(path));
             String[] row = content.split("\n");
 
-            Map tileMatrix = new Map(row.length, row[0].length(), mapName);
+            Map tileMatrix = new Map(row.length, row[0].length(), mapName+".txt");
             for (int i = 0; i < row.length; i++) {
                 for (int j = 0; j < row[0].length(); j++) {
-
                     switch (row[i].charAt(j)) { // perhaps create another `Map.setTile(x, y)` that could be used
                                                 // here
                         case 'D':
