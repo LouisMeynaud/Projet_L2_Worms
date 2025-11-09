@@ -1,6 +1,6 @@
 package com.lllmtb.events;
 
-import org.jetbrains.annotations.NotNull;
+import org.eclipse.jdt.annotation.NonNull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -62,7 +62,7 @@ public class EventBus {
      * @param <T>       event type
      * @throws NullPointerException if {@code eventType} or {@code listener} is null
      */
-    public <T extends Event> void subscribe(@NotNull Class<T> eventType, @NotNull EventListener<T> listener) {
+    public <T extends Event> void subscribe(@NonNull Class<T> eventType, @NonNull EventListener<T> listener) {
         listeners
             .computeIfAbsent(Objects.requireNonNull(eventType), l -> new CopyOnWriteArraySet<>())
             .add(Objects.requireNonNull(listener));
@@ -77,7 +77,7 @@ public class EventBus {
      * @return {@code true} if the listener was found and removed, {@code false} otherwise
      * @throws NullPointerException if {@code eventType} or {@code listener} is null
      */
-    public <T extends Event> boolean unsubscribe(@NotNull Class<T> eventType, @NotNull EventListener<T> listener) {
+    public <T extends Event> boolean unsubscribe(@NonNull Class<T> eventType, @NonNull EventListener<T> listener) {
         Objects.requireNonNull(eventType);
         Objects.requireNonNull(listener);
         CopyOnWriteArraySet<EventListener<? extends Event>> set = listeners.get(eventType);
@@ -91,7 +91,7 @@ public class EventBus {
      * @param event the event to dispatch
      * @throws NullPointerException if {@code event} is null
      */
-    public void postSync(@NotNull Event event) {
+    public void postSync(@NonNull Event event) {
         Objects.requireNonNull(event);
         dispatch(event);
     }
@@ -104,7 +104,7 @@ public class EventBus {
      * @return {@code true} if the event was accepted into the queue, {@code false} if the queue is full
      * @throws NullPointerException if {@code event} is null
      */
-    public boolean postQueued(@NotNull Event event) {
+    public boolean postQueued(@NonNull Event event) {
         Objects.requireNonNull(event);
         return queuedEvents.offer(event);
     }
@@ -125,7 +125,7 @@ public class EventBus {
      * @param event the event to dispatch
      */
     @SuppressWarnings("unchecked")
-    private <T extends Event> void dispatch(@NotNull T event) {
+    private <T extends Event> void dispatch(@NonNull T event) {
         Objects.requireNonNull(event);
 
         // Look up listeners for the exact event class. If none exist, skip.
