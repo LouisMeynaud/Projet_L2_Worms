@@ -1,8 +1,8 @@
 package com.lllmtb.model.item.weapon;
 
-import com.lllmtb.model.item.IItems;
+import com.lllmtb.model.item.Item;
 
-public abstract class Weapon implements IItems {
+public abstract class Weapon implements Item {
 
     private final int projectileId;
 

@@ -1,8 +1,7 @@
 package com.lllmtb.model.item.tool;
-import com.lllmtb.model.entity.Entity;
-import com.lllmtb.model.item.IItems;
+import com.lllmtb.model.item.Item;
 
-public abstract class Tool implements IItems {
+public abstract class Tool implements Item {
 
     private final int id;
 
