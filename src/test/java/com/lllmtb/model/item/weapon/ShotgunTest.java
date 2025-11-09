@@ -15,6 +15,6 @@ public class ShotgunTest {
 
     @Test
     public void testConstructeur() {
-        assertEquals(1, sg.getProjectileId());
+        assertEquals(1, sg.getId());
     }
 }

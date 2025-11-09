@@ -15,6 +15,6 @@ public class ParachuteTest {
 
         @Test
         public void testConstructeur() {
-            assertEquals(1, p.getTest());
+            assertEquals(1, p.getId());
         }
 }

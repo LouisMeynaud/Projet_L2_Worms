@@ -10,7 +10,8 @@ public abstract class Weapon implements IItems {
         this.projectileId = projectileId;
     }
 
-    public int getProjectileId() {
+    @Override
+    public int getId() {
         return projectileId;
     }
 }

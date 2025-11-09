@@ -4,13 +4,14 @@ import com.lllmtb.model.item.IItems;
 
 public abstract class Tool implements IItems {
 
-    private final int test;
+    private final int id;
 
-    public Tool(int test) {
-        this.test = test;
+    public Tool(int id) {
+        this.id = id;
     }
 
-    public int getTest() {
-        return test;
+    @Override
+    public int getId() {
+        return id;
     }
 }
