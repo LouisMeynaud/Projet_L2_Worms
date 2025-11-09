@@ -33,8 +33,8 @@ public class Vector {
         this.y *= s;
     }
 
-
     public boolean equals(Vector other){
+        if (other == null) return false;
         return this.x == other.x && this.y == other.y;
     }
 
