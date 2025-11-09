@@ -1,4 +1,4 @@
-package com.lllmtb.terrain;
+package com.lllmtb.terrain.map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -26,7 +26,7 @@ public class MapLoaderTest {
     public static void setUp() throws IOException {
         path = "src/main/java/com/lllmtb/terrain/MapFile/mapTest.txt";
         mapText = Files.readString(Path.of(path));
-        m = MapLoader.createMatrix("mapTest");
+        m = MapLoader.loadMatrix("mapTest");
     }
 
     @Test
@@ -36,7 +36,7 @@ public class MapLoaderTest {
 
     @Test
     void createMatrix_createsIncorrectMatrixFromFile() {
-        m = MapLoader.createMatrix("mapIncorrectTest");
+        m = MapLoader.loadMatrix("mapIncorrectTest");
         assertEquals(m, null);;
     }
 
@@ -47,7 +47,7 @@ public class MapLoaderTest {
 
     @Test
     void createMatrix_createsInexistantMatrixFromFile() {
-        m = MapLoader.createMatrix("mapinexistante");
+        m = MapLoader.loadMatrix("mapinexistante");
         assertEquals(m, null);;
     }
 }
