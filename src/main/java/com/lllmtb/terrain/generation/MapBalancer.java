@@ -1,17 +1,18 @@
 package com.lllmtb.terrain.generation;
 
 /**
- * classe permetant un equilibrage de la carte apres generation aleratoire afin
- * de garder une coherence et equiter entre les deux coter et donc les deux
- * equipe
+* A class that allows for map balancing after random generation in order to
+* maintain consistency and fairness between the two sides and therefore the two
+* teams
  */
 public class MapBalancer {
 
     /**
-     * augmente/diminue l'epaisseur de la partit gauche/droite de lowLine/heightLine afin de garder une equiter entre l'equipe gauche te la droite. 
-     * @param lowLine la ligne basse de la map
-     * @param hightLine la ligne haute de la map
-     * @param height la hauteur de la map (permet a hightLine de ne pas la depasser);
+     * 
+    *  increases/decreases the thickness of the left/right part of lowLine/heightLine in order to maintain fairness between the left and right team.
+     * @param lowLine 
+     * @param hightLine 
+     * @param height the height of the map (allows highLine not to exceed it);
      * 
      */
     public static void leftRightBalancing(final int[] lowLine, final int[] hightLine, final int height) {
@@ -23,20 +24,18 @@ public class MapBalancer {
         final int rightAverage = averageThickness(lowLine, hightLine, mid, width);
         final int diff = leftAverage - rightAverage;
 
-        if (diff >= diffAccepted) {// parametre a changer , plus diff est grand , moin le terrain risque d'etre
-                                   // equilibrer.
-            // gauche plus épaisse , équilibrer en augmentant le côté droit
+        if (diff >= diffAccepted) {// Parameter to change: the larger the difference, the less likely the terrain is to be balanced. Left side thicker, balance by increasing the right side.
             for (int x = mid; x < width; x++) {
                 final int adjust = diff;
                 System.out.println(diff);
                 if (hightLine[x] - adjust > 0) {
                     hightLine[x] -= adjust;
                 } else if (lowLine[x] + adjust < height) {
-                    lowLine[x] += adjust; // on agrandit vers le bas
+                    lowLine[x] += adjust; // we enlarge downwards
                 }
             }
         } else if (diff <= -diffAccepted) {
-            // droite plus épaisse , équilibrer en augmentant le côté gauche
+            //Thicker right side, balance by increasing the left side
             for (int x = 0; x < mid; x++) {
                 final int adjust = (-diff);
                 System.out.println("adjust" + adjust);
@@ -50,10 +49,10 @@ public class MapBalancer {
     }
 
     /**
-     * methode permettant d'eviter les map trop fine en introduisant une epaisseur minimum.
-     * @param thicknessMin l'epaisseur minimum souhaiter
-     * @param epaisseur l'epaisseur actuelle de la carte
-     * @param hightLine la ligne huate que l'on augmenteras afin d'avoir l'epaisseur minimun voulu
+     * method to avoid excessively thin maps by introducing a minimum thickness.
+     * @param thicknessMin the minimum desired thickness
+     * @param epaisseur the current thickness of the card
+     * @param hightLine the upper line which will be increased in order to obtain the desired minimum thickness
      */
     public static void thicknessBalencer(final int thicknessMin, final int epaisseur, final int[] hightLine) {
         if (thicknessMin > epaisseur) {
@@ -65,12 +64,13 @@ public class MapBalancer {
         }
     }
     /**
-     * methode permettant de calculer l'epaisser d'un terrain d'une position start a end
-     * @param lowLine la ligne basse
-     * @param hightLine la ligne haute
-     * @param start le debut de la zonne ou le calcule est souhaiter
-     * @param end la fin de la zone ou le calcule est souhaiter
-     * @return l'epaisseur de la carte sous forme de int
+     * 
+     * Method for calculating the thickness of a terrain from a given position to an end point.
+     * @param lowLine the low line
+     * @param hightLine the hight Line
+     * @param start the beginning of the zone where the calculation is desired
+     * @param end the end of the area where the calculation is desired
+     * @return the card thickness in the form of an integer
      */
     public static int averageThickness(final int[] lowLine, final int[] hightLine, final int start, final int end) { // epaisseur moyenne
         int somme = 0;

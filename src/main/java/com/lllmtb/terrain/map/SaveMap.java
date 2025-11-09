@@ -9,7 +9,7 @@ public class SaveMap {
    public static boolean saveMap(Map m) {
     try {
         File file = new File("src/main/java/com/lllmtb/terrain/MapFile/" + m.getFilesTxt());
-        file.createNewFile();    //crée le fichier quand il existe pas      
+        file.createNewFile();    //Creates the file if it doesn't exist, overwrites it otherwise
         FileWriter writer = new FileWriter(file);
         writer.write(mapToString(m));
         writer.close();

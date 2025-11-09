@@ -9,11 +9,10 @@ public class GenerateMap {
     
 
     /**
-     * methode permettant la generation d'une map aleatoire
+     * method for generating a random map
      * 
-     * @param config prend un objet de type config afin de generer une map suivant
-     *               des presete
-     * @return la map generer
+     * @param config takes a config type object in order to generate a map according to presets
+     * @return the create map
      */
     public static Map createMap(ConfigMap config) {
         Map map = new Map(config.height, config.width, SaveMap.newMapSaveFile());
