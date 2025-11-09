@@ -11,7 +11,7 @@ import com.lllmtb.terrain.map.Map;
 public class GenerateMapTest {
     @Test
     public void createMapTest() {
-        String inputSimule = "mapTest\nN\nmapTest\nN\nnomTest\n";
+        String inputSimule = "mapTest\nN\nfichierAEcraserTest\nO\n";
 
         InputStream originalIn = System.in;//on garde de coter l'entrer original pour la retablir apres
 
@@ -20,7 +20,7 @@ public class GenerateMapTest {
         Map m =GenerateMap.createMap(configtest);
         assertEquals(60, m.getWidth());
         assertEquals(100, m.getHeight());
-        assertEquals("nomTest.txt", m.getFilesTxt());
+        assertEquals("fichierAEcraserTest.txt", m.getFilesTxt());
         // On restaure System.in
         System.setIn(originalIn);
 

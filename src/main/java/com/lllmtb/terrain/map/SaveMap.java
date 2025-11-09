@@ -63,9 +63,8 @@ public class SaveMap {
             if (fichiers != null) {
                 for (File f : fichiers) {
                     if (f.getName().equals(files)) {
-                        System.out
-                                .println("Fichier déjà existant. Entrez O pour l’écraser, N pour en créer un nouveau.");
-                        if (scanner.nextLine().equals("N")) {
+                        System.out.println("Fichier déjà existant. Entrez O pour l’écraser, N pour en créer un nouveau.");
+                                if (scanner.nextLine().equals("N")) {
                             existe = true;
                             System.out.println("merci d'entré un nouveaux nom de fichier");
                         }
