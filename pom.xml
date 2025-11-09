@@ -84,6 +84,13 @@
                                             <!-- minimum 90% -->
                                             <minimum>0.90</minimum>
                                         </limit>
+                                        <limit>
+                                            <!-- each branch must be reached at least once -->
+                                            <counter>BRANCH</counter>
+                                            <value>COVEREDRATIO</value>
+                                            <!-- minimum 90% -->
+                                            <minimum>0.90</minimum>
+                                        </limit>
                                     </limits>
                                 </rule>
                             </rules>
