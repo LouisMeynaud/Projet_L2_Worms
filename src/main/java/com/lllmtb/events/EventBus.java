@@ -146,6 +146,22 @@ public class EventBus {
     }
 
     /**
+     * @return the number of events in the queue
+     */
+    public int queuedEventCount() {
+        return queuedEvents.size();
+    }
+
+    /**
+     * @return the total number of registered listeners
+     */
+    public int listenerCount() {
+        int sum = 0;
+        for (CopyOnWriteArraySet<EventListener<? extends Event>> set : listeners.values()) sum += set.size();
+        return sum;
+    }
+
+    /**
      * Remove all listeners and clear the event queue. Use on shutdown or test cleanup.
      */
     public void clear() {
