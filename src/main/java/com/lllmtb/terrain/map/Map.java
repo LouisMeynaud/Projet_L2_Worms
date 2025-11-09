@@ -1,7 +1,7 @@
 package com.lllmtb.terrain.map;
 import com.lllmtb.physics.Position;
 
-public class Map implements IMap {
+public class Map {
 /**
  Represent the game cards as a matrix of TILES,
 * representing the different elements present at a given x y position.

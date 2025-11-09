@@ -22,7 +22,7 @@ public class MapFiller {
     }
 
     /**
-     *  methode permettant de remplir la zone entre la ligne haute et basse de DIRT
+     *  method for filling the area between the top and bottom lines of DIRT
      * @param map the map that we want to fill
      * @param hightLine the top line of the map
      * @param lowLine the bottom line of the map
