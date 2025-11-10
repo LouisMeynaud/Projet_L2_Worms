@@ -29,44 +29,20 @@ class PhysicsEngineTest {
     }
 
     @Test
-    void testWindGetter() {
-        Vector wind = pE.getWind();
-        assertNotNull(wind);
-        assertEquals(0, wind.getX());
-        assertEquals(0, wind.getY());
-    }
-
-    @Test
     void testAddAndRemove() {
-        assertTrue(pE.getSetb().contains(pB));
+        assertTrue(pE.getBodies().contains(pB));
         pE.remove(pB);
-        assertFalse(pE.getSetb().contains(pB));
+        assertFalse(pE.getBodies().contains(pB));
     }
 
     @Test
     void testClear() {
         pE.clear();
-        assertTrue(pE.getSetb().isEmpty());
+        assertTrue(pE.getBodies().isEmpty());
     }
 
     @Test
-    void testNextWithWind() {
-        Position initialPos = new Position(pB.getPos().getX(),  pB.getPos().getY());
-        Vector initialVec = new Vector(pB.getVector().getX(),  pB.getVector().getY());
-        pE.next();
-        assertNotEquals(initialPos.getY(), pB.getPos().getY());
-        assertNotEquals(initialVec.getY(), pB.getVector().getY());
-    }
-
-    @Test
-    void testIsWindGetter() {
-        assertTrue(pE.isWind());
-        PhysicsEngine pE2 = new PhysicsEngine(false);
-        assertFalse(pE2.isWind());
-    }
-
-    @Test
-    void testNextWithoutWind() {
+    void testNext() {
         pE = new PhysicsEngine(false);
         pB = new PhysicsBody(new Position(0, 0), new Vector(0, 0), 1, 1, 1);
         pE.add(pB);
@@ -74,16 +50,6 @@ class PhysicsEngineTest {
         assertTrue(pB.getVector().getY() < 0);
     }
 
-    @Test
-    void testWindRandomBranch() {
-        PhysicsEngine pE = new PhysicsEngine(true);
-        Vector before = new Vector(pE.getWind().getX(), pE.getWind().getY());
-        for (int i = 0; i < 20; i++){
-            pE.next();
-        }
-        Vector after = pE.getWind();
-        assertNotNull(after);
-        assertEquals(before.getClass(), after.getClass());
-    }
+
 }
 

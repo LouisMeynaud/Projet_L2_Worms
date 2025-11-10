@@ -1,6 +1,6 @@
 package com.lllmtb.physics;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+
 
 /**
  * Allows storage of a collection of PhysicsBody objects (those associated with Entity objects that currently exist).
@@ -10,31 +10,31 @@ import java.util.Set;
  */
 
 public class PhysicsEngine {
-    private Set<PhysicsBody> setb;
+    private ArrayList<PhysicsBody> bodies;
     private Vector gravity;
-    private boolean isWind;
-    private Vector wind;
+    //private boolean isWind;
+    //private Vector wind;
     public static double ticktime = 0.0167; //Value to be determined
 
     public PhysicsEngine(boolean isWind){
-        this.setb = new HashSet<>();
+        this.bodies = new ArrayList<>();
         this.gravity = new Vector(0, - 9.81);
-        this.isWind = isWind;
-        this.wind = new Vector(0, 0);
+        //this.isWind = isWind;
+        //this.wind = new Vector(0, 0);
     }
 
-    public Set<PhysicsBody> getSetb() {
-        return setb;
+    public ArrayList<PhysicsBody> getBodies() {
+        return bodies;
     }
     public Vector getGravity() {
         return gravity;
     }
-    public boolean isWind() {
+    /*public boolean isWind() {
         return isWind;
     }
     public Vector getWind() {
         return wind;
-    }
+    }*/
     public static double getTicktime() {
         return ticktime;
     }
@@ -44,7 +44,7 @@ public class PhysicsEngine {
      * @param body The PhysicsBody to add (if null, the PhysicsBody collection remains unchanged)
      */
     public void add(PhysicsBody body){
-        setb.add(body);
+        bodies.add(body);
     }
 
     /**
@@ -52,14 +52,14 @@ public class PhysicsEngine {
      * @param body The PhysicsBody to be removed (if not present, the PhysicsBody collection remains unchanged).
      */
     public void remove(PhysicsBody body){
-        setb.remove(body);
+        bodies.remove(body);
     }
 
     /**
      * Removes all PhysicsBodies from the collection.
      */
     public void clear(){
-        setb.clear();
+        bodies.clear();
     }
 
     /**
@@ -76,12 +76,12 @@ public class PhysicsEngine {
 
         sumForces.add(this.gravity);
 
-        if(this.isWind){
+        /*if(this.isWind){
             Vector random = new Vector(Math.random() / 3, Math.random() / 3);
             if(Math.random() < 0.5) this.wind.add(random);
             else this.wind.sub(random);
             sumForces.add(this.wind);
-        }
+        }*/
 
         sumForces.add(airResistance);
 
@@ -89,12 +89,12 @@ public class PhysicsEngine {
         a.scale(1/body.getMass());
 
         body.setVector(new Vector(body.getVector().getX() + a.getX() * ticktime, body.getVector().getY() + a.getY() * ticktime));
-        body.setPos(new Position(body.getPos().getX() + body.getVector().getX() * ticktime, body.getPos().getY() + body.getVector().getY() * ticktime));
+        body.setPos(body.getVector().newPos(body.getPos(), ticktime));
     }
 
 
     public void next(){
-       for(PhysicsBody body : setb){
+       for(PhysicsBody body : bodies){
             nextForOneBody(body);
        }
     }
