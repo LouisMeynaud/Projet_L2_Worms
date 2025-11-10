@@ -71,7 +71,7 @@ public class PhysicsEngine {
         Vector sumForces = new Vector();
            
         Vector airResistance = new Vector();
-        airResistance = body.getVector();
+        airResistance = body.getVector().copy();
         airResistance.scale(-0.2);
 
         sumForces.add(this.gravity);
