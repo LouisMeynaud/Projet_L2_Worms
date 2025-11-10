@@ -67,33 +67,37 @@ public class PhysicsEngine {
      * and triggering effects (explosions, and so on.)
      * This method is called every tick of the game.
      */
+    public void nextForOneBody(PhysicsBody body){
+        Vector sumForces = new Vector();
+           
+        Vector airResistance = new Vector();
+        airResistance = body.getVector();
+        airResistance.scale(-0.2);
+
+        sumForces.add(this.gravity);
+
+        if(this.isWind){
+            Vector random = new Vector(Math.random() / 3, Math.random() / 3);
+            if(Math.random() < 0.5) this.wind.add(random);
+            else this.wind.sub(random);
+            sumForces.add(this.wind);
+        }
+
+        sumForces.add(airResistance);
+
+        Vector a = new Vector(sumForces.getX(),sumForces.getY());
+        a.scale(1/body.getMass());
+
+        body.setVector(new Vector(body.getVector().getX() + a.getX() * ticktime, body.getVector().getY() + a.getY() * ticktime));
+        body.setPos(new Position(body.getPos().getX() + body.getVector().getX() * ticktime, body.getPos().getY() + body.getVector().getY() * ticktime));
+    }
+
+
     public void next(){
        for(PhysicsBody body : setb){
-
-            Vector sumForces = new Vector();
-           
-            Vector airResistance = new Vector();
-            airResistance = body.getVector();
-            airResistance.scale(-0.2);
-
-            sumForces.add(this.gravity);
-
-            if(this.isWind){
-                Vector random = new Vector(Math.random() / 3, Math.random() / 3);
-                if(Math.random() < 0.5) this.wind.add(random);
-                else this.wind.sub(random);
-                sumForces.add(this.wind);
-            }
-
-            sumForces.add(airResistance);
-
-            Vector a = new Vector(sumForces.getX(),sumForces.getY());
-            a.scale(1/body.getMass());
-
-            body.setVector(new Vector(body.getVector().getX() + a.getX() * ticktime, body.getVector().getY() + a.getY() * ticktime));
-            body.setPos(new Position(body.getPos().getX() + body.getVector().getX() * ticktime, body.getPos().getY() + body.getVector().getY() * ticktime));
-               
+            nextForOneBody(body);
        }
     }
+    
 }
 
