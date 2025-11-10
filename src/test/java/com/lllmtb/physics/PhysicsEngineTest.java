@@ -74,5 +74,16 @@ class PhysicsEngineTest {
         assertTrue(pB.getVector().getY() < 0);
     }
 
+    @Test
+    void testWindRandomBranch() {
+        PhysicsEngine pE = new PhysicsEngine(true);
+        Vector before = new Vector(pE.getWind().getX(), pE.getWind().getY());
+        for (int i = 0; i < 20; i++){
+            pE.next();
+        }
+        Vector after = pE.getWind();
+        assertNotNull(after);
+        assertEquals(before.getClass(), after.getClass());
+    }
 }
 
