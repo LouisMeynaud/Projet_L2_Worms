@@ -67,9 +67,7 @@ public class PhysicsEngine {
 
             body.setVector(new Vector(body.getVector().getX() + a.getX() * ticktime, body.getVector().getY() + a.getY() * ticktime));
             body.setPos(new Position(body.getPos().getX() + body.getVector().getX() * ticktime, body.getPos().getY() + body.getVector().getY() * ticktime));
-
-
-           
+               
        }
     }
 }
