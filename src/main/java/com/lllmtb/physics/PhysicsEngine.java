@@ -12,13 +12,15 @@ import java.util.Set;
 public class PhysicsEngine {
     private Set<PhysicsBody> setb;
     private Vector gravity;
+    private boolean isWind;
     private Vector wind;
     public static double ticktime = 0.0167; //Value to be determined
 
 
-    public PhysicsEngine(){
+    public PhysicsEngine(boolean isWind){
         this.setb = new HashSet<>();
         this.gravity = new Vector(0, - 9.81);
+        this.isWind = isWind;
         this.wind = new Vector(0, 0);
     }
     /**
@@ -59,7 +61,14 @@ public class PhysicsEngine {
             airResistance.scale(-0.2);
 
             sumForces.add(this.gravity);
-            sumForces.add(this.wind);
+
+            if(this.isWind){
+                Vector random = new Vector(Math.random() / 3, Math.random() / 3);
+                if(Math.random() < 0.5) this.wind.add(random);
+                else this.wind.sub(random);
+                sumForces.add(this.wind);
+            }
+
             sumForces.add(airResistance);
 
             Vector a = new Vector(sumForces.getX(),sumForces.getY());
