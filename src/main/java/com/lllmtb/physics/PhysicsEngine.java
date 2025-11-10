@@ -68,13 +68,9 @@ public class PhysicsEngine {
      * This method is called every tick of the game.
      */
     public void nextForOneBody(PhysicsBody body){
-        Vector sumForces = new Vector();
-           
-        Vector airResistance = new Vector();
-        airResistance = body.getVector().copy();
-        airResistance.scale(-0.2);
-
-        sumForces.add(this.gravity);
+        Vector acc = body.getVector().copy();
+        acc.scale(-0.2);
+        acc.add(this.gravity);
 
         /*if(this.isWind){
             Vector random = new Vector(Math.random() / 3, Math.random() / 3);
@@ -83,12 +79,10 @@ public class PhysicsEngine {
             sumForces.add(this.wind);
         }*/
 
-        sumForces.add(airResistance);
-
-        Vector a = new Vector(sumForces.getX(),sumForces.getY());
-        a.scale(1/body.getMass());
-
-        body.setVector(new Vector(body.getVector().getX() + a.getX() * ticktime, body.getVector().getY() + a.getY() * ticktime));
+        acc.scale(ticktime/body.getMass());
+        Vector newVector = body.getVector().copy();
+        newVector.add(acc);
+        body.setVector(newVector);
         body.setPos(body.getVector().newPos(body.getPos(), ticktime));
     }
 
