@@ -1,72 +1,70 @@
 package com.lllmtb.model.item.inventory;
 
-import com.lllmtb.model.entity.Entity;
-import com.lllmtb.model.item.Item;
-import com.lllmtb.model.item.tool.Tool;
+import com.lllmtb.model.entity.projectile.Projectile;
+import com.lllmtb.model.item.weapon.FireParams;
 import com.lllmtb.model.item.weapon.Weapon;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import com.lllmtb.model.item.weapon.WeaponId;
+import com.lllmtb.model.item.weapon.WeaponRegistry;
 
-public class Inventory {
+import java.util.*;
 
-    private Set<Weapon> weaponsUnlocked = new HashSet<>();
-    private Map<Class<? extends Item>, Integer> ammos = new HashMap<>();
+/**
+ * Inventory per team. Tracks unlocked weapons and ammo counts.
+ */
+public final class Inventory {
+    private final WeaponRegistry registry;
+    private final Set<WeaponId> unlocked = EnumSet.noneOf(WeaponId.class);
+    private final Map<WeaponId, Integer> ammo = new EnumMap<>(WeaponId.class);
 
-    public Inventory(Set<Weapon> weaponsUnlocked, Map<Class<? extends Item>, Integer> ammos) {
-        this.weaponsUnlocked = weaponsUnlocked;
-        this.ammos = ammos;
+
+    public Inventory(WeaponRegistry registry) {
+        this.registry = registry;
     }
 
-    public Set<Weapon> getWeaponsUnlocked() {
-        return weaponsUnlocked;
+
+    public boolean isUnlocked(WeaponId id) { return unlocked.contains(id); }
+
+
+    public void unlock(WeaponId id) {
+        if (!registry.contains(id)) throw new IllegalArgumentException("Unknown weapon: " + id);
+        unlocked.add(id);
     }
 
-    public Map<Class<? extends Item>, Integer> getAmmos() {
-        return ammos;
+
+    public void lock(WeaponId id) { unlocked.remove(id); }
+
+
+    public int getAmmo(WeaponId id) { return ammo.getOrDefault(id, 0); }
+
+
+    public void addAmmo(WeaponId id, int amount) {
+        if (!registry.contains(id)) throw new IllegalArgumentException("Unknown weapon: " + id);
+        if (amount == 0) return;
+        ammo.merge(id, amount, Integer::sum);
     }
 
-    public void addAmmo(Item i, Integer n) {
-        if (this.ammos.containsKey(i.getClass())) {
-            this.ammos.replace(i.getClass(), this.ammos.get(i.getClass()) + n);
-        } else {
-            this.ammos.put(i.getClass(), n);
-        }
-    }
 
-    public void addItem(Tool t, Integer n) {
-        if (this.ammos.containsKey(t.getClass())) {
-            this.ammos.replace(t.getClass(), this.ammos.get(t.getClass()) + n);
-        } else {
-            this.ammos.put(t.getClass(), n);
-        }
-    }
-
-    public void addItem(Weapon w, Integer n) {
-        if (this.weaponsUnlocked.contains(w)) {
-            this.ammos.replace(w.getClass(), this.ammos.get(w.getClass()) + n);
-        } else {
-            this.weaponsUnlocked.add(w);
-            this.ammos.put(w.getClass(), n);
-        }
-    }
-
-    public boolean useable(Weapon w) {
-        if (this.weaponsUnlocked.contains(w)) {
-            return this.ammos.get(w.getClass()) > 0;
-        }
+    public boolean canFire(WeaponId id) {
+        Weapon w = registry.get(id);
+        // TODO - add conditions
         return false;
     }
 
-    public boolean useable(Tool t) {
-        if (this.ammos.containsKey(t.getClass())) {
-            return this.ammos.get(t.getClass()) > 0;
-        }
-        return false;
+
+    /**
+     * Attempt to fire the weapon. If successful returns the created Projectile.
+     * If not allowed (locked / no ammo) returns null.
+     */
+    public Projectile fire(WeaponId id, FireParams params) {
+        Weapon w = registry.get(id);
+        if (w == null) throw new IllegalArgumentException("Unknown weapon: " + id);
+        // ... check canFire?
+        // create a projectile from the canonical weapon instance
+        return w.createProjectile(params);
     }
 
-    public void use(Item i, Entity e, double angle) {
-        //on lance ici les methodes dans GameLoop pour simuler l'utilisation de l'item
-    }
+
+    // helpers for serialization etc.
+    public Set<WeaponId> unlockedWeapons() { return Collections.unmodifiableSet(unlocked); }
+    public Map<WeaponId, Integer> ammoSnapshot() { return Collections.unmodifiableMap(ammo); }
 }
