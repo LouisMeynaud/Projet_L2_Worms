@@ -67,6 +67,7 @@ class PhysicsEngineTest {
 
     @Test
     void testNextWithoutWind() {
+        pE = new PhysicsEngine(false);
         pB = new PhysicsBody(new Position(0, 0), new Vector(0, 0), 1, 1, 1);
         pE.add(pB);
         pE.next();
