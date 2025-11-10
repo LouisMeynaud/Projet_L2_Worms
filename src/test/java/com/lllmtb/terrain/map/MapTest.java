@@ -1,4 +1,4 @@
-package com.lllmtb.terrain;
+package com.lllmtb.terrain.map;
 
 import com.lllmtb.physics.Position;
 import static org.junit.jupiter.api.Assertions.*;
@@ -11,7 +11,7 @@ public class MapTest {
 
     @BeforeEach
     public void setUp() {
-        m = MapLoader.createMatrix("mapTest");
+        m = MapLoader.loadMatrix("mapTest");
     }
 
     @AfterEach
@@ -28,24 +28,28 @@ public class MapTest {
 
     // Test Map size is 5x6
     @Test
-    public void inMap_returnsTrueForPositionInsideMap() {
-        int xInside = 3;
-        int yInside = 3;
-        assertTrue(m.inMap(xInside, yInside));
+    public void inMap_allTrue() {
+        assertTrue(m.inMap(3, 3)); // toutes conditions true
     }
 
     @Test
-    public void inMap_returnsFalseForPositionOutsideMap() {
-        int xOutside = 20;
-        int yOutside = 20;
-        assertFalse(m.inMap(xOutside, yOutside));
+    public void inMap_xFalse() {
+        assertFalse(m.inMap(-1, 3)); // 0<=x false
     }
 
     @Test
-    public void inMap_returnsTrueForPositionOnBorder() {
-        int xBorder = 4;
-        int yBorder = 5;
-        assertTrue(m.inMap(xBorder, yBorder));
+    public void inMap_yFalse() {
+        assertFalse(m.inMap(3, -1)); // 0<=y false
+    }
+
+    @Test
+    public void inMap_xBorderFalse() {
+        assertFalse(m.inMap(5, 3)); // x < width false
+    }
+
+    @Test
+    public void inMap_yBorderFalse() {
+        assertFalse(m.inMap(3, 6)); // y < height false
     }
 
     @Test
@@ -62,11 +66,41 @@ public class MapTest {
         assertEquals(2, m.cooMapToCooMatrix(position3).getX());
         assertEquals(3, m.cooMapToCooMatrix(position3).getY());
     }
+
     @Test
-    public void setMap_editsMapCorrectly(){
+    public void setMap_editsMapCorrectly() {
         Position position = new Position(2, 2);
         assertFalse(m.isTileAt(position, Tile.DIRT));
         m.setTile(position, Tile.DIRT);
         assertTrue(m.isTileAt(position, Tile.DIRT));
+    }
+
+    @Test
+    public void toStringTest() {
+        String attentue = "width : 5, height : 6, matrice : \n" +
+                "\n" +
+                "     \n" +
+                "     \n" +
+                "#####\n" +
+                "#oo##\n" +
+                "ooooo\n" +
+                "ooooo";
+        System.out.println(attentue);
+        System.out.println(m);
+        assertEquals(attentue, m.toString());
+    }
+
+    @Test
+    void testInvalideElementMapToString() {
+        Map fakeMap = new Map(1, 1, "test");
+
+        Position position = new Position(0, 0);
+        fakeMap.setTile(position, Tile.UNKNOWN);
+
+        try {
+            fakeMap.toString();
+            fail("IllegalStateException attendue mais non levée");
+        } catch (IllegalStateException e) {
+        }
     }
 }
