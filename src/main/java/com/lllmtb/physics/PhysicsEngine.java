@@ -16,13 +16,29 @@ public class PhysicsEngine {
     private Vector wind;
     public static double ticktime = 0.0167; //Value to be determined
 
-
     public PhysicsEngine(boolean isWind){
         this.setb = new HashSet<>();
         this.gravity = new Vector(0, - 9.81);
         this.isWind = isWind;
         this.wind = new Vector(0, 0);
     }
+
+    public Set<PhysicsBody> getSetb() {
+        return setb;
+    }
+    public Vector getGravity() {
+        return gravity;
+    }
+    public boolean isWind() {
+        return isWind;
+    }
+    public Vector getWind() {
+        return wind;
+    }
+    public static double getTicktime() {
+        return ticktime;
+    }
+
     /**
      * Adds a PhysicsBody to the collection.
      * @param body The PhysicsBody to add (if null, the PhysicsBody collection remains unchanged)
