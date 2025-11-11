@@ -1,43 +1,42 @@
 package com.lllmtb.model.entity.team;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+
 
 import com.lllmtb.model.entity.projectile.Projectile;
 import com.lllmtb.model.entity.worm.Worm;
 import com.lllmtb.model.item.inventory.Inventory;
 import com.lllmtb.model.item.weapon.FireParams;
 import com.lllmtb.model.item.weapon.WeaponId;
-import com.lllmtb.model.item.weapon.WeaponRegistry;
 import com.lllmtb.physics.Position;
 
 public class Team{
-    private final Map<Integer, Worm> worms;
+    private final ArrayList<Worm> worms = new ArrayList<Worm>();
     private final Inventory inventory;
     public final String name;
     private int numberOfPlayers;
     public final int id;
     private static int ids;
     private Worm currentWorm;
+    private int index = 0;
 
 
     /*Private constructor to initialize Team
      * @param name : Name of the team, @param numberOfPlayers : Number of Players in the Team, @param worms : Set of worm in the team
      * @param inventory : inventory of the team, @param playersName : Array with name of all players
      */
-    private Team(String name,int numberOfPlayers, Map<Integer,Worm> worms, Inventory inventory, Position spawn){
-        this.worms = worms;
+    private Team(String name,int numberOfPlayers, Inventory inventory, Position spawn){
         this.inventory = inventory;
         this.name = name;
         this.numberOfPlayers = numberOfPlayers;
         this.id = ++Team.ids;
         this.setUpPlayers(numberOfPlayers, spawn);
+        this.currentWorm = this.worms.get(0);
     }
 
     /*Public constructor to initialize Team */
     public Team(String teamName, int numberOfPlayers, Position spawn){
-        this(teamName,numberOfPlayers, new HashMap<>(), new Inventory(), spawn);
+        this(teamName,numberOfPlayers, new Inventory(), spawn);
     }
 
     //Getter
@@ -45,13 +44,18 @@ public class Team{
         return this.inventory;
     }
 
-    public Map<Integer, Worm> getWorms(){
+    public ArrayList<Worm> getTeamWorms(){
         return this.worms;
     }
     public int getNumberOfPlayers(){
         return this.numberOfPlayers;
     }
-
+    public Worm getIndexWorm(int index){
+        return this.worms.get(index);
+    }
+    public Worm getCurrentWorm(){
+        return this.currentWorm;
+    }
 
     /* Create all worm in the team
      * @param numberOfPlayers : number of player @param playersName : name of all players
@@ -62,13 +66,14 @@ public class Team{
         }
     }
 
-
     public void addPlayer(Worm worm){
-        this.worms.put(worm.uuid, worm);
+        this.worms.add(worm);
+        this.numberOfPlayers = this.worms.size();
     }
 
-    public void removePlayer(int uuid){
-        this.worms.remove(uuid);
+    public void removePlayer(int index){
+        this.worms.remove(index);
+        this.numberOfPlayers = this.worms.size();
     }
 
     // Inventory methods
@@ -104,6 +109,10 @@ public class Team{
 
 
     //Worms method
+    public void nextWorm(){
+        this.index = (++this.index >= this.worms.size()) ? 0 : this.index;
+        this.currentWorm = this.getIndexWorm(this.index);
+    }
 
 
 
