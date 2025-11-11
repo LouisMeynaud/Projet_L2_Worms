@@ -1,7 +1,6 @@
 package com.lllmtb.model.entity.worm;
 
 import com.lllmtb.model.item.weapon.WeaponId;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

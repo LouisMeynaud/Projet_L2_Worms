@@ -11,7 +11,7 @@ import com.lllmtb.model.item.weapon.WeaponId;
 import com.lllmtb.physics.Position;
 
 public class Team{
-    private final ArrayList<Worm> worms = new ArrayList<Worm>();
+    private final ArrayList<Worm> worms = new ArrayList<>();
     private final Inventory inventory;
     public final String name;
     private int numberOfPlayers;
