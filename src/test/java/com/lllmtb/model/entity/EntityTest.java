@@ -20,7 +20,7 @@ public class EntityTest {
         int y1 = 10;
         Position pos1 = new Position(x1, y1);
         String name = "Test";
-        Team team = new Team("TestTeam",1, null);
+        Team team = new Team("TestTeam",1, new Position(0,0));
         worm = new Worm(name, team,pos1 );
     }
 
