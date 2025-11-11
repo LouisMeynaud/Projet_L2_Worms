@@ -3,6 +3,7 @@ package com.lllmtb.physics;
 import org.junit.jupiter.api.Test;
 
 import com.lllmtb.model.entity.Entity;
+import com.lllmtb.model.entity.team.Team;
 import com.lllmtb.model.entity.worm.Worm;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -19,7 +20,9 @@ void testConstructor(){
     int width1 = 10;
 
     Position pos1 = new Position(x1, y1);
-    Entity entity = new Worm(pos1);
+    String name = "Test";
+    Team team = new Team("TestTeam",1, null);
+    Entity entity = new Worm(name, team,pos1 );
     Vector vector1 = new Vector(x2, y2);
     PhysicsBody pB = new PhysicsBody(entity, pos1,vector1, mass1, height1,width1);
     assertEquals(entity, pB.getEntity());
@@ -46,7 +49,9 @@ void testSet(){
     int width1 = 10;
 
     Position pos1 = new Position(x1, y1);
-    Entity entity = new Worm(pos1);
+    String name = "Test";
+    Team team = new Team("TestTeam",1, null);
+    Entity entity = new Worm(name, team,pos1 );
     Vector vector2 = new Vector(x2, y2);
     Position pos3 = new Position(x3, y3);
     Vector vector4 = new Vector(x4, y4);

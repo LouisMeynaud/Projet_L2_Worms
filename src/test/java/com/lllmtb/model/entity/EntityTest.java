@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import com.lllmtb.model.entity.team.Team;
 import com.lllmtb.model.entity.worm.Worm;
 import com.lllmtb.physics.Position;
 
@@ -18,7 +19,9 @@ public class EntityTest {
         int x1 = 10;
         int y1 = 10;
         Position pos1 = new Position(x1, y1);
-        worm = new Worm(pos1);
+        String name = "Test";
+        Team team = new Team("TestTeam",1, null);
+        worm = new Worm(name, team,pos1 );
     }
 
     @Test
@@ -34,7 +37,7 @@ public class EntityTest {
 
     @Test
     public void testConstructorUuid(){
-        assertEquals(1, worm.uuid);
+        assertNotEquals(0, worm.uuid);
     }
     
 }

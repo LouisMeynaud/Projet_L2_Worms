@@ -5,8 +5,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
 
-import com.model.entity.worm.Statistics;
-
 public class StatisticsTest {
     Statistics stats;
 
