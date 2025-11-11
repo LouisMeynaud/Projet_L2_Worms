@@ -4,7 +4,9 @@ import com.lllmtb.model.entity.projectile.BulletProjectile;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-public class BazookaTest {
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+public class BazookaWeaponTest {
 
     @Test
     public void testCreateProjectile() {
