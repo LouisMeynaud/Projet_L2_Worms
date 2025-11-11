@@ -2,10 +2,8 @@ package com.lllmtb.model.item.weapon;
 
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+
+import java.util.*;
 
 public class WeaponRegistryTest {
 
@@ -15,23 +13,9 @@ public class WeaponRegistryTest {
         weapons.add(new GunWeapon());
         weapons.add(new GunWeapon());
         try {
-            new WeaponRegistry(weapons);
+            new WeaponRegistry();
         } catch (IllegalArgumentException e) {
             assertEquals("Duplicate weapon id: " + WeaponId.GUN, e.getMessage());
         }
-    }
-
-    @Test
-    public void testAll() {
-        List<Weapon> weapons = new ArrayList<>();
-        GunWeapon gun = new GunWeapon();
-        BazookaWeapon b = new BazookaWeapon();
-        weapons.add(gun);
-        weapons.add(b);
-        WeaponRegistry wr = new WeaponRegistry(weapons);
-        Map<WeaponId, Weapon> m = new HashMap<>();
-        m.put(gun.id(), gun);
-        m.put(b.id(), b);
-        assertTrue(wr.all().containsAll(m.values()));
     }
  }

@@ -13,24 +13,16 @@ import java.util.*;
  * Inventory per team. Tracks unlocked weapons and ammo counts.
  */
 public final class Inventory {
-    private final WeaponRegistry registry;
+    private static final WeaponRegistry registry = new WeaponRegistry();
     private final Set<WeaponId> unlocked = EnumSet.noneOf(WeaponId.class);
     private final Map<WeaponId, Integer> ammo = new EnumMap<>(WeaponId.class);
-
-
-    public Inventory(@NonNull WeaponRegistry registry) {
-        this.registry = Objects.requireNonNull(registry);
-    }
-
-
-    public WeaponRegistry getRegistry() { return this.registry;}
 
 
     public boolean isUnlocked(WeaponId id) { return unlocked.contains(id); }
 
 
     public void unlock(WeaponId id) {
-        if (!this.registry.contains(id)) throw new IllegalArgumentException("Unknown weapon: " + id);
+        if (!registry.contains(id)) throw new IllegalArgumentException("Unknown weapon: " + id);
         this.unlocked.add(id);
     }
 
@@ -42,14 +34,14 @@ public final class Inventory {
 
 
     public void addAmmo(WeaponId id, int amount) {
-        if (!this.registry.contains(id)) throw new IllegalArgumentException("Unknown weapon: " + id);
+        if (!registry.contains(id)) throw new IllegalArgumentException("Unknown weapon: " + id);
         if (amount == 0) return;
         this.ammo.merge(id, amount, Integer::sum);
     }
 
 
     public boolean canFire(WeaponId id) {
-        if (!this.registry.contains(id)) throw new IllegalArgumentException("Unknown weapon: " + id);
+        if (!registry.contains(id)) throw new IllegalArgumentException("Unknown weapon: " + id);
         return this.isUnlocked(id) && (this.getAmmo(id) > 0);
     }
 
@@ -60,7 +52,7 @@ public final class Inventory {
      */
     public Projectile fire(WeaponId id, @NonNull FireParams params) {
         Objects.requireNonNull(params);
-        Weapon w = this.registry.get(id);
+        Weapon w = registry.get(id);
         if (w == null) throw new IllegalArgumentException("Unknown weapon : " + id);
         if (this.canFire(id)) {
             return w.createProjectile(params);

@@ -19,22 +19,14 @@ public class InventoryTest {
     public static Inventory ivt;
     public static WeaponRegistry registry;
     public static GunWeapon gun = new GunWeapon();
-    public static BazookaWeapon bzk = new BazookaWeapon();
     public static Position p = Mockito.mock(Position.class);
     public static Worm w = Mockito.mock(Worm.class);
     public static FireParams fp = new FireParams(0, p, w);
 
     @BeforeEach
     public void setUp() {
-        List<Weapon> weapons = new ArrayList<>();
-        weapons.add(gun);
-        registry = new WeaponRegistry(weapons);
-        ivt = new Inventory(registry);
-    }
-
-    @Test
-    public void testConstructeur() {
-        assertEquals(registry, ivt.getRegistry());
+        registry = new WeaponRegistry();
+        ivt = new Inventory();
     }
 
     @Test
@@ -51,10 +43,10 @@ public class InventoryTest {
     @Test
     public void testUnlock2() {
         try {
-            ivt.unlock(bzk.id());
+            ivt.unlock(WeaponId.NONE);
             fail("Expected exception not thrown!");
         } catch (IllegalArgumentException e) {
-            assertEquals("Unknown weapon: " + bzk.id(), e.getMessage());
+            assertEquals("Unknown weapon: " + WeaponId.NONE, e.getMessage());
         }
     }
 
@@ -73,10 +65,10 @@ public class InventoryTest {
     @Test
     public void testAddAmmo1() {
         try {
-            ivt.addAmmo(bzk.id(), 0);
+            ivt.addAmmo(WeaponId.NONE, 0);
             fail("Expected exception not thrown!");
         } catch (IllegalArgumentException e) {
-            assertEquals("Unknown weapon: " + bzk.id(), e.getMessage());
+            assertEquals("Unknown weapon: " + WeaponId.NONE, e.getMessage());
         }
     }
 
@@ -95,10 +87,10 @@ public class InventoryTest {
     @Test
     public void testCanFire1() {
         try {
-            ivt.canFire(bzk.id());
+            ivt.canFire(WeaponId.NONE);
             fail("Expected exception not thrown!");
         } catch (IllegalArgumentException e) {
-            assertEquals("Unknown weapon: " + bzk.id(), e.getMessage());
+            assertEquals("Unknown weapon: " + WeaponId.NONE, e.getMessage());
         }
     }
 
@@ -123,10 +115,10 @@ public class InventoryTest {
     @Test
     public void testFire1() {
         try {
-            ivt.fire(bzk.id(), fp);
+            ivt.fire(WeaponId.NONE, fp);
             fail("Expected exception not thrown!");
         } catch (IllegalArgumentException e) {
-            assertEquals("Unknown weapon : " + bzk.id(), e.getMessage());
+        assertEquals("Unknown weapon : " + WeaponId.NONE, e.getMessage());
         }
     }
 
