@@ -5,9 +5,10 @@ import com.lllmtb.model.entity.team.Team;
 import com.lllmtb.physics.PhysicsBody;
 import com.lllmtb.physics.Position;
 import com.lllmtb.model.entity.worm.Statistics;
-
+import com.lllmtb.physics.Vector;
 
 public class Worm extends Entity {
+    private final PhysicsBody body;
 
     // Champs
     private Team team;
@@ -17,16 +18,16 @@ public class Worm extends Entity {
     private boolean alive = true;
 
     //Constructor
-    private Worm(String name, Statistics stats, Team team){
-        super(new PhysicsBody(new Position(0, 0), null, 20, 1, 1));
+    private Worm(String name, Statistics stats, Team team, Position spawn){
+        this.body = new PhysicsBody(this, spawn, new Vector(0, 0), 100, 1, 1);
         this.name = name;
         this.stats = stats;
         this.team = team;
 
     }
 
-    public Worm(String name, Team team){
-        this(name, new Statistics(100, 1, 1), team);
+    public Worm(String name, Team team, Position spawn){
+        this(name, new Statistics(100, 1, 1), team, spawn);
     }
 
     // Getter 
@@ -79,5 +80,7 @@ public class Worm extends Entity {
             this.alive = false;
         }
     }
+
+    public PhysicsBody getBody(){return this.body;}
     
 }
