@@ -32,6 +32,8 @@ public class Worm extends Entity {
 
     // Getter 
     public WeaponId getSelfItem(){return this.selfItem;}
+    public Statistics getStats(){return this.stats;}
+    public Team getTeam(){return this.team;}
 
 
     //Setter
