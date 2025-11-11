@@ -14,7 +14,6 @@ public class MapFiller {
         for (int i = 0; i <= heightWater; i++) {
             for (int j = 0; j < map.getWidth(); j++) {
                 Position position = new Position(j, i);
-
                 map.setTile(position, Tile.WATER);
 
             }
@@ -31,11 +30,10 @@ public class MapFiller {
         for (int i = 0; i < map.getHeight(); i++) {
             for (int j = 0; j < map.getWidth(); j++) {
                 Position position = new Position(j, i);
-                position = map.cooMapToCooMatrix(position);
-                if ((i < hightLine[j] || i > lowLine[j])&& !map.isTileAt(position, Tile.WATER)) {
-                    map.setTile(position, Tile.AIR);
-                } else if(!map.isTileAt(position, Tile.WATER)){
+                if ((i < hightLine[j] && i > lowLine[j])&& !map.isTileAt(position, Tile.WATER)) {
                     map.setTile(position, Tile.DIRT);
+                } else if(!map.isTileAt(position, Tile.WATER)){
+                    map.setTile(position, Tile.AIR);
                 }
             }
         }
