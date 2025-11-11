@@ -1,6 +1,6 @@
 package com.lllmtb.model.item.weapon;
 
-import com.lllmtb.model.entity.projectile.BulletProjectile;
+import com.lllmtb.model.entity.projectile.RocketProjectile;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
@@ -18,6 +18,6 @@ public class BazookaWeaponTest {
     public void testCreateProjectile() {
         FireParams fp = Mockito.mock(FireParams.class);
         BazookaWeapon b = new BazookaWeapon();
-        assertEquals(BulletProjectile.class, (b.createProjectile(fp)).getClass());
+        assertEquals(RocketProjectile.class, (b.createProjectile(fp)).getClass());
     }
 }
