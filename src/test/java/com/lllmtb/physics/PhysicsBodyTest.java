@@ -22,6 +22,7 @@ void testConstructor(){
     Entity entity = new Worm(pos1);
     Vector vector1 = new Vector(x2, y2);
     PhysicsBody pB = new PhysicsBody(entity, pos1,vector1, mass1, height1,width1);
+    assertEquals(entity, pB.getEntity());
     assertEquals(x1,pB.getPos().getX());
     assertEquals(y1,pB.getPos().getX());
     assertEquals(x2,pB.getVector().getX());

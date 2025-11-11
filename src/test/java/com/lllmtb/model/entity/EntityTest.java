@@ -22,9 +22,15 @@ public class EntityTest {
     }
 
     @Test
-    public void testGetBody(){
+    public void testGetBodyNotNull(){
         assertNotEquals(null , worm.getBody());
     }
+
+    @Test
+    public void testGetBody(){
+        assertEquals(worm, worm.getBody().getEntity());
+    }
+
 
     @Test
     public void testConstructorUuid(){
