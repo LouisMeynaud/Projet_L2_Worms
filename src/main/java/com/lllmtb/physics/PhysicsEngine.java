@@ -6,8 +6,7 @@ import java.util.Objects;
 /**
  * Allows storage of a collection of PhysicsBody objects (those associated with Entity objects that currently exist).
  * Allows management of this collection, including updating it.
- * This class is used to manage the movements/trajectories of Entity objects associated with the PhysicsBody objects in the collection,
- * as well as to trigger the effects caused by a collision with Entity objects associated with the PhysicsBody objects in the collection.
+ * This class is used to manage the movements/trajectories of Entity objects associated with PhysicsBody objects in the collection, taking collisions into account.
  */
 
 public class PhysicsEngine {
@@ -17,6 +16,12 @@ public class PhysicsEngine {
     //private Vector wind;
     public static double ticktime = 0.0167; //Value to be determined
 
+    
+    /**
+     * Creates a physics engine instance with gravity initialized at (0, -9.81).
+     * @param isWind A boolean indicating if there's wind.
+     */ 
+
     public PhysicsEngine(boolean isWind){
         this.bodies = new ArrayList<>();
         this.gravity = new Vector(0, - 9.81);
@@ -24,16 +29,30 @@ public class PhysicsEngine {
         //this.wind = new Vector(0, 0);
     }
 
+    /**
+     * Returns the list of all physics bodies currently managed by the physics engine.
+     * @return an {@link ArrayList} containing all {@link PhysicsBody} objects.
+     */
     public ArrayList<PhysicsBody> getBodies() {
         return bodies;
     }
+
+    /**
+     * Returns the gravity vector applied to all bodies in the simulation.
+     * @return the {@link Vector} representing the gravity.
+     */
     public Vector getGravity() {
         return gravity;
     }
+
+    /**
+     * Returns the duration of one simulation tick in seconds.
+     * This value determines how often the physics engine updates the state of the system.
+     * @return the tick time as a {@code double}.
+     */
     public static double getTicktime() {
         return ticktime;
     }
-
 
     /*public boolean isWind() {
         return isWind;
@@ -90,7 +109,7 @@ public class PhysicsEngine {
             newVector.add(acc);
             Position nextPos = newVector.newPos(body.getPos(), ticktime);
             body.setVector(newVector);
-            if(!false){ // si pas de collision
+            if(!haveCollisionMap(body,nextPos)){
                 body.setPos(nextPos);
             }
        }
