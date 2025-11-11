@@ -71,6 +71,8 @@ public class Worm extends Entity {
 
     // Set the worm's Death
     public void setDeath(){
-        this.alive = false;
+        if(!this.stats.isAlive()){
+            this.alive = false;
+        }
     }
 }

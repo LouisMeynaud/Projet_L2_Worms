@@ -54,8 +54,14 @@ public class WormTest {
     }
     @Test
     public void testIsAliveFalse(){
+        worm.getStats().setHp(0);
         worm.setDeath();
         assertFalse(worm.isAlive());
+    }
+    @Test
+    public void testSetDeathFailed(){
+        worm.setDeath();
+        assertTrue(worm.isAlive());
     }
     @Test
     public void testSpawn(){
