@@ -4,27 +4,34 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.lllmtb.model.entity.projectile.Projectile;
 import com.lllmtb.model.entity.worm.Worm;
+import com.lllmtb.model.item.inventory.Inventory;
+import com.lllmtb.model.item.weapon.FireParams;
+import com.lllmtb.model.item.weapon.WeaponId;
+import com.lllmtb.model.item.weapon.WeaponRegistry;
 import com.lllmtb.physics.Position;
 
 public class Team{
-    private Map<Integer, Worm> worms;
-    private Inventory inventory;
+    private final Map<Integer, Worm> worms;
+    private final Inventory inventory;
     public final String name;
+    private int numberOfPlayers;
     public final int id;
     private static int ids;
     private Worm currentWorm;
-    private int cursorWorm;
+
 
     /*Private constructor to initialize Team
-     * @param name : Name of the team, @param numberofPlayers : Number of Players in the Team, @param worms : Set of worm in the team
+     * @param name : Name of the team, @param numberOfPlayers : Number of Players in the Team, @param worms : Set of worm in the team
      * @param inventory : inventory of the team, @param playersName : Array with name of all players
      */
     private Team(String name,int numberOfPlayers, Map<Integer,Worm> worms, Inventory inventory, Position spawn){
         this.worms = worms;
         this.inventory = inventory;
         this.name = name;
-        this.id = Team.ids++;
+        this.numberOfPlayers = numberOfPlayers;
+        this.id = ++Team.ids;
         this.setUpPlayers(numberOfPlayers, spawn);
     }
 
@@ -33,11 +40,24 @@ public class Team{
         this(teamName,numberOfPlayers, new HashMap<>(), new Inventory(), spawn);
     }
 
+    //Getter
+    public Inventory getInventory(){
+        return this.inventory;
+    }
+
+    public Map<Integer, Worm> getWorms(){
+        return this.worms;
+    }
+    public int getNumberOfPlayers(){
+        return this.numberOfPlayers;
+    }
+
+
     /* Create all worm in the team
      * @param numberOfPlayers : number of player @param playersName : name of all players
      */
     private void setUpPlayers(int numberOfPlayers, Position spawn){
-        for(int i = 0; i < numberOfPlayers ; i++ ){
+        for(int i = 1; i <= numberOfPlayers ; i++ ){
             this.addPlayer(new Worm(this.name+i, this, spawn));
         }
     }
@@ -47,7 +67,6 @@ public class Team{
         this.worms.put(worm.uuid, worm);
     }
 
-    //Replace Argument worm with the uuid in the future ?
     public void removePlayer(int uuid){
         this.worms.remove(uuid);
     }
@@ -85,9 +104,7 @@ public class Team{
 
 
     //Worms method
-    public void nextWorm(){
-        
-    }
+
 
 
 
