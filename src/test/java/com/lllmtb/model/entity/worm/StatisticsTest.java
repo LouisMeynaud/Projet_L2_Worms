@@ -36,13 +36,11 @@ public class StatisticsTest {
         stats.setHp(10);
         assertEquals(10, stats.getHp());
     }
-
     @Test
     public void testSetSpeed(){
         stats.setSpeed(10);
         assertEquals(10, stats.getSpeed());
     }
-
     @Test
     public void testSetStrength(){
         stats.setStrength(10);
@@ -65,6 +63,15 @@ public class StatisticsTest {
     public void testSetStrengthError(){
         stats.setStrength(-1);
         assertEquals(1, stats.getStrength());
+    }
+    @Test
+    public void testIsAliveTrue(){
+        assertTrue(stats.isAlive());
+    }
+    @Test
+    public void testIsAliveFalse(){
+        stats.setHp(0);
+        assertFalse(stats.isAlive());
     }
 
 
