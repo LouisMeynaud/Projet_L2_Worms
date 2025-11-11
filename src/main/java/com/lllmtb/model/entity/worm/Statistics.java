@@ -1,4 +1,4 @@
-package com.model.entity.worm;
+package com.lllmtb.model.entity.worm;
 
 public class Statistics {
     //Champs
