@@ -46,5 +46,8 @@ public class ProjectileTest {
         // TODO
         BulletProjectile bullet = new BulletProjectile(params);
         assertDoesNotThrow(bullet::onImpact);
+
+        RocketProjectile rocket = new RocketProjectile(params);
+        assertDoesNotThrow(rocket::onImpact);
     }
 }
