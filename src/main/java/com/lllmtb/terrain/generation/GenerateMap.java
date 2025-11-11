@@ -47,8 +47,5 @@ public class GenerateMap {
         return map;
     }
     // attention probleme, le right balence crée une pente enorme au mileu
-    public static void main(String[] args) {
-        Map m = createMap(WORLD);
-        System.out.println(m);
-    }
+
 }
