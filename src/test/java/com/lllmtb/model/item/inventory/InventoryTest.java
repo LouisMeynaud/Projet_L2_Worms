@@ -17,7 +17,7 @@ public class InventoryTest {
     public static Inventory ivt;
     public static WeaponRegistry registry;
     public static GunWeapon gun = new GunWeapon();
-    public static Bazooka bzk = new Bazooka();
+    public static BazookaWeapon bzk = new BazookaWeapon();
     public static Vector v = Mockito.mock(Vector.class);
     public static Entity e = Mockito.mock(Entity.class);
     public static FireParams fp = new FireParams(0, 0, v, e);

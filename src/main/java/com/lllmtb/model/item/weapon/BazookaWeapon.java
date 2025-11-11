@@ -3,7 +3,7 @@ package com.lllmtb.model.item.weapon;
 import com.lllmtb.model.entity.projectile.BulletProjectile;
 import com.lllmtb.model.entity.projectile.Projectile;
 
-public final class Bazooka extends Weapon {
+public final class BazookaWeapon extends Weapon {
 
     @Override
     public WeaponId id() { return WeaponId.BAZOOKA; }

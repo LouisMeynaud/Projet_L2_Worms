@@ -25,7 +25,7 @@ public class WeaponRegistryTest {
     public void testAll() {
         List<Weapon> weapons = new ArrayList<>();
         GunWeapon gun = new GunWeapon();
-        Bazooka b = new Bazooka();
+        BazookaWeapon b = new BazookaWeapon();
         weapons.add(gun);
         weapons.add(b);
         WeaponRegistry wr = new WeaponRegistry(weapons);
