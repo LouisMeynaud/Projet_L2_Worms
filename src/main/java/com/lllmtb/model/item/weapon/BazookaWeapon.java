@@ -1,7 +1,7 @@
 package com.lllmtb.model.item.weapon;
 
-import com.lllmtb.model.entity.projectile.BulletProjectile;
 import com.lllmtb.model.entity.projectile.Projectile;
+import com.lllmtb.model.entity.projectile.RocketProjectile;
 import org.eclipse.jdt.annotation.NonNull;
 
 import java.util.Objects;
@@ -13,6 +13,6 @@ public final class BazookaWeapon extends Weapon {
 
     @Override
     public Projectile createProjectile(@NonNull FireParams params) {
-        return new BulletProjectile(Objects.requireNonNull(params));
+        return new RocketProjectile(Objects.requireNonNull(params));
     }
 }
