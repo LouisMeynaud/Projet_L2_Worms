@@ -55,6 +55,7 @@ public final class Inventory {
         Weapon w = registry.get(id);
         if (w == null) throw new IllegalArgumentException("Unknown weapon : " + id);
         if (this.canFire(id)) {
+            this.ammo.merge(id, -1, Integer::sum);
             return w.createProjectile(params);
         }
         throw new IllegalArgumentException("Weapon can't fire : " + id);
