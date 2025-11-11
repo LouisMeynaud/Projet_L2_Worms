@@ -10,7 +10,7 @@ public class Worm extends Entity {
 
     public Worm(Position spawn){
         super();
-        this.body = new PhysicsBody(spawn, new Vector(), 100, 1, 1);
+        this.body = new PhysicsBody(this,spawn, new Vector(), 100, 1, 1);
     }
 
     public PhysicsBody getBody(){return this.body;}
