@@ -5,6 +5,9 @@ import com.lllmtb.model.entity.worm.Worm;
 import com.lllmtb.model.item.weapon.FireParams;
 import com.lllmtb.physics.PhysicsBody;
 import com.lllmtb.physics.Vector;
+import org.eclipse.jdt.annotation.NonNull;
+
+import java.util.Objects;
 
 public abstract class Projectile extends Entity {
     private final PhysicsBody body;
@@ -15,7 +18,8 @@ public abstract class Projectile extends Entity {
      * Create a new Projectile
      * @param params the {@code FireParams} sent to the Team
      */
-    public Projectile(FireParams params) {
+    public Projectile(@NonNull FireParams params) {
+        Objects.requireNonNull(params);
         Vector velocity = new Vector(Math.cos(params.angleRadians), Math.sin(params.angleRadians));
         velocity.scale(force);
         this.body = new PhysicsBody(this, params.spawnPos, velocity, 1, 0.1, 0.2);

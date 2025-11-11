@@ -5,6 +5,7 @@ import com.lllmtb.model.item.weapon.FireParams;
 import com.lllmtb.model.item.weapon.Weapon;
 import com.lllmtb.model.item.weapon.WeaponId;
 import com.lllmtb.model.item.weapon.WeaponRegistry;
+import org.eclipse.jdt.annotation.NonNull;
 
 import java.util.*;
 
@@ -17,8 +18,8 @@ public final class Inventory {
     private final Map<WeaponId, Integer> ammo = new EnumMap<>(WeaponId.class);
 
 
-    public Inventory(WeaponRegistry registry) {
-        this.registry = registry;
+    public Inventory(@NonNull WeaponRegistry registry) {
+        this.registry = Objects.requireNonNull(registry);
     }
 
 
@@ -57,7 +58,8 @@ public final class Inventory {
      * Attempt to fire the weapon. If successful returns the created Projectile.
      * If not allowed (locked / no ammo) returns null.
      */
-    public Projectile fire(WeaponId id, FireParams params) {
+    public Projectile fire(WeaponId id, @NonNull FireParams params) {
+        Objects.requireNonNull(params);
         Weapon w = this.registry.get(id);
         if (w == null) throw new IllegalArgumentException("Unknown weapon : " + id);
         if (this.canFire(id)) {
