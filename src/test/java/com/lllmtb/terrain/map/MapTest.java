@@ -29,27 +29,32 @@ public class MapTest {
     // Test Map size is 5x6
     @Test
     public void inMap_allTrue() {
-        assertTrue(m.inMap(3, 3)); // toutes conditions true
+        Position position = new Position(3, 3);
+        assertTrue(m.inMap(position)); // toutes conditions true
     }
 
     @Test
     public void inMap_xFalse() {
-        assertFalse(m.inMap(-1, 3)); // 0<=x false
+        Position position = new Position(-1, 3);
+        assertFalse(m.inMap(position)); // 0<=x false
     }
 
     @Test
     public void inMap_yFalse() {
-        assertFalse(m.inMap(3, -1)); // 0<=y false
+        Position position = new Position(3, -1);
+        assertFalse(m.inMap(position)); // 0<=y false
     }
 
     @Test
     public void inMap_xBorderFalse() {
-        assertFalse(m.inMap(5, 3)); // x < width false
+        Position position = new Position(5, 3);
+        assertFalse(m.inMap(position)); // x < width false
     }
 
     @Test
     public void inMap_yBorderFalse() {
-        assertFalse(m.inMap(3, 6)); // y < height false
+        Position position = new Position(3, 6);
+        assertFalse(m.inMap(position)); // y < height false
     }
 
     @Test

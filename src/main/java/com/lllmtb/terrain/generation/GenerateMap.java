@@ -4,8 +4,8 @@ import com.lllmtb.terrain.map.Map;
 import com.lllmtb.terrain.map.SaveMap;
 
 public class GenerateMap {
-    static ConfigMap WORLD = new ConfigMap(370, 170, 2, 3, 8, 4, false, 170 - 25, 40);
-    static ConfigMap FlYINGWORLD = new ConfigMap(370, 170, 2, 3, 8, 4, true, 170 - 50, 40);
+    public static ConfigMap WORLD = new ConfigMap(370, 170, 2, 3, 8, 4, false, 170 - 25, 40);
+    public static ConfigMap FlYINGWORLD = new ConfigMap(370, 170, 2, 3, 8, 4, true, 170 - 50, 40);
     
 
     /**
@@ -45,5 +45,8 @@ public class GenerateMap {
     }
 
     // attention probleme, le right balence crée une pente enorme au mileu
-
+    public static void main(String[] args) {
+        Map m = createMap(WORLD);
+        System.out.println(m);
+    }
 }

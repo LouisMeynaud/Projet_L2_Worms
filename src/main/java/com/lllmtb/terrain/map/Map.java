@@ -100,8 +100,8 @@ public class Map {
     /**
      * verify that the x,y coordinate is indeed within the map (the matrix)
      */
-    public boolean inMap(double x, double y) {
-        return (0 <= x && 0 <= y && x < this.width && y < this.height);
+    public boolean inMap(Position position) {
+        return (0 <= position.getX() && 0 <= position.getY() && position.getX() < this.width && position.getY() < this.height);
     }
 
 }
