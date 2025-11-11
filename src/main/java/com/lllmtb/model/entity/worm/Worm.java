@@ -12,7 +12,7 @@ public class Worm extends Entity {
     // Champs
     private Team team;
     public final String name; 
-    private Item selfItem = null;
+    private WeaponId selfItem = null;
     private Statistics stats;
     private boolean alive = true;
 
@@ -27,8 +27,23 @@ public class Worm extends Entity {
 
     public Worm(String name, Team team){
         this(name, new Statistics(100, 1, 1), team);
-
     }
+
+    // Getter 
+    public WeaponId getSelfItem(){return this.selfItem;}
+
+
+    //Setter
+    public void setSelfItem(WeaponId id){
+        if(id != null){
+            //TODO :  check if id is correct ?
+            this.selfItem = id;
+        }
+        
+    }
+
+
+
 
     //Methods
     // Bloc useful function 
