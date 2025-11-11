@@ -5,9 +5,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import com.lllmtb.model.entity.worm.Worm;
-import com.lllmtb.physics.PhysicsBody;
 import com.lllmtb.physics.Position;
-import com.lllmtb.physics.Vector;
 
 
 
