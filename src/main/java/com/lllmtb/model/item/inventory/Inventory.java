@@ -22,30 +22,34 @@ public final class Inventory {
     }
 
 
+    public WeaponRegistry getRegistry() { return this.registry;}
+
+
     public boolean isUnlocked(WeaponId id) { return unlocked.contains(id); }
 
 
     public void unlock(WeaponId id) {
-        if (!registry.contains(id)) throw new IllegalArgumentException("Unknown weapon: " + id);
-        unlocked.add(id);
+        if (!this.registry.contains(id)) throw new IllegalArgumentException("Unknown weapon: " + id);
+        this.unlocked.add(id);
     }
 
 
-    public void lock(WeaponId id) { unlocked.remove(id); }
+    public void lock(WeaponId id) { this.unlocked.remove(id); }
 
 
-    public int getAmmo(WeaponId id) { return ammo.getOrDefault(id, 0); }
+    public int getAmmo(WeaponId id) { return this.ammo.getOrDefault(id, 0); }
 
 
     public void addAmmo(WeaponId id, int amount) {
-        if (!registry.contains(id)) throw new IllegalArgumentException("Unknown weapon: " + id);
+        if (!this.registry.contains(id)) throw new IllegalArgumentException("Unknown weapon: " + id);
         if (amount == 0) return;
-        ammo.merge(id, amount, Integer::sum);
+        this.ammo.merge(id, amount, Integer::sum);
     }
 
 
     public boolean canFire(WeaponId id) {
-        return this.unlocked.contains(id) && this.ammo.get(id) > 0;
+        if (!this.registry.contains(id)) throw new IllegalArgumentException("Unknown weapon: " + id);
+        return this.isUnlocked(id) && (this.getAmmo(id) > 0);
     }
 
 
@@ -54,7 +58,7 @@ public final class Inventory {
      * If not allowed (locked / no ammo) returns null.
      */
     public Projectile fire(WeaponId id, FireParams params) {
-        Weapon w = registry.get(id);
+        Weapon w = this.registry.get(id);
         if (w == null) throw new IllegalArgumentException("Unknown weapon : " + id);
         if (this.canFire(id)) {
             return w.createProjectile(params);
@@ -64,6 +68,6 @@ public final class Inventory {
 
 
     // helpers for serialization etc.
-    public Set<WeaponId> unlockedWeapons() { return Collections.unmodifiableSet(unlocked); }
-    public Map<WeaponId, Integer> ammoSnapshot() { return Collections.unmodifiableMap(ammo); }
+    public Set<WeaponId> unlockedWeapons() { return Collections.unmodifiableSet(this.unlocked); }
+    public Map<WeaponId, Integer> ammoSnapshot() { return Collections.unmodifiableMap(this.ammo); }
 }
