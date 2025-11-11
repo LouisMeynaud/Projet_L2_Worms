@@ -5,7 +5,11 @@ import com.lllmtb.model.entity.team.Team;
 import com.lllmtb.physics.PhysicsBody;
 import com.lllmtb.physics.Position;
 import com.lllmtb.model.entity.worm.Statistics;
+import com.lllmtb.model.item.weapon.WeaponId;
 import com.lllmtb.physics.Vector;
+import org.eclipse.jdt.annotation.NonNull;
+
+import java.util.Objects;
 
 public class Worm extends Entity {
     private final PhysicsBody body;
@@ -18,7 +22,9 @@ public class Worm extends Entity {
     private boolean alive = true;
 
     //Constructor
-    private Worm(String name, Statistics stats, Team team, Position spawn){
+    private Worm(String name, Statistics stats, Team team, @NonNull Position spawn){
+        super();
+        Objects.requireNonNull(spawn);
         this.body = new PhysicsBody(this, spawn, new Vector(0, 0), 100, 1, 1);
         this.name = name;
         this.stats = stats;
@@ -83,6 +89,8 @@ public class Worm extends Entity {
         }
     }
 
-    public PhysicsBody getBody(){return this.body;}
+    public PhysicsBody getBody(){
+        return this.body;
+    }
     
 }
