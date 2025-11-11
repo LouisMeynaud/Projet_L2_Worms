@@ -1,4 +1,4 @@
-package com.lllmtb.terrain;
+package com.lllmtb.terrain.map;
 
 import com.lllmtb.physics.Position;
 import static org.junit.jupiter.api.Assertions.*;
@@ -11,7 +11,7 @@ public class MapTest {
 
     @BeforeEach
     public void setUp() {
-        m = MapLoader.createMatrix("mapTest");
+        m = MapLoader.loadMatrix("mapTest");
     }
 
     @AfterEach
