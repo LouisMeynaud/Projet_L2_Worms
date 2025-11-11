@@ -51,6 +51,11 @@ public class TeamTest {
         assertEquals(team.getCurrentWorm(), worm);
     }
     @Test
+    public void testChooseColor(){
+        assertNotNull(team.teamColor);
+        assertEquals(TeamColor.class, team.teamColor.getClass());
+    }
+    @Test
     public void testSetUpPlayers(){
         assertEquals(1, team.getTeamWorms().size());
         Worm worm1 = team.getIndexWorm(0);

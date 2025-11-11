@@ -1,6 +1,6 @@
 package com.lllmtb.model.entity.team;
 
-import java.util.ArrayList;
+import java.util.*;
 
 
 import com.lllmtb.model.entity.projectile.Projectile;
@@ -19,6 +19,8 @@ public class Team{
     private static int ids;
     private Worm currentWorm;
     private int index = 0;
+    public final TeamColor teamColor;
+    private static List<TeamColor> teamColorPossible = Arrays.asList(TeamColor.values());
 
 
     /*Private constructor to initialize Team
@@ -32,6 +34,7 @@ public class Team{
         this.id = ++Team.ids;
         this.setUpPlayers(numberOfPlayers, spawn);
         this.currentWorm = this.worms.get(0);
+        this.teamColor = Team.chooseColor();
     }
 
     /*Public constructor to initialize Team */
@@ -74,6 +77,12 @@ public class Team{
     public void removePlayer(int index){
         this.worms.remove(index);
         this.numberOfPlayers = this.worms.size();
+    }
+
+    //Choose a color from the enum for the team
+    public static TeamColor chooseColor(){
+        Random random = new Random();
+        return Team.teamColorPossible.get(random.nextInt(Team.teamColorPossible.size()));
     }
 
     // Inventory methods
