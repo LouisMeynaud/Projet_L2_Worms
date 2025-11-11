@@ -1,6 +1,7 @@
 package com.lllmtb.physics;
 import java.util.ArrayList;
 import com.lllmtb.terrain.map.*;
+import com.lllmtb.model.entity.worm.*;
 
 public class Collision {
     private  static ArrayList<PhysicsBody> bodies;
@@ -11,14 +12,15 @@ public class Collision {
         Collision.map = map;
     }
 
-    public static Boolean haveCollisionMap(PhysicsBody body,Position nextPosition) {
-        Position nextPosXBasGauche = map.cooMapToCooMatrix(new Position(nextPosition.getX(),body.getPos().getY()));
-        Position nextPosYBasGauche = map.cooMapToCooMatrix(new Position(body.getPos().getX(),nextPosition.getY()));
+    public static Boolean haveCollisionMap(PhysicsBody body,Position nextPos) {
+        Position nextPosXBasGauche = new Position(nextPos.getX(),body.getPos().getY());
+        Position nextPosYBasGauche = new Position(body.getPos().getX(),nextPos.getY());
         boolean collisionDetected = false;
-        if (!map.inMap(nextPosition)) {
+        if (!map.inMap(nextPos)) {
             bodies.remove(body);
         
         } else {//distinction de cas pour savoir si on anulle x , y ou les deux.
+            if(body.getEntity() instanceof Worm){
             if (haveCollisionX(body, nextPosXBasGauche)) {
                 Vector tempo = new Vector(0, body.getVector().getY());
                 body.setVector(tempo);
@@ -30,11 +32,16 @@ public class Collision {
                 collisionDetected = true;
             }
 
-            else if(haveCollisionXY(body,nextPosition)){
+            else if(haveCollisionXY(body,nextPos)){
                 Vector tempo = new Vector(0, 0); //important , vue que cubique , le cas ou pas de colision quand on bouge de x , pas de colision quand on bouge de y mais colision quand on bouge de X et Y possible
                 body.setVector(tempo);
                 collisionDetected = true;
-            }
+            }}
+            
+            // else if (body.getEntity() instanceof Projectile) { // projectile sera ajouter 
+            //     if(haveCollisionXY(body,nextPos)){
+            //     bodies.remove(body);
+            // }}
         }//on traiteras ensuite ici les cas ou c'est des projectile etc
         return collisionDetected;
     }
@@ -42,61 +49,61 @@ public class Collision {
 
 
 public static boolean haveCollisionX(PhysicsBody body,Position nextPosXBasGauche){
-    Position nextPosXBasDroite = nextPositionBasDroite(nextPosXBasGauche, body);
-    Position nextPosXHautGauche = nextPositionHautGauche(nextPosXBasGauche, body);
-    Position nextPosXHautDroite = nextPositionHautDroite(nextPosXBasGauche, body);
+    Position nextPosXBasDroite = PosBasDroite(nextPosXBasGauche, body);
+    Position nextPosXHautGauche = PosHautGauche(nextPosXBasGauche, body);
+    Position nextPosXHautDroite = PosHautDroite(nextPosXBasGauche, body);
     if(body.getVector().getX() < 0){
-        return (map.inMap(nextPosXBasGauche)&& map.isTileAt(nextPosXBasGauche, Tile.DIRT))||(map.inMap(nextPosXHautGauche)&& map.isTileAt(nextPosXHautGauche, Tile.DIRT)); //colision vers la gauche //rendre ceci plus generique a la suite (dirt)
+        return (map.inMap(nextPosXBasGauche)&& map.isSolide(nextPosXBasGauche))||(map.inMap(nextPosXHautGauche)&& map.isSolide(nextPosXHautGauche)); //colision vers la gauche //rendre ceci plus generique a la suite (dirt)
     
-    }else if(body.getVector().getX()>0){
-        return (map.inMap(nextPosXBasDroite)&&map.isTileAt(nextPosXBasDroite, Tile.DIRT))|| (map.inMap(nextPosXHautDroite)&& map.isTileAt(nextPosXHautDroite, Tile.DIRT)); //colision vers la droite //rendre ceci plus generique a la suite (dirt)
+    }else{
+        return (map.inMap(nextPosXBasDroite)&&map.isSolide(nextPosXBasDroite))|| (map.inMap(nextPosXHautDroite)&& map.isSolide(nextPosXHautDroite)); //colision vers la droite //rendre ceci plus generique a la suite (dirt)
     
-    }return false;
+    }
 
     }
 
 public static boolean haveCollisionY(PhysicsBody body,Position nextPosYBasGauche){
-    Position nextPosYBasDroite = nextPositionBasDroite(nextPosYBasGauche, body);
-    Position nextPosYHautGauche = nextPositionHautGauche(nextPosYBasGauche, body);
-    Position nextPosYHautDroite = nextPositionHautDroite(nextPosYBasGauche, body);
+    Position nextPosYBasDroite = PosBasDroite(nextPosYBasGauche, body);
+    Position nextPosYHautGauche = PosHautGauche(nextPosYBasGauche, body);
+    Position nextPosYHautDroite = PosHautDroite(nextPosYBasGauche, body);
     if(body.getVector().getY() < 0){
-        return (map.inMap(nextPosYBasDroite)&&map.isTileAt(nextPosYBasDroite, Tile.DIRT))|| (map.inMap(nextPosYBasGauche)&&map.isTileAt(nextPosYBasGauche, Tile.DIRT)); //colision vers le bas //rendre ceci plus generique a la suite (dirt)
+        return (map.inMap(nextPosYBasDroite)&&map.isSolide(nextPosYBasDroite))|| (map.inMap(nextPosYBasGauche)&&map.isSolide(nextPosYBasGauche)); //colision vers le bas //rendre ceci plus generique a la suite (dirt)
         
-    }else if(body.getVector().getY()>0){
-        return (map.inMap(nextPosYHautGauche)&&map.isTileAt(nextPosYHautGauche, Tile.DIRT)) || (map.inMap(nextPosYHautDroite)&&map.isTileAt(nextPosYHautDroite, Tile.DIRT)); //colision vers le haut //rendre ceci plus generique a la suite (dirt)
+    }else{
+        return (map.inMap(nextPosYHautGauche)&&map.isSolide(nextPosYHautGauche)) || (map.inMap(nextPosYHautDroite)&&map.isSolide(nextPosYHautDroite)); //colision vers le haut //rendre ceci plus generique a la suite (dirt)
 
-    }return false;
+    }
 
     }
 
     public static boolean haveCollisionXY(PhysicsBody body,Position nextPosXYBasGauche){
-        Position nextPosXYBasDroite = nextPositionBasDroite(nextPosXYBasGauche, body);
-        Position nextPosXYHautGauche = nextPositionHautGauche(nextPosXYBasGauche, body);
-        Position nextPosXYHautDroite = nextPositionHautDroite(nextPosXYBasGauche, body);
+        Position nextPosXYBasDroite = PosBasDroite(nextPosXYBasGauche, body);
+        Position nextPosXYHautGauche = PosHautGauche(nextPosXYBasGauche, body);
+        Position nextPosXYHautDroite = PosHautDroite(nextPosXYBasGauche, body);
 
         if(body.getVector().getX() < 0 && body.getVector().getY()<0){
-            return (map.inMap(nextPosXYBasGauche)&& map.isTileAt(nextPosXYBasGauche, Tile.DIRT)); //colision bas/gauche
+            return (map.inMap(nextPosXYBasGauche)&& map.isSolide(nextPosXYBasGauche)); //colision bas/gauche
             }
         else if(body.getVector().getX() < 0 && body.getVector().getY()>0){
-            return (map.inMap(nextPosXYHautGauche)&& map.isTileAt(nextPosXYHautGauche, Tile.DIRT)); //colision bas/droite
+            return (map.inMap(nextPosXYHautGauche)&& map.isSolide(nextPosXYHautGauche)); //colision bas/droite
             }
         else if(body.getVector().getX() > 0 && body.getVector().getY()<0){
-            return (map.inMap(nextPosXYBasDroite)&& map.isTileAt(nextPosXYBasDroite, Tile.DIRT)); //colision haut/gauche
+            return (map.inMap(nextPosXYBasDroite)&& map.isSolide(nextPosXYBasDroite)); //colision haut/gauche
             }
         else if(body.getVector().getX() > 0 && body.getVector().getY()>0){
-            return (map.inMap(nextPosXYHautDroite)&& map.isTileAt(nextPosXYHautDroite, Tile.DIRT)); //colision haut/droite
+            return (map.inMap(nextPosXYHautDroite)&& map.isSolide(nextPosXYHautDroite)); //colision haut/droite
             }return false;
 }
 
 
-public static Position nextPositionBasDroite(Position positionactuel,PhysicsBody body){
-    return (new Position(positionactuel.getX() + body.getWidth(),positionactuel.getY()));
+public static Position PosBasDroite(Position Posactuel,PhysicsBody body){
+    return (new Position(Posactuel.getX() + body.getWidth(),Posactuel.getY()));
 }
-public static Position nextPositionHautDroite(Position positionactuel,PhysicsBody body){
-    return (new Position(positionactuel.getX() + body.getWidth(),positionactuel.getY()- body.getHeight())); // on fait moin car dans la matrice les coordonée sont inversée
+public static Position PosHautDroite(Position Posactuel,PhysicsBody body){
+    return (new Position(Posactuel.getX() + body.getWidth(),Posactuel.getY()+ body.getHeight())); // on fait moin car dans la matrice les coordonée sont inversée
  
 }
-public static Position nextPositionHautGauche(Position positionactuel,PhysicsBody body){
-    return (new Position(positionactuel.getX(), positionactuel.getY()-body.getHeight()));
+public static Position PosHautGauche(Position Posactuel,PhysicsBody body){
+    return (new Position(Posactuel.getX(), Posactuel.getY()+body.getHeight()));
 }
 }

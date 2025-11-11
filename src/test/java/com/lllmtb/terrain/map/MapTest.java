@@ -108,4 +108,12 @@ public class MapTest {
         } catch (IllegalStateException e) {
         }
     }
+    @Test
+    void isSolideTest() {
+        Position positionSolide = new Position(0, 3);
+        Position positionNoSolide = new Position(0, 4);
+        assertTrue(m.isSolide(positionSolide));
+        assertFalse(m.isSolide(positionNoSolide));
+    }
+
 }

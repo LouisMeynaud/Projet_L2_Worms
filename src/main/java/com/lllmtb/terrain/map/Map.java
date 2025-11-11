@@ -99,10 +99,20 @@ public class Map {
     }
 
     /**
-     * verify that the x,y coordinate is indeed within the map (the matrix)
+     * verify if the x,y coordinate is in the map (the matrix)
+     * @param position , the checking position
      */
     public boolean inMap(Position position) {
+        position = this.cooMapToCooMatrix(position);
         return (0 <= position.getX() && 0 <= position.getY() && position.getX() < this.width && position.getY() < this.height);
+    }
+
+    public boolean isSolide(Position position){
+        Tile tile = this.getTile(position);
+        switch(tile){
+            case DIRT : return true;
+            default: return false; //add other block in future
+        }
     }
 
 }
