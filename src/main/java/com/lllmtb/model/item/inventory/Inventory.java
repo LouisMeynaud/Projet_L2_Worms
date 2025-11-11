@@ -45,9 +45,7 @@ public final class Inventory {
 
 
     public boolean canFire(WeaponId id) {
-        Weapon w = registry.get(id);
-        // TODO - add conditions
-        return false;
+        return this.unlocked.contains(id) && this.ammo.get(id) > 0;
     }
 
 
@@ -57,10 +55,11 @@ public final class Inventory {
      */
     public Projectile fire(WeaponId id, FireParams params) {
         Weapon w = registry.get(id);
-        if (w == null) throw new IllegalArgumentException("Unknown weapon: " + id);
-        // ... check canFire?
-        // create a projectile from the canonical weapon instance
-        return w.createProjectile(params);
+        if (w == null) throw new IllegalArgumentException("Unknown weapon : " + id);
+        if (this.canFire(id)) {
+            return w.createProjectile(params);
+        }
+        throw new IllegalArgumentException("Weapon can't fire : " + id);
     }
 
 
