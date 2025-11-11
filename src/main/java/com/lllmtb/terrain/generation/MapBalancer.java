@@ -27,22 +27,20 @@ public class MapBalancer {
         if (diff >= diffAccepted) {// Parameter to change: the larger the difference, the less likely the terrain is to be balanced. Left side thicker, balance by increasing the right side.
             for (int x = mid; x < width; x++) {
                 final int adjust = diff;
-                System.out.println(diff);
-                if (hightLine[x] - adjust > 0) {
-                    hightLine[x] -= adjust;
-                } else if (lowLine[x] + adjust < height) {
-                    lowLine[x] += adjust; // we enlarge downwards
+                if (hightLine[x] + adjust < height) {
+                    hightLine[x] += adjust;
+                } else if (lowLine[x] - adjust > 0) {
+                    lowLine[x] -= adjust; // we enlarge downwards
                 }
             }
         } else if (diff <= -diffAccepted) {
             //Thicker right side, balance by increasing the left side
             for (int x = 0; x < mid; x++) {
                 final int adjust = (-diff);
-                System.out.println("adjust" + adjust);
-                if (hightLine[x] - adjust > 0) {
-                    hightLine[x] -= adjust;
-                } else if (lowLine[x] + adjust < height) {
-                    lowLine[x] += adjust;
+                if (hightLine[x] + adjust <height) {
+                    hightLine[x] += adjust;
+                } else if (lowLine[x] - adjust > 0) {
+                    lowLine[x] -= adjust;
                 }
             }
         }
@@ -54,11 +52,11 @@ public class MapBalancer {
      * @param epaisseur the current thickness of the card
      * @param hightLine the upper line which will be increased in order to obtain the desired minimum thickness
      */
-    public static void thicknessBalencer(final int thicknessMin, final int epaisseur, final int[] hightLine) {
+    public static void thicknessBalencer(final int thicknessMin, final int epaisseur, final int[] lowLine) {
         if (thicknessMin > epaisseur) {
-            for (int i = 0; i < hightLine.length; i++) {
-                if (hightLine[i] - (thicknessMin - epaisseur) > 0) {
-                    hightLine[i] -= thicknessMin - epaisseur;
+            for (int i = 0; i < lowLine.length; i++) {
+                if (lowLine[i] - (thicknessMin - epaisseur) >0) {
+                    lowLine[i] -= thicknessMin - epaisseur;
                 }
             }
         }
@@ -75,7 +73,7 @@ public class MapBalancer {
     public static int averageThickness(final int[] lowLine, final int[] hightLine, final int start, final int end) { // epaisseur moyenne
         int somme = 0;
         for (int x = start; x < end; x++) {
-            somme += (lowLine[x] - hightLine[x]);
+            somme += ( hightLine[x]-lowLine[x]);
         }
         return (int) somme / (end - start);
     }

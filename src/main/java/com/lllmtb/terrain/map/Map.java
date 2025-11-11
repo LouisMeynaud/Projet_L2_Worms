@@ -73,7 +73,7 @@ public class Map {
      * @return the tile at the position.
      */
     public Tile getTile(Position position) {
-        Position posMatrix = cooMapToCooMatrix(position);
+        Position posMatrix = this.cooMapToCooMatrix(position);
         return this.mapMatrix[(int) posMatrix.getY()][(int) posMatrix.getX()];
     }
 
@@ -84,7 +84,7 @@ public class Map {
      * @param TILES , the Tile by which the case will be changed
      */
     public void setTile(Position position, Tile tile) {
-        Position posMatrix = cooMapToCooMatrix(position);
+        Position posMatrix = this.cooMapToCooMatrix(position);
         this.mapMatrix[(int) posMatrix.getY()][(int) posMatrix.getX()] = tile;
 
     }
@@ -94,6 +94,7 @@ public class Map {
      * @param position the checking position
      */
     public boolean isTileAt(Position position, Tile tile) {
+
         return getTile(position) == tile;
     }
 
