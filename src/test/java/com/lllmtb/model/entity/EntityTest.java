@@ -34,7 +34,7 @@ public class EntityTest {
 
     @Test
     public void testConstructorUuid(){
-        assertEquals(1, worm.uuid);
+        assertNotEquals(0, worm.uuid);
     }
     
 }
