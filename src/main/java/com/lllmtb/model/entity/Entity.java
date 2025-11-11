@@ -1,4 +1,5 @@
 package com.lllmtb.model.entity;
+import com.lllmtb.physics.PhysicsBody;
 
 public abstract class Entity {
 
@@ -9,6 +10,8 @@ public abstract class Entity {
     public Entity(){
         this.uuid = ++Entity.uuids;
     }
+
+    public abstract PhysicsBody getBody();
 
 
 
