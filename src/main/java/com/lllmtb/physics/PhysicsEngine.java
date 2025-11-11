@@ -1,5 +1,6 @@
 package com.lllmtb.physics;
 import java.util.ArrayList;
+import java.util.Objects;
 
 
 /**
@@ -29,21 +30,25 @@ public class PhysicsEngine {
     public Vector getGravity() {
         return gravity;
     }
+    public static double getTicktime() {
+        return ticktime;
+    }
+
+
     /*public boolean isWind() {
         return isWind;
     }
     public Vector getWind() {
         return wind;
     }*/
-    public static double getTicktime() {
-        return ticktime;
-    }
+    
 
     /**
      * Adds a PhysicsBody to the collection.
-     * @param body The PhysicsBody to add (if null, the PhysicsBody collection remains unchanged)
+     * @param body The PhysicsBody to add (if null, the PhysicsBody collection remains unchanged).
      */
     public void add(PhysicsBody body){
+        Objects.requireNonNull(body);
         bodies.add(body);
     }
 
@@ -67,29 +72,27 @@ public class PhysicsEngine {
      * and triggering effects (explosions, and so on.)
      * This method is called every tick of the game.
      */
-    public void nextForOneBody(PhysicsBody body){
-        Vector acc = body.getVector().copy();
-        acc.scale(-0.2);
-        acc.add(this.gravity);
-
-        /*if(this.isWind){
-            Vector random = new Vector(Math.random() / 3, Math.random() / 3);
-            if(Math.random() < 0.5) this.wind.add(random);
-            else this.wind.sub(random);
-            sumForces.add(this.wind);
-        }*/
-
-        acc.scale(ticktime/body.getMass());
-        Vector newVector = body.getVector().copy();
-        newVector.add(acc);
-        body.setVector(newVector);
-        body.setPos(body.getVector().newPos(body.getPos(), ticktime));
-    }
-
-
     public void next(){
        for(PhysicsBody body : bodies){
-            nextForOneBody(body);
+            Vector acc = body.getVector().copy();
+            acc.scale(-0.2);
+            acc.add(this.gravity);
+
+            /*if(this.isWind){
+                Vector random = new Vector(Math.random() / 3, Math.random() / 3);
+                if(Math.random() < 0.5) this.wind.add(random);
+                else this.wind.sub(random);
+                sumForces.add(this.wind);
+            }*/
+
+            acc.scale(ticktime/body.getMass());
+            Vector newVector = body.getVector().copy();
+            newVector.add(acc);
+            Position nextPos = newVector.newPos(body.getPos(), ticktime);
+            body.setVector(newVector);
+            if(!false){ // si pas de collision
+                body.setPos(nextPos);
+            }
        }
     }
     
