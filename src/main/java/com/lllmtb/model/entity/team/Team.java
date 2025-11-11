@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.lllmtb.model.entity.worm.Worm;
+import com.lllmtb.physics.Position;
 
 public class Team{
     private Map<Integer, Worm> worms;
@@ -19,25 +20,25 @@ public class Team{
      * @param name : Name of the team, @param numberofPlayers : Number of Players in the Team, @param worms : Set of worm in the team
      * @param inventory : inventory of the team, @param playersName : Array with name of all players
      */
-    private Team(String name,int numberOfPlayers, Map<Integer,Worm> worms, Inventory inventory, String[] playersName){
+    private Team(String name,int numberOfPlayers, Map<Integer,Worm> worms, Inventory inventory, Position spawn){
         this.worms = worms;
         this.inventory = inventory;
         this.name = name;
         this.id = Team.ids++;
-        this.setUpPlayers(numberOfPlayers, playersName);
+        this.setUpPlayers(numberOfPlayers, spawn);
     }
 
     /*Public constructor to initialize Team */
-    public Team(String teamName, int numberOfPlayers, String... playersName){
-        this(teamName,numberOfPlayers, new HashMap<>(), new Inventory(), playersName);
+    public Team(String teamName, int numberOfPlayers, Position spawn){
+        this(teamName,numberOfPlayers, new HashMap<>(), new Inventory(), spawn);
     }
 
     /* Create all worm in the team
      * @param numberOfPlayers : number of player @param playersName : name of all players
      */
-    private void setUpPlayers(int numberOfPlayers, String[] playersName){
-        for(String name : playersName ){
-            this.addPlayer(new Worm(name, this));
+    private void setUpPlayers(int numberOfPlayers, Position spawn){
+        for(int i = 0; i < numberOfPlayers ; i++ ){
+            this.addPlayer(new Worm(this.name+i, this, spawn));
         }
     }
 
