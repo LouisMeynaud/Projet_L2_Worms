@@ -1,7 +1,11 @@
 package com.lllmtb.physics;
 
+import com.lllmtb.model.entity.projectile.Projectile;
+import com.lllmtb.terrain.map.Map;
+
 import java.util.ArrayList;
 import java.util.Objects;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * The {@code PhysicsEngine} class manages and updates a collection of {@link PhysicsBody} objects
@@ -14,16 +18,22 @@ import java.util.Objects;
 public class PhysicsEngine {
 
     /** The list of all physics bodies currently managed by this engine. */
-    private ArrayList<PhysicsBody> bodies;
+    private CopyOnWriteArrayList<PhysicsBody> bodies;
 
     /** The gravity vector applied uniformly to all bodies. */
     private Vector gravity;
 
-    // private boolean isWind;
-    // private Vector wind;
+    /** Whether wind simulation is enabled. */
+    private boolean hasWind;
+
+    /** The current wind vector applied to all bodies when {@code hasWind} is true. */
+    private Vector wind;
 
     /** The duration of one simulation tick (in seconds). */
-    public static double ticktime = 0.0167; // Approx. 60 updates per second
+    public static final double ticktime = 0.0167; // Approx. 60 updates per second
+
+    /** Internal counter used to regulate wind changes. */
+    private int cpt = 0;
 
 
     /**
@@ -33,25 +43,25 @@ public class PhysicsEngine {
      * in meters per second squared. Wind parameters are currently disabled.
      * </p>
      *
-     * @param isWind {@code true} if wind should be simulated; currently unused.
+     * @param map the {@code Map} instance representing the environment for collision detection.
+     * @param hasWind {@code true} if wind should be simulated; currently unused.
      */
-    public PhysicsEngine(boolean isWind) {
-        this.bodies = new ArrayList<>();
+    public PhysicsEngine(Map map, boolean hasWind) {
+        this.bodies = new CopyOnWriteArrayList<>();
         this.gravity = new Vector(0, -9.81);
-        // this.isWind = isWind;
-        // this.wind = new Vector(0, 0);
+        this.hasWind = hasWind;
+        this.wind = new Vector(0, 0);
+        Collision.init(this.bodies, map);
     }
-
 
     /**
      * Returns the list of all physics bodies currently managed by the physics engine.
      *
      * @return an {@link ArrayList} containing all active {@link PhysicsBody} objects.
      */
-    public ArrayList<PhysicsBody> getBodies() {
+    public CopyOnWriteArrayList<PhysicsBody> getBodies() {
         return bodies;
     }
-
 
     /**
      * Returns the gravity vector applied to all bodies in the simulation.
@@ -61,7 +71,6 @@ public class PhysicsEngine {
     public Vector getGravity() {
         return gravity;
     }
-
 
     /**
      * Returns the duration of one simulation tick, in seconds.
@@ -76,14 +85,28 @@ public class PhysicsEngine {
         return ticktime;
     }
 
-
-    /*public boolean isWind() {
-        return isWind;
+    /**
+     * Returns whether wind simulation is currently enabled in the physics engine.
+     *
+     * @return {@code true} if wind effects are applied to all bodies during updates;
+     *         {@code false} otherwise.
+     */
+    public boolean hasWind() {
+        return hasWind;
     }
+
+    /**
+     * Returns the current wind vector applied to all bodies when wind simulation is enabled.
+     * <p>
+     * The wind vector represents the direction and intensity of the wind force currently
+     * influencing the simulation. Its value may change over time if {@link #changeWind()} is called.
+     * </p>
+     *
+     * @return the {@link Vector} representing the current wind force.
+     */
     public Vector getWind() {
         return wind;
-    }*/
-
+    }
 
     /**
      * Adds a physics body to the simulation.
@@ -95,7 +118,6 @@ public class PhysicsEngine {
         Objects.requireNonNull(body);
         bodies.add(body);
     }
-
 
     /**
      * Removes a specific physics body from the simulation.
@@ -109,7 +131,6 @@ public class PhysicsEngine {
         bodies.remove(body);
     }
 
-
     /**
      * Removes all physics bodies from the simulation.
      * <p>
@@ -120,6 +141,23 @@ public class PhysicsEngine {
         bodies.clear();
     }
 
+    /**
+     * Randomly changes the wind vector to simulate natural fluctuations in wind force and direction.
+     * <p>
+     * The change is small and based on random perturbations in both the x and y directions.
+     * This method should typically be called less frequently than {@link #next()}, for example
+     * once every few seconds of simulated time, to avoid erratic motion.
+     * </p>
+     * <p>
+     * The resulting wind vector is added to each body’s acceleration during the next update.
+     * </p>
+     */
+    public void changeWind(){
+        if (this.hasWind) {
+            Vector random = new Vector(Math.random() / 3 - 1/3, Math.random() / 3 - 1/3);
+            this.wind.add(random);
+        }
+    }
 
     /**
      * Advances the simulation by one tick.
@@ -133,25 +171,17 @@ public class PhysicsEngine {
      * until collision handling is performed.
      * </p>
      */
-    public void next() {
+    protected void nextStep() {
         for (PhysicsBody body : bodies) {
-            Vector acc = body.getVector().copy();
-            acc.scale(-0.2); // Simple air resistance
-            acc.add(this.gravity);
-
-            /*
-            if (this.isWind) {
-                Vector random = new Vector(Math.random() / 3, Math.random() / 3);
-                if (Math.random() < 0.5) this.wind.add(random);
-                else this.wind.sub(random);
-                sumForces.add(this.wind);
-            }
-            */
-
-            acc.scale(ticktime / body.getMass());
+            Vector deltaV = body.getVector().copy();
+            deltaV.scale(-0.2); // Simple air resistance
+            deltaV.add(this.gravity);
+            // only apply wind effects to Projectiles
+            if (body.getEntity() instanceof Projectile) deltaV.add(this.wind);
+            deltaV.scale(ticktime / body.getMass());
 
             Vector newVector = body.getVector().copy();
-            newVector.add(acc);
+            newVector.add(deltaV);
 
             Position nextPos = newVector.newPos(body.getPos(), ticktime);
             body.setVector(newVector);
@@ -160,5 +190,22 @@ public class PhysicsEngine {
                 body.setPos(nextPos);
             }
         }
+    }
+
+    /**
+     * Updates the simulation state by one tick.
+     * <p>
+     * This method increments the internal time counter, periodically updates the wind
+     * vector (every 600 ticks if enabled), and performs one simulation step through
+     * {@link #nextStep()}.
+     * </p>
+     */
+    public void next(){
+        cpt++;
+        if(cpt >= 600){
+            cpt = 0;
+            changeWind();
+        }
+        nextStep();
     }
 }
