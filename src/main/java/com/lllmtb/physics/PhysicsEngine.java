@@ -28,6 +28,9 @@ public class PhysicsEngine {
     /** The duration of one simulation tick (in seconds). */
     public static double ticktime = 0.0167; // Approx. 60 updates per second
 
+    /** Internal counter used to regulate wind changes. */
+    private int cpt = 0;
+
 
     /**
      * Constructs a new {@code PhysicsEngine} instance.
@@ -162,7 +165,7 @@ public class PhysicsEngine {
      * until collision handling is performed.
      * </p>
      */
-    public void next() {
+    private void nextStep() {
         for (PhysicsBody body : bodies) {
             Vector deltaV = body.getVector().copy();
             deltaV.scale(-0.2); // Simple air resistance
@@ -180,5 +183,21 @@ public class PhysicsEngine {
                 body.setPos(nextPos);
             }
         }
+    }
+
+    /**
+     * Updates the simulation state by one tick.
+     *
+     * <p>This method increments the internal time counter, periodically updates the wind
+     * vector (every 600 ticks if enabled), and performs one simulation step through
+     * {@link #nextStep()}.</p>
+     */
+    public void next(){
+        cpt++;
+        if(cpt >= 600){
+            cpt = 0;
+            changeWind();
+        }
+        nextStep();
     }
 }
