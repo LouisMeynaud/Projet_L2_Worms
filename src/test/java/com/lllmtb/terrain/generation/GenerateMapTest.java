@@ -16,10 +16,10 @@ public class GenerateMapTest {
         InputStream originalIn = System.in;//on garde de coter l'entrer original pour la retablir apres
 
         System.setIn(new ByteArrayInputStream(inputSimule.getBytes())); // getbytes transforme le string en tableau d' octet pour byteArrayInpustream qui prend un tableau d'octect
-        ConfigMap configtest = new ConfigMap(2000, 50, 2, 1, 5, 0, false, 20,10);
+        ConfigMap configtest = new ConfigMap(60, 100, 2, 5, 5, 0, false, 20,40);
         Map m =GenerateMap.createMap(configtest);
-        assertEquals(2000, m.getWidth());//grand valeur pour bien tester les ligne qui retrie les tableau
-        assertEquals(50, m.getHeight());
+        assertEquals(60, m.getWidth());//grand valeur pour bien tester les ligne qui retrie les tableau
+        assertEquals(100, m.getHeight());
         assertEquals("fichierAEcraserTest.txt", m.getFilesTxt());
         // On restaure System.in
         System.setIn(originalIn);
