@@ -7,6 +7,8 @@ import java.io.InputStream;
 
 import org.junit.jupiter.api.Test;
 import com.lllmtb.terrain.map.Map;
+import java.util.Arrays;
+
 
 public class GenerateMapTest {
     @Test
@@ -46,5 +48,20 @@ public class GenerateMapTest {
     @Test
     void DeclaClassTest(){
         new GenerateMap(); // ligne inutile car class static mais permet de couvrir la ligne de declaration de la classe
+    }
+
+    @Test
+    void TriHightLineLowLineTest(){
+        int[] highLine = {8,2,4};
+        int[] lowLine = {7,5,3};
+        int[] highLineBis = {8,5,4};
+        int[] lowLineBis = {7,2,3};
+        ConfigMap config = new ConfigMap(3, 5, 0, 0, 0, 0, false, 0, 40);
+        GenerateMap.TriHightLineLowLine(highLine,lowLine,config);
+        for (int i = 0; i < 3; i++) {
+        assertEquals(highLine[i], highLineBis[i]);
+        assertEquals(lowLine[i], lowLineBis[i]);
+        }
+        
     }
 }

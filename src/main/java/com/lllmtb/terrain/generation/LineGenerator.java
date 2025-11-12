@@ -2,7 +2,7 @@ package com.lllmtb.terrain.generation;
 
 import java.util.Random;
 
-public class MapGenerator {
+public class LineGenerator {
 
     public static int[] createLine(ConfigMap config) {
         int LineHeight = config.heightStart;
