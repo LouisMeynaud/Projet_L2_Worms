@@ -1,5 +1,6 @@
 package com.lllmtb.model.entity.projectile;
 
+import com.lllmtb.model.entity.team.Team;
 import com.lllmtb.model.entity.worm.Worm;
 import com.lllmtb.model.item.weapon.FireParams;
 import com.lllmtb.physics.Position;
@@ -15,7 +16,8 @@ public class ProjectileTest {
 
     @BeforeEach
     public void setUp() {
-        this.owner = new Worm(new Position(0, 0));
+        Team team = new Team("TestTeam", 1, new Position(0,0));
+        this.owner = new Worm("Test", team, new Position(0, 0));
         this.spawn = new Position(3.0, 0.0);
         double angle = Math.PI / 4.0;
         this.params = new FireParams(angle, spawn, owner);
