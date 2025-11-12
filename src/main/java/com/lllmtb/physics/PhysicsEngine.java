@@ -26,7 +26,7 @@ public class PhysicsEngine {
     private Vector wind;
 
     /** The duration of one simulation tick (in seconds). */
-    public static double ticktime = 0.0167; // Approx. 60 updates per second
+    public static final double ticktime = 0.0167; // Approx. 60 updates per second
 
     /** Internal counter used to regulate wind changes. */
     private int cpt = 0;
