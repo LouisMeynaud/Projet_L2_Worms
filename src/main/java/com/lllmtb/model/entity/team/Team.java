@@ -143,8 +143,8 @@ public class Team {
      * Removes a worm from the team based on its index.
      * @param index index of the worm to remove
      */
-    public void removePlayer(int index) {
-        this.worms.remove(index);
+    public void removePlayer(int indexPlayer) {
+        this.worms.remove(indexPlayer-1);
         this.numberOfPlayers = this.worms.size();
     }
 

@@ -72,7 +72,7 @@ public class TeamTest {
     }
     @Test
     public void testRemovePlayer(){
-        team.removePlayer(0);
+        team.removePlayer(1);
         assertEquals(0, team.getNumberOfPlayers());
         assertTrue(team.getTeamWorms().isEmpty());
     }
