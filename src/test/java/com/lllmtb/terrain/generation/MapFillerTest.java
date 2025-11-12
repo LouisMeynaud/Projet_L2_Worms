@@ -42,4 +42,8 @@ public class MapFillerTest {
             }
         }
     }
+    @Test
+    void declaMapFiller(){
+        new MapFiller(); // inutile mais permet de couvrir la ligne de declaration de la classe.
+    }
 }

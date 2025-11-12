@@ -4,7 +4,7 @@ import java.util.Random;
 
 public class LineGenerator {
 
-    public static int[] createLine(ConfigMap config) {
+    protected static int[] createLine(ConfigMap config) {
         int LineHeight = config.heightStart;
         int x = 0;
         int slope = 0;

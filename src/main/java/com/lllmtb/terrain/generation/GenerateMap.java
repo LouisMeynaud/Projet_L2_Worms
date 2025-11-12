@@ -47,7 +47,7 @@ public class GenerateMap {
      * @param lowLine la ligne basse
      * @param config la config de la map
      */
-    public static void TriHightLineLowLine(int[] hightLine,int[] lowLine,ConfigMap config){
+    protected  static void TriHightLineLowLine(int[] hightLine,int[] lowLine,ConfigMap config){
         for (int i = 0; i < config.width; i++) {
                 if (lowLine[i] > hightLine[i]) {
                     int temp = lowLine[i];

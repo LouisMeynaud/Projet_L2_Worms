@@ -7,7 +7,7 @@ import java.io.InputStream;
 
 import org.junit.jupiter.api.Test;
 import com.lllmtb.terrain.map.Map;
-import java.util.Arrays;
+
 
 
 public class GenerateMapTest {

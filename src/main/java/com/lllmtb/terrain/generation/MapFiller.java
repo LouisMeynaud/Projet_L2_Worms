@@ -10,7 +10,7 @@ public class MapFiller {
      * @param map the map that we want to fill
      * @param heightWater the water height wishes
      */
-    public static void fillingWater(Map map, int heightWater) {
+    protected static void fillingWater(Map map, int heightWater) {
         for (int i = 0; i <= heightWater; i++) {
             for (int j = 0; j < map.getWidth(); j++) {
                 Position position = new Position(j, i);
@@ -26,7 +26,7 @@ public class MapFiller {
      * @param hightLine the top line of the map
      * @param lowLine the bottom line of the map
      */
-    public static void fillingDirt(Map map, int[] hightLine, int[] lowLine) {
+    protected static void fillingDirt(Map map, int[] hightLine, int[] lowLine) {
         for (int i = 0; i < map.getHeight(); i++) {
             for (int j = 0; j < map.getWidth(); j++) {
                 Position position = new Position(j, i);
