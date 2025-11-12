@@ -18,8 +18,8 @@ public class MapGenerator {
                 } else {
                     slope = random.nextInt(config.maxSlope - (- config.maxSlope) + 1) + (- config.maxSlope);
                 }
-                length = random.nextInt(config.maxSlope + 1);
-            } while (LineHeight + slope * length >= config.height || LineHeight + slope * length < 0);
+                length = random.nextInt(config.maxLength + 1);
+            } while (LineHeight + slope * length >= config.height || LineHeight + slope * length <= 0);
             for (int i = 0; i < length && x < config.width; i++) {
                 line[x] = LineHeight;
                 LineHeight += slope;
