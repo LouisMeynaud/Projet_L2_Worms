@@ -41,6 +41,7 @@ public class PhysicsEngine {
      * in meters per second squared. Wind parameters are currently disabled.
      * </p>
      *
+     * @param map the {@code Map} instance representing the environment for collision detection.
      * @param hasWind {@code true} if wind should be simulated; currently unused.
      */
     public PhysicsEngine(Map map, boolean hasWind) {
@@ -168,7 +169,7 @@ public class PhysicsEngine {
      * until collision handling is performed.
      * </p>
      */
-    private void nextStep() {
+    protected void nextStep() {
         for (PhysicsBody body : bodies) {
             Vector deltaV = body.getVector().copy();
             deltaV.scale(-0.2); // Simple air resistance
