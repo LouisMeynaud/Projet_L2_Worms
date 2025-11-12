@@ -1,14 +1,11 @@
 package com.lllmtb.model.item.inventory;
 
-import com.lllmtb.model.entity.Entity;
 import com.lllmtb.model.entity.projectile.BulletProjectile;
 import com.lllmtb.model.entity.worm.Worm;
 import com.lllmtb.model.item.weapon.*;
 import com.lllmtb.physics.Position;
-import com.lllmtb.physics.Vector;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -19,8 +16,8 @@ public class InventoryTest {
     public static Inventory ivt;
     public static WeaponRegistry registry;
     public static GunWeapon gun = new GunWeapon();
-    public static Position p = Mockito.mock(Position.class);
-    public static Worm w = Mockito.mock(Worm.class);
+    public static Position p = new Position(0, 0);
+    public static Worm w = new Worm(p);
     public static FireParams fp = new FireParams(0, p, w);
 
     @BeforeEach
