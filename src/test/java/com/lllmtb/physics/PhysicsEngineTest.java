@@ -1,5 +1,8 @@
 package com.lllmtb.physics;
 
+import com.lllmtb.model.entity.projectile.BulletProjectile;
+import com.lllmtb.model.entity.projectile.Projectile;
+import com.lllmtb.model.item.weapon.FireParams;
 import com.lllmtb.terrain.map.Map;
 import com.lllmtb.terrain.map.MapLoader;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,16 +16,18 @@ class PhysicsEngineTest {
 
     private Map map;
     private PhysicsEngine pE;
+    private Position p;
+    private Worm w;
     private PhysicsBody pB;
 
     @BeforeEach
     void setUp() {
         map = MapLoader.loadMatrix("mapTest");
         pE = new PhysicsEngine(map, true);
-        Position p = new Position(4, 5);
-        Worm ent = new Worm(p);
+        p = new Position(4, 5);
+        w = new Worm(p);
         assertTrue(map.inMap(p));
-        pB = ent.getBody();
+        pB = w.getBody();
         pB.setVector(new Vector(-5, -10));
         pE.add(pB);
     }
@@ -107,6 +112,13 @@ class PhysicsEngineTest {
             // System.out.printf("\nPOS : %s, %s | inMap = %b", pB.getPos().getX(), pB.getPos().getY(), map.inMap(pB.getPos()));
             tpE.nextStep();
         }
+    }
+
+    @Test
+    void testNextStep_whenProjectile() {
+        Projectile pr = new BulletProjectile(new FireParams(0, p, w));
+        pE.add(pr.getBody());
+        pE.nextStep();
     }
 
     @Test
