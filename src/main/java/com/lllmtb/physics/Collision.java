@@ -1,13 +1,16 @@
 package com.lllmtb.physics;
 
 import java.util.ArrayList;
+import java.util.concurrent.CopyOnWriteArrayList;
+
 import com.lllmtb.terrain.map.*;
 import com.lllmtb.model.entity.worm.*;
 import com.lllmtb.model.entity.projectile.*;
 
 public class Collision {
+
     
-    private static ArrayList<PhysicsBody> bodies;
+    private static CopyOnWriteArrayList<PhysicsBody> bodies;
     private static Map map;
 
     /**
@@ -15,7 +18,7 @@ public class Collision {
      * @param bodies the table containing all PhysiqueBodie
      * @param map take the map
      */
-    public static void init(ArrayList<PhysicsBody> bodies, Map map) {
+    public static void init(CopyOnWriteArrayList<PhysicsBody> bodies, Map map) {
         Collision.bodies = bodies;
         Collision.map = map;
     }
@@ -33,6 +36,7 @@ public class Collision {
         boolean collisionDetected = false;
         if (!map.inMap(nextPos)) {
             bodies.remove(body);
+            return true;
 
         } else {// case distinction to know whether to cancel x, y or both.
             if (body.getEntity() instanceof Worm) {
