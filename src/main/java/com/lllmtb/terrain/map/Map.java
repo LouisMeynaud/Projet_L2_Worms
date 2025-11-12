@@ -80,8 +80,8 @@ public class Map {
     /**
      * Setter modifying a case of the matrix.
      * 
-     * @param position, the position or the tile will be changed
-     * @param TILES , the Tile by which the case will be changed
+     * @param position the position or the tile will be changed
+     * @param tile the Tile by which the case will be changed
      */
     public void setTile(Position position, Tile tile) {
         Position posMatrix = this.cooMapToCooMatrix(position);
@@ -90,8 +90,8 @@ public class Map {
     }
     /**
      *
-     * @param TILES    The Tile whose presence we are checking.
      * @param position the checking position
+     * @param tile the Tile whose presence we are checking.
      */
     public boolean isTileAt(Position position, Tile tile) {
 
