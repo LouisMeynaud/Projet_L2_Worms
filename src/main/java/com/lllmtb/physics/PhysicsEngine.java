@@ -187,10 +187,11 @@ public class PhysicsEngine {
 
     /**
      * Updates the simulation state by one tick.
-     *
-     * <p>This method increments the internal time counter, periodically updates the wind
+     * <p>
+     * This method increments the internal time counter, periodically updates the wind
      * vector (every 600 ticks if enabled), and performs one simulation step through
-     * {@link #nextStep()}.</p>
+     * {@link #nextStep()}.
+     * </p>
      */
     public void next(){
         cpt++;
