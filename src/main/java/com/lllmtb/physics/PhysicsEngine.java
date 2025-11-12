@@ -179,7 +179,7 @@ public class PhysicsEngine {
             Position nextPos = newVector.newPos(body.getPos(), ticktime);
             body.setVector(newVector);
 
-            if (!haveCollisionMap(body, nextPos)) {
+            if (!Collision.haveCollisionMap(body, nextPos)) {
                 body.setPos(nextPos);
             }
         }
