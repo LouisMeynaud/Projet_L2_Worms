@@ -13,6 +13,9 @@ public abstract class Projectile extends Entity {
     private final PhysicsBody body;
     private final Worm owner;
     private double force;
+    private double mass;
+    private double height;
+    private double width;
 
     /**
      * Create a new Projectile
@@ -22,7 +25,7 @@ public abstract class Projectile extends Entity {
         Objects.requireNonNull(params);
         Vector velocity = new Vector(Math.cos(params.angleRadians), Math.sin(params.angleRadians));
         velocity.scale(force);
-        this.body = new PhysicsBody(this, params.spawnPos, velocity, 1, 0.1, 0.2);
+        this.body = new PhysicsBody(this, params.spawnPos, velocity, mass, height, width);
         this.owner = params.owner;
     }
 
