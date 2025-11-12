@@ -1,4 +1,4 @@
-package com.lllmtb.Engine;
+package com.lllmtb.engine;
 
 import org.junit.jupiter.api.Test;
 
@@ -16,10 +16,10 @@ public class GameSettingsTest
         boolean GeneratedIsland = true;
         GameSettings settings = new GameSettings(nbTeams, TeamNames, numberWorms, isWind, FileMapPath, GeneratedIsland);
         assertEquals(nbTeams, settings.nbTeams);
-        assertEquals(TeamNames, settings.TeamNames);
-        assertEquals(numberWorms, settings.numberWorms);
+        assertEquals(TeamNames, settings.teamNames);
+        assertEquals(numberWorms, settings.nbWorms);
         assertEquals(isWind, settings.isWind);
         assertEquals(FileMapPath, settings.mapFilePath);
-        assertEquals(GeneratedIsland, settings.GenerateIsland);
+        assertEquals(GeneratedIsland, settings.generateIslands);
     }
 }
