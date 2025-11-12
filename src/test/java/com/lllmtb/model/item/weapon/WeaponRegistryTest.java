@@ -8,7 +8,7 @@ import java.util.*;
 public class WeaponRegistryTest {
 
     @Test
-    public void testException() {
+    public void Exception() {
         List<Weapon> weapons = new ArrayList<>();
         weapons.add(new GunWeapon());
         weapons.add(new GunWeapon());
