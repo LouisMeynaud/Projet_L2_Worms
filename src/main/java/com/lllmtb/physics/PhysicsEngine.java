@@ -1,5 +1,7 @@
 package com.lllmtb.physics;
 
+import com.lllmtb.terrain.map.Map;
+
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -41,11 +43,12 @@ public class PhysicsEngine {
      *
      * @param hasWind {@code true} if wind should be simulated; currently unused.
      */
-    public PhysicsEngine(boolean hasWind) {
+    public PhysicsEngine(Map map, boolean hasWind) {
         this.bodies = new ArrayList<>();
         this.gravity = new Vector(0, -9.81);
         this.hasWind = hasWind;
         this.wind = new Vector(0, 0);
+        Collision.init(this.bodies, map);
     }
 
     /**
