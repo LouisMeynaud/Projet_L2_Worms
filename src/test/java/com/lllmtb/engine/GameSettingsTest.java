@@ -20,6 +20,6 @@ public class GameSettingsTest
         assertEquals(numberWorms, settings.nbWorms);
         assertEquals(isWind, settings.isWind);
         assertEquals(FileMapPath, settings.mapFilePath);
-        assertEquals(GeneratedIsland, settings.generateIslands);
+        assertEquals(GeneratedIsland, settings.floatingIsland);
     }
 }
