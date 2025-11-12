@@ -8,8 +8,8 @@ import com.lllmtb.terrain.map.Tile;
 import com.lllmtb.physics.*;
 
 public class GenerateMap {
-    static ConfigMap WORLD = new ConfigMap(370, 170, 2, 3, 8, 4, false, 20, 40);
-    static ConfigMap FlYINGWORLD = new ConfigMap(370, 170, 2, 3, 8, 4, true, 20, 40);
+    public static ConfigMap WORLD = new ConfigMap(370, 170, 2, 3, 8, 4, false, 20, 40);
+    public static ConfigMap FLYINGWORLD = new ConfigMap(370, 170, 2, 3, 8, 4, true, 20, 40);
     
 
     /**
