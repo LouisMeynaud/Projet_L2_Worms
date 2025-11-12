@@ -2,12 +2,18 @@ package com.lllmtb.physics;
 
 import com.lllmtb.terrain.map.Map;
 import com.lllmtb.terrain.map.MapLoader;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.DisplayNameGeneration;
+
 import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
+
+import com.lllmtb.model.entity.projectile.BulletProjectile;
+import com.lllmtb.model.item.weapon.FireParams;
 
 import com.lllmtb.model.entity.worm.Worm;
 
@@ -372,7 +378,36 @@ class CollisionTest {
     }
     
 
+    // ====================================================================
+    //                    collision projectile/map
 
+    private PhysicsBody createTestBullet(double x, double y) {
+        Position position = new Position(x, y);
+        Worm owener = new Worm(position);
+        FireParams params = new FireParams(0, position, owener);
+        BulletProjectile bullet = new BulletProjectile(params);
+        PhysicsBody body = bullet.getBody();
+        bodies.add(body);
+        return body;
+    }
+
+
+    @Test
+    @DisplayName("map: projectile Rate ")
+    void haveCollisionMap_ProjectileRate(){
+        PhysicsBody bulletBody = createTestBullet(0, 0);
+        bulletBody.setVector(new Vector(1,1));
+        assertFalse(Collision.haveCollisionMap(bulletBody, new Position(1, 1)));
+    }
+
+     @Test
+    @DisplayName("map: projectile contact : detruire")
+    void haveCollisionMap_Projectile(){
+        PhysicsBody bulletBody = createTestBullet(0, 0);
+        bulletBody.setVector(new Vector(1,1));
+        assertTrue(Collision.haveCollisionMap(bulletBody, new Position(5, 5)));
+        assertEquals(bodies.size(),0);
+    }
     // ==========================================================================
     //                    Test de Classe
    
