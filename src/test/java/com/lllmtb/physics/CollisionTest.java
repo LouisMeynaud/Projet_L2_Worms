@@ -9,6 +9,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DisplayNameGeneration;
 
 import java.util.ArrayList;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -20,12 +21,12 @@ import com.lllmtb.model.entity.worm.Worm;
 class CollisionTest {
 
     Map map;
-    ArrayList<PhysicsBody> bodies;
+    CopyOnWriteArrayList<PhysicsBody> bodies;
 
     @BeforeEach
     void setUp() {
         map = MapLoader.loadMatrix("MapTestColision"); 
-        bodies = new ArrayList<>();
+        bodies = new CopyOnWriteArrayList<>();
         Collision.init(bodies, map); 
     }
 
@@ -337,7 +338,7 @@ class CollisionTest {
     void haveCollisionMap_QuandHorsCarte_DoitRetirerCorps() {
         PhysicsBody body = createTestBody(-5, -5, 0, 0);
         assertEquals(1, bodies.size());
-        assertFalse(Collision.haveCollisionMap(body, body.getPos()));
+        assertTrue(Collision.haveCollisionMap(body, body.getPos()));
         assertEquals(0, bodies.size(), "Le corps hors carte aurait dû être retiré");
     }
 

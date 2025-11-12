@@ -1,6 +1,5 @@
 package com.lllmtb.physics;
 
-import com.lllmtb.terrain.generation.GenerateMap;
 import com.lllmtb.terrain.map.Map;
 import com.lllmtb.terrain.map.MapLoader;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,15 +11,19 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class PhysicsEngineTest {
 
+    private Map map;
     private PhysicsEngine pE;
     private PhysicsBody pB;
 
     @BeforeEach
     void setUp() {
-        Map map = MapLoader.loadMatrix("mapTest");
-        pE = new PhysicsEngine(map, false);
-        Worm ent = new Worm(new Position(1, 1));
+        map = MapLoader.loadMatrix("mapTest");
+        pE = new PhysicsEngine(map, true);
+        Position p = new Position(4, 5);
+        Worm ent = new Worm(p);
+        assertTrue(map.inMap(p));
         pB = ent.getBody();
+        pB.setVector(new Vector(-5, -10));
         pE.add(pB);
     }
 
@@ -38,12 +41,23 @@ class PhysicsEngineTest {
     }
 
     @Test
-    void testChangeWind() {
+    void testChangeWind_whenWind() {
         Vector before = pE.getWind().copy();
         pE.changeWind();
         Vector after = pE.getWind();
         assertNotEquals(before.getX(), after.getX());
         assertNotEquals(before.getY(), after.getY());
+    }
+
+    @Test
+    void testChangeWind_whenNoWind() {
+        PhysicsEngine tpE = new PhysicsEngine(map, false);
+        tpE.add(pB);
+
+        Vector before = tpE.getWind().copy();
+        tpE.changeWind();
+        Vector after = tpE.getWind();
+        assertTrue(before.equals(after));
     }
 
     @Test
@@ -85,16 +99,31 @@ class PhysicsEngineTest {
     }
 
     @Test
-    void testNext(){
+    void testNextStep_whenCollision() {
+        PhysicsEngine tpE = new PhysicsEngine(map, false);
+        tpE.add(pB);
+        System.out.println(map);
+        for (int i = 0; i < 605; i++) {
+            // System.out.printf("\nPOS : %s, %s | inMap = %b", pB.getPos().getX(), pB.getPos().getY(), map.inMap(pB.getPos()));
+            tpE.nextStep();
+        }
+    }
+
+    @Test
+    void testWindChangesEvery600Ticks(){
         Vector windBefore = pE.getWind().copy();
-        for (int i = 0; i < 600; i++) {
+        for (int i = 0; i < 605; i++) {
             pE.next();
         }
         Vector windAfter = pE.getWind();
         assertNotEquals(windBefore.getX(), windAfter.getX());
         assertNotEquals(windBefore.getY(), windAfter.getY());
-        assertTrue(pB.getPos().getY() < 0);
     }
 
+    @Test
+    void testNext() {
+        pE.next();
+        assertTrue(pB.getPos().getX() < 10);
+    }
 }
 

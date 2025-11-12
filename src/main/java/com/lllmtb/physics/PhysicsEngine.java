@@ -1,9 +1,11 @@
 package com.lllmtb.physics;
 
+import com.lllmtb.model.entity.projectile.Projectile;
 import com.lllmtb.terrain.map.Map;
 
 import java.util.ArrayList;
 import java.util.Objects;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * The {@code PhysicsEngine} class manages and updates a collection of {@link PhysicsBody} objects
@@ -16,7 +18,7 @@ import java.util.Objects;
 public class PhysicsEngine {
 
     /** The list of all physics bodies currently managed by this engine. */
-    private ArrayList<PhysicsBody> bodies;
+    private CopyOnWriteArrayList<PhysicsBody> bodies;
 
     /** The gravity vector applied uniformly to all bodies. */
     private Vector gravity;
@@ -45,7 +47,7 @@ public class PhysicsEngine {
      * @param hasWind {@code true} if wind should be simulated; currently unused.
      */
     public PhysicsEngine(Map map, boolean hasWind) {
-        this.bodies = new ArrayList<>();
+        this.bodies = new CopyOnWriteArrayList<>();
         this.gravity = new Vector(0, -9.81);
         this.hasWind = hasWind;
         this.wind = new Vector(0, 0);
@@ -57,7 +59,7 @@ public class PhysicsEngine {
      *
      * @return an {@link ArrayList} containing all active {@link PhysicsBody} objects.
      */
-    public ArrayList<PhysicsBody> getBodies() {
+    public CopyOnWriteArrayList<PhysicsBody> getBodies() {
         return bodies;
     }
 
@@ -174,7 +176,8 @@ public class PhysicsEngine {
             Vector deltaV = body.getVector().copy();
             deltaV.scale(-0.2); // Simple air resistance
             deltaV.add(this.gravity);
-            deltaV.add(this.wind);
+            // only apply wind effects to Projectiles
+            if (body.getEntity() instanceof Projectile) deltaV.add(this.wind);
             deltaV.scale(ticktime / body.getMass());
 
             Vector newVector = body.getVector().copy();
