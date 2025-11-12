@@ -19,7 +19,6 @@ public class BazookaWeaponTest {
     public void CreateProjectile() {
         FireParams fp = Mockito.mock(FireParams.class);
         Position p = new Position(0, 0);
-        FireParams fp = new FireParams(0, p, new Worm(p));
         BazookaWeapon b = new BazookaWeapon();
         assertEquals(RocketProjectile.class, (b.createProjectile(fp)).getClass());
     }
