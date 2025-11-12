@@ -57,12 +57,12 @@ public class Collision {
         Position nextPosXHautGauche = PosHautGauche(nextPosXBasGauche, body);
         Position nextPosXHautDroite = PosHautDroite(nextPosXBasGauche, body);
         if (body.getVector().getX() < 0) {
-            return (map.inMap(nextPosXBasGauche) && map.isSolide(nextPosXBasGauche))
-                    || (map.inMap(nextPosXHautGauche) && map.isSolide(nextPosXHautGauche)); // colision vers la gauche rendre ceci plus generique a la suite (dirt)
+            return (map.inMap(nextPosXBasGauche) && map.isSolid(nextPosXBasGauche))
+                    || (map.inMap(nextPosXHautGauche) && map.isSolid(nextPosXHautGauche)); // colision vers la gauche rendre ceci plus generique a la suite (dirt)
 
         } else {
-            return (map.inMap(nextPosXBasDroite) && map.isSolide(nextPosXBasDroite))
-                    || (map.inMap(nextPosXHautDroite) && map.isSolide(nextPosXHautDroite)); // colision vers la droite rendre ceci plus generique a la suite (dirt)
+            return (map.inMap(nextPosXBasDroite) && map.isSolid(nextPosXBasDroite))
+                    || (map.inMap(nextPosXHautDroite) && map.isSolid(nextPosXHautDroite)); // colision vers la droite rendre ceci plus generique a la suite (dirt)
 
         }
 
@@ -73,12 +73,12 @@ public class Collision {
         Position nextPosYHautGauche = PosHautGauche(nextPosYBasGauche, body);
         Position nextPosYHautDroite = PosHautDroite(nextPosYBasGauche, body);
         if (body.getVector().getY() < 0) {
-            return (map.inMap(nextPosYBasDroite) && map.isSolide(nextPosYBasDroite))
-                    || (map.inMap(nextPosYBasGauche) && map.isSolide(nextPosYBasGauche)); // colision vers le bas rendre ceci plus generique a la suite (dirt)
+            return (map.inMap(nextPosYBasDroite) && map.isSolid(nextPosYBasDroite))
+                    || (map.inMap(nextPosYBasGauche) && map.isSolid(nextPosYBasGauche)); // colision vers le bas rendre ceci plus generique a la suite (dirt)
 
         } else {
-            return (map.inMap(nextPosYHautGauche) && map.isSolide(nextPosYHautGauche))
-                    || (map.inMap(nextPosYHautDroite) && map.isSolide(nextPosYHautDroite)); // colision vers le haut rendre ceci plus generique a la suite (dirt)
+            return (map.inMap(nextPosYHautGauche) && map.isSolid(nextPosYHautGauche))
+                    || (map.inMap(nextPosYHautDroite) && map.isSolid(nextPosYHautDroite)); // colision vers le haut rendre ceci plus generique a la suite (dirt)
 
         }
 
@@ -90,13 +90,13 @@ public class Collision {
         Position nextPosXYHautDroite = PosHautDroite(nextPosXYBasGauche, body);
 
         if (body.getVector().getX() < 0 && body.getVector().getY() < 0) {
-            return (map.inMap(nextPosXYBasGauche) && map.isSolide(nextPosXYBasGauche)); // colision bas/gauche
+            return (map.inMap(nextPosXYBasGauche) && map.isSolid(nextPosXYBasGauche)); // colision bas/gauche
         } else if (body.getVector().getX() < 0 && body.getVector().getY() > 0) {
-            return (map.inMap(nextPosXYHautGauche) && map.isSolide(nextPosXYHautGauche)); // colision bas/droite
+            return (map.inMap(nextPosXYHautGauche) && map.isSolid(nextPosXYHautGauche)); // colision bas/droite
         } else if (body.getVector().getX() > 0 && body.getVector().getY() < 0) {
-            return (map.inMap(nextPosXYBasDroite) && map.isSolide(nextPosXYBasDroite)); // colision haut/gauche
+            return (map.inMap(nextPosXYBasDroite) && map.isSolid(nextPosXYBasDroite)); // colision haut/gauche
         } else if (body.getVector().getX() > 0 && body.getVector().getY() > 0) {
-            return (map.inMap(nextPosXYHautDroite) && map.isSolide(nextPosXYHautDroite)); // colision haut/droite
+            return (map.inMap(nextPosXYHautDroite) && map.isSolid(nextPosXYHautDroite)); // colision haut/droite
         }
         return false;
     }

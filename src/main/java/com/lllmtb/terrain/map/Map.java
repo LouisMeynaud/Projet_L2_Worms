@@ -107,7 +107,7 @@ public class Map {
         return (0 <= position.getX() && 0 <= position.getY() && position.getX() < this.width && position.getY() < this.height);
     }
 
-    public boolean isSolide(Position position){
+    public boolean isSolid(Position position){
         Tile tile = this.getTile(position);
         switch(tile){
             case DIRT : return true;
