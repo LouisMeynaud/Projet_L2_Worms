@@ -20,9 +20,9 @@ public class PhysicsEngine {
     private Vector gravity;
 
     /** Whether wind simulation is enabled. */
-    private boolean isWind;
+    private boolean hasWind;
 
-    /** The current wind vector applied to all bodies when {@code isWind} is true. */
+    /** The current wind vector applied to all bodies when {@code hasWind} is true. */
     private Vector wind;
 
     /** The duration of one simulation tick (in seconds). */
@@ -39,12 +39,12 @@ public class PhysicsEngine {
      * in meters per second squared. Wind parameters are currently disabled.
      * </p>
      *
-     * @param isWind {@code true} if wind should be simulated; currently unused.
+     * @param hasWind {@code true} if wind should be simulated; currently unused.
      */
-    public PhysicsEngine(boolean isWind) {
+    public PhysicsEngine(boolean hasWind) {
         this.bodies = new ArrayList<>();
         this.gravity = new Vector(0, -9.81);
-        this.isWind = isWind;
+        this.hasWind = hasWind;
         this.wind = new Vector(0, 0);
     }
 
@@ -85,8 +85,8 @@ public class PhysicsEngine {
      * @return {@code true} if wind effects are applied to all bodies during updates;
      *         {@code false} otherwise.
      */
-    public boolean isWind() {
-        return isWind;
+    public boolean hasWind() {
+        return hasWind;
     }
 
     /**
@@ -147,7 +147,7 @@ public class PhysicsEngine {
      * </p>
      */
     public void changeWind(){
-        if (this.isWind) {
+        if (this.hasWind) {
             Vector random = new Vector(Math.random() / 3 - 1/3, Math.random() / 3 - 1/3);
             this.wind.add(random);
         }
