@@ -1,9 +1,11 @@
 package com.lllmtb.ui;
 
-public interface UI {
-    void show();
-    void mapUpdate();
-    void nextStep();
-    void movementMap();
-    void entitiesUpdapte();
+import com.lllmtb.engine.GameSettings;
+
+abstract class UI {
+    Object world;
+    abstract void init();
+    abstract GameSettings promptSettings();
+    abstract boolean readyToPlay();
+
 }
