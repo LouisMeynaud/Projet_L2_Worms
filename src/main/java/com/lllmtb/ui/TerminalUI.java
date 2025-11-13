@@ -1,5 +1,6 @@
 package com.lllmtb.ui;
 import com.lllmtb.engine.GameSettings;
+import org.jline.keymap.BindingReader;
 import org.jline.reader.LineReader;
 import org.jline.reader.LineReaderBuilder;
 import org.jline.terminal.Terminal;
@@ -82,7 +83,7 @@ public class TerminalUI extends UI {
     @Override
     GameSettings promptSettings() {
         String[] option = {"2","2"};
-        int index = MCQMenu.askInteractiveMCQ(terminal, "Number of Teams ", option);
+        int index = MCQMenu.askInteractiveMCQ(terminal, "Number of Teams ", option,new BindingReader(terminal.reader()));
         int nbTeams = Integer.parseInt(option[index]);
 
         String[] teamNames =  new String[nbTeams];
@@ -90,7 +91,7 @@ public class TerminalUI extends UI {
             teamNames[i] = reader.readLine("Team Name n°" + (i + 1) + " ");
         }
         option = new String[]{"2", "3", "4", "5", "6"};
-        index = MCQMenu.askInteractiveMCQ(terminal, "Number of Worms ", option);
+        index = MCQMenu.askInteractiveMCQ(terminal, "Number of Worms ", option,new BindingReader(terminal.reader()));
         int nbWorms = Integer.parseInt(option[index]);
         boolean generateMap = false;
         String mapFilePath = reader.readLine("The path to the map file ");

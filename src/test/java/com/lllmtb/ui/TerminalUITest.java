@@ -1,6 +1,7 @@
 package com.lllmtb.ui;
 
 import com.lllmtb.engine.GameSettings;
+import org.jline.keymap.BindingReader;
 import org.jline.reader.LineReader;
 import org.jline.reader.LineReaderBuilder;
 import org.jline.terminal.Terminal;
@@ -59,8 +60,8 @@ public class TerminalUITest {
         TerminalUI ui = new TerminalUI(terminal, reader);
         String[] option = {"2","2"};
         try(MockedStatic<MCQMenu> menu = Mockito.mockStatic(MCQMenu.class)) {
-            menu.when(() ->MCQMenu.askInteractiveMCQ(ui.terminal,"Number of Teams ",option )).thenReturn(0);
-            menu.when(() ->MCQMenu.askInteractiveMCQ(ui.terminal,"Number of Worms ",option )).thenReturn(1);
+            menu.when(() ->MCQMenu.askInteractiveMCQ(ui.terminal,"Number of Teams ",option,new BindingReader(terminal.reader()) )).thenReturn(0);
+            menu.when(() ->MCQMenu.askInteractiveMCQ(ui.terminal,"Number of Worms ",option ,new BindingReader(terminal.reader()))).thenReturn(1);
             when(ui.reader.readLine("Team Name n°1 ")).thenReturn("Thomas");
             when(ui.reader.readLine("Team Name n°2 ")).thenReturn("Louis");
             when(ui.reader.readLine("The path to the map file ")).thenReturn("File");

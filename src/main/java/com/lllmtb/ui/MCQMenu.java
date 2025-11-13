@@ -36,8 +36,7 @@ public class MCQMenu {
      * @param options  an array of option strings to display
      * @return the index of the selected option in the {@code options} array
      */
-    public static int askInteractiveMCQ(Terminal terminal, String question, String[] options) {
-        BindingReader bindingReader = new BindingReader(terminal.reader());
+    public static int askInteractiveMCQ(Terminal terminal, String question, String[] options, BindingReader bindingReader ) {
         KeyMap<String> keys = new KeyMap<>();
 
         keys.bind("up", "\033[A");     // flèche haut
