@@ -45,7 +45,7 @@ public class TerminalUITest {
         when(terminalBuilder.jna(true)).thenReturn(terminalBuilder);
         when(terminalBuilder.jansi(true)).thenReturn(terminalBuilder);
         when(terminalBuilder.encoding("UTF-8")).thenReturn(terminalBuilder);
-        when(terminalBuilder.build()).thenThrow(new IOException("Leo je te deteste"));
+        when(terminalBuilder.build()).thenThrow(new IOException("This Test is good"));
         try (MockedStatic<TerminalBuilder> mocked = mockStatic(TerminalBuilder.class)) {
             mocked.when(TerminalBuilder::builder).thenReturn(terminalBuilder);
             assertThrows(RuntimeException.class, () -> new TerminalUI());
