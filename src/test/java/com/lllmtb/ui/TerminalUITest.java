@@ -64,7 +64,7 @@ public class TerminalUITest {
             when(ui.reader.readLine("The path to the map file ")).thenReturn("File");
             when(ui.reader.readLine("Do you want the map to be a floating island? [y/N] ")).thenReturn("y");
             when(ui.reader.readLine("Do you want to enable the wind? [y/N] ")).thenReturn("y");
-            when(ui.reader.readLine("Press Enter to start the game...")).thenReturn(" ull");
+            when(ui.reader.readLine("Press Enter to start the game...")).thenReturn("x");
             GameSettings settings = ui.promptSettings();
             assertEquals(2, settings.nbTeams);
             assertEquals(2, settings.nbWorms);
@@ -100,6 +100,32 @@ public class TerminalUITest {
             assertEquals("Thomas", settings.teamNames[0]);
             assertEquals("Louis", settings.teamNames[1]);
             assertFalse(ui.readyToPlay());
+        }
+    }
+
+    @Test
+    public void testPromptSettings_loadMap() {
+        Terminal terminal = mock(Terminal.class);
+        LineReader reader = mock(LineReader.class);
+        TerminalUI ui = new TerminalUI(terminal, reader);
+        String[] option = {"2","2"};
+        try(MockedStatic<MCQMenu> menu = Mockito.mockStatic(MCQMenu.class)) {
+            menu.when(() ->MCQMenu.askInteractiveMCQ(ui.terminal,"Number of Teams ",option,new BindingReader(terminal.reader()) )).thenReturn(0);
+            menu.when(() ->MCQMenu.askInteractiveMCQ(ui.terminal,"Number of Worms ",option ,new BindingReader(terminal.reader()))).thenReturn(1);
+            when(ui.reader.readLine("Team Name n°1 ")).thenReturn("Thomas");
+            when(ui.reader.readLine("Team Name n°2 ")).thenReturn("Louis");
+            when(ui.reader.readLine("Do you want to load an existing map from a file? [y/N] ")).thenReturn("y");
+            when(ui.reader.readLine("The path to the map file ")).thenReturn("mapTest");
+            when(ui.reader.readLine("Do you want to enable the wind? [y/N] ")).thenReturn("zsdefrgh");
+            when(ui.reader.readLine("Press Enter to start the game...")).thenReturn("");
+            GameSettings settings = ui.promptSettings();
+            assertEquals(2, settings.nbTeams);
+            assertEquals(2, settings.nbWorms);
+            assertEquals("mapTest", settings.mapFileName);
+            assertFalse(settings.hasWind);
+            assertEquals("Thomas", settings.teamNames[0]);
+            assertEquals("Louis", settings.teamNames[1]);
+            assertTrue(ui.readyToPlay());
         }
     }
 }

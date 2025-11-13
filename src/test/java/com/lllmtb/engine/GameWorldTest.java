@@ -131,11 +131,9 @@ public class GameWorldTest {
         GameSettings settings = new GameSettings(0, new String[]{}, 0, false, null, false);
         GameWorld gw = new GameWorld(settings);
 
-        gw.stop();  // shouldn't do anything because loopThread == null - need to assert
-
         // run GameWorld.start() (test thread won't block)
         gw.start();
-        gw.start();  // shouldn't create a duplicate loop thread - need to assert
+        assertTrue(gw.loopThread.isAlive());
 
         // Let the loop run for a short time so it enters at least one iteration
         TimeUnit.MILLISECONDS.sleep(120);
@@ -156,5 +154,40 @@ public class GameWorldTest {
         GameWorld gw = new GameWorld(settings);
 
         assertThrows(NullPointerException.class, () -> gw.registerEntity(null));
+    }
+
+    @Test
+    void stopLoop_whenNotRunning() {
+        GameSettings settings = new GameSettings(0, new String[]{}, 0, false, null, false);
+        GameWorld gw = new GameWorld(settings);
+
+        assertNull(gw.loopThread);
+        gw.stop();  // shouldn't do anything because loopThread == null
+        assertNull(gw.loopThread);
+    }
+
+    @Test
+    void startLoop_whenAlreadyRunning() throws Exception {
+        GameSettings settings = new GameSettings(0, new String[]{}, 0, false, null, false);
+        GameWorld gw = new GameWorld(settings);
+
+        gw.start();
+        Thread first = gw.loopThread;
+        int beforeCount = Thread.activeCount();
+
+        gw.start(); // shouldn't create a new thread
+        Thread second = gw.loopThread;
+        int afterCount = Thread.activeCount();
+
+        // Assert same object
+        assertSame(first, second, "start() should not create a new thread if one is already running");
+
+        // Assert the thread count doesn't go up
+        assertEquals(beforeCount, afterCount, "start() must not create an additional running thread");
+
+        // Assert it is running
+        assertTrue(second.isAlive(), "Loop thread should still be alive after second start()");
+
+        gw.stop();
     }
 }
