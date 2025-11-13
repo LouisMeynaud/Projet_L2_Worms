@@ -47,7 +47,7 @@ public class SaveMap {
     //methode demandant le fichie d'enregistrement de save quand une map est crée
     public static String newMapSaveFile() {
         Scanner scanner = new Scanner(System.in);
-        System.out.println("entré le nom du fichier d'enregistrement");
+        System.out.println("Entrez le nom du fichier d'enregistrement");
 
         boolean existe = false;
         String files;
@@ -66,10 +66,9 @@ public class SaveMap {
                         System.out.println("Fichier déjà existant. Entrez O pour l’écraser, N pour en créer un nouveau.");
                                 if (scanner.nextLine().equals("N")) {
                             existe = true;
-                            System.out.println("merci d'entré un nouveaux nom de fichier");
+                            System.out.println("Merci d'entrer un nouveau nom de fichier");
                         }
                     }
-
                 }
             }
         } while (existe);
