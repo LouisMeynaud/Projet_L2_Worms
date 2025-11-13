@@ -4,7 +4,7 @@
 ![Pipeline status](https://moule.informatique.univ-paris-diderot.fr/3LMTB/Worms-mi4/badges/main/pipeline.svg)
 
 Version actuelle du jeu :
-[jar](https://moule.informatique.univ-paris-diderot.fr/3lmtb/worms-mi4/-/jobs/99584/artifacts/browse/target?job=package)
+[jar](http://moule.informatique.univ-paris-diderot.fr/3lmtb/worms-mi4/-/jobs/artifacts/main/browse/target?job=package)
 
 Ligne de code pour lancer le jeu :
 ```bash
