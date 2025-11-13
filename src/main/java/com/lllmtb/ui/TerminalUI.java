@@ -58,14 +58,10 @@ public class TerminalUI extends UI {
         }
     }
 
-    public TerminalUI(Terminal terminal, LineReader reader) {
+    protected TerminalUI(Terminal terminal, LineReader reader) {
         super();
         this.terminal = terminal;
         terminal.puts(InfoCmp.Capability.clear_screen);
-        terminal.writer().println("=== Welcome to WORMS \uD83E\uDEB1===");
-        terminal.writer().println("Terminal initialized");
-        terminal.writer().println();
-        terminal.writer().flush();
         this.reader = reader;
     }
 
