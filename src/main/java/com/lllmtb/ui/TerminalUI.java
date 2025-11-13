@@ -107,8 +107,7 @@ public class TerminalUI extends UI {
      */
     @Override
     public boolean readyToPlay() {
-        terminal.flush();
-        return !reader.readLine("Start Game ").isEmpty();
+        return reader.readLine("Press Enter to start the game...") != null;
     }
 
 

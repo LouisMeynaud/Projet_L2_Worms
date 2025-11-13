@@ -64,7 +64,7 @@ public class TerminalUITest {
             when(ui.reader.readLine("Do you want to load a map ? [y/N] ")).thenReturn("N");
             when(ui.reader.readLine("Do you want to generate Island ? [y/N] ")).thenReturn("y");
             when(ui.reader.readLine("Do you want to have wind? [y/N] ")).thenReturn("y");
-            when(ui.reader.readLine("Start Game ")).thenReturn("NotEmpty");
+            when(ui.reader.readLine("Press Enter to start the game...")).thenReturn(" ull");
             GameSettings settings = ui.promptSettings();
             assertEquals(2, settings.nbTeams);
             assertEquals(2, settings.nbWorms);
@@ -92,7 +92,7 @@ public class TerminalUITest {
             when(ui.reader.readLine("Do you want to load a map ? [y/N] ")).thenReturn("y");
             when(ui.reader.readLine("Do you want to generate Island ? [y/N] ")).thenReturn("y");
             when(ui.reader.readLine("Do you want to have wind? [y/N] ")).thenReturn("y");
-            when(ui.reader.readLine("Start Game ")).thenReturn("");
+            when(ui.reader.readLine("Press Enter to start the game...")).thenReturn(null);
             GameSettings settings = ui.promptSettings();
             assertEquals(2, settings.nbTeams);
             assertEquals(2, settings.nbWorms);
