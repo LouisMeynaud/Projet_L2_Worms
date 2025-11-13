@@ -21,13 +21,12 @@ public class GameWorld {
     private final PhysicsEngine physics;
     private final List<Team> teams;
     private final GameLoop gameLoop;
-    private Thread loopThread;
+    Thread loopThread;
 
     public GameWorld(GameSettings settings) {
         Map tmap = null;
 
         // Init Map (we'll have to handle this better once MapLoader throws catchable exceptions)
-        System.out.println(settings.mapFileName);
         if (settings.mapFileName != null) {
             try {
                 tmap = MapLoader.loadMatrix(settings.mapFileName);
@@ -39,7 +38,7 @@ public class GameWorld {
             tmap = GenerateMap.createMap(settings.floatingIsland ? GenerateMap.FLYINGWORLD : GenerateMap.WORLD);
         }
         this.map = tmap;
-        //System.out.println(this.map);
+        System.out.println(this.map);
 
         // Init EventBus
         this.bus = new EventBus();
@@ -49,6 +48,7 @@ public class GameWorld {
 
         // Init Teams
         this.teams = new ArrayList<>();
+        System.out.println("Creating the Teams...");
         for (int i = 0; i < settings.nbTeams; i++) {
             try {
                 Position p = new Position(0, 0);    // dummy position

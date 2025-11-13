@@ -92,12 +92,18 @@ public class TerminalUI extends UI {
         index = MCQMenu.askInteractiveMCQ(terminal, "Number of Worms ", option,new BindingReader(terminal.reader()));
         int nbWorms = Integer.parseInt(option[index]);
         String mapFilePath = null;
-        String genMap =reader.readLine("Do you want to load a map ? [y/N] ");
+        String genMap =reader.readLine("Do you want to load an existing map from a file? [y/N] ");
+        boolean generateIslands = false;
+        boolean hasWind = false;
         boolean generateMap = (genMap.equals("y"));
-        if (generateMap) {mapFilePath = reader.readLine("The path to the map file ");}
-        boolean generateIslands = reader.readLine("Do you want to generate Island ? [y/N] ").equals("y");
-        boolean isWind = reader.readLine("Do you want to have wind? [y/N] ").equals("y");
-        return new GameSettings(nbTeams,teamNames, nbWorms, isWind,mapFilePath, generateIslands);
+        if (generateMap) {
+            mapFilePath = reader.readLine("The path to the map file ");
+        }
+        else {
+            generateIslands = reader.readLine("Do you want the map to be a floating island? [y/N] ").equals("y");
+        }
+        hasWind = reader.readLine("Do you want to enable the wind? [y/N] ").equals("y");
+        return new GameSettings(nbTeams, teamNames, nbWorms, hasWind ,mapFilePath, generateIslands);
     }
 
     /**

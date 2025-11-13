@@ -46,12 +46,7 @@ public class GameWorldTest {
         );
 
         // Construct GameWorld using real GenerateMap + real PhysicsEngine
-        String inputSimule = "tempMap\n";   // temporarily spoof System.in
-        InputStream originalIn = System.in;
-        System.setIn(new ByteArrayInputStream(inputSimule.getBytes()));
         GameWorld gw = new GameWorld(settings);
-        System.setIn(originalIn);
-
 
         // Map should be set (GenerateMap must have returned a map)
         Map map = gw.getMap();
@@ -120,11 +115,7 @@ public class GameWorldTest {
                 true    // floating island -> FLYINGWORLD
         );
 
-        String inputSimule = "tempMap\n";   // temporarily spoof System.in
-        InputStream originalIn = System.in;
-        System.setIn(new ByteArrayInputStream(inputSimule.getBytes()));
         GameWorld gw = new GameWorld(settings);
-        System.setIn(originalIn);
 
         // Only one team created (index 0) and 3 worms registered for that team -> physics bodies = 3
         List<Team> teams = gw.getTeams();
@@ -138,25 +129,20 @@ public class GameWorldTest {
     void startRunsLoopAndStopStopsIt_whenStartedInSeparateThread() throws Exception {
         // use a small, simple world (no teams) so physics starts empty
         GameSettings settings = new GameSettings(0, new String[]{}, 0, false, null, false);
-        String inputSimule = "tempMap\n";   // temporarily spoof System.in
-        InputStream originalIn = System.in;
-        System.setIn(new ByteArrayInputStream(inputSimule.getBytes()));
         GameWorld gw = new GameWorld(settings);
-        System.setIn(originalIn);
 
-        // run GameWorld.start() in another thread so test thread doesn't block
-        Thread t = new Thread(gw::start, "gameworld-run-thread");
-        t.start();
+        gw.stop();  // shouldn't do anything because loopThread == null - need to assert
+
+        // run GameWorld.start() (test thread won't block)
+        gw.start();
+        gw.start();  // shouldn't create a duplicate loop thread - need to assert
 
         // Let the loop run for a short time so it enters at least one iteration
         TimeUnit.MILLISECONDS.sleep(120);
 
         // Now stop the loop (GameWorld.stop delegates to GameLoop.stop)
         gw.stop();
-
-        // Wait for the thread to terminate (give a timeout to avoid test hanging)
-        t.join(1000);
-        assertFalse(t.isAlive(), "Game loop thread should have terminated after stop()");
+        assertFalse(gw.loopThread.isAlive(), "Game loop thread should have terminated after stop()");
 
         // After stop, GameLoop.stop() clears bus and physics, so physics bodies should be empty
         assertTrue(gw.getPhysics().getBodies().isEmpty(), "Physics bodies should be cleared after stop()");
@@ -167,11 +153,7 @@ public class GameWorldTest {
     @Test
     void registerEntity_null_throwsNPE() {
         GameSettings settings = new GameSettings(0, new String[]{}, 0, false, null, false);
-        String inputSimule = "tempMap\n";   // temporarily spoof System.in
-        InputStream originalIn = System.in;
-        System.setIn(new ByteArrayInputStream(inputSimule.getBytes()));
         GameWorld gw = new GameWorld(settings);
-        System.setIn(originalIn);
 
         assertThrows(NullPointerException.class, () -> gw.registerEntity(null));
     }
