@@ -8,7 +8,7 @@ Version actuelle du jeu :
 
 Ligne de code pour lancer le jeu :
 ```bash
-ligne de code pour lancer le jeu
+java -jar worms-x.x-fat.jar
 ```
 
 ## Description :
@@ -30,7 +30,7 @@ Worms MI4, inpiré de Worms WMD de Team17, est un jeu de stratégie au tour par 
   - ...
 - Mode multijoueur sur une machine uniquement
 
-## Langages utilisés :
+## Technologies utilisées :
 - java 17 ([pour télécharger](https://www.oracle.com/java/technologies/javase/jdk17-archive-downloads.html))
 - Swing ([page wikipedia](https://en.wikipedia.org/wiki/Swing_(Java)))
 - AWT ([page wikipedia](https://en.wikipedia.org/wiki/Abstract_Window_Toolkit))
@@ -42,7 +42,7 @@ Worms MI4, inpiré de Worms WMD de Team17, est un jeu de stratégie au tour par 
 
 ## Comment contribuer ?
 
-Pour contribuer à ce projet, se référer à [se fichier](/CONTRIBUTING.md).
+Pour contribuer à ce projet, se référer à [ce fichier](/CONTRIBUTING.md).
 
 ## Licence
 
