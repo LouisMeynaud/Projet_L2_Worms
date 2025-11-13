@@ -10,6 +10,12 @@ public class GameEngine {
         GameWorld world = new GameWorld(settings);
         world.start();
         //With Interface
+//        TerminalUI ui = new TerminalUI();
+//        GameSettings settings2 = ui.promptSettings();
+//        GameWorld world2 = new GameWorld(settings2);
+//        if(ui.readyToPlay){
+//            world.start();
+//        }
 
     }
 }
