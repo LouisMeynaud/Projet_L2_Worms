@@ -53,7 +53,7 @@ public class TerminalUI extends UI {
             terminal.writer().flush();
 
         } catch (IOException e) {
-            throw new RuntimeException("Erreur d'initialisation du terminal JLine", e);
+            throw new RuntimeException("Initialization error", e);
         }
     }
 
@@ -91,11 +91,12 @@ public class TerminalUI extends UI {
         option = new String[]{"2", "3", "4", "5", "6"};
         index = MCQMenu.askInteractiveMCQ(terminal, "Number of Worms ", option,new BindingReader(terminal.reader()));
         int nbWorms = Integer.parseInt(option[index]);
-        //boolean generateMap = false;
-        String mapFilePath = reader.readLine("The path to the map file ");
-        boolean generateIslands = false;
-        boolean isWind = false;
-        mapFilePath = null;
+        String mapFilePath = null;
+        String genMap =reader.readLine("Do you want to load a map ? [y/N] ");
+        boolean generateMap = (genMap.equals("y"));
+        if (generateMap) {mapFilePath = reader.readLine("The path to the map file ");}
+        boolean generateIslands = reader.readLine("Do you want to generate Island ? [y/N] ").equals("y");
+        boolean isWind = reader.readLine("Do you want to have wind? [y/N] ").equals("y");
         return new GameSettings(nbTeams,teamNames, nbWorms, isWind,mapFilePath, generateIslands);
     }
 
