@@ -1,5 +1,6 @@
 package com.lllmtb.physics;
 
+import com.lllmtb.model.entity.team.Team;
 import com.lllmtb.terrain.map.Map;
 import com.lllmtb.terrain.map.MapLoader;
 
@@ -35,7 +36,7 @@ class CollisionTest {
     private PhysicsBody createTestBody(double x, double y, double vx, double vy) {
         Position pos = new Position(x, y); 
         Vector vec = new Vector(vx, vy); 
-        Worm testEntity = new Worm(pos); 
+        Worm testEntity = new Worm("José", new Team("Team", 1, pos), pos);
         
         PhysicsBody body = new PhysicsBody(testEntity, pos, vec, 0.5, 1, 1); 
         bodies.add(body);
@@ -384,8 +385,8 @@ class CollisionTest {
 
     private PhysicsBody createTestBullet(double x, double y) {
         Position position = new Position(x, y);
-        Worm owener = new Worm(position);
-        FireParams params = new FireParams(0, position, owener);
+        Worm owner = new Worm("José", new Team("Team", 1, position), position);
+        FireParams params = new FireParams(0, position, owner);
         BulletProjectile bullet = new BulletProjectile(params);
         PhysicsBody body = bullet.getBody();
         bodies.add(body);
