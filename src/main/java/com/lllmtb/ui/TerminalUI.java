@@ -79,7 +79,7 @@ public class TerminalUI extends UI {
      * @throws RuntimeException if reading input fails
      */
     @Override
-    GameSettings promptSettings() {
+    public GameSettings promptSettings() {
         String[] option = {"2","2"};
         int index = MCQMenu.askInteractiveMCQ(terminal, "Number of Teams ", option,new BindingReader(terminal.reader()));
         int nbTeams = Integer.parseInt(option[index]);
@@ -106,8 +106,9 @@ public class TerminalUI extends UI {
      * @return {@code true} by default; override to provide actual logic
      */
     @Override
-    boolean readyToPlay() {
-        return true;
+    public boolean readyToPlay() {
+        terminal.flush();
+        return !reader.readLine("Start Game ").isEmpty();
     }
 
 
