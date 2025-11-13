@@ -1,6 +1,7 @@
 package com.lllmtb.model.item.inventory;
 
 import com.lllmtb.model.entity.projectile.BulletProjectile;
+import com.lllmtb.model.entity.team.Team;
 import com.lllmtb.model.entity.worm.Worm;
 import com.lllmtb.model.item.weapon.*;
 import com.lllmtb.physics.Position;
@@ -17,7 +18,7 @@ public class InventoryTest {
     public static WeaponRegistry registry;
     public static GunWeapon gun = new GunWeapon();
     public static Position p = new Position(0, 0);
-    public static Worm w = new Worm(p);
+    public static Worm w = new Worm("José", new Team("Team", 1, p), p);
     public static FireParams fp = new FireParams(0, p, w);
 
     @BeforeEach

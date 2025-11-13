@@ -2,6 +2,7 @@ package com.lllmtb.physics;
 
 import com.lllmtb.model.entity.projectile.BulletProjectile;
 import com.lllmtb.model.entity.projectile.Projectile;
+import com.lllmtb.model.entity.team.Team;
 import com.lllmtb.model.item.weapon.FireParams;
 import com.lllmtb.terrain.map.Map;
 import com.lllmtb.terrain.map.MapLoader;
@@ -25,7 +26,7 @@ class PhysicsEngineTest {
         map = MapLoader.loadMatrix("mapTest");
         pE = new PhysicsEngine(map, true);
         p = new Position(4, 5);
-        w = new Worm(p);
+        w = new Worm("José", new Team("Team", 1, p), p);
         assertTrue(map.inMap(p));
         pB = w.getBody();
         pB.setVector(new Vector(-5, -10));
