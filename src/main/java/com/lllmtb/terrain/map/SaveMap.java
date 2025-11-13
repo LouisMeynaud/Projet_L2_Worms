@@ -46,26 +46,27 @@ public class SaveMap {
 
     //methode demandant le fichie d'enregistrement de save quand une map est crée
     public static String newMapSaveFile() {
-        boolean existe = false;
-        String files;
-        do {
-            existe = false;
-            files = "testMap.txt";;
+        // boolean existe = false;
+        // String files;
+        // do {
+        //     existe = false;
+        //     files = "testMap.txt";;
 
-            String dossier = "src/main/java/com/lllmtb/terrain/MapFile/";
+        //     String dossier = "src/main/java/com/lllmtb/terrain/MapFile/";
 
-            File folder = new File(dossier);
-            File[] fichiers = folder.listFiles();
+        //     File folder = new File(dossier);
+        //     File[] fichiers = folder.listFiles();
 
-            if (fichiers != null) {
-                for (File f : fichiers) {
-                    if (f.getName().equals(files)) {
-                        System.out.println("Fichier déjà existant. Entrez O pour l’écraser, N pour en créer un nouveau.");
-                    }
-                }
-            }
-        } while (existe);
-        return files;
+        //     if (fichiers != null) {
+        //         for (File f : fichiers) {
+        //             if (f.getName().equals(files)) {
+        //                 System.out.println("Fichier déjà existant. Entrez O pour l’écraser, N pour en créer un nouveau.");
+        //             }
+        //         }
+        //     }
+        // } while (existe);
+        // return files;
+        return "testMap.txt";
 
     }
 }
