@@ -96,7 +96,7 @@ public class TerminalUI extends UI {
         String mapFilePath = reader.readLine("The path to the map file ");
         boolean generateIslands = false;
         boolean isWind = false;
-        if (!generateMap){mapFilePath = null;}
+        mapFilePath = null;
         return new GameSettings(nbTeams,teamNames, nbWorms, isWind,mapFilePath, generateIslands);
     }
 

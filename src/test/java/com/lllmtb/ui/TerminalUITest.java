@@ -13,8 +13,7 @@ import org.mockito.Spy;
 import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 public class TerminalUITest {
    /* public static void main(String[] args) throws IOException {
@@ -39,11 +38,24 @@ public class TerminalUITest {
         assertEquals(ui.world,null);
 
     }
+    @Test
+    public void testConstructor3Catch() throws IOException {
+        TerminalBuilder terminalBuilder = mock(TerminalBuilder.class);
+        when(terminalBuilder.system(true)).thenReturn(terminalBuilder);
+        when(terminalBuilder.jna(true)).thenReturn(terminalBuilder);
+        when(terminalBuilder.jansi(true)).thenReturn(terminalBuilder);
+        when(terminalBuilder.encoding("UTF-8")).thenReturn(terminalBuilder);
+        when(terminalBuilder.build()).thenThrow(new IOException("Leo je te deteste"));
+        try (MockedStatic<TerminalBuilder> mocked = mockStatic(TerminalBuilder.class)) {
+            mocked.when(TerminalBuilder::builder).thenReturn(terminalBuilder);
+            assertThrows(RuntimeException.class, () -> new TerminalUI());
+        }
+    }
 
     @Test
     public void testPromptSettings() {
-        Terminal terminal = Mockito.mock(Terminal.class);
-        LineReader reader = Mockito.mock(LineReader.class);
+        Terminal terminal = mock(Terminal.class);
+        LineReader reader = mock(LineReader.class);
         TerminalUI ui = new TerminalUI(terminal, reader);
         String[] option = {"2","2"};
         try(MockedStatic<MCQMenu> menu = Mockito.mockStatic(MCQMenu.class)) {
@@ -62,6 +74,5 @@ public class TerminalUITest {
             assertEquals(settings.teamNames[1], "Louis");
             assertTrue(ui.readyToPlay());
         }
-
     }
 }
