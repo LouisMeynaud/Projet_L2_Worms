@@ -10,7 +10,7 @@ abstract class UI {
     abstract GameSettings promptSettings();
     abstract boolean readyToPlay();
 
-    public void setWorld(Object world) {
+    protected void setWorld(Object world) {
         this.world = world;
     }
 }
