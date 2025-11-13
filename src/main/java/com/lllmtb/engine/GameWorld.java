@@ -30,8 +30,29 @@ public class GameWorld {
         this.bus = new EventBus();
 
         // Init PhysicsEngine
-        this.physics = null; //new PhysicsEngine(settings.hasWind); - not implemented yet
+        this.physics = new PhysicsEngine(map, settings.hasWind);
 
-        this.gameLoop = new GameLoop();
+        // Init GameLoop
+        this.gameLoop = new GameLoop(this);
+    }
+
+    public Map getMap() {
+        return map;
+    }
+
+    public EventBus getBus() {
+        return bus;
+    }
+
+    public PhysicsEngine getPhysics() {
+        return physics;
+    }
+
+    public void start() {
+        this.gameLoop.run();
+    }
+
+    public void stop() {
+        this.gameLoop.stop();
     }
 }
