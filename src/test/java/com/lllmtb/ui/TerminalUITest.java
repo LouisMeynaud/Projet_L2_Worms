@@ -12,8 +12,7 @@ import org.mockito.Spy;
 
 import java.io.IOException;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -61,6 +60,7 @@ public class TerminalUITest {
             assertEquals(settings.mapFilePath, null);
             assertEquals(settings.teamNames[0], "Thomas");
             assertEquals(settings.teamNames[1], "Louis");
+            assertTrue(ui.readyToPlay());
         }
 
     }
