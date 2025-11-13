@@ -115,7 +115,6 @@
                 <configuration>
                     <excludes>
                         <exclude>com/lllmtb/Main.class</exclude>
-                        <exclude>com/lllmtb/ui/TerminalUI.class</exclude>
                         <exclude>com/lllmtb/ui/MCQMenu.class</exclude>
                     </excludes>
                 </configuration>
