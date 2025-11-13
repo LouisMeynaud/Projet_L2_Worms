@@ -14,15 +14,13 @@ public class TerminalUI extends UI {
     LineReader reader;
     public TerminalUI(){
         super();
-        try {
+        try(Terminal terminal = TerminalBuilder.builder().system(true)
+                .jna(true)
+                .jansi(true)
+                .encoding("UTF-8")
+                .build()) {
             // Crée un terminal JLine avec support des couleurs et de la saisie
-            this.terminal = TerminalBuilder.builder()
-                    .system(true)
-                    .jna(true)
-                    .jansi(true)
-                    .encoding("UTF-8")
-                    .build();
-
+            this.terminal = terminal;
             // Initialise un LineReader pour les entrées utilisateur interactives
             this.reader = LineReaderBuilder.builder()
                     .terminal(terminal)
@@ -43,32 +41,23 @@ public class TerminalUI extends UI {
 
     @Override
     GameSettings promptSettings() {
-        String[] option = {"2"};
-        int index = MCQMenu.askInteractiveMCQ(terminal, "Number of Teams", option);
+        String[] option = {"2","2"};
+        int index = MCQMenu.askInteractiveMCQ(terminal, "Number of Teams ", option);
         int nbTeams = Integer.parseInt(option[index]);
 
         String[] teamNames =  new String[nbTeams];
         for (int i = 0; i < nbTeams; i++) {
-            teamNames[i] = reader.readLine("Team Name n°" + (i + 1));
+            teamNames[i] = reader.readLine("Team Name n°" + (i + 1) + " ");
         }
         option = new String[]{"2", "3", "4", "5", "6"};
-        index = MCQMenu.askInteractiveMCQ(terminal, "Number of Worms", option);
+        index = MCQMenu.askInteractiveMCQ(terminal, "Number of Worms ", option);
         int nbWorms = Integer.parseInt(option[index]);
         boolean generateMap = false;
-        String mapFilePath = reader.readLine("The path to the map file");
+        String mapFilePath = reader.readLine("The path to the map file ");
         boolean generateIslands = false;
         boolean isWind = false;
         if (!generateMap){mapFilePath = null;}
-        terminal.writer().println(nbWorms);
-        terminal.writer().println(mapFilePath);
-        terminal.writer().println(isWind);
-        terminal.writer().println(nbTeams);
-        for (int i = 0; i < nbTeams; i++) {
-            terminal.writer().println(teamNames[i]);
-        }
-
         return new GameSettings(nbTeams,teamNames, nbWorms, isWind,mapFilePath, generateIslands);
-
     }
 
     @Override
