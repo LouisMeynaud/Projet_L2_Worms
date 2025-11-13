@@ -3,7 +3,6 @@ package com.lllmtb.engine;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-
 public class GameSettingsTest
 {
     @Test
