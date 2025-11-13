@@ -104,7 +104,7 @@
                 </executions>
                 <configuration>
                     <excludes>
-                        <exclude>com/lllmtb/Main.class</exclude>
+                        <exclude>com/lllmtb/engine/GameEngine.class</exclude>
                     </excludes>
                 </configuration>
             </plugin>
@@ -124,7 +124,7 @@
                             </descriptorRefs>
                             <archive>
                                 <manifest>
-                                    <mainClass>com.lllmtb.Main</mainClass>
+                                    <mainClass>com.lllmtb.engine.GameEngine</mainClass>
                                 </manifest>
                             </archive>
                             <finalName>${project.artifactId}-${project.version}-fat</finalName>
