@@ -43,20 +43,9 @@ public class TerminalUI extends UI {
      */
     public TerminalUI(){
         super();
-        try(Terminal terminal = TerminalBuilder.builder().system(true)
-                .jna(true)
-                .jansi(true)
-                .encoding("UTF-8")
-                .build()) {
-            // Crée un terminal JLine avec support des couleurs et de la saisie
+        try(Terminal terminal = TerminalBuilder.builder().system(true).jna(true).jansi(true).encoding("UTF-8").build()) {
             this.terminal = terminal;
-            // Initialise un LineReader pour les entrées utilisateur interactives
-            this.reader = LineReaderBuilder.builder()
-                    .terminal(terminal)
-                    .appName("WORMS Game")
-                    .build();
-
-            // Efface l’écran au démarrage
+            this.reader = LineReaderBuilder.builder().terminal(terminal).appName("WORMS Game").build();
             terminal.puts(InfoCmp.Capability.clear_screen);
             terminal.writer().println("=== Welcome to WORMS \uD83E\uDEB1===");
             terminal.writer().println("Terminal initialized");

@@ -5,8 +5,37 @@ import org.jline.keymap.KeyMap;
 import org.jline.terminal.Terminal;
 import org.jline.utils.InfoCmp;
 
+
+/**
+ * Utility class for displaying interactive multiple-choice questions (MCQs) in the terminal.
+ * <p>
+ * This class uses JLine to create a navigable menu where the user can select options using
+ * arrow keys or Enter. The currently selected option is highlighted.
+ * </p>
+ *
+ * <p>
+ * Example usage:
+ * <pre>{@code
+ * String[] options = {"Option 1", "Option 2", "Option 3"};
+ * int selected = MCQMenu.askInteractiveMCQ(terminal, "Choose an option:", options);
+ * }</pre>
+ * </p>
+ */
 public class MCQMenu {
 
+    /**
+     * Displays an interactive multiple-choice question in the given terminal.
+     * <p>
+     * The user can navigate the options using the up and down arrow keys.
+     * The selection is confirmed by pressing the right arrow key or Enter.
+     * The selected option index is then returned.
+     * </p>
+     *
+     * @param terminal the JLine {@link Terminal} to use for displaying the menu and reading input
+     * @param question the question to display above the options
+     * @param options  an array of option strings to display
+     * @return the index of the selected option in the {@code options} array
+     */
     public static int askInteractiveMCQ(Terminal terminal, String question, String[] options) {
         BindingReader bindingReader = new BindingReader(terminal.reader());
         KeyMap<String> keys = new KeyMap<>();
