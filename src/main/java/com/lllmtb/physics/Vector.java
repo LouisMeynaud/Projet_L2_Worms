@@ -42,6 +42,10 @@ public class Vector {
         return new Position(pos.getX()+ this.x*time, pos.getY()+ this.y*time );
     }
 
+    public Vector copy(){
+        return new Vector(this.getX(), this.getY());
+    }
+
     @Override
     public String toString() {
         return "Vect("+ this.x + "," + this.y + ")";

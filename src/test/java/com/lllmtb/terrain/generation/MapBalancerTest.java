@@ -69,14 +69,6 @@ void testLeftThickerReduceLowLineBranch() {
     assertEquals(3, low[3]);  // 25 - 22 = 3
 }
 
-
-
-
-
-
-
-
-  
     @Test
     void testLeftThickerCannotReduceLowLine() {
         int[] low = {2,3,5,5};
@@ -130,5 +122,10 @@ void testLeftThickerReduceLowLineBranch() {
         MapBalancer.leftRightBalancing(low, high, height);
         assertArrayEquals(new int[]{3,3,3,3}, high);
         assertArrayEquals(new int[]{1,1,1,1}, low);
+    }
+
+    @Test
+    void testConstructeur(){
+        new MapBalancer(); //test inutile mais permet de couvrir la ligne declarant la classe;
     }
 }
