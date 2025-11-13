@@ -38,7 +38,7 @@ public class GameWorld {
             tmap = GenerateMap.createMap(settings.floatingIsland ? GenerateMap.FLYINGWORLD : GenerateMap.WORLD);
         }
         this.map = tmap;
-        System.out.println(this.map);
+        //System.out.println(this.map);
 
         // Init EventBus
         this.bus = new EventBus();
@@ -66,6 +66,7 @@ public class GameWorld {
 
         // Init GameLoop
         this.gameLoop = new GameLoop(this);
+        System.out.println("Game initialised");
     }
 
     public Map getMap() {
@@ -85,6 +86,7 @@ public class GameWorld {
     }
 
     public void start() {
+        System.out.println("Starting the game loop...");
         this.gameLoop.run();
     }
 
