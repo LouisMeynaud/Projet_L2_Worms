@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 public class TerminalUITest {
-   /* public static void main(String[] args) throws IOException {
+    /*public static void main(String[] args) throws IOException {
        Terminal terminal = TerminalBuilder.builder().system(true).jna(true).jansi(true).encoding("UTF-8").build();
         LineReader reader = LineReaderBuilder.builder().terminal(terminal).appName("WORMS Game").build();
         TerminalUI ui = new TerminalUI(terminal, reader);
