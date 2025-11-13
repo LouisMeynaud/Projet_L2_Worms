@@ -119,13 +119,15 @@
                         </goals>
                         <configuration>
                             <descriptorRefs>
-                                <descriptorRef>fat</descriptorRef>
+                                <descriptorRef>jar-with-dependencies</descriptorRef>
                             </descriptorRefs>
                             <archive>
                                 <manifest>
                                     <mainClass>com.lllmtb.Main</mainClass>
                                 </manifest>
                             </archive>
+                            <finalName>${project.artifactId}-${project.version}-fat</finalName>
+                            <appendAssemblyId>false</appendAssemblyId>
                         </configuration>
                     </execution>
                 </executions>
