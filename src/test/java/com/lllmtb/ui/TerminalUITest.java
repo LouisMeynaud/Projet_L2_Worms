@@ -9,10 +9,7 @@ import org.jline.terminal.TerminalBuilder;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
-import org.mockito.Spy;
-
 import java.io.IOException;
-
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -27,7 +24,7 @@ public class TerminalUITest {
     @Test
     public void testConstructor() {
         TerminalUI ui = new TerminalUI();
-        assertEquals(ui.world,null);
+        assertNull(ui.world);
         assertInstanceOf(Terminal.class, ui.terminal);
         assertInstanceOf(LineReader.class, ui.reader);
     }
@@ -36,7 +33,7 @@ public class TerminalUITest {
         Terminal terminal = TerminalBuilder.builder().system(true).jna(true).jansi(true).encoding("UTF-8").build();
         LineReader reader = LineReaderBuilder.builder().terminal(terminal).appName("WORMS Game").build();
         TerminalUI ui = new TerminalUI(terminal, reader);
-        assertEquals(ui.world,null);
+        assertNull(ui.world);
 
     }
     @Test
@@ -66,13 +63,13 @@ public class TerminalUITest {
             when(ui.reader.readLine("Team Name n°2 ")).thenReturn("Louis");
             when(ui.reader.readLine("The path to the map file ")).thenReturn("File");
             GameSettings settings = ui.promptSettings();
-            assertEquals(settings.nbTeams, 2);
-            assertEquals(settings.nbWorms, 2);
-            assertEquals(settings.generateIslands, false);
-            assertEquals(settings.isWind, false);
-            assertEquals(settings.mapFilePath, null);
-            assertEquals(settings.teamNames[0], "Thomas");
-            assertEquals(settings.teamNames[1], "Louis");
+            assertEquals(2, settings.nbTeams);
+            assertEquals(2, settings.nbWorms);
+            assertFalse(settings.generateIslands);
+            assertFalse(settings.isWind);
+            assertNull(settings.mapFilePath);
+            assertEquals("Thomas", settings.teamNames[0]);
+            assertEquals("Louis", settings.teamNames[1]);
             assertTrue(ui.readyToPlay());
         }
     }

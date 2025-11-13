@@ -6,10 +6,8 @@ import org.jline.reader.LineReaderBuilder;
 import org.jline.terminal.Terminal;
 import org.jline.terminal.TerminalBuilder;
 import org.jline.utils.InfoCmp;
-
-import javax.sound.sampled.Line;
 import java.io.IOException;
-import java.io.Reader;
+
 
 /**
  * Terminal-based user interface for the WORMS game.
@@ -93,7 +91,7 @@ public class TerminalUI extends UI {
         option = new String[]{"2", "3", "4", "5", "6"};
         index = MCQMenu.askInteractiveMCQ(terminal, "Number of Worms ", option,new BindingReader(terminal.reader()));
         int nbWorms = Integer.parseInt(option[index]);
-        boolean generateMap = false;
+        //boolean generateMap = false;
         String mapFilePath = reader.readLine("The path to the map file ");
         boolean generateIslands = false;
         boolean isWind = false;
