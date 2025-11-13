@@ -16,6 +16,7 @@ public class GameLoop implements Runnable {
             long now = System.nanoTime();
             long elapsedMs = (now - last) / 1_000_000;
             System.out.println(elapsedMs);
+            System.out.println(world.getPhysics().getBodies().size());
             last = now;
 
             // 1) process queued external events (eg. input)
@@ -36,5 +37,7 @@ public class GameLoop implements Runnable {
 
     public void stop() {
         running = false;
+        world.getBus().clear();
+        world.getPhysics().clear();
     }
 }
