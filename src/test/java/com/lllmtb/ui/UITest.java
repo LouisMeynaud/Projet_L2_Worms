@@ -10,4 +10,10 @@ public class UITest {
             UI ui = new TerminalUI();
             assertEquals(null,ui.world);
         }
+        @Test
+        public void testSetWorld() {
+            UI ui = new TerminalUI();
+            ui.setWorld(null);
+            assertEquals(null,ui.world);
+        }
 }
