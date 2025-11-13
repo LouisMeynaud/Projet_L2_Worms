@@ -46,4 +46,3 @@ package:
   only:
     - main
     - dev
-    - package-jar
