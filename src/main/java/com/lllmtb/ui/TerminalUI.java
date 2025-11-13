@@ -6,6 +6,7 @@ import org.jline.terminal.Terminal;
 import org.jline.terminal.TerminalBuilder;
 import org.jline.utils.InfoCmp;
 
+import javax.sound.sampled.Line;
 import java.io.IOException;
 import java.io.Reader;
 
@@ -27,10 +28,10 @@ import java.io.Reader;
 
 public class TerminalUI extends UI {
      /** The terminal used for displaying output and reading input. */
-    Terminal terminal;
+    protected Terminal terminal;
 
      /** The line reader used for interactive input from the user. */
-    LineReader reader;
+    protected LineReader reader;
 
     /**
      * Constructs a new {@code TerminalUI}, initializing the terminal and line reader.
@@ -57,6 +58,16 @@ public class TerminalUI extends UI {
         }
     }
 
+    public TerminalUI(Terminal terminal, LineReader reader) {
+        super();
+        this.terminal = terminal;
+        terminal.puts(InfoCmp.Capability.clear_screen);
+        terminal.writer().println("=== Welcome to WORMS \uD83E\uDEB1===");
+        terminal.writer().println("Terminal initialized");
+        terminal.writer().println();
+        terminal.writer().flush();
+        this.reader = reader;
+    }
 
     /**
      * Prompts the user for the game settings.
