@@ -80,8 +80,8 @@ public class Map {
     /**
      * Setter modifying a case of the matrix.
      * 
-     * @param position, the position or the tile will be changed
-     * @param TILES , the Tile by which the case will be changed
+     * @param position the position or the tile will be changed
+     * @param tile the Tile by which the case will be changed
      */
     public void setTile(Position position, Tile tile) {
         Position posMatrix = this.cooMapToCooMatrix(position);
@@ -90,8 +90,8 @@ public class Map {
     }
     /**
      *
-     * @param TILES    The Tile whose presence we are checking.
      * @param position the checking position
+     * @param tile the Tile whose presence we are checking.
      */
     public boolean isTileAt(Position position, Tile tile) {
 
@@ -99,10 +99,20 @@ public class Map {
     }
 
     /**
-     * verify that the x,y coordinate is indeed within the map (the matrix)
+     * verify if the x,y coordinate is in the map (the matrix)
+     * @param position , the checking position
      */
-    public boolean inMap(double x, double y) {
-        return (0 <= x && 0 <= y && x < this.width && y < this.height);
+    public boolean inMap(Position position) {
+        position = this.cooMapToCooMatrix(position);
+        return (0 <= position.getX() && 0 <= position.getY() && position.getX() < this.width && position.getY() < this.height);
+    }
+
+    public boolean isSolid(Position position){
+        Tile tile = this.getTile(position);
+        switch(tile){
+            case DIRT : return true;
+            default: return false; //add other block in future
+        }
     }
 
 }

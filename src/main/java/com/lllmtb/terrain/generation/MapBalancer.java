@@ -15,7 +15,7 @@ public class MapBalancer {
      * @param height the height of the map (allows highLine not to exceed it);
      * 
      */
-    public static void leftRightBalancing(final int[] lowLine, final int[] hightLine, final int height) {
+    protected static void leftRightBalancing(final int[] lowLine, final int[] hightLine, final int height) {
         final int width = hightLine.length;
         final int mid = width / 2;
         final int diffAccepted = 3;
@@ -52,7 +52,7 @@ public class MapBalancer {
      * @param epaisseur the current thickness of the card
      * @param hightLine the upper line which will be increased in order to obtain the desired minimum thickness
      */
-    public static void thicknessBalencer(final int thicknessMin, final int epaisseur, final int[] lowLine) {
+    protected static void thicknessBalencer(final int thicknessMin, final int epaisseur, final int[] lowLine) {
         if (thicknessMin > epaisseur) {
             for (int i = 0; i < lowLine.length; i++) {
                 if (lowLine[i] - (thicknessMin - epaisseur) >0) {
@@ -70,7 +70,7 @@ public class MapBalancer {
      * @param end the end of the area where the calculation is desired
      * @return the card thickness in the form of an integer
      */
-    public static int averageThickness(final int[] lowLine, final int[] hightLine, final int start, final int end) { // epaisseur moyenne
+    protected static int averageThickness(final int[] lowLine, final int[] hightLine, final int start, final int end) { // epaisseur moyenne
         int somme = 0;
         for (int x = start; x < end; x++) {
             somme += ( hightLine[x]-lowLine[x]);
