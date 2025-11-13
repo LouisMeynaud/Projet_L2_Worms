@@ -96,11 +96,11 @@ public class TerminalUI extends UI {
     /**
      * Checks if the user is ready to start the game.
      *
-     * @return {@code false} by default; override to provide actual logic
+     * @return {@code true} by default; override to provide actual logic
      */
     @Override
     boolean readyToPlay() {
-        return false;
+        return true;
     }
 
 

@@ -59,10 +59,8 @@ public class MCQMenu {
                 else
                     terminal.writer().printf("  %s%n", options[i]);
             }
-            terminal.writer().println("boucle1");
             terminal.flush();
             key = bindingReader.readBinding(keys);
-            terminal.writer().println("boucle2");
             if ("up".equals(key)) {
                 selected = (selected - 1 + options.length) % options.length;
             } else if ("down".equals(key)) {
