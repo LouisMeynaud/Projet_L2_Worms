@@ -8,6 +8,8 @@ import java.io.InputStream;
 import org.junit.jupiter.api.Test;
 import com.lllmtb.terrain.map.Map;
 
+
+
 public class GenerateMapTest {
     @Test
     public void createMapTest() {
@@ -18,7 +20,7 @@ public class GenerateMapTest {
         System.setIn(new ByteArrayInputStream(inputSimule.getBytes())); // getbytes transforme le string en tableau d' octet pour byteArrayInpustream qui prend un tableau d'octect
         ConfigMap configtest = new ConfigMap(60, 100, 2, 5, 5, 0, false, 20,40);
         Map m =GenerateMap.createMap(configtest);
-        assertEquals(60, m.getWidth());
+        assertEquals(60, m.getWidth());//grand valeur pour bien tester les ligne qui retrie les tableau
         assertEquals(100, m.getHeight());
         assertEquals("fichierAEcraserTest.txt", m.getFilesTxt());
         // On restaure System.in
@@ -46,5 +48,20 @@ public class GenerateMapTest {
     @Test
     void DeclaClassTest(){
         new GenerateMap(); // ligne inutile car class static mais permet de couvrir la ligne de declaration de la classe
+    }
+
+    @Test
+    void TriHightLineLowLineTest(){
+        int[] highLine = {8,2,4};
+        int[] lowLine = {7,5,3};
+        int[] highLineBis = {8,5,4};
+        int[] lowLineBis = {7,2,3};
+        ConfigMap config = new ConfigMap(3, 5, 0, 0, 0, 0, false, 0, 40);
+        GenerateMap.TriHightLineLowLine(highLine,lowLine,config);
+        for (int i = 0; i < 3; i++) {
+        assertEquals(highLine[i], highLineBis[i]);
+        assertEquals(lowLine[i], lowLineBis[i]);
+        }
+        
     }
 }
