@@ -21,6 +21,7 @@ public class GameWorld {
     private final PhysicsEngine physics;
     private final List<Team> teams;
     private final GameLoop gameLoop;
+    private Thread loopThread;
 
     public GameWorld(GameSettings settings) {
         Map tmap = null;
@@ -86,12 +87,23 @@ public class GameWorld {
     }
 
     public void start() {
+        if (loopThread != null && loopThread.isAlive()) return;
         System.out.println("Starting the game loop...");
-        this.gameLoop.run();
+        loopThread = new Thread(gameLoop, "gameloop");
+        loopThread.start();
     }
 
     public void stop() {
-        this.gameLoop.stop();
+        System.out.println("Stopping the game loop...");
+        gameLoop.stop();
+        if (loopThread != null) {
+            loopThread.interrupt();
+            try {
+                loopThread.join(2000);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+        }
     }
 
     public void registerEntity(@NonNull Entity e) {
