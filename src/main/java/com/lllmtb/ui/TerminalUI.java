@@ -118,6 +118,11 @@ public class TerminalUI extends UI {
 
     @Override
     public void close() {
+        try {
+            terminal.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }

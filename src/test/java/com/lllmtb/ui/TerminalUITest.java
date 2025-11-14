@@ -128,4 +128,13 @@ public class TerminalUITest {
             assertTrue(ui.readyToPlay());
         }
     }
+
+    @Test
+    public void testCloseUI() throws IOException {
+        Terminal terminal = mock(Terminal.class);
+        LineReader reader = mock(LineReader.class);
+        TerminalUI ui = new TerminalUI(terminal, reader);
+        assertDoesNotThrow(ui::close);
+        verify(terminal, times(1)).close();
+    }
 }
