@@ -9,6 +9,8 @@ import org.jline.reader.LineReader;
 import org.jline.reader.LineReaderBuilder;
 import org.jline.terminal.Terminal;
 import org.jline.terminal.TerminalBuilder;
+import org.jline.utils.AttributedString;
+import org.jline.utils.AttributedStyle;
 import org.jline.utils.InfoCmp;
 
 import java.io.IOException;
@@ -30,9 +32,13 @@ public class ConsoleUI extends UI {
 
     public ConsoleUI() {
         try {
-            this.terminal = TerminalBuilder.builder().build();
+            this.terminal = TerminalBuilder.builder().system(true).build();
             terminal.puts(InfoCmp.Capability.clear_screen);
-            terminal.writer().println("=== Welcome to WORMS \uD83E\uDEB1===");
+            // styling does not seem to work - needs fix
+            AttributedString title = new AttributedString("      Welcome to WORMS \uD83E\uDEB1      ", AttributedStyle.BOLD.foreground(AttributedStyle.GREEN));
+            terminal.writer().println(title);
+            terminal.writer().println();
+            terminal.writer().flush();
         } catch (IOException e) {
             System.err.println("Error while initialising JLine Terminal");
         }
@@ -192,13 +198,6 @@ public class ConsoleUI extends UI {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    public static void main(String[] args) throws IOException {
-        UI ui = new ConsoleUI();
-        ui.promptSettings();
-        if(ui.readyToPlay()) System.out.println("PLAY");
-        ui.close();
     }
 }
 
