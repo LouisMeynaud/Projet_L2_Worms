@@ -117,9 +117,7 @@ public class TerminalUI extends UI {
     }
 
     @Override
-    void close() {
-
+    public void close() {
     }
-
 
 }

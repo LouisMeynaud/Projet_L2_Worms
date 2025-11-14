@@ -39,7 +39,7 @@ public class ConsoleUI extends UI {
     }
 
     @Override
-    GameSettings promptSettings() {
+    public GameSettings promptSettings() {
         try {
             terminal.writer().println("=== GAME SETTINGS ===");
             int nbTeams = promptNbTeams();
@@ -180,13 +180,13 @@ public class ConsoleUI extends UI {
     }
 
     @Override
-    boolean readyToPlay() {
+    public boolean readyToPlay() {
         LineReader reader = LineReaderBuilder.builder().terminal(terminal).appName("WORMS Game").build();
         return reader.readLine("Press Enter to start the game...") != null;
     }
 
     @Override
-    void close() {
+    public void close() {
         try {
             terminal.close();
         } catch (IOException e) {
