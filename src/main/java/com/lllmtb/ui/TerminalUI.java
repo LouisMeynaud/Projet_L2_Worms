@@ -116,5 +116,10 @@ public class TerminalUI extends UI {
         return reader.readLine("Press Enter to start the game...") != null;
     }
 
+    @Override
+    void close() {
+
+    }
+
 
 }

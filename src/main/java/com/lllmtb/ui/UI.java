@@ -1,16 +1,21 @@
 package com.lllmtb.ui;
 
 import com.lllmtb.engine.GameSettings;
+import com.lllmtb.engine.GameWorld;
+
+import java.io.IOException;
 
 abstract class UI {
-    protected Object world;
+    protected GameWorld world;
     public UI(){
         world = null;
     }
-    abstract GameSettings promptSettings();
+    abstract GameSettings promptSettings() throws IOException;
     abstract boolean readyToPlay();
 
-    protected void setWorld(Object world) {
+    protected void setWorld(GameWorld world) {
         this.world = world;
     }
+
+    abstract void close();
 }
