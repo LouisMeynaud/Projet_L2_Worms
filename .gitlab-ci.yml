@@ -46,3 +46,4 @@ package:
   only:
     - main
     - dev
+    - engine/game

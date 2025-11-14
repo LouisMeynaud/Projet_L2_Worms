@@ -115,6 +115,7 @@
                 <configuration>
                     <excludes>
                         <exclude>com/lllmtb/engine/GameEngine.class</exclude>
+                        <exclude>com/lllmtb/ui/ConsoleUI.class</exclude>
                     </excludes>
                 </configuration>
             </plugin>
