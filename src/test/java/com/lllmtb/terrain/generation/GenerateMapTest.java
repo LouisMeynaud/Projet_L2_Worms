@@ -22,7 +22,7 @@ public class GenerateMapTest {
         Map m =GenerateMap.createMap(configtest);
         assertEquals(60, m.getWidth());//grand valeur pour bien tester les ligne qui retrie les tableau
         assertEquals(100, m.getHeight());
-        assertEquals("fichierAEcraserTest.txt", m.getFilesTxt());
+        assertEquals("testMap.txt", m.getFilesTxt());
         // On restaure System.in
         System.setIn(originalIn);
 
@@ -39,7 +39,7 @@ public class GenerateMapTest {
         Map m =GenerateMap.createMap(configtest);
         assertEquals(60, m.getWidth());
         assertEquals(100, m.getHeight());
-        assertEquals("nomTest.txt", m.getFilesTxt());
+        assertEquals("testMap.txt", m.getFilesTxt());
         // On restaure System.in
         System.setIn(originalIn);
 

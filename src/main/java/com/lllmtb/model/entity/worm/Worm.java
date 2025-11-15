@@ -133,4 +133,9 @@ public class Worm extends Entity {
             this.alive = false;
         }
     }
+
+    @Override
+    public String toString() {
+        return "Worm[" + uuid + "]{ " + (alive ? "♥" : "☠") + " \"" + name + "\" in team \"" + team.name + "\" }";
+    }
 }

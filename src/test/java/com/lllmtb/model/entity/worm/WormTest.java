@@ -69,5 +69,15 @@ public class WormTest {
         assertEquals(pos, worm.getBody().getPos());
     }
 
+    @Test
+    public void testToString() {
+        assertDoesNotThrow(() -> worm.toString());
+        assertTrue(worm.isAlive());
+        assertTrue(worm.toString().contains("♥"));
+        worm.getStats().setHp(0);
+        worm.setDeath();
+        assertFalse(worm.isAlive());
+        assertTrue(worm.toString().contains("☠"));
+    }
 
 }

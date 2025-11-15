@@ -17,7 +17,12 @@
         <dependency>
             <groupId>org.jline</groupId>
             <artifactId>jline</artifactId>
-            <version>3.30.0</version>
+            <version>3.30.6</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jline</groupId>
+            <artifactId>jline-console-ui</artifactId>
+            <version>3.30.6</version>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
@@ -109,7 +114,8 @@
                 </executions>
                 <configuration>
                     <excludes>
-                        <exclude>com/lllmtb/Main.class</exclude>
+                        <exclude>com/lllmtb/engine/GameEngine.class</exclude>
+                        <exclude>com/lllmtb/ui/ConsoleUI.class</exclude>
                     </excludes>
                 </configuration>
             </plugin>
@@ -129,7 +135,7 @@
                             </descriptorRefs>
                             <archive>
                                 <manifest>
-                                    <mainClass>com.lllmtb.Main</mainClass>
+                                    <mainClass>com.lllmtb.engine.GameEngine</mainClass>
                                 </manifest>
                             </archive>
                             <finalName>${project.artifactId}-${project.version}-fat</finalName>

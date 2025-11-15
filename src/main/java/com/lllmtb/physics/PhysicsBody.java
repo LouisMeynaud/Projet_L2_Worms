@@ -50,5 +50,10 @@ public class PhysicsBody {
     public void setVector(Vector vector) {
         this.vector = vector;
     }
+
+    @Override
+    public String toString() {
+        return "Body{ " + position + " | " + vector + " }";
+    }
 }
 

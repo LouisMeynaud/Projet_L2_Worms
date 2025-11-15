@@ -10,15 +10,15 @@ public class GameSettingsTest
         int nbTeams = 2;
         String[] TeamNames = {"Java", "Python"};
         int numberWorms =4;
-        boolean isWind = true;
-        String FileMapPath = "tkt.txt";
+        boolean hasWind = true;
+        String FileMapName = "tkt.txt";
         boolean GeneratedIsland = true;
-        GameSettings settings = new GameSettings(nbTeams, TeamNames, numberWorms, isWind, FileMapPath, GeneratedIsland);
+        GameSettings settings = new GameSettings(nbTeams, TeamNames, numberWorms, hasWind, FileMapName, GeneratedIsland);
         assertEquals(nbTeams, settings.nbTeams);
         assertEquals(TeamNames, settings.teamNames);
         assertEquals(numberWorms, settings.nbWorms);
-        assertEquals(isWind, settings.isWind);
-        assertEquals(FileMapPath, settings.mapFilePath);
-        assertEquals(GeneratedIsland, settings.generateIslands);
+        assertEquals(hasWind, settings.hasWind);
+        assertEquals(FileMapName, settings.mapFileName);
+        assertEquals(GeneratedIsland, settings.floatingIsland);
     }
 }

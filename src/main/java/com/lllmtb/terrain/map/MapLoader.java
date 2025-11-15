@@ -34,12 +34,12 @@ public class MapLoader {
             }
             return tileMatrix;
 
-        } catch (IOException e) {
+        } catch (IOException e) { // we should propagate the exception instead so GameWorld can catch and respond accordingly
+            System.out.println("Ce chemin de fichier n'est pas valide!");
+            return null;
+        } catch (Exception e) {
             System.out.println(e); // NB. Il faudra mieux gérer cette exception
             return null;
-        } catch (IllegalArgumentException e) {
-            System.out.println("IllegalArgumentException : " + e.getMessage());
-            return null; // il faudra gerer cette erreur par la suite;
         }
     }
 }
