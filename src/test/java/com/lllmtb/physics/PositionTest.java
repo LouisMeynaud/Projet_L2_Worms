@@ -13,4 +13,12 @@ public class PositionTest {
         assertEquals(x,pos.getX());
         assertEquals(y,pos.getY());
     }
+
+    @Test
+    void testToString(){
+        double x = 5;
+        double y = 5;
+        Position pos = new Position(x, y);
+        assertEquals("[" + x + ", " + y + "]", pos.toString());
+    }
 }
