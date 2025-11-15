@@ -10,10 +10,6 @@ import java.util.Arrays;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import com.lllmtb.terrain.map.Map;
-import com.lllmtb.terrain.map.MapLoader;
-import com.lllmtb.terrain.map.Tile;
-
 public class MapLoaderTest {
     public static String mapText;
     public static Map m;

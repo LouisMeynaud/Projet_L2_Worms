@@ -1,48 +1,80 @@
 package com.lllmtb.terrain.generation;
 
+/**
+* A class that allows for map balancing after random generation in order to
+* maintain consistency and fairness between the two sides and therefore the two
+* teams
+ */
 public class MapBalancer {
 
+    /**
+     * 
+    *  increases/decreases the thickness of the left/right part of lowLine/heightLine in order to maintain fairness between the left and right team.
+     * @param lowLine 
+     * @param hightLine 
+     * @param height the height of the map (allows highLine not to exceed it);
+     * 
+     */
+    protected static void leftRightBalancing(final int[] lowLine, final int[] hightLine, final int height) {
+        final int width = hightLine.length;
+        final int mid = width / 2;
+        final int diffAccepted = 3;
 
-    public static void leftRightBalancing(int[] lowLine, int[] tallLine, int width, int height) {
-        int mid = width / 2;
-        int diffAccepted = 3;
+        final int leftAverage = averageThickness(lowLine, hightLine, 0, mid);
+        final int rightAverage = averageThickness(lowLine, hightLine, mid, width);
+        final int diff = leftAverage - rightAverage;
 
-        int leftAverage = averageThickness(lowLine, tallLine, 0, mid);
-        int rightAverage = averageThickness(lowLine, tallLine, mid, width);
-        int diff = leftAverage - rightAverage;
-
-        if (diff >= diffAccepted) {//parametre a changer , plus diff est grand , moin le terrain risque d'etre equilibrer.
-            // gauche plus épaisse , équilibrer en augmentant le côté droit
+        if (diff >= diffAccepted) {// Parameter to change: the larger the difference, the less likely the terrain is to be balanced. Left side thicker, balance by increasing the right side.
             for (int x = mid; x < width; x++) {
-                int adjust = diff;
-                System.out.println(diff);
-                if (tallLine[x] - adjust > 0) {
-                    tallLine[x] -= adjust;
-                } else if (lowLine[x] + adjust < height) { 
-                    lowLine[x] += adjust; // on agrandit vers le bas
+                final int adjust = diff;
+                if (hightLine[x] + adjust < height) {
+                    hightLine[x] += adjust;
+                } else if (lowLine[x] - adjust > 0) {
+                    lowLine[x] -= adjust; // we enlarge downwards
                 }
             }
-        } else if (diff <= -diffAccepted){
-            // droite plus épaisse , équilibrer en augmentant le côté gauche
+        } else if (diff <= -diffAccepted) {
+            //Thicker right side, balance by increasing the left side
             for (int x = 0; x < mid; x++) {
-                int adjust = (-diff);
-                System.out.println("adjust" + adjust);
-                if (tallLine[x] - adjust > 0) {
-                    tallLine[x] -= adjust;
-                } else if (lowLine[x] + adjust < height) {
-                    lowLine[x] += adjust;
+                final int adjust = (-diff);
+                if (hightLine[x] + adjust <height) {
+                    hightLine[x] += adjust;
+                } else if (lowLine[x] - adjust > 0) {
+                    lowLine[x] -= adjust;
                 }
             }
         }
     }
-    
-    
 
-    public static int averageThickness(int[] lowLine, int[] TallLine, int start, int end) { // epaisseur moyenne
+    /**
+     * method to avoid excessively thin maps by introducing a minimum thickness.
+     * @param thicknessMin the minimum desired thickness
+     * @param epaisseur the current thickness of the card
+     * @param hightLine the upper line which will be increased in order to obtain the desired minimum thickness
+     */
+    protected static void thicknessBalencer(final int thicknessMin, final int epaisseur, final int[] lowLine) {
+        if (thicknessMin > epaisseur) {
+            for (int i = 0; i < lowLine.length; i++) {
+                if (lowLine[i] - (thicknessMin - epaisseur) >0) {
+                    lowLine[i] -= thicknessMin - epaisseur;
+                }
+            }
+        }
+    }
+    /**
+     * 
+     * Method for calculating the thickness of a terrain from a given position to an end point.
+     * @param lowLine the low line
+     * @param hightLine the hight Line
+     * @param start the beginning of the zone where the calculation is desired
+     * @param end the end of the area where the calculation is desired
+     * @return the card thickness in the form of an integer
+     */
+    protected static int averageThickness(final int[] lowLine, final int[] hightLine, final int start, final int end) { // epaisseur moyenne
         int somme = 0;
         for (int x = start; x < end; x++) {
-            somme += (lowLine[x] - TallLine[x]);
+            somme += ( hightLine[x]-lowLine[x]);
         }
-        return somme / (end - start);
+        return (int) somme / (end - start);
     }
 }

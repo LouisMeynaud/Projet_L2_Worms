@@ -1,34 +1,61 @@
 package com.lllmtb.terrain.generation;
+
+
 import com.lllmtb.terrain.map.Map;
 import com.lllmtb.terrain.map.SaveMap;
 
-// note tempo 
-//pente + forte = plus chaotique
-//longueur plus haute = terrain plus valoner
-//mieux gerer les parametre par la suite.
-//le code sera changer
 
-//verification a faire lors de la creation de la map ; espace de terrain remplie ; meme quantité de terre des deux coter , crée un moyen de faire des petite 'ile' sans que sa soit le bordel
 public class GenerateMap {
+    public static ConfigMap WORLD = new ConfigMap(370, 170, 2, 3, 8, 4, false, 20, 40);
+    public static ConfigMap FLYINGWORLD = new ConfigMap(370, 170, 2, 3, 8, 4, true, 20, 40);
+    
 
-    public static Map createMatrix(int width, int height, int maxSlope, int maxLength, int waterHeight) {
-        Map map = new Map(height, width, SaveMap.newMapSaveFile());
+    /**
+     * method for generating a random map
+     * 
+     * @param config takes a config type object in order to generate a map according to presets
+     * @return the create map
+     */
+    public static Map createMap(ConfigMap config) {
+        Map map = new Map(config.height, config.width, SaveMap.newMapSaveFile());
+        int[] lowLine;
 
-        int[] topLine = MapGenerator.createLine(width, height, maxSlope, maxLength); // has smaller values than bottomLine (because 0 is at the top)
-        int[] bottomLine = MapGenerator.createLine(width, height, maxSlope, maxLength); // has larger values than topLine (because 0 is at the top)
-
-        for (int i = 0; i < width; i++) {
-            if (bottomLine[i] < topLine[i]) {
-                int temp = bottomLine[i];
-                bottomLine[i] = topLine[i];
-                topLine[i] = temp;
+        int[] hightLine = LineGenerator.createLine(config); 
+        if (config.flyingIsland) {
+            lowLine = LineGenerator.createLine(config); 
+            TriHightLineLowLine(hightLine,lowLine,config);
+            
+        } else {
+            lowLine = new int[config.width];
+            for (int i = 0; i < config.width; i++) {
+                lowLine[i] = 0;
             }
         }
 
-        MapBalancer.leftRightBalancing(bottomLine, topLine, width, height);
-        MapFiller.fillingDirt(map, topLine, bottomLine);
-        MapFiller.fillingWater(map, waterHeight);
+        MapBalancer.leftRightBalancing(lowLine, hightLine, config.height);
+        MapBalancer.thicknessBalencer(config.thicknessMin,MapBalancer.averageThickness(lowLine, hightLine, 0, config.width), hightLine);
+        MapFiller.fillingWater(map, config.waterHeight);
+        MapFiller.fillingDirt(map, hightLine, lowLine);
+
         return map;
     }
+    
+     /**
+     * methode pour que la hightLine soit toujours au dessus de la lowLine
+     * 
+     * @param highLine la ligne haute
+     * @param lowLine la ligne basse
+     * @param config la config de la map
+     */
+    protected  static void TriHightLineLowLine(int[] hightLine,int[] lowLine,ConfigMap config){
+        for (int i = 0; i < config.width; i++) {
+                if (lowLine[i] > hightLine[i]) {
+                    int temp = lowLine[i];
+                    lowLine[i] = hightLine[i];
+                    hightLine[i] = temp;
+                }
+            }
+    }
+    // attention probleme, le right balence crée une pente enorme au mileu
 
 }

@@ -8,8 +8,8 @@ import java.io.FileWriter;
 public class SaveMap {
    public static boolean saveMap(Map m) {
     try {
-        File file = new File("src/main/java/com/lllmtb/terrain/MapFile/" + m.getFilesTxt() + ".txt");
-        file.createNewFile();    //crée le fichier quand il existe pas      
+        File file = new File("src/main/java/com/lllmtb/terrain/MapFile/" + m.getFilesTxt());
+        file.createNewFile();    //Creates the file if it doesn't exist, overwrites it otherwise
         FileWriter writer = new FileWriter(file);
         writer.write(mapToString(m));
         writer.close();
@@ -22,7 +22,7 @@ public class SaveMap {
     }
 }
 
-    public static String mapToString(Map m) {
+    protected static String mapToString(Map m) {
         Tile[][] mMapMatrix = m.getMapMatrix();
         StringBuilder mapString = new StringBuilder();
         for (Tile[] mapRow : mMapMatrix) {
@@ -46,36 +46,27 @@ public class SaveMap {
 
     //methode demandant le fichie d'enregistrement de save quand une map est crée
     public static String newMapSaveFile() {
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("entré le nom du fichier d'enregistrement");
+        // boolean existe = false;
+        // String files;
+        // do {
+        //     existe = false;
+        //     files = "testMap.txt";;
 
-        boolean existe = false;
-        String files;
-        do {
-            existe = false;
-            files = scanner.nextLine() + ".txt";
+        //     String dossier = "src/main/java/com/lllmtb/terrain/MapFile/";
 
-            String dossier = "src/main/java/com/lllmtb/terrain/MapFile/";
+        //     File folder = new File(dossier);
+        //     File[] fichiers = folder.listFiles();
 
-            File folder = new File(dossier);
-            File[] fichiers = folder.listFiles();
-
-            if (fichiers != null) {
-                for (File f : fichiers) {
-                    if (f.getName().equals(files)) {
-                        System.out
-                                .println("Fichier déjà existant. Entrez O pour l’écraser, N pour en créer un nouveau.");
-                        if (scanner.nextLine().equals("N")) {
-                            existe = true;
-                            System.out.println("merci d'entré un nouveaux nom de fichier");
-                        }
-                    }
-
-                }
-            }
-        } while (existe);
-        scanner.close();
-        return files;
+        //     if (fichiers != null) {
+        //         for (File f : fichiers) {
+        //             if (f.getName().equals(files)) {
+        //                 System.out.println("Fichier déjà existant. Entrez O pour l’écraser, N pour en créer un nouveau.");
+        //             }
+        //         }
+        //     }
+        // } while (existe);
+        // return files;
+        return "testMap.txt";
 
     }
 }

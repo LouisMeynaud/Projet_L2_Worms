@@ -11,7 +11,7 @@ public class MapLoader {
             String content = Files.readString(Path.of(path));
             String[] row = content.split("\n");
 
-            Map tileMatrix = new Map(row.length, row[0].length(), mapName);
+            Map tileMatrix = new Map(row.length, row[0].length(), mapName+".txt");
             for (int i = 0; i < row.length; i++) {
                 for (int j = 0; j < row[0].length(); j++) {
                     switch (row[i].charAt(j)) { // perhaps create another `Map.setTile(x, y)` that could be used
@@ -34,12 +34,12 @@ public class MapLoader {
             }
             return tileMatrix;
 
-        } catch (IOException e) {
+        } catch (IOException e) { // we should propagate the exception instead so GameWorld can catch and respond accordingly
+            System.out.println("Ce chemin de fichier n'est pas valide!");
+            return null;
+        } catch (Exception e) {
             System.out.println(e); // NB. Il faudra mieux gérer cette exception
             return null;
-        } catch (IllegalArgumentException e) {
-            System.out.println("IllegalArgumentException : " + e.getMessage());
-            return null; // il faudra gerer cette erreur par la suite;
         }
     }
 }
