@@ -46,4 +46,9 @@ public class Position {
     public double getY() {
         return this.y;
     }
+
+    @Override
+    public String toString() {
+        return "[" + x + ", " + y + "]";
+    }
 }

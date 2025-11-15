@@ -1,5 +1,9 @@
 package com.lllmtb.engine;
 
+import com.lllmtb.physics.PhysicsBody;
+
+import java.util.Arrays;
+
 public class GameLoop implements Runnable {
     private final GameWorld world;
     private volatile boolean running = true;
@@ -12,11 +16,15 @@ public class GameLoop implements Runnable {
     @Override
     public void run() {
         long last = System.nanoTime();
+        int acc = 0;
         while (running) {
             long now = System.nanoTime();
             long elapsedMs = (now - last) / 1_000_000;
-            System.out.println(elapsedMs);
-            System.out.println(world.getPhysics().getBodies().size());
+            System.out.println("[" + String.format("%4d", acc++) + "] New tick " + elapsedMs + "ms");
+            System.out.println("Entities in the game "
+                    + world.getPhysics().getBodies().size() + " : "
+                    + Arrays.toString(world.getPhysics().getBodies().stream().map(PhysicsBody::getEntity).toArray()));
+            System.out.println("Bodies : " + Arrays.toString(world.getPhysics().getBodies().toArray()));
             last = now;
 
             // 1) process queued external events (eg. input)

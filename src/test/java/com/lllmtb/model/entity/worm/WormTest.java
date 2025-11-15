@@ -69,5 +69,9 @@ public class WormTest {
         assertEquals(pos, worm.getBody().getPos());
     }
 
+    @Test
+    public void testToString() {
+        assertDoesNotThrow(() -> worm.toString());
+    }
 
 }

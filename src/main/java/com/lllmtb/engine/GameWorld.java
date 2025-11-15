@@ -35,6 +35,7 @@ public class GameWorld {
             }
         }
         if (tmap == null) {
+            System.out.println("Generating a new map...");
             tmap = GenerateMap.createMap(settings.floatingIsland ? GenerateMap.FLYINGWORLD : GenerateMap.WORLD);
         }
         this.map = tmap;
@@ -51,15 +52,11 @@ public class GameWorld {
         System.out.println("Creating the Teams...");
         for (int i = 0; i < settings.nbTeams; i++) {
             try {
-                Position p = new Position(0, 0);    // dummy position
+                Position p = new Position(5, 5);    // dummy position
                 Team team = new Team(settings.teamNames[i], settings.nbWorms, p);
                 teams.add(team);
+                team.getTeamWorms().forEach(this::registerEntity);
                 System.out.printf("%d | %s - %d - %s\n", i, team.name, team.id, team.teamColor);
-                for (int j = 0; j < settings.nbWorms; j++) {
-                    String name = team.name + j;
-                    Worm worm = new Worm(name, team, p); // will receive available spawn points from the map
-                    registerEntity(worm);
-                }
             } catch (ArrayIndexOutOfBoundsException e) {
                 break;
             }

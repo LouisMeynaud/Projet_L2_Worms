@@ -74,7 +74,7 @@ public class ConsoleUI extends UI {
             );
             terminal.writer().println("   Wind: " + (hasWind ? "ON" : "OFF"));
             terminal.writer().flush();
-            return new GameSettings(nbTeams, teamNames, nbWorms, false, null, false);
+            return new GameSettings(nbTeams, teamNames, nbWorms, hasWind, mapFileName, floatingIsland);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
