@@ -27,60 +27,23 @@ public class WindowsUi implements  UI{
         windows.setTitle("Worms-MI4");
         //Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
         //windows.setSize(dimension.width, dimension.height);
-        windows.setSize(500,500);
+        windows.setExtendedState(JFrame.MAXIMIZED_BOTH);//met la fenetre a la taille maximal de l'ecran
         windows.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         //windows.setLocation(0,0);
 
         cardLayout = new CardLayout();
         mainPanel = new JPanel(cardLayout);
         
-        JPanel homeScreen = createHomeScreen();
-        JPanel startSettingScreen = createStartSettingScreen();
+        HomeScreenPanel homeScreen = new HomeScreenPanel(this.eventBus);
+        SettingsGamePanel startSettingScreen = new SettingsGamePanel(this.eventBus);
+        GamePanel gamePanel = new GamePanel(eventbus);
         mainPanel.add(homeScreen,"homeScreen");
         mainPanel.add(startSettingScreen,"startSettingScreen");
+        mainPanel.add(gamePanel,"gamePanel");
         windows.add(mainPanel);
 
         subscribeToNavigationEvents();
     }
-
-    public JPanel createHomeScreen(){
-        //creation des bouton et du panneau
-        JButton startButton = new JButton("start");
-        JButton SettingButton = new JButton("game Setting");
-        JButton CloseButton = new JButton("close");
-        JPanel panel = new JPanel();
-        //ajout des bouton au panneau
-        panel.add(startButton);
-
-        startButton.addActionListener(e -> {
-            eventBus.postQueued(new ShowStartSettingsEvent());
-        });
-        panel.add(SettingButton);
-        panel.add(CloseButton);
-        
-        return panel;
-
-    }
-
-    public JPanel createStartSettingScreen(){
-        JButton starButton = new JButton("Start");
-        JButton backButton = new JButton("Back");
-        JPanel panel = new JPanel();
-        panel.add(backButton);
-        backButton.addActionListener(e -> {
-            eventBus.postQueued(new ShowHomeScreenEvent());
-        });
-
-        panel.add(starButton);
-        starButton.addActionListener(e -> {
-            // recupere les donnée
-            GameSettings settings = setSettings();
-            eventBus.postQueued(new StartGameEvent(settings));
-        });
-        return panel;
-
-    }
-
 
 
 
@@ -98,21 +61,10 @@ public class WindowsUi implements  UI{
         });
 
         eventBus.subscribe(StartGameEvent.class, event -> {
-            System.out.println("UI: Reçu StartGameEvent, changement de page...");
+            cardLayout.show(mainPanel, "gamePanel");
         });
     }
 
-    public GameSettings setSettings(){
-
-        return new GameSettings(1, new String[] {"test"}, 1, false, null, false);
-    }
-    
-    
-    
-    
-    public GameSettings promptSettings(){
-        return null;
-    }
 
     public boolean readyToPlay(){
         return false;
