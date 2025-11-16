@@ -31,7 +31,7 @@ public class GameLoop implements Runnable {
             world.getBus().processQueued();
 
             // 2) update physics
-            world.getPhysics().next();  // will have to be adapted to take in (long elapsedMs) = dt which PhysicsBody can use instead of tickTime
+            world.update();  // will have to be adapted to take in (long elapsedMs) = dt which PhysicsBody can use instead of tickTime
 
             // 3) process events generated during physics (collisions, explosions...)
             world.getBus().processQueued();

@@ -1,6 +1,7 @@
 package com.lllmtb.engine;
 import com.lllmtb.events.EventBus;
 import com.lllmtb.events.TheEvents.StartGameEvent;
+import com.lllmtb.events.TheEvents.WorldCreatedEvent;
 
 
 
@@ -27,7 +28,8 @@ public class GameEngine {
         GameSettings settings = event.getSettings(); //on recup les setting
         
 
-        this.world = new GameWorld(settings); //on crée le monde
+        this.world = new GameWorld(settings,this.eventBus); //on crée le monde
+        eventBus.postQueued(new WorldCreatedEvent(this.world));//on lance l'event pour gamePanel
         
 
         GameLoop gameLoop = new GameLoop(this.world);//on lance la boucle qui calcule les changement du monde
