@@ -14,7 +14,7 @@ import com.lllmtb.events.TheEvents.ShowHomeScreenEvent;
 import com.lllmtb.events.TheEvents.StartGameEvent;
 import com.lllmtb.ui.*;;
 
-public class WindowsUi extends  UI{
+public class WindowsUi implements  UI{
     
     public JFrame windows;
     public EventBus eventBus;
@@ -41,8 +41,6 @@ public class WindowsUi extends  UI{
         windows.add(mainPanel);
 
         subscribeToNavigationEvents();
-
-        windows.setVisible(true);
     }
 
     public JPanel createHomeScreen(){
@@ -59,7 +57,7 @@ public class WindowsUi extends  UI{
         });
         panel.add(SettingButton);
         panel.add(CloseButton);
-        //ajout du panneau a la fenetre
+        
         return panel;
 
     }
@@ -76,7 +74,8 @@ public class WindowsUi extends  UI{
         panel.add(starButton);
         starButton.addActionListener(e -> {
             // recupere les donnée
-            eventBus.postQueued(new StartGameEvent());
+            GameSettings settings = setSettings();
+            eventBus.postQueued(new StartGameEvent(settings));
         });
         return panel;
 
@@ -85,14 +84,9 @@ public class WindowsUi extends  UI{
 
 
 
-
-
-
-
-
     private void subscribeToNavigationEvents() {
         
-        // On s'abonne à l'événement qu'on a créé et agit quand on le recois...
+    
         eventBus.subscribe(ShowStartSettingsEvent.class, event -> {
                 System.out.println("bouton cliquer");
                 cardLayout.show(mainPanel, "startSettingScreen");
@@ -104,12 +98,13 @@ public class WindowsUi extends  UI{
         });
 
         eventBus.subscribe(StartGameEvent.class, event -> {
-            setSettings();
+            System.out.println("UI: Reçu StartGameEvent, changement de page...");
         });
     }
 
     public GameSettings setSettings(){
-        return new GameSettings(1, null, 1, false, null, false);
+
+        return new GameSettings(1, new String[] {"test"}, 1, false, null, false);
     }
     
     
@@ -121,6 +116,10 @@ public class WindowsUi extends  UI{
 
     public boolean readyToPlay(){
         return false;
+    }
+    @Override
+    public void start() {
+        windows.setVisible(true);
     }
     public void close(){
     }

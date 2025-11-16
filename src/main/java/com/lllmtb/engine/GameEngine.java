@@ -1,45 +1,38 @@
 package com.lllmtb.engine;
-
-import java.awt.Window;
-
-import com.lllmtb.ui.GraphicsUi.*;
-import com.lllmtb.ui.ConsoleUI;
-import com.lllmtb.ui.UI;
 import com.lllmtb.events.EventBus;
+import com.lllmtb.events.TheEvents.StartGameEvent;
 
-import java.io.IOException;
+
 
 public class GameEngine {
 
-    // public static void main(String[] args) {
-    // // Initialise the TerminalUI (or SwingUI later on)
-    // UI ui = new ConsoleUI();
-    // GameSettings settings = null;
-    // try {
-    // settings = ui.promptSettings();
-    // } catch (IOException e) {
-    // throw new RuntimeException(e);
-    // }
-    // GameWorld world = new GameWorld(settings);
-    // ui.setWorld(world);
-    // if (ui.readyToPlay()) {
-    // try {
-    // // demo run - stop after 0.5s
-    // world.start();
-    // Thread.sleep(500);
-    // world.stop();
-    // } catch (InterruptedException e) {
-    // System.out.println("Process interrupted");
-    // }
-    // }
-    // }
+    
+    private final EventBus eventBus;
+    private GameWorld world; 
 
-    public static void main(String[] args) {
-
-        EventBus eventbus = new EventBus();
-        UI ui = new WindowsUi(eventbus);
-        ScreenLoop screenLoop = new ScreenLoop((WindowsUi) ui);
-        Thread gameThread = new Thread(screenLoop);
-        gameThread.start();
+    
+    public GameEngine(EventBus bus) {
+        this.eventBus = bus;
+        subscribeToEvents(); 
     }
+
+    private void subscribeToEvents() {
+        eventBus.subscribe(StartGameEvent.class, event -> {
+            handleGameStart(event);
+        });
+    }
+
+    
+    private void handleGameStart(StartGameEvent event) {
+        GameSettings settings = event.getSettings(); //on recup les setting
+        
+
+        this.world = new GameWorld(settings); //on crée le monde
+        
+
+        GameLoop gameLoop = new GameLoop(this.world);//on lance la boucle qui calcule les changement du monde
+        new Thread(gameLoop).start();
+        
+    }
+
 }
