@@ -9,12 +9,16 @@ public class GameEngine {
 
     
     private final EventBus eventBus;
-    private GameWorld world; 
+    private GameWorld world;
+    private GameLoop gameLoop;
+    private volatile boolean monitoring = true;
 
     
     public GameEngine(EventBus bus) {
         this.eventBus = bus;
         subscribeToEvents(); 
+
+        new Thread(this::monitorBusForStart, "Engine-Monitor").start();
     }
 
     private void subscribeToEvents() {
@@ -30,11 +34,15 @@ public class GameEngine {
 
         this.world = new GameWorld(settings,this.eventBus); //on crée le monde
         eventBus.postQueued(new WorldCreatedEvent(this.world));//on lance l'event pour gamePanel
-        
 
-        GameLoop gameLoop = new GameLoop(this.world);//on lance la boucle qui calcule les changement du monde
-        new Thread(gameLoop).start();
-        
+        this.gameLoop = new GameLoop(this.world); 
+        new Thread(this.gameLoop).start(); // On lance le thread
+        this.monitoring = false; //on coupe le thread de lancement
     }
 
-}
+    private void monitorBusForStart() {//un bus en attendant celui du jeu
+        while (monitoring) {
+            this.eventBus.processQueued(); // Traite StartGameEvent
+        }
+    }
+    }
