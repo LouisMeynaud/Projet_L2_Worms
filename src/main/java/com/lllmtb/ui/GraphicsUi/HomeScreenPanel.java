@@ -4,7 +4,7 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 
 import com.lllmtb.events.EventBus;
-import com.lllmtb.events.TheEvents.ShowStartSettingsEvent;
+import com.lllmtb.events.TheEvents.ScreenNewOrLoadEvent;
 
 public class HomeScreenPanel extends JPanel{
     EventBus eventBus;
@@ -19,7 +19,7 @@ public class HomeScreenPanel extends JPanel{
 
 
         startButton.addActionListener(e -> {
-            eventBus.postQueued(new ShowStartSettingsEvent());
+            eventBus.postQueued(new ScreenNewOrLoadEvent());
         });
         this.add(startButton);
         this.add(SettingButton);

@@ -60,7 +60,7 @@ public class Map {
      
     /**
      * @param position
-     * @return a new position corresponding to the case in the matrix
+     * @return a new position corresponding to the case in the matrix 
      * (because in the game 0,0 is in the bottom left corner, whereas in the matrix (0,0) is in the top left corner)
      */
     public Position cooMapToCooMatrix(Position position) {
@@ -74,7 +74,7 @@ public class Map {
      */
     public Tile getTile(Position position) {
         Position posMatrix = this.cooMapToCooMatrix(position);
-        return this.mapMatrix[(int) posMatrix.getY()][(int) posMatrix.getX()];
+        return this.mapMatrix[(int) posMatrix.getY()][(int) posMatrix.getX()]; //attention int arrondit a l'entier inf penser a ajouter des -1/+1 dans le code utilisant ceci
     }
 
     /**

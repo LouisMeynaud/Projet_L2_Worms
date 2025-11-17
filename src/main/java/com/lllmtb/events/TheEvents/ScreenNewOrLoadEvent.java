@@ -1,6 +1,6 @@
 package com.lllmtb.events.TheEvents;
 import com.lllmtb.events.*;
 
-public class ShowHomeScreenEvent implements Event{
+public class ScreenNewOrLoadEvent implements Event{
     
 }
