@@ -13,7 +13,6 @@ import javax.swing.SwingConstants;
 
 import com.lllmtb.engine.GameSettings;
 import com.lllmtb.events.EventBus;
-import com.lllmtb.events.TheEvents.ScreenHomeEvent;
 import com.lllmtb.events.TheEvents.ScreenNewOrLoadEvent;
 import com.lllmtb.events.TheEvents.StartGameEvent;
 
@@ -64,7 +63,6 @@ public class SettingsStartPanel extends JPanel {
         });
 
         StarButton.addActionListener(e -> {
-            // recupere les donnée
             GameSettings settings = setSettings();
             eventBus.postQueued(new StartGameEvent(settings));
         });
@@ -83,6 +81,7 @@ public class SettingsStartPanel extends JPanel {
         int nbEquipes = this.gameSettingsPanel.getNbEquipes();
         int nbVWorms = gameSettingsPanel.getNbWorms();
         String[] nomsEquipes = gameSettingsPanel.getNomsEquipes();
+        boolean wind = this.gameSettingsPanel.getWind();
         return new GameSettings(nbEquipes, new String[] { "test" }, nbVWorms, false, null, false);
     }
 }

@@ -1,10 +1,13 @@
 package com.lllmtb.ui.GraphicsUi;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.FlowLayout;
 import java.awt.Font;
+
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
+import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
@@ -20,6 +23,7 @@ public class SettingGamePanel extends JPanel {
 
     public JSlider equipesSlider;
     public JSlider warmsSlider;
+    public JCheckBox windCheckBox;
 
     public SettingGamePanel(){
         this.setBorder(BorderFactory.createTitledBorder("Paramètres de la partit")); // permet d'afficher un titre;
@@ -36,6 +40,7 @@ public class SettingGamePanel extends JPanel {
         JLabel titre2 = new JLabel("PARAMETRE PHYSIQUE");
         titre2.setFont(new Font("Arial",Font.BOLD,16));
         contentBox.add(titre2);
+        contentBox.add(physiquePanel());
 
         this.add(contentBox,BorderLayout.NORTH);
 
@@ -97,6 +102,17 @@ public class SettingGamePanel extends JPanel {
 
     }
 
+    public JPanel physiquePanel(){
+        JPanel physiquePanel = new JPanel();
+        physiquePanel.setLayout(new FlowLayout(FlowLayout.LEFT)); // le layout "paragraphe"
+        JCheckBox windCheckBox = new JCheckBox("vent activé ?");
+        this.windCheckBox = windCheckBox;
+        physiquePanel.add(windCheckBox);
+        return physiquePanel;
+
+
+    }
+
     public int getNbEquipes() {
         return this.equipesSlider.getValue();
     }
@@ -113,6 +129,10 @@ public class SettingGamePanel extends JPanel {
             noms[i] = champsNomsEquipes[i].getText();
         }
         return noms;
+    }
+
+    public boolean getWind(){
+        return this.windCheckBox.isSelected();
     }
 
 }
