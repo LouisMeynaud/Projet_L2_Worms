@@ -20,7 +20,7 @@ public class WormTest {
         String name = "Test";
         Position pos = new Position(0, 0);
         team = new Team("Team", 1, pos);
-        worm = new Worm(name, team, pos);
+        worm = new Worm(name, team);
     }
 
 

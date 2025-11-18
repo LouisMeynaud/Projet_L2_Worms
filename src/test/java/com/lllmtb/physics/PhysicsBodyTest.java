@@ -22,7 +22,7 @@ void testConstructor(){
     Position pos1 = new Position(x1, y1);
     String name = "Test";
     Team team = new Team("TestTeam",1, pos1);
-    Entity entity = new Worm(name, team,pos1 );
+    Entity entity = new Worm(name, team);
     Vector vector1 = new Vector(x2, y2);
     PhysicsBody pB = new PhysicsBody(entity, pos1,vector1, mass1, height1,width1);
     assertEquals(entity, pB.getEntity());
@@ -51,7 +51,7 @@ void testSet(){
     Position pos1 = new Position(x1, y1);
     String name = "Test";
     Team team = new Team("TestTeam",1, pos1);
-    Entity entity = new Worm(name, team,pos1 );
+    Entity entity = new Worm(name, team );
     Vector vector2 = new Vector(x2, y2);
     Position pos3 = new Position(x3, y3);
     Vector vector4 = new Vector(x4, y4);
