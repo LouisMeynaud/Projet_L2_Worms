@@ -133,7 +133,7 @@ public class Team {
      */
     private void setUpPlayers(int numberOfPlayers, Position spawn) {
         for (int i = 1; i <= numberOfPlayers; i++) {
-            this.addPlayer(new Worm(this.name + i, this, spawn));
+            new Worm(this.name + i, this, spawn);
         }
     }
 
