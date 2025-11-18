@@ -55,6 +55,11 @@ public class TeamTest {
         assertEquals(TeamColor.class, team.teamColor.getClass());
     }
     @Test
+    public void testChooseColorDifferent(){
+        Team team2 = new Team("TestTeam2", 1, new Position[]{new Position(0,0)});
+        assertNotEquals(team.teamColor, team2.teamColor);
+    }
+    @Test
     public void testSetUpPlayers(){
         assertEquals(1, team.getTeamWorms().size());
         Worm worm1 = team.getIndexWorm(0);

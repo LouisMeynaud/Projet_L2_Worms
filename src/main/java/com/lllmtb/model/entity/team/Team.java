@@ -49,6 +49,7 @@ public class Team {
 
     /** Possible colors that can be assigned to a team. */
     private static List<TeamColor> teamColorPossible = Arrays.asList(TeamColor.values());
+    private static ArrayList<TeamColor> teamColorChoosed = new ArrayList<>();
 
 
     /**
@@ -157,7 +158,13 @@ public class Team {
      */
     public static TeamColor chooseColor() {
         Random random = new Random();
-        return Team.teamColorPossible.get(random.nextInt(Team.teamColorPossible.size()));
+        if(teamColorChoosed.size() == teamColorPossible.size()){Team.teamColorChoosed.clear();}
+        TeamColor teamcolor = Team.teamColorPossible.get(random.nextInt(Team.teamColorPossible.size()));
+        while(teamColorChoosed.contains(teamcolor)){
+            teamcolor = Team.teamColorPossible.get(random.nextInt(Team.teamColorPossible.size()));
+        }
+        teamColorChoosed.add(teamcolor);
+        return teamcolor;
     }
 
     /**
