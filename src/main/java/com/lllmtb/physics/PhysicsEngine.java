@@ -37,11 +37,11 @@ public class PhysicsEngine {
      * Constructs a new {@code PhysicsEngine} instance.
      * <p>
      * Gravity is initialized to (0, -9.81), simulating Earth's gravitational acceleration
-     * in meters per second squared. Wind parameters are currently disabled.
+     * in meters per second squared.
      * </p>
      *
      * @param map the {@code Map} instance representing the environment for collision detection.
-     * @param hasWind {@code true} if wind should be simulated; currently unused.
+     * @param hasWind if wind should be simulated.
      */
     public PhysicsEngine(Map map, boolean hasWind) {
         this.bodies = new CopyOnWriteArrayList<>();
@@ -54,7 +54,7 @@ public class PhysicsEngine {
     /**
      * Returns the list of all physics bodies currently managed by the physics engine.
      *
-     * @return an {@link ArrayList} containing all active {@link PhysicsBody} objects.
+     * @return an {@link CopyOnWriteArrayList} containing all active {@link PhysicsBody} objects.
      */
     public CopyOnWriteArrayList<PhysicsBody> getBodies() {
         return bodies;
@@ -148,12 +148,13 @@ public class PhysicsEngine {
      * <p>
      * This method updates all {@link PhysicsBody} instances managed by the engine,
      * applying gravity, air resistance, and other forces. The new positions and velocities
-     * of each body are computed based on the elapsed time defined by {@link #ticktime}.
+     * of each body are computed based on the elapsed time defined by the ticktime.
      * </p>
      * <p>
      * If a body’s next position results in a collision, its position is not updated
      * until collision handling is performed.
      * </p>
+     * @param ticktime the duration of the simulation tick (in seconds).
      */
     protected void nextStep(double ticktime) {
         for (PhysicsBody body : bodies) {
@@ -179,6 +180,7 @@ public class PhysicsEngine {
      * vector (every 600 ticks if enabled), and performs one simulation step through
      * {@link #nextStep()}.
      * </p>
+     * @param ticktime the duration of the simulation tick (in seconds).
      */
     public void next(double ticktime){
         cpt++;
