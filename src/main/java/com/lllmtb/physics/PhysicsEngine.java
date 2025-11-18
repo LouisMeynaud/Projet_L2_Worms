@@ -29,9 +29,6 @@ public class PhysicsEngine {
     /** The current wind vector applied to all bodies when {@code hasWind} is true. */
     private Vector wind;
 
-    /** The duration of one simulation tick (in seconds). */
-    public static final double ticktime = 0.0167; // Approx. 60 updates per second
-
     /** Internal counter used to regulate wind changes. */
     private int cpt = 0;
 
@@ -70,19 +67,6 @@ public class PhysicsEngine {
      */
     public Vector getGravity() {
         return gravity;
-    }
-
-    /**
-     * Returns the duration of one simulation tick, in seconds.
-     * <p>
-     * This value determines how frequently the physics engine updates
-     * the state of all bodies in the system.
-     * </p>
-     *
-     * @return the tick duration as a {@code double}.
-     */
-    public static double getTicktime() {
-        return ticktime;
     }
 
     /**
@@ -171,18 +155,14 @@ public class PhysicsEngine {
      * until collision handling is performed.
      * </p>
      */
-    protected void nextStep() {
+    protected void nextStep(double ticktime) {
         for (PhysicsBody body : bodies) {
-            Vector deltaV = body.getVector().copy();
-            deltaV.scale(-0.2); // Simple air resistance
-            deltaV.add(this.gravity);
+            Vector deltaV = body.getVector().scale(-0.2).add(this.gravity); // Simple air resistance + gravity effects
             // only apply wind effects to Projectiles
             if (body.getEntity() instanceof Projectile) deltaV.add(this.wind);
             deltaV.scale(ticktime / body.getMass());
 
-            Vector newVector = body.getVector().copy();
-            newVector.add(deltaV);
-
+            Vector newVector = body.getVector().add(deltaV);
             Position nextPos = newVector.newPos(body.getPos(), ticktime);
             body.setVector(newVector);
 
@@ -200,12 +180,12 @@ public class PhysicsEngine {
      * {@link #nextStep()}.
      * </p>
      */
-    public void next(){
+    public void next(double ticktime){
         cpt++;
         if(cpt >= 600){
             cpt = 0;
             changeWind();
         }
-        nextStep();
+        nextStep(ticktime);
     }
 }
