@@ -139,7 +139,7 @@ public class PhysicsEngine {
     protected void changeWind(){
         if (this.hasWind) {
             Vector random = new Vector(Math.random() / 3 - 1f/3f, Math.random() / 3 - 1f/3f);
-            this.wind.add(random);
+            this.wind = this.wind.add(random);
         }
     }
 
