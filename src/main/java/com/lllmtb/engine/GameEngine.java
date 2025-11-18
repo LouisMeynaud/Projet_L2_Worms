@@ -1,48 +1,53 @@
 package com.lllmtb.engine;
+
 import com.lllmtb.events.EventBus;
 import com.lllmtb.events.TheEvents.StartGameEvent;
 import com.lllmtb.events.TheEvents.WorldCreatedEvent;
-
-
+import com.lllmtb.ui.ConsoleUI;
+import com.lllmtb.ui.UI;
+import com.lllmtb.ui.GraphicsUi.WindowsUi;
 
 public class GameEngine {
 
-    
-    private final EventBus eventBus;
-    private GameWorld world;
-    private GameLoop gameLoop;
-    private volatile boolean monitoring = true;
+
+    private static EventBus eventBus;
+    private static GameWorld world;
+    private static volatile GameLoop gameLoop;
 
     
-    public GameEngine(EventBus bus) {
-        this.eventBus = bus;
-        subscribeToEvents(); 
 
-        new Thread(this::monitorBusForStart, "Engine-Monitor").start();
-    }
-
-    private void subscribeToEvents() {
-        eventBus.subscribe(StartGameEvent.class, event -> {
-            handleGameStart(event);
-        });
-    }
-
-    
-    private void handleGameStart(StartGameEvent event) {
-        GameSettings settings = event.getSettings(); //on recup les setting
+    public static void main(String[] args) {
         
+        boolean graphique = true;
+        eventBus = new EventBus();
 
-        this.world = new GameWorld(settings,this.eventBus); //on crée le monde
-        eventBus.postQueued(new WorldCreatedEvent(this.world));//on lance l'event pour gamePanel
 
-        this.gameLoop = new GameLoop(this.world); 
-        new Thread(this.gameLoop).start(); // On lance le thread
-        this.monitoring = false; //on coupe le thread de lancement
-    }
+        eventBus.subscribe(StartGameEvent.class, event -> {
+            startGame(event);
+        });
 
-    private void monitorBusForStart() {//un bus en attendant celui du jeu
-        while (monitoring) {
-            this.eventBus.processQueued(); // Traite StartGameEvent
+        new Thread(() -> {
+            while (gameLoop == null) {
+                eventBus.processQueued(); 
+                try { Thread.sleep(10); } catch (InterruptedException e) {}
+            }
+        }, "Engine-Monitor").start();
+
+    
+        UI ui;
+        if (graphique) {
+            ui = new WindowsUi(eventBus);
+        } else {
+            ui = new ConsoleUI(eventBus);
         }
+        ui.start(); 
     }
+
+    private static void startGame(StartGameEvent event) {
+        GameSettings settings = event.getSettings(); 
+        world = new GameWorld(settings, eventBus); 
+        eventBus.postQueued(new WorldCreatedEvent(world));
+        gameLoop = new GameLoop(world); 
+        new Thread(gameLoop, "GameLoop-Thread").start(); 
     }
+}

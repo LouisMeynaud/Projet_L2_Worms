@@ -18,12 +18,9 @@ import com.lllmtb.events.TheEvents.StartGameEvent;
 
 public class SettingsStartPanel extends JPanel {
     public EventBus eventBus;
-    public SettingGamePanel gameSettingsPanel;
-    public JPanel panelMap;
-
     public SettingsStartPanel(EventBus eventBus) {
         this.eventBus = eventBus;
-        this.PanelSetting();
+        PanelSetting();
         
 
     }
@@ -51,7 +48,7 @@ public class SettingsStartPanel extends JPanel {
         //zone centre (les deux partit (parametre map/partit))
         JPanel PanelCentre = new JPanel(new GridLayout(1, 2, 10, 0));// 1 ligne 2 colonne , 10 de marge horizontale
         JPanel panelMap = createMapSettingsPanel();
-        this.gameSettingsPanel = new SettingGamePanel();
+        SettingGamePanel gameSettingsPanel = new SettingGamePanel();
 
         PanelCentre.add(panelMap);
         PanelCentre.add(gameSettingsPanel);
@@ -63,8 +60,7 @@ public class SettingsStartPanel extends JPanel {
         });
 
         StarButton.addActionListener(e -> {
-            GameSettings settings = setSettings();
-            eventBus.postQueued(new StartGameEvent(settings));
+            eventBus.postQueued(new StartGameEvent(setSettings(gameSettingsPanel)));
         });
     }
 
@@ -77,11 +73,11 @@ public class SettingsStartPanel extends JPanel {
     }
 
 
-    public GameSettings setSettings() {
-        int nbEquipes = this.gameSettingsPanel.getNbEquipes();
+    public GameSettings setSettings(SettingGamePanel gameSettingsPanel) {
+        int nbEquipes = gameSettingsPanel.getNbEquipes();
         int nbVWorms = gameSettingsPanel.getNbWorms();
         String[] nomsEquipes = gameSettingsPanel.getNomsEquipes();
-        boolean wind = this.gameSettingsPanel.getWind();
-        return new GameSettings(nbEquipes, new String[] { "test" }, nbVWorms, false, null, false);
+        boolean wind = gameSettingsPanel.getWind();
+        return new GameSettings(nbEquipes, nomsEquipes, nbVWorms, wind, null, false);
     }
 }
