@@ -53,6 +53,7 @@ public class Worm extends Entity {
         this.stats = stats;
         this.team = team;
         this.spawn(spawn);
+        this.team.addPlayer(this);
     }
 
     /**
