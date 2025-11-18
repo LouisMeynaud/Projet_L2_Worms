@@ -18,7 +18,7 @@ public class InventoryTest {
     public static WeaponRegistry registry;
     public static GunWeapon gun = new GunWeapon();
     public static Position p = new Position(0, 0);
-    public static Worm w = new Worm("José", new Team("Team", 1, p));
+    public static Worm w = new Worm("José", new Team("Team", 1, new Position[]{p}));
     public static FireParams fp = new FireParams(0, p, w);
 
     @BeforeEach

@@ -52,7 +52,7 @@ public class GameWorld {
         System.out.println("Creating the Teams...");
         for (int i = 0; i < settings.nbTeams; i++) {
             try {
-                Position p = new Position(5, 5);    // dummy position
+                Position[] p = {new Position(5, 5)};    // dummy position
                 Team team = new Team(settings.teamNames[i], settings.nbWorms, p);
                 teams.add(team);
                 team.getTeamWorms().forEach(this::registerEntity);
