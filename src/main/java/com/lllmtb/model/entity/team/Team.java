@@ -126,7 +126,8 @@ public class Team {
      */
     private void setUpPlayers(int numberOfPlayers, Position spawn) {
         for (int i = 1; i <= numberOfPlayers; i++) {
-            new Worm(this.name + i, this, spawn);
+            new Worm(this.name + i, this);
+            this.worms.get(i-1).spawn(spawn);
         }
     }
 
@@ -141,7 +142,7 @@ public class Team {
 
     /**
      * Removes a worm from the team based on its index.
-     * @param index index of the worm to remove
+     * @param indexPlayer index of the worm to remove
      */
     public void removePlayer(int indexPlayer) {
         this.worms.remove(indexPlayer-1);

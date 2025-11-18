@@ -64,7 +64,7 @@ public class TeamTest {
     }
     @Test
     public void testAddPlayer(){
-        Worm worm = new Worm("Worm1", team, new Position(0,0));
+        Worm worm = new Worm("Worm1", team);
         assertEquals(2, team.getNumberOfPlayers() );
         Worm worm2 = team.getIndexWorm(1);
         assertEquals(worm2, worm);
@@ -107,13 +107,13 @@ public class TeamTest {
     }
     @Test
     public void testNextWorm(){
-        Worm worm = new Worm("Test2", team, new Position(0, 0));
+        Worm worm = new Worm("Test2", team);
         team.nextWorm();
         assertSame(worm, team.getCurrentWorm());
     }
     @Test
     public void testNextWormLast(){
-        Worm worm = new Worm("Test2", team, new Position(0, 0));
+        Worm worm = new Worm("Test2", team);
         team.nextWorm();
         team.nextWorm();
         assertSame(team.getIndexWorm(0), team.getCurrentWorm());
