@@ -65,7 +65,7 @@ public class Team {
      * @param inventory the inventory assigned to the team
      * @param spawn the spawn position where the worms will be placed
      */
-    private Team(String name, int numberOfPlayers, Inventory inventory, Position spawn) {
+    private Team(String name, int numberOfPlayers, Inventory inventory, Position[] spawn) {
         this.inventory = inventory;
         this.name = name;
         this.numberOfPlayers = numberOfPlayers;
@@ -81,7 +81,7 @@ public class Team {
      * @param numberOfPlayers number of worms in the team
      * @param spawn the spawn position where the worms will be placed
      */
-    public Team(String teamName, int numberOfPlayers, Position spawn) {
+    public Team(String teamName, int numberOfPlayers, Position[] spawn) {
         this(teamName, numberOfPlayers, new Inventory(), spawn);
     }
 
@@ -129,11 +129,13 @@ public class Team {
     /**
      * Creates and adds worms to the team based on the number of players.
      * @param numberOfPlayers number of worms to create
-     * @param spawn spawn position for all worms
+     * @param spawns all spawn position for all worms
      */
-    private void setUpPlayers(int numberOfPlayers, Position spawn) {
+    private void setUpPlayers(int numberOfPlayers, Position[] spawns) {
         for (int i = 1; i <= numberOfPlayers; i++) {
             new Worm(this.name + i, this);
+            Random random = new Random();
+            Position spawn = spawns[random.nextInt(0, spawns.length)];
             this.worms.get(i-1).spawn(spawn);
         }
     }

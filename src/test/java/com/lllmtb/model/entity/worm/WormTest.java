@@ -19,7 +19,7 @@ public class WormTest {
     public void setUp(){
         String name = "Test";
         Position pos = new Position(0, 0);
-        team = new Team("Team", 1, pos);
+        team = new Team("Team", 1, new Position[]{pos});
         worm = new Worm(name, team);
     }
 

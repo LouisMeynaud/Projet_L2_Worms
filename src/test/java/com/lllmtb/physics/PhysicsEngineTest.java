@@ -26,7 +26,7 @@ class PhysicsEngineTest {
         map = MapLoader.loadMatrix("mapTest");
         pE = new PhysicsEngine(map, true);
         p = new Position(4, 5);
-        w = new Worm("José", new Team("Team", 1, p));
+        w = new Worm("José", new Team("Team", 1, new Position[]{p}));
         assertTrue(map.inMap(p));
         pB = w.getBody();
         pB.setVector(new Vector(-5, -10));
