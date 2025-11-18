@@ -152,9 +152,9 @@ public class PhysicsEngine {
      * The resulting wind vector is added to each body’s acceleration during the next update.
      * </p>
      */
-    public void changeWind(){
+    protected void changeWind(){
         if (this.hasWind) {
-            Vector random = new Vector(Math.random() / 3 - 1/3, Math.random() / 3 - 1/3);
+            Vector random = new Vector(Math.random() / 3 - 1f/3f, Math.random() / 3 - 1f/3f);
             this.wind.add(random);
         }
     }
