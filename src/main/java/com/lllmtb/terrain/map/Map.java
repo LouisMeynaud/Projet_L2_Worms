@@ -60,7 +60,7 @@ public class Map {
      
     /**
      * @param position
-     * @return a new position corresponding to the case in the matrix 
+     * @return a new position corresponding to the case in the matrix
      * (because in the game 0,0 is in the bottom left corner, whereas in the matrix (0,0) is in the top left corner)
      */
     public Position cooMapToCooMatrix(Position position) {

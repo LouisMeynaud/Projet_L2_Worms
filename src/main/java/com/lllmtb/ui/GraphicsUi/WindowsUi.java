@@ -82,9 +82,6 @@ public class WindowsUi implements  UI{
     }
 
 
-    public boolean readyToPlay(){
-        return false;
-    }
     @Override
     public void start() {
         windows.setVisible(true);
