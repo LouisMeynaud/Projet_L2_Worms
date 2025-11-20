@@ -8,32 +8,23 @@ import com.lllmtb.ui.UI;
 import com.lllmtb.ui.GraphicsUi.WindowsUi;
 
 public class GameEngine {
-
-
     private static EventBus eventBus;
     private static GameWorld world;
-    private static volatile GameLoop gameLoop;
-
-    
 
     public static void main(String[] args) {
         
         boolean graphique = true;
         eventBus = new EventBus();
-
-
-        eventBus.subscribe(StartGameEvent.class, event -> {
-            startGame(event);
-        });
+        eventBus.subscribe(StartGameEvent.class, GameEngine::startGame);
 
         new Thread(() -> {
-            while (gameLoop == null) {
-                eventBus.processQueued(); 
+            while (world == null) {
+                eventBus.processQueued();
                 try { Thread.sleep(10); } catch (InterruptedException e) {}
             }
-        }, "Engine-Monitor").start();
+        }, "engine-loop").start();
 
-    
+
         UI ui;
         if (graphique) {
             ui = new WindowsUi(eventBus);
@@ -46,8 +37,7 @@ public class GameEngine {
     private static void startGame(StartGameEvent event) {
         GameSettings settings = event.getSettings(); 
         world = new GameWorld(settings, eventBus); 
-        eventBus.postQueued(new WorldCreatedEvent(world));
-        gameLoop = new GameLoop(world); 
-        new Thread(gameLoop, "GameLoop-Thread").start(); 
+        eventBus.postSync(new WorldCreatedEvent(world));
+        world.start();
     }
 }
