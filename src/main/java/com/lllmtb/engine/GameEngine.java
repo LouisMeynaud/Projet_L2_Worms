@@ -1,32 +1,53 @@
 package com.lllmtb.engine;
 
+import com.lllmtb.events.EventBus;
+import com.lllmtb.events.TheEvents.StartGameEvent;
+import com.lllmtb.events.TheEvents.WorldCreatedEvent;
 import com.lllmtb.ui.ConsoleUI;
 import com.lllmtb.ui.UI;
-
-import java.io.IOException;
+import com.lllmtb.ui.GraphicsUi.WindowsUi;
 
 public class GameEngine {
 
+
+    private static EventBus eventBus;
+    private static GameWorld world;
+    private static volatile GameLoop gameLoop;
+
+    
+
     public static void main(String[] args) {
-        // Initialise the TerminalUI (or SwingUI later on)
-        UI ui = new ConsoleUI();
-        GameSettings settings = null;
-        try {
-            settings = ui.promptSettings();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        GameWorld world = new GameWorld(settings);
-        ui.setWorld(world);
-        if (ui.readyToPlay()) {
-            try {
-                // demo run - stop after 0.5s
-                world.start();
-                Thread.sleep(500);
-                world.stop();
-            } catch (InterruptedException e) {
-                System.out.println("Process interrupted");
+        
+        boolean graphique = true;
+        eventBus = new EventBus();
+
+
+        eventBus.subscribe(StartGameEvent.class, event -> {
+            startGame(event);
+        });
+
+        new Thread(() -> {
+            while (gameLoop == null) {
+                eventBus.processQueued(); 
+                try { Thread.sleep(10); } catch (InterruptedException e) {}
             }
+        }, "Engine-Monitor").start();
+
+    
+        UI ui;
+        if (graphique) {
+            ui = new WindowsUi(eventBus);
+        } else {
+            ui = new ConsoleUI(eventBus);
         }
+        ui.start(); 
+    }
+
+    private static void startGame(StartGameEvent event) {
+        GameSettings settings = event.getSettings(); 
+        world = new GameWorld(settings, eventBus); 
+        eventBus.postQueued(new WorldCreatedEvent(world));
+        gameLoop = new GameLoop(world); 
+        new Thread(gameLoop, "GameLoop-Thread").start(); 
     }
 }

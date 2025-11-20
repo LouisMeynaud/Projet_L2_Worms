@@ -44,9 +44,10 @@ public class GameWorldTest {
                 null,              // mapFileName -> will use GenerateMap.createMap(WORLD)
                 false              // floatingIsland
         );
+        EventBus eventBus = new EventBus();
 
         // Construct GameWorld using real GenerateMap + real PhysicsEngine
-        GameWorld gw = new GameWorld(settings);
+        GameWorld gw = new GameWorld(settings,eventBus);
 
         // Map should be set (GenerateMap must have returned a map)
         Map map = gw.getMap();
@@ -76,7 +77,8 @@ public class GameWorldTest {
         GameSettings settings = new GameSettings(
                 0, new String[]{}, 0, true, "mapTest", false
         );
-        GameWorld gw = new GameWorld(settings);
+        EventBus eventBus = new EventBus();
+        GameWorld gw = new GameWorld(settings,eventBus);
 
         // Map returned by MapLoader should be used
         assertNotNull(generated);
@@ -95,8 +97,8 @@ public class GameWorldTest {
             GameSettings settings = new GameSettings(
                     0, new String[]{}, 0, false, "badPath", false
             );
-
-            RuntimeException e = assertThrows(RuntimeException.class, () -> new GameWorld(settings));
+            EventBus eventBus = new EventBus();
+            RuntimeException e = assertThrows(RuntimeException.class, () -> new GameWorld(settings,eventBus));
             assertNotNull(e.getCause());
             assertInstanceOf(IllegalStateException.class, e.getCause());
             assertEquals("io fail", e.getCause().getMessage());
@@ -114,8 +116,9 @@ public class GameWorldTest {
                 null,   // use GenerateMap
                 true    // floating island -> FLYINGWORLD
         );
+         EventBus eventBus = new EventBus();
 
-        GameWorld gw = new GameWorld(settings);
+        GameWorld gw = new GameWorld(settings,eventBus);
 
         // Only one team created (index 0) and 3 worms registered for that team -> physics bodies = 3
         List<Team> teams = gw.getTeams();
@@ -129,7 +132,8 @@ public class GameWorldTest {
     void startRunsLoopAndStopStopsIt_whenStartedInSeparateThread() throws Exception {
         // use a small, simple world (no teams) so physics starts empty
         GameSettings settings = new GameSettings(0, new String[]{}, 0, false, null, false);
-        GameWorld gw = new GameWorld(settings);
+         EventBus eventBus = new EventBus();
+        GameWorld gw = new GameWorld(settings,eventBus);
 
         // run GameWorld.start() (test thread won't block)
         gw.start();
@@ -151,7 +155,8 @@ public class GameWorldTest {
     @Test
     void registerEntity_null_throwsNPE() {
         GameSettings settings = new GameSettings(0, new String[]{}, 0, false, null, false);
-        GameWorld gw = new GameWorld(settings);
+         EventBus eventBus = new EventBus();
+        GameWorld gw = new GameWorld(settings,eventBus);
 
         assertThrows(NullPointerException.class, () -> gw.registerEntity(null));
     }
@@ -159,7 +164,8 @@ public class GameWorldTest {
     @Test
     void stopLoop_whenNotRunning() {
         GameSettings settings = new GameSettings(0, new String[]{}, 0, false, null, false);
-        GameWorld gw = new GameWorld(settings);
+         EventBus eventBus = new EventBus();
+        GameWorld gw = new GameWorld(settings,eventBus);
 
         assertNull(gw.loopThread);
         gw.stop();  // shouldn't do anything because loopThread == null
@@ -169,7 +175,8 @@ public class GameWorldTest {
     @Test
     void startLoop_whenAlreadyRunning() throws Exception {
         GameSettings settings = new GameSettings(0, new String[]{}, 0, false, null, false);
-        GameWorld gw = new GameWorld(settings);
+         EventBus eventBus = new EventBus();
+        GameWorld gw = new GameWorld(settings,eventBus);
 
         gw.start();
         Thread first = gw.loopThread;

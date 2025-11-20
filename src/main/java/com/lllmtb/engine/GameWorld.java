@@ -14,6 +14,7 @@ import org.eclipse.jdt.annotation.NonNull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import com.lllmtb.events.TheEvents.GameStateUpdatedEvent;
 
 public class GameWorld {
     private final Map map;
@@ -23,7 +24,7 @@ public class GameWorld {
     private final GameLoop gameLoop;
     Thread loopThread;
 
-    public GameWorld(GameSettings settings) {
+    public GameWorld(GameSettings settings,EventBus eventBus) {
         Map tmap = null;
 
         // Init Map (we'll have to handle this better once MapLoader throws catchable exceptions)
@@ -42,7 +43,7 @@ public class GameWorld {
         System.out.println(this.map);
 
         // Init EventBus
-        this.bus = new EventBus();
+        this.bus = eventBus;
 
         // Init PhysicsEngine
         this.physics = new PhysicsEngine(map, settings.hasWind);
@@ -52,7 +53,7 @@ public class GameWorld {
         System.out.println("Creating the Teams...");
         for (int i = 0; i < settings.nbTeams; i++) {
             try {
-                Position p = new Position(5, 5);    // dummy position
+                Position p = new Position(5, 50);    // dummy position
                 Team team = new Team(settings.teamNames[i], settings.nbWorms, p);
                 teams.add(team);
                 team.getTeamWorms().forEach(this::registerEntity);
@@ -105,5 +106,11 @@ public class GameWorld {
 
     public void registerEntity(@NonNull Entity e) {
         physics.add(Objects.requireNonNull(e).getBody());
+    }
+
+    public void update(){
+        this.getPhysics().next();
+        bus.postQueued(new GameStateUpdatedEvent());
+        
     }
 }

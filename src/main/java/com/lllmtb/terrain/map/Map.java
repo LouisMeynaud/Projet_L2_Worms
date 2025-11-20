@@ -74,7 +74,7 @@ public class Map {
      */
     public Tile getTile(Position position) {
         Position posMatrix = this.cooMapToCooMatrix(position);
-        return this.mapMatrix[(int) posMatrix.getY()][(int) posMatrix.getX()];
+        return this.mapMatrix[(int) posMatrix.getY()][(int) posMatrix.getX()]; //attention int arrondit a l'entier inf penser a ajouter des -1/+1 dans le code utilisant ceci
     }
 
     /**
