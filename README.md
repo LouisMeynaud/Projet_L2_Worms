@@ -46,7 +46,7 @@ Pour contribuer à ce projet, se référer à [ce fichier](/CONTRIBUTING.md).
 
 ## Licence
 
-(licence pas encore créée)
+Pour visualiser la Licence,[cliquer ici](/LICENCE).
 
 ## Crédits
 
