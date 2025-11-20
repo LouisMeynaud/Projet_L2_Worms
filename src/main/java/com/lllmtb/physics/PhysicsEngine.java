@@ -1,10 +1,14 @@
 package com.lllmtb.physics;
 
+import com.lllmtb.events.EventBus;
+import com.lllmtb.events.physics.AddPhysicsModifierEvent;
+import com.lllmtb.events.physics.RemovePhysicsModifierEvent;
 import com.lllmtb.model.entity.projectile.Projectile;
 import com.lllmtb.terrain.map.Map;
 
 import java.util.ArrayList;
 import java.util.Objects;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
@@ -16,9 +20,12 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * </p>
  */
 public class PhysicsEngine {
+    private EventBus bus;
 
     /** The list of all physics bodies currently managed by this engine. */
     private CopyOnWriteArrayList<PhysicsBody> bodies;
+
+    private ConcurrentHashMap<PhysicsBody, ArrayList<Modifier>> modifiers;
 
     /** The gravity vector applied uniformly to all bodies. */
     private Vector gravity;
@@ -41,14 +48,19 @@ public class PhysicsEngine {
      * </p>
      *
      * @param map the {@code Map} instance representing the environment for collision detection.
+     * @param bus the global {@code EventBus} instance created upstream.
      * @param hasWind if wind should be simulated.
      */
-    public PhysicsEngine(Map map, boolean hasWind) {
+    public PhysicsEngine(Map map, EventBus bus, boolean hasWind) {
+        this.bus = bus;
         this.bodies = new CopyOnWriteArrayList<>();
         this.gravity = new Vector(0, -9.81);
         this.hasWind = hasWind;
         this.wind = new Vector(0, 0);
         Collision.init(this.bodies, map);
+
+        bus.subscribe(AddPhysicsModifierEvent.class, e -> addModifier(e.body(), e.modifier()));
+        bus.subscribe(RemovePhysicsModifierEvent.class, e -> removeModifier(e.body(), e.modifier()));
     }
 
     /**
@@ -115,6 +127,14 @@ public class PhysicsEngine {
         bodies.remove(body);
     }
 
+    private void addModifier(PhysicsBody body, Modifier modifier) {
+        modifiers.computeIfAbsent(body, b -> new ArrayList<>()).add(modifier);
+    }
+
+    private void removeModifier(PhysicsBody body, Modifier modifier) {
+        if (modifiers.containsKey(body)) modifiers.get(body).remove(modifier);
+    }
+
     /**
      * Removes all physics bodies from the simulation.
      * <p>
@@ -123,6 +143,7 @@ public class PhysicsEngine {
      */
     public void clear() {
         bodies.clear();
+        modifiers.clear();
     }
 
     /**
@@ -165,6 +186,9 @@ public class PhysicsEngine {
 
             Vector newVector = body.getVector().add(deltaV);
             Position nextPos = newVector.newPos(body.getPos(), ticktime);
+
+            if (modifiers.containsKey(body)) for (Modifier m : modifiers.get(body)) newVector = m.apply(newVector);
+
             body.setVector(newVector);
 
             if (!Collision.haveCollisionMap(body, nextPos)) {
@@ -178,7 +202,7 @@ public class PhysicsEngine {
      * <p>
      * This method increments the internal time counter, periodically updates the wind
      * vector (every 600 ticks if enabled), and performs one simulation step through
-     * {@link #nextStep()}.
+     * {@link #nextStep(double)}.
      * </p>
      * @param ticktime the duration of the simulation tick (in seconds).
      */
