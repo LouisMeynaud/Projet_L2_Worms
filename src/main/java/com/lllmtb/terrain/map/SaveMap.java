@@ -1,7 +1,7 @@
 package com.lllmtb.terrain.map;
 
 import java.io.IOException;
-import java.util.Scanner;
+//import java.util.Scanner;
 import java.io.File;
 import java.io.FileWriter;
 

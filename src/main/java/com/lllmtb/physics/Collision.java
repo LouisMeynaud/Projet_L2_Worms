@@ -1,6 +1,6 @@
 package com.lllmtb.physics;
 
-import java.util.ArrayList;
+//import java.util.ArrayList;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import com.lllmtb.terrain.map.*;
@@ -74,9 +74,9 @@ public class Collision {
      * @return returns if there is a collision on the x-axis
      */
     public static boolean haveCollisionX(PhysicsBody body, Position nextPosXBasGauche) {
-        Position nextPosXBasDroite = PosBasDroite(nextPosXBasGauche, body);
-        Position nextPosXHautGauche = PosHautGauche(nextPosXBasGauche, body);
-        Position nextPosXHautDroite = PosHautDroite(nextPosXBasGauche, body);
+        Position nextPosXBasDroite = posBasDroite(nextPosXBasGauche, body);
+        Position nextPosXHautGauche = posHautGauche(nextPosXBasGauche, body);
+        Position nextPosXHautDroite = posHautDroite(nextPosXBasGauche, body);
         if (body.getVector().getX() < 0) {
             return (map.inMap(nextPosXBasGauche) && map.isSolid(nextPosXBasGauche))
                     || (map.inMap(nextPosXHautGauche) && map.isSolid(nextPosXHautGauche)); // collision to the left
@@ -91,13 +91,13 @@ public class Collision {
     /**
      * 
      * @param body the body where collisions will be tested
-     * @param nextPosXBasGauche the bottom left corner of the entity
+     * @param nextPosYBasGauche the bottom left corner of the entity
      * @return returns if there is a collision on the Y axis
      */
     public static boolean haveCollisionY(PhysicsBody body, Position nextPosYBasGauche) {
-        Position nextPosYBasDroite = PosBasDroite(nextPosYBasGauche, body);
-        Position nextPosYHautGauche = PosHautGauche(nextPosYBasGauche, body);
-        Position nextPosYHautDroite = PosHautDroite(nextPosYBasGauche, body);
+        Position nextPosYBasDroite = posBasDroite(nextPosYBasGauche, body);
+        Position nextPosYHautGauche = posHautGauche(nextPosYBasGauche, body);
+        Position nextPosYHautDroite = posHautDroite(nextPosYBasGauche, body);
         if (body.getVector().getY() < 0) {
             return (map.inMap(nextPosYBasDroite) && map.isSolid(nextPosYBasDroite))
                     || (map.inMap(nextPosYBasGauche) && map.isSolid(nextPosYBasGauche)); // downward collision
@@ -112,13 +112,13 @@ public class Collision {
      /**
      * 
      * @param body the body where collisions will be tested
-     * @param nextPosXBasGauche the bottom left corner of the entity
+     * @param nextPosXYBasGauche the bottom left corner of the entity
      * @return returns if there is a collision on the XY axis
      */
     public static boolean haveCollisionXY(PhysicsBody body, Position nextPosXYBasGauche) {
-        Position nextPosXYBasDroite = PosBasDroite(nextPosXYBasGauche, body);
-        Position nextPosXYHautGauche = PosHautGauche(nextPosXYBasGauche, body);
-        Position nextPosXYHautDroite = PosHautDroite(nextPosXYBasGauche, body);
+        Position nextPosXYBasDroite = posBasDroite(nextPosXYBasGauche, body);
+        Position nextPosXYHautGauche = posHautGauche(nextPosXYBasGauche, body);
+        Position nextPosXYHautDroite = posHautDroite(nextPosXYBasGauche, body);
 
         if (body.getVector().getX() < 0 && body.getVector().getY() < 0) {
             return (map.inMap(nextPosXYBasGauche) && map.isSolid(nextPosXYBasGauche)); // collision bottom/left
@@ -138,7 +138,7 @@ public class Collision {
      * @param body
      * @return the position of the corner in the bottom right
      */
-    public static Position PosBasDroite(Position nextPosXBasGauche, PhysicsBody body) {
+    public static Position posBasDroite(Position nextPosXBasGauche, PhysicsBody body) {
         return (new Position(nextPosXBasGauche.getX() + body.getWidth(), nextPosXBasGauche.getY()));
     }
      /**
@@ -147,7 +147,7 @@ public class Collision {
      * @param body
      * @return the position of the corner in the bottom right
      */
-    public static Position PosHautDroite(Position nextPosXBasGauche, PhysicsBody body) {
+    public static Position posHautDroite(Position nextPosXBasGauche, PhysicsBody body) {
         return (new Position(nextPosXBasGauche.getX() + body.getWidth(), nextPosXBasGauche.getY() + body.getHeight()));
 
     }
@@ -157,7 +157,7 @@ public class Collision {
      * @param body
      * @return the position of the corner in the upper left
      */
-    public static Position PosHautGauche(Position nextPosXBasGauche, PhysicsBody body) {
+    public static Position posHautGauche(Position nextPosXBasGauche, PhysicsBody body) {
         return (new Position(nextPosXBasGauche.getX(), nextPosXBasGauche.getY() + body.getHeight()));
     }
 }

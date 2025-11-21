@@ -3,7 +3,7 @@ package com.lllmtb.engine;
 import com.lllmtb.events.EventBus;
 import com.lllmtb.model.entity.Entity;
 import com.lllmtb.model.entity.team.Team;
-import com.lllmtb.model.entity.worm.Worm;
+//import com.lllmtb.model.entity.worm.Worm;
 import com.lllmtb.physics.PhysicsEngine;
 import com.lllmtb.physics.Position;
 import com.lllmtb.terrain.generation.GenerateMap;

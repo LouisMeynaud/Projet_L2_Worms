@@ -51,13 +51,13 @@ public class GenerateMapTest {
     }
 
     @Test
-    void TriHightLineLowLineTest(){
+    void triHightLineLowLineTest(){
         int[] highLine = {8,2,4};
         int[] lowLine = {7,5,3};
         int[] highLineBis = {8,5,4};
         int[] lowLineBis = {7,2,3};
         ConfigMap config = new ConfigMap(3, 5, 0, 0, 0, 0, false, 0, 40);
-        GenerateMap.TriHightLineLowLine(highLine,lowLine,config);
+        GenerateMap.triHightLineLowLine(highLine,lowLine,config);
         for (int i = 0; i < 3; i++) {
         assertEquals(highLine[i], highLineBis[i]);
         assertEquals(lowLine[i], lowLineBis[i]);

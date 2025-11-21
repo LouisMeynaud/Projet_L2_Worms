@@ -5,7 +5,7 @@ import java.util.Random;
 public class LineGenerator {
 
     protected static int[] createLine(ConfigMap config) {
-        int LineHeight = config.heightStart;
+        int lineHeight = config.heightStart;
         int x = 0;
         int slope = 0;
         int length = 0;
@@ -19,10 +19,10 @@ public class LineGenerator {
                     slope = random.nextInt(config.maxSlope - (- config.maxSlope) + 1) + (- config.maxSlope);
                 }
                 length = random.nextInt(config.maxLength + 1);
-            } while (LineHeight + slope * length >= config.height || LineHeight + slope * length <= 0);
+            } while (lineHeight + slope * length >= config.height || lineHeight + slope * length <= 0);
             for (int i = 0; i < length && x < config.width; i++) {
-                line[x] = LineHeight;
-                LineHeight += slope;
+                line[x] = lineHeight;
+                lineHeight += slope;
                 x++;
             }
         }

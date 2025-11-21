@@ -23,7 +23,7 @@ public class GenerateMap {
         int[] hightLine = LineGenerator.createLine(config); 
         if (config.flyingIsland) {
             lowLine = LineGenerator.createLine(config); 
-            TriHightLineLowLine(hightLine,lowLine,config);
+            triHightLineLowLine(hightLine,lowLine,config);
             
         } else {
             lowLine = new int[config.width];
@@ -43,11 +43,11 @@ public class GenerateMap {
      /**
      * methode pour que la hightLine soit toujours au dessus de la lowLine
      * 
-     * @param highLine la ligne haute
+     * @param hightLine la ligne haute
      * @param lowLine la ligne basse
      * @param config la config de la map
      */
-    protected  static void TriHightLineLowLine(int[] hightLine,int[] lowLine,ConfigMap config){
+    protected  static void triHightLineLowLine(int[] hightLine,int[] lowLine,ConfigMap config){
         for (int i = 0; i < config.width; i++) {
                 if (lowLine[i] > hightLine[i]) {
                     int temp = lowLine[i];
