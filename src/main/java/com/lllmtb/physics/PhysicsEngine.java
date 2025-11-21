@@ -54,6 +54,7 @@ public class PhysicsEngine {
     public PhysicsEngine(Map map, EventBus bus, boolean hasWind) {
         this.bus = bus;
         this.bodies = new CopyOnWriteArrayList<>();
+        this.modifiers = new ConcurrentHashMap<>();
         this.gravity = new Vector(0, -9.81);
         this.hasWind = hasWind;
         this.wind = new Vector(0, 0);
@@ -150,7 +151,7 @@ public class PhysicsEngine {
      * Randomly changes the wind vector to simulate natural fluctuations in wind force and direction.
      * <p>
      * The change is small and based on random perturbations in both the x and y directions.
-     * This method should typically be called less frequently than {@link #next()}, for example
+     * This method should typically be called less frequently than {@link #next(double)}, for example
      * once every few seconds of simulated time, to avoid erratic motion.
      * </p>
      * <p>
@@ -185,11 +186,11 @@ public class PhysicsEngine {
             deltaV.scale(ticktime / body.getMass());
 
             Vector newVector = body.getVector().add(deltaV);
-            Position nextPos = newVector.newPos(body.getPos(), ticktime);
-
-            if (modifiers.containsKey(body)) for (Modifier m : modifiers.get(body)) newVector = m.apply(newVector);
-
             body.setVector(newVector);
+
+            // apply modifiers for this tick only - we don't want to stack them every tick
+            if (modifiers.containsKey(body)) for (Modifier m : modifiers.get(body)) newVector = m.apply(newVector);
+            Position nextPos = newVector.newPos(body.getPos(), ticktime);
 
             if (!Collision.haveCollisionMap(body, nextPos)) {
                 body.setPos(nextPos);
