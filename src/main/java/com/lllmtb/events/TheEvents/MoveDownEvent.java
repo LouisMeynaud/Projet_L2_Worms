@@ -4,6 +4,5 @@ import com.lllmtb.events.Event;
 
 public class MoveDownEvent implements Event {
     public MoveDownEvent() {
-        System.out.println("down");
     }
 }
