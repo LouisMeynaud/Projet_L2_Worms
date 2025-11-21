@@ -47,7 +47,7 @@ public class SettingsStartPanel extends JPanel {
 
         //zone centre (les deux partit (parametre map/partit))
         JPanel PanelCentre = new JPanel(new GridLayout(1, 2, 10, 0));// 1 ligne 2 colonne , 10 de marge horizontale
-        JPanel panelMap = createMapSettingsPanel();
+        SettingMapPanel panelMap = new SettingMapPanel(eventBus);
         SettingGamePanel gameSettingsPanel = new SettingGamePanel();
 
         PanelCentre.add(panelMap);
@@ -65,19 +65,12 @@ public class SettingsStartPanel extends JPanel {
     }
 
 
-    public JPanel createMapSettingsPanel(){
-        JPanel mapSettingsPanel = new JPanel();
-        mapSettingsPanel.setBorder(BorderFactory.createTitledBorder("Paramètres de la map")); // permet d'afficher un titre;
-
-        return mapSettingsPanel;
-    }
-
 
     public GameSettings setSettings(SettingGamePanel gameSettingsPanel) {
         int nbEquipes = gameSettingsPanel.getNbEquipes();
         int nbVWorms = gameSettingsPanel.getNbWorms();
         String[] nomsEquipes = gameSettingsPanel.getNomsEquipes();
         boolean wind = gameSettingsPanel.getWind();
-        return new GameSettings(nbEquipes, nomsEquipes, nbVWorms, wind, null, false);
+        return new GameSettings(nbEquipes, nomsEquipes, nbVWorms, wind, null, false,370,170);
     }
 }

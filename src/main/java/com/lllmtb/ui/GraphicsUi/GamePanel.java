@@ -74,12 +74,12 @@ public class GamePanel extends JPanel {
         super.paintComponent(g);
         Graphics2D g2d = (Graphics2D) g; // ceci est un "pinceaux" le version graphics2d contient plus de mode par default 
 
-        double windowWidth = getWidth();//recupere la taille de la fenetre
-        double windowHeight = getHeight();//recupere la taille de la fenetre
-        double tileWidthBasedOnScreen = windowWidth / world.getMap().getWidth();
-        double tileHeightBasedOnScreen = windowHeight / world.getMap().getHeight();
-        this.tileSize = Math.min(tileWidthBasedOnScreen, tileHeightBasedOnScreen);//prend le minimum pour que la map rentre (on fera en sorte ensuite de faire une map qui a direct les bonne dim)
-
+        // double windowWidth = getWidth();//recupere la taille de la fenetre
+        // double windowHeight = getHeight();//recupere la taille de la fenetre
+        // double tileWidthBasedOnScreen = windowWidth / world.getMap().getWidth();
+        // double tileHeightBasedOnScreen = windowHeight / world.getMap().getHeight();
+        //this.tileSize = Math.min(tileWidthBasedOnScreen, tileHeightBasedOnScreen);//prend le minimum pour que la map rentre (on fera en sorte ensuite de faire une map qui a direct les bonne dim)
+        this.tileSize = 4;
         
         g2d.translate(0, getHeight()); // Déplace l'origine en bas à gauche de la FENÊTRE (le JPanel)
     

@@ -80,7 +80,7 @@ public class ConsoleUI implements UI {
             );
             terminal.writer().println("   Wind: " + (hasWind ? "ON" : "OFF"));
             terminal.writer().flush();
-            return new GameSettings(nbTeams, teamNames, nbWorms, hasWind, mapFileName, floatingIsland);
+            return new GameSettings(nbTeams, teamNames, nbWorms, hasWind, mapFileName, floatingIsland,370,170);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -198,15 +198,8 @@ public class ConsoleUI implements UI {
                 
               
                 this.eventBus.postQueued(new StartGameEvent(settings));
-                
-
-            } else {
-                terminal.writer().println("Lancement annulé.");
-                terminal.writer().flush();
-                close(); 
             }
-
-        } catch (Exception e) {
+        }catch (Exception e) {
             System.err.println("Une erreur est survenue durant la configuration :");
             e.printStackTrace();
             close();

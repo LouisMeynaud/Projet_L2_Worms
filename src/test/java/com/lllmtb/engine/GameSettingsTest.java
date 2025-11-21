@@ -13,7 +13,7 @@ public class GameSettingsTest
         boolean hasWind = true;
         String FileMapName = "tkt.txt";
         boolean GeneratedIsland = true;
-        GameSettings settings = new GameSettings(nbTeams, TeamNames, numberWorms, hasWind, FileMapName, GeneratedIsland);
+        GameSettings settings = new GameSettings(nbTeams, TeamNames, numberWorms, hasWind, FileMapName, GeneratedIsland,370,170);
         assertEquals(nbTeams, settings.nbTeams);
         assertEquals(TeamNames, settings.teamNames);
         assertEquals(numberWorms, settings.nbWorms);
