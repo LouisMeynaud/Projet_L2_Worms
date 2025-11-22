@@ -116,6 +116,19 @@
                     <excludes>
                         <exclude>com/lllmtb/engine/GameEngine.class</exclude>
                         <exclude>com/lllmtb/ui/ConsoleUI.class</exclude>
+                        <exclude>com/lllmtb/ui/GraphicsUi/GamePanel/GameScreen.class</exclude>
+                        <exclude>com/lllmtb/ui/GraphicsUi/GamePanel/GameUIPanel.class</exclude>
+                        <exclude>com/lllmtb/ui/GraphicsUi/GamePanel/GameWorldPanel.class</exclude>
+                        <exclude>com/lllmtb/ui/GraphicsUi/GamePanel/Key.class</exclude>
+                        <exclude>com/lllmtb/ui/GraphicsUi/SettingsPanel/GenerateMapPanel.class</exclude>
+                        <exclude>com/lllmtb/ui/GraphicsUi/SettingsPanel/LoadMapPanel.class</exclude>
+                        <exclude>com/lllmtb/ui/GraphicsUi/SettingsPanel/NewOrLoadPanel.class</exclude>
+                        <exclude>com/lllmtb/ui/GraphicsUi/SettingsPanel/SettingMapPanel.class</exclude>
+                        <exclude>com/lllmtb/ui/GraphicsUi/SettingsPanel/SettingsStartPanel.class</exclude>
+                        <exclude>com/lllmtb/ui/GraphicsUi/SettingsPanel/SettingGamePanel.class</exclude>
+                        <exclude>com/lllmtb/ui/GraphicsUi/HomeScreenPanel.class</exclude>
+                        <exclude>com/lllmtb/ui/GraphicsUi/WindowsUi.class</exclude>
+                        <exclude>com/lllmtb/physics/Collision.class</exclude> <!-- enlever une fois la nouvelle implementation de colision faite !-->
                     </excludes>
                 </configuration>
             </plugin>
