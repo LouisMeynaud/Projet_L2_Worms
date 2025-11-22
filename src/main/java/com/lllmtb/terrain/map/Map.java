@@ -13,12 +13,14 @@ public class Map {
     private int height;
     private Tile[][] mapMatrix;
     private String filesTxt;
+    private Position[] spawnPoint;
 
     public Map(int height, int width, String filesTxt) {
         this.mapMatrix = new Tile[height][width];
         this.width = width;
         this.height = height;
         this.filesTxt = filesTxt;
+        this.spawnPoint = null;
     }
 
     public int getWidth() {
@@ -40,7 +42,15 @@ public class Map {
     protected void setFilesTxt(String files){
         this.filesTxt = files;
     }
+
+    
    
+    public void setSpawnPoint(Position[] spawnPoint) {
+        this.spawnPoint = spawnPoint;
+    }
+
+    
+
     @Override
     public String toString() {
         StringBuilder string = new StringBuilder("width : " + this.width + ", height : " + this.height + ", matrice : \n");
@@ -113,6 +123,10 @@ public class Map {
             case DIRT : return true;
             default: return false; //add other block in future
         }
+    }
+
+    public Position[] getSpawnPoint() {
+        return spawnPoint;
     }
 
 }

@@ -13,8 +13,9 @@ public class ConfigMap {
     private boolean flyingIsland;   //true ifyou want a flying island
     private int plateauChance;      //the chance of having flat ground (which avoids terrain composed solely of "peaks")
     public static final double RATIOWIDTHHEIGHT = 0.5625; //for a rectangular world (0.5625 is the ratio between the width and heigth of a commun screen)
+    private int nbSpawnPoint;
     public ConfigMap(int width, int waterHeight, int thicknessMin,
-            boolean flyingIsland,int heightStart,LandScape terrainType) {
+            boolean flyingIsland,int heightStart,LandScape terrainType,int nbSpawnPoint) {
         this.width = width;
         this.height = (int) (width * RATIOWIDTHHEIGHT); //for a rectangular world (0.5625 is the ratio between the width and heigth of a commun screen)
         this.waterHeight = waterHeight;
@@ -24,6 +25,7 @@ public class ConfigMap {
         this.maxSlope = 1;
         this.maxLength = 10;
         this.plateauChance = 20;
+        this.nbSpawnPoint= nbSpawnPoint;
         
         switch (terrainType) {
             
@@ -95,6 +97,12 @@ public class ConfigMap {
     public int getPlateauChance() {
         return plateauChance;
     }
+
+    public int getNbSpawnPoint() {
+        return nbSpawnPoint;
+    }
+
+    
 
     
 
