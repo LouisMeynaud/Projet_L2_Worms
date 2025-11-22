@@ -84,7 +84,7 @@
                 <version>3.4.1</version>
                 <configuration>
                     <installHooks>
-                        <pre-commit>.git/hooks/preCommit</pre-commit>
+                        <pre-commit>.git/hooks/pre-commit</pre-commit>
                     </installHooks>
                 </configuration>
                 <executions>
