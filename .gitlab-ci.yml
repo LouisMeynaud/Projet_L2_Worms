@@ -21,7 +21,7 @@ validate:
     paths:
       - target/site/checkstyle/checkstyle-result.xml
       - target/reports/checkstyle.html
-      - target/reports/images/**
+      - target/reports/**
 
 
 # Compile - validates pom and compiles sources
