@@ -71,8 +71,8 @@ public class GenerateMapTest {
         InputStream originalIn = System.in;//on garde de coter l'entrer original pour la retablir apres
 
         System.setIn(new ByteArrayInputStream(inputSimule.getBytes())); // getbytes transforme le string en tableau d' octet pour byteArrayInpustream qui prend un tableau d'octect
-        int nbVers = 10;
-        int nbTeams= 2;
+        int nbVers = 59;
+        int nbTeams= 1;
         int waterHeight = 5;
         ConfigMap configtest = new ConfigMap(60, waterHeight, 5, false, 0, LandScape.HILLY,nbTeams,nbVers);
         Map m =GenerateMap.createMap(configtest);
