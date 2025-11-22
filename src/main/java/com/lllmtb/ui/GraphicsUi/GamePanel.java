@@ -2,39 +2,76 @@ package com.lllmtb.ui.GraphicsUi;
 
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.event.HierarchyEvent;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
 import com.lllmtb.engine.GameWorld;
 import com.lllmtb.events.EventBus;
-import com.lllmtb.events.TheEvents.GameStateUpdatedEvent;
-import com.lllmtb.events.TheEvents.WorldCreatedEvent;
+import com.lllmtb.events.TheEvents.*;
 import com.lllmtb.physics.PhysicsBody;
 import com.lllmtb.terrain.map.Tile;
+
 
 public class GamePanel extends JPanel {
     public EventBus eventBus;
     public GameWorld world;
     public Tile[][] mapMatrix;
     public  double tileSize; //sera la taille des bloc et la tailel de reference pour tout le reste. poura etre choisie
-
     private Map<Tile,BufferedImage> textureMatrixMap;
     private Map<String,BufferedImage> textureEntityMap;
+    private final Set<Integer> pressedKeys = new HashSet<>();
 
     private int cameraX = 0;
     private int cameraY = 0;
     
     public GamePanel(EventBus eventBus){
         this.eventBus = eventBus;
-
+        setFocusable(true);     // autorise le panel à recevoir le focus
         loadTextures();
         subscribeToGameEvents();
+        addHierarchyListener(e -> {
+            if (e.getChangeFlags() == HierarchyEvent.SHOWING_CHANGED && isShowing()) {
+                requestFocusInWindow();
+            }
+        });
+
+        addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                // 1. On met à jour la mémoire des touches (on ajoute celle qui vient d'être pressée)
+                pressedKeys.add(e.getKeyCode());
+
+                if (pressedKeys.contains(KeyEvent.VK_UP)) {
+                    eventBus.postQueued(new MoveUpEvent());
+                }
+                if (pressedKeys.contains(KeyEvent.VK_DOWN)) {
+                    eventBus.postQueued(new MoveDownEvent());
+                }
+                if (pressedKeys.contains(KeyEvent.VK_LEFT)) {
+                    eventBus.postQueued(new MoveLeftEvent());
+                }
+                if (pressedKeys.contains(KeyEvent.VK_RIGHT)) {
+                    eventBus.postQueued(new MoveRightEvent());
+                }
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+                // Important : on enlève la touche de la mémoire quand on la lâche
+                pressedKeys.remove(e.getKeyCode());
+            }
+        });
     }
         private void loadTextures() {
             textureMatrixMap = new HashMap<>();
@@ -127,6 +164,7 @@ public class GamePanel extends JPanel {
 
         // On réinitialise la caméra 
         g2d.translate(cameraX, cameraY);
+
     }
     }
    
