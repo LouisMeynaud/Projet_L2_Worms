@@ -13,7 +13,7 @@ public class Map {
     private int height;
     private Tile[][] mapMatrix;
     private String filesTxt;
-    private Position[] spawnPoint;
+    private Position[][] spawnPoint;
     private int[] hightLine;
 
     public Map(int height, int width, String filesTxt) {
@@ -46,7 +46,7 @@ public class Map {
 
     
    
-    public void setSpawnPoint(Position[] spawnPoint) {
+    public void setSpawnPoint(Position[][] spawnPoint) {
         this.spawnPoint = spawnPoint;
     }
 
@@ -130,7 +130,7 @@ public class Map {
         }
     }
 
-    public Position[] getSpawnPoint() {
+    public Position[][] getSpawnPoint() {
         return spawnPoint;
     }
 

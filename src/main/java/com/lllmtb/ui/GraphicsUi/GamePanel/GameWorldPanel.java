@@ -28,7 +28,7 @@ public class GameWorldPanel extends JPanel {
     public GameWorld world;
     public Tile[][] mapMatrix;
     public  double tileSize; //sera la taille des bloc et la tailel de reference pour tout le reste. poura etre choisie
-    private double defaultTileSize = 12;
+    private double defaultTileSize = 4;
     private Map<Tile,BufferedImage> textureMatrixMap;
     private Map<String,BufferedImage> textureEntityMap;
     private final Set<Integer> pressedKeys = new HashSet<>();

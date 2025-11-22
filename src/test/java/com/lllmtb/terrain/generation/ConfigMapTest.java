@@ -12,7 +12,7 @@ public class ConfigMapTest {
     @Test
     public void configtest() {
        
-        ConfigMap configtest = new ConfigMap(60, 5, 5, false, 50, LandScape.HILLY,0);
+        ConfigMap configtest = new ConfigMap(60, 5, 5, false, 50, LandScape.HILLY,0,0);
         
         assertEquals(60, configtest.getWidth());
     }
@@ -22,7 +22,7 @@ public class ConfigMapTest {
         @Test
     public void configtestFLAT() {
        
-        ConfigMap configtest = new ConfigMap(60, 5, 5, false, 50, LandScape.FLAT,0);
+        ConfigMap configtest = new ConfigMap(60, 5, 5, false, 50, LandScape.FLAT,0,0);
         
         assertEquals(1, configtest.getMaxSlope());
         assertEquals(10, configtest.getMaxLength());
@@ -32,7 +32,7 @@ public class ConfigMapTest {
     @Test
     public void configtestHILLY() {
        
-        ConfigMap configtest = new ConfigMap(60, 5, 5, false, 50, LandScape.HILLY,0);
+        ConfigMap configtest = new ConfigMap(60, 5, 5, false, 50, LandScape.HILLY,0,0);
         
         assertEquals(2, configtest.getMaxSlope());
         assertEquals(3, configtest.getMaxLength());
@@ -42,7 +42,7 @@ public class ConfigMapTest {
     @Test
     public void configtestJAGGED() {
        
-        ConfigMap configtest = new ConfigMap(60, 5, 5, false, 50, LandScape.JAGGED,0);
+        ConfigMap configtest = new ConfigMap(60, 5, 5, false, 50, LandScape.JAGGED,0,0);
         
         assertEquals(3, configtest.getMaxSlope());
         assertEquals(5, configtest.getMaxLength());
@@ -52,7 +52,7 @@ public class ConfigMapTest {
     @Test
     public void configtestCHAOTIC() {
        
-        ConfigMap configtest = new ConfigMap(60, 5, 5, false, 50, LandScape.CHAOTIC,0);
+        ConfigMap configtest = new ConfigMap(60, 5, 5, false, 50, LandScape.CHAOTIC,0,0);
         
         assertEquals(4, configtest.getMaxSlope());
         assertEquals(2, configtest.getMaxLength());
@@ -62,7 +62,7 @@ public class ConfigMapTest {
     @Test
     public void configtestDEFAULT() {
        
-        ConfigMap configtest = new ConfigMap(60, 5, 5, false, 50, LandScape.UNKNOWN,0);
+        ConfigMap configtest = new ConfigMap(60, 5, 5, false, 50, LandScape.UNKNOWN,0,0);
         
         assertEquals(2, configtest.getMaxSlope());
         assertEquals(3, configtest.getMaxLength());
