@@ -1,4 +1,4 @@
-package com.lllmtb.ui.GraphicsUi;
+package com.lllmtb.ui.GraphicsUi.SettingsPanel;
 
 import java.awt.BorderLayout;
 import java.awt.Font;

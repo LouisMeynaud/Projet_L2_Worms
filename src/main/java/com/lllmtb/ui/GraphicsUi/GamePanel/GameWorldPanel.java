@@ -1,4 +1,4 @@
-package com.lllmtb.ui.GraphicsUi;
+package com.lllmtb.ui.GraphicsUi.GamePanel;
 
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -23,11 +23,12 @@ import com.lllmtb.physics.PhysicsBody;
 import com.lllmtb.terrain.map.Tile;
 
 
-public class GamePanel extends JPanel {
+public class GameWorldPanel extends JPanel {
     public EventBus eventBus;
     public GameWorld world;
     public Tile[][] mapMatrix;
     public  double tileSize; //sera la taille des bloc et la tailel de reference pour tout le reste. poura etre choisie
+    private double defaultTileSize = 12;
     private Map<Tile,BufferedImage> textureMatrixMap;
     private Map<String,BufferedImage> textureEntityMap;
     private final Set<Integer> pressedKeys = new HashSet<>();
@@ -35,7 +36,7 @@ public class GamePanel extends JPanel {
     private int cameraX = 0;
     private int cameraY = 0;
     
-    public GamePanel(EventBus eventBus){
+    public GameWorldPanel(EventBus eventBus){
         this.eventBus = eventBus;
         setFocusable(true);     // autorise le panel à recevoir le focus
         loadTextures();
@@ -78,11 +79,11 @@ public class GamePanel extends JPanel {
             textureEntityMap = new HashMap<>();
         try {
             
-            textureMatrixMap.put(Tile.DIRT, ImageIO.read(GamePanel.class.getResource("/textures/dirt.png"))); // le / designe le dossier ressource
-            textureMatrixMap.put(Tile.WATER, ImageIO.read(GamePanel.class.getResource("/textures/water.png")));
-            textureMatrixMap.put(Tile.AIR, ImageIO.read(GamePanel.class.getResource("/textures/air.png")));
+            textureMatrixMap.put(Tile.DIRT, ImageIO.read(GameWorldPanel.class.getResource("/textures/dirt.png"))); // le / designe le dossier ressource
+            textureMatrixMap.put(Tile.WATER, ImageIO.read(GameWorldPanel.class.getResource("/textures/water.png")));
+            textureMatrixMap.put(Tile.AIR, ImageIO.read(GameWorldPanel.class.getResource("/textures/air.png")));
 
-            textureEntityMap.put("warm1",ImageIO.read(GamePanel.class.getResource("/textures/warm.png")));
+            textureEntityMap.put("warm1",ImageIO.read(GameWorldPanel.class.getResource("/textures/warm.png")));
             
         } catch (IOException e) {
             e.printStackTrace();
@@ -109,19 +110,25 @@ public class GamePanel extends JPanel {
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        Graphics2D g2d = (Graphics2D) g; // ceci est un "pinceaux" le version graphics2d contient plus de mode par default 
+        Graphics2D g2d = (Graphics2D) g; // ceci est un "pinceau" le version graphics2d contient plus de mode par default 
 
-        // double windowWidth = getWidth();//recupere la taille de la fenetre
-        // double windowHeight = getHeight();//recupere la taille de la fenetre
-        // double tileWidthBasedOnScreen = windowWidth / world.getMap().getWidth();
-        // double tileHeightBasedOnScreen = windowHeight / world.getMap().getHeight();
-        //this.tileSize = Math.min(tileWidthBasedOnScreen, tileHeightBasedOnScreen);//prend le minimum pour que la map rentre (on fera en sorte ensuite de faire une map qui a direct les bonne dim)
-        this.tileSize = 8;
         
-        g2d.translate(0, getHeight()); // Déplace l'origine en bas à gauche de la FENÊTRE (le JPanel)
+        //trouver taille tuile pour remplir la map
+        double windowWidth = getWidth();
+        double windowHeight = getHeight();
+        double mapTilesX = world.getMap().getWidth();
+        double mapTilesY = world.getMap().getHeight();
+        double widthRatio = windowWidth / mapTilesX;
+        double heightRatio = windowHeight / mapTilesY;
+        double sizeToFillScreen = Math.max(widthRatio, heightRatio);
+        this.tileSize = Math.max(defaultTileSize, sizeToFillScreen);
+
+
+
+        g2d.translate(0, getHeight()); // Déplace l'origine du pinceaux en bas a gauche du jpanel
     
         g2d.scale(1.0, -1.0);//inverse l'axe y , quand y descend , le pinceau descend et ne monte plus (comme il le fait initialement)
-        g2d.translate(-cameraX, -cameraY); //plutot que deplacer une camera (pas possible) on deplace le monde (dans la direction inverse ducoup)
+        //g2d.translate(-cameraX, -cameraY); //plutot que deplacer une camera (pas possible) on deplace le monde (dans la direction inverse ducoup)
 
         // Dessine la map 
         if (mapMatrix != null) {

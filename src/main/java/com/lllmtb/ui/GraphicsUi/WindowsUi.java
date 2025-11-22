@@ -11,7 +11,11 @@ import javax.swing.UIManager;
 import com.lllmtb.events.TheEvents.ScreenHomeEvent;
 import com.lllmtb.events.TheEvents.ScreenSettingsGame;
 import com.lllmtb.events.TheEvents.StartGameEvent;
-import com.lllmtb.ui.*;;
+import com.lllmtb.ui.*;
+import com.lllmtb.ui.GraphicsUi.GamePanel.GameScreen;
+import com.lllmtb.ui.GraphicsUi.GamePanel.GameWorldPanel;
+import com.lllmtb.ui.GraphicsUi.SettingsPanel.NewOrLoadPanel;
+import com.lllmtb.ui.GraphicsUi.SettingsPanel.SettingsStartPanel;;
 
 public class WindowsUi implements  UI{
     
@@ -47,7 +51,7 @@ public class WindowsUi implements  UI{
         
         HomeScreenPanel homeScreen = new HomeScreenPanel(this.eventBus);
         SettingsStartPanel startSettingScreen = new SettingsStartPanel(this.eventBus);
-        GamePanel gamePanel = new GamePanel(eventbus);
+        GameScreen gamePanel = new GameScreen(eventbus);
         NewOrLoadPanel newOrLoadPanel = new NewOrLoadPanel(eventbus);
         mainPanel.add(homeScreen,"homeScreen");
         mainPanel.add(startSettingScreen,"startSettingScreen");
