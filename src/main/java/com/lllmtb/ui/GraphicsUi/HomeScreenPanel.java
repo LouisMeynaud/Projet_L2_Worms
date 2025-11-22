@@ -1,5 +1,9 @@
 package com.lllmtb.ui.GraphicsUi;
 
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
@@ -11,8 +15,14 @@ public class HomeScreenPanel extends JPanel{
     
     public HomeScreenPanel(EventBus eventBus){
         this.eventBus = eventBus;
+        this.setLayout(new GridBagLayout());
 
-    JButton startButton = new JButton("start");
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = 0; 
+        gbc.insets = new Insets(15, 0, 15, 0);
+        
+        
+        JButton startButton = new JButton("start");
         JButton SettingButton = new JButton("game Setting");
         JButton CloseButton = new JButton("close");
         
@@ -21,8 +31,11 @@ public class HomeScreenPanel extends JPanel{
         startButton.addActionListener(e -> {
             eventBus.postQueued(new ScreenNewOrLoadEvent());
         });
-        this.add(startButton);
-        this.add(SettingButton);
-        this.add(CloseButton);
+        gbc.gridy = 0;
+        this.add(startButton,gbc);
+        gbc.gridy = 1;
+        this.add(SettingButton,gbc);
+        gbc.gridy = 2;
+        this.add(CloseButton,gbc);
     }
 }

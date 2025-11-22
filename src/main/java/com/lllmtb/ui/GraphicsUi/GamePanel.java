@@ -79,7 +79,7 @@ public class GamePanel extends JPanel {
         // double tileWidthBasedOnScreen = windowWidth / world.getMap().getWidth();
         // double tileHeightBasedOnScreen = windowHeight / world.getMap().getHeight();
         //this.tileSize = Math.min(tileWidthBasedOnScreen, tileHeightBasedOnScreen);//prend le minimum pour que la map rentre (on fera en sorte ensuite de faire une map qui a direct les bonne dim)
-        this.tileSize = 4;
+        this.tileSize = 8;
         
         g2d.translate(0, getHeight()); // Déplace l'origine en bas à gauche de la FENÊTRE (le JPanel)
     

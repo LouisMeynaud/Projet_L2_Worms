@@ -6,6 +6,7 @@ import com.lllmtb.physics.PhysicsEngine;
 import com.lllmtb.terrain.generation.GenerateMap;
 import com.lllmtb.terrain.map.Map;
 import com.lllmtb.terrain.map.MapLoader;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
@@ -17,6 +18,8 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import static org.junit.jupiter.api.Assertions.*;
+
+import com.lllmtb.terrain.generation.LandScape;
 
 /**
  * Tests for GameWorld with minimal Mockito usage.
@@ -44,7 +47,7 @@ public class GameWorldTest {
                 null,              // mapFileName -> will use GenerateMap.createMap(WORLD)
                 false   ,           // floatingIsland
                 370,    //widthMap
-                170     //heightMap
+                LandScape.HILLY     //heightMap
         );
         EventBus eventBus = new EventBus();
 
@@ -76,7 +79,7 @@ public class GameWorldTest {
     void whenMapFileNameProvided_MapLoaderIsUsed_insteadOfGenerateMap() {
         // we only mock MapLoader.loadMatrix to return a real map created by GenerateMap
         Map generated = MapLoader.loadMatrix("mapTest");
-        GameSettings settings = new GameSettings(0, new String[]{}, 0, true, "mapTest", false,370,170);
+        GameSettings settings = new GameSettings(0, new String[]{}, 0, true, "mapTest", false,370,LandScape.HILLY);
         EventBus eventBus = new EventBus();
         GameWorld gw = new GameWorld(settings,eventBus);
 
@@ -95,7 +98,7 @@ public class GameWorldTest {
             mocked.when(() -> MapLoader.loadMatrix("badPath")).thenThrow(new IllegalStateException("io fail"));
 
             GameSettings settings = new GameSettings(
-                    0, new String[]{}, 0, false, "badPath", false,370,170);
+                    0, new String[]{}, 0, false, "badPath", false,370,LandScape.HILLY);
             EventBus eventBus = new EventBus();
             RuntimeException e = assertThrows(RuntimeException.class, () -> new GameWorld(settings,eventBus));
             assertNotNull(e.getCause());
@@ -115,7 +118,7 @@ public class GameWorldTest {
                 null,   // use GenerateMap
                 true,    // floating island -> FLYINGWORLD
                 370,
-                170
+                LandScape.HILLY
         );
          EventBus eventBus = new EventBus();
 
@@ -132,7 +135,7 @@ public class GameWorldTest {
     @Test
     void startRunsLoopAndStopStopsIt_whenStartedInSeparateThread() throws Exception {
         // use a small, simple world (no teams) so physics starts empty
-        GameSettings settings = new GameSettings(0, new String[]{}, 0, false, null, false,370,170);
+        GameSettings settings = new GameSettings(0, new String[]{}, 0, false, null, false,370,LandScape.HILLY);
          EventBus eventBus = new EventBus();
         GameWorld gw = new GameWorld(settings,eventBus);
 
@@ -155,7 +158,7 @@ public class GameWorldTest {
 
     @Test
     void registerEntity_null_throwsNPE() {
-        GameSettings settings = new GameSettings(0, new String[]{}, 0, false, null, false,370,170);
+        GameSettings settings = new GameSettings(0, new String[]{}, 0, false, null, false,370,LandScape.HILLY);
          EventBus eventBus = new EventBus();
         GameWorld gw = new GameWorld(settings,eventBus);
 
@@ -164,7 +167,7 @@ public class GameWorldTest {
 
     @Test
     void stopLoop_whenNotRunning() {
-        GameSettings settings = new GameSettings(0, new String[]{}, 0, false, null, false,370,170);
+        GameSettings settings = new GameSettings(0, new String[]{}, 0, false, null, false,370,LandScape.HILLY);
          EventBus eventBus = new EventBus();
         GameWorld gw = new GameWorld(settings,eventBus);
 
@@ -175,7 +178,7 @@ public class GameWorldTest {
 
     @Test
     void startLoop_whenAlreadyRunning() throws Exception {
-        GameSettings settings = new GameSettings(0, new String[]{}, 0, false, null, false,370,170);
+        GameSettings settings = new GameSettings(0, new String[]{}, 0, false, null, false,370,LandScape.HILLY);
          EventBus eventBus = new EventBus();
         GameWorld gw = new GameWorld(settings,eventBus);
 

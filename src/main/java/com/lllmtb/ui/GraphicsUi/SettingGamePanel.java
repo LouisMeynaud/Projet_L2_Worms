@@ -31,76 +31,76 @@ public class SettingGamePanel extends JPanel {
         
 
         //outil qui gere le GridBagLayout
-        GridBagConstraints grillePannel = new GridBagConstraints();
-        grillePannel.anchor = GridBagConstraints.WEST; 
-        grillePannel.insets = new Insets(5, 5, 5, 5); //marge
-        grillePannel.weightx = 1.0; // la grille peut s'etirer horizontalement
-        grillePannel.fill = GridBagConstraints.HORIZONTAL; //force les composans a remplir la case
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.anchor = GridBagConstraints.WEST; 
+        gbc.insets = new Insets(5, 5, 5, 5); //marge
+        gbc.weightx = 1.0; // la grille peut s'etirer horizontalement
+        gbc.fill = GridBagConstraints.HORIZONTAL; //force les composans a remplir la case
 
         
         
         int row = 0; 
 
         //parametre partit
-        grillePannel.gridwidth = 2; // le titre prend 2 colonne
-        grillePannel.gridx = 0;
-        grillePannel.gridy = row++;
+        gbc.gridwidth = 2; // le titre prend 2 colonne
+        gbc.gridx = 0;
+        gbc.gridy = row++;
         JLabel titre1 = new JLabel("PARAMETRE DE LA PARTIE");
         titre1.setFont(new Font("Arial", Font.BOLD, 16));
-        contentGrid.add(titre1, grillePannel);
+        contentGrid.add(titre1, gbc);
 
         //nombre d'equipe
-        grillePannel.gridwidth = 1; // prend 1 colonne
-        grillePannel.gridx = 0;
-        grillePannel.gridy = row;
+        gbc.gridwidth = 1; // prend 1 colonne
+        gbc.gridx = 0;
+        gbc.gridy = row;
         JLabel NbEquipesLabel = new JLabel("Nombre d'équipes :");
-        contentGrid.add(NbEquipesLabel, grillePannel);
+        contentGrid.add(NbEquipesLabel, gbc);
 
-        grillePannel.gridx = 1; // 2 eme colone 
+        gbc.gridx = 1; // 2 eme colone 
         this.equipesSlider = createSlider(2, MAX_EQUIPES, 2, 1);
-        contentGrid.add(equipesSlider, grillePannel);
+        contentGrid.add(equipesSlider, gbc);
         row++;
 
         //nom des equipes
         champsNomsEquipes = new JTextField[MAX_EQUIPES];
         for (int i = 0; i < MAX_EQUIPES; i++) {
-            grillePannel.gridx = 0;
-            grillePannel.gridy = row;
+            gbc.gridx = 0;
+            gbc.gridy = row;
             
             JLabel label = new JLabel("Nom Équipe " + (i + 1) + " :");
-            contentGrid.add(label, grillePannel);
+            contentGrid.add(label, gbc);
             
-            grillePannel.gridx = 1;
+            gbc.gridx = 1;
             champsNomsEquipes[i] = new JTextField("Équipe " + (i + 1), 15);
-            contentGrid.add(champsNomsEquipes[i], grillePannel);
+            contentGrid.add(champsNomsEquipes[i], gbc);
             row++;
         }
 
         //nombre de worms
-        grillePannel.gridx = 0;
-        grillePannel.gridy = row;
+        gbc.gridx = 0;
+        gbc.gridy = row;
         JLabel NbWormsLabel = new JLabel("Nombre de vers :");
-        contentGrid.add(NbWormsLabel, grillePannel);
+        contentGrid.add(NbWormsLabel, gbc);
 
-        grillePannel.gridx = 1;
+        gbc.gridx = 1;
         this.warmsSlider = createSlider(1, MAX_WORM, 3, 1);
-        contentGrid.add(warmsSlider, grillePannel);
+        contentGrid.add(warmsSlider, gbc);
         row++;
 
         //parametre physique
-        grillePannel.gridwidth = 2;
-        grillePannel.gridx = 0;
-        grillePannel.gridy = row++;
+        gbc.gridwidth = 2;
+        gbc.gridx = 0;
+        gbc.gridy = row++;
         JLabel titre2 = new JLabel("PARAMETRE PHYSIQUE");
         titre2.setFont(new Font("Arial", Font.BOLD, 16));
-        contentGrid.add(titre2, grillePannel);
+        contentGrid.add(titre2, gbc);
 
         //vent
-        grillePannel.gridwidth = 2; 
-        grillePannel.gridx = 0;
-        grillePannel.gridy = row;
+        gbc.gridwidth = 2; 
+        gbc.gridx = 0;
+        gbc.gridy = row;
         this.windCheckBox = new JCheckBox("Vent activé ?");
-        contentGrid.add(this.windCheckBox, grillePannel);
+        contentGrid.add(this.windCheckBox, gbc);
         row++;
     }   
 

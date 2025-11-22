@@ -3,6 +3,7 @@ package com.lllmtb.ui;
 import com.lllmtb.engine.GameSettings;
 import com.lllmtb.events.EventBus; 
 import com.lllmtb.events.TheEvents.StartGameEvent; 
+
 import org.jline.consoleui.elements.ConfirmChoice;
 import org.jline.consoleui.prompt.ConsolePrompt;
 import org.jline.consoleui.prompt.PromptResultItemIF;
@@ -18,6 +19,8 @@ import org.jline.utils.InfoCmp;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Map;
+
+import com.lllmtb.terrain.generation.LandScape;
 
 // TODO - make prompt methods content-agnostic to remove duplicated code
 //  eg: promptBool(String key, String message, ConfirmChoice.ConfirmationValue defaultValue)
@@ -80,7 +83,7 @@ public class ConsoleUI implements UI {
             );
             terminal.writer().println("   Wind: " + (hasWind ? "ON" : "OFF"));
             terminal.writer().flush();
-            return new GameSettings(nbTeams, teamNames, nbWorms, hasWind, mapFileName, floatingIsland,370,170);
+            return new GameSettings(nbTeams, teamNames, nbWorms, hasWind, mapFileName, floatingIsland,370,LandScape.HILLY);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

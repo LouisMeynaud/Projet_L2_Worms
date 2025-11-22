@@ -15,6 +15,7 @@ import com.lllmtb.engine.GameSettings;
 import com.lllmtb.events.EventBus;
 import com.lllmtb.events.TheEvents.ScreenNewOrLoadEvent;
 import com.lllmtb.events.TheEvents.StartGameEvent;
+import com.lllmtb.terrain.generation.LandScape;
 
 public class SettingsStartPanel extends JPanel {
     public EventBus eventBus;
@@ -47,10 +48,10 @@ public class SettingsStartPanel extends JPanel {
 
         //zone centre (les deux partit (parametre map/partit))
         JPanel PanelCentre = new JPanel(new GridLayout(1, 2, 10, 0));// 1 ligne 2 colonne , 10 de marge horizontale
-        SettingMapPanel panelMap = new SettingMapPanel(eventBus);
+        SettingMapPanel mapSettingPanel = new SettingMapPanel(eventBus);
         SettingGamePanel gameSettingsPanel = new SettingGamePanel();
 
-        PanelCentre.add(panelMap);
+        PanelCentre.add(mapSettingPanel);
         PanelCentre.add(gameSettingsPanel);
         this.add(PanelCentre, BorderLayout.CENTER);
 
@@ -60,17 +61,19 @@ public class SettingsStartPanel extends JPanel {
         });
 
         StarButton.addActionListener(e -> {
-            eventBus.postQueued(new StartGameEvent(setSettings(gameSettingsPanel)));
+            eventBus.postQueued(new StartGameEvent(setSettings(gameSettingsPanel, mapSettingPanel.getGenerateMapPanel())));
         });
     }
 
 
 
-    public GameSettings setSettings(SettingGamePanel gameSettingsPanel) {
+    public GameSettings setSettings(SettingGamePanel gameSettingsPanel,GenerateMapPanel generateMapPanel) {
         int nbEquipes = gameSettingsPanel.getNbEquipes();
         int nbVWorms = gameSettingsPanel.getNbWorms();
         String[] nomsEquipes = gameSettingsPanel.getNomsEquipes();
         boolean wind = gameSettingsPanel.getWind();
-        return new GameSettings(nbEquipes, nomsEquipes, nbVWorms, wind, null, false,370,170);
+        LandScape terrainType = generateMapPanel.getReliefType();
+        int widthMap = generateMapPanel.getWidthMapSlider();
+        return new GameSettings(nbEquipes, nomsEquipes, nbVWorms, wind, null, false,widthMap,terrainType);
     }
 }

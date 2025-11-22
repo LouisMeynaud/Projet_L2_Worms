@@ -17,6 +17,8 @@ import com.lllmtb.events.TheEvents.ScreenNewOrLoadEvent;
 
 public class SettingMapPanel extends JPanel{
     public CardLayout cardLayout;
+    public GenerateMapPanel generateMapPanel;
+    public LoadMapPanel loadMapPanel;
     public EventBus eventBus;
     
     public SettingMapPanel(EventBus eventBus){
@@ -27,11 +29,13 @@ public class SettingMapPanel extends JPanel{
         JPanel cardPanel= new JPanel(this.cardLayout);
         this.add(cardPanel);
 
-        JButton LoadButton = new JButton("load");
-        JButton GenerateButton = new JButton("generateMap");
+        JButton loadButton = new JButton("Load Map");
+        JButton generateButton = new JButton("Generate Map");
 
-        JPanel generateMapPanel = new GenerateMapPanel();
-        JPanel loadMapPanel = new LoadMapPannel();
+        GenerateMapPanel generateMapPanel = new GenerateMapPanel();
+        this.generateMapPanel = generateMapPanel;
+        LoadMapPanel loadMapPanel = new LoadMapPanel();
+        this.loadMapPanel = loadMapPanel;
         cardPanel.add(loadMapPanel,"loadMapPanel");
         cardPanel.add(generateMapPanel,"generateMapPanel");
         
@@ -49,21 +53,25 @@ public class SettingMapPanel extends JPanel{
         });
 
         JPanel boutonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        boutonPanel.add(LoadButton);
-        boutonPanel.add(GenerateButton);
+        boutonPanel.add(loadButton);
+        boutonPanel.add(generateButton);
         this.add(boutonPanel,BorderLayout.NORTH);
         
 
 
-        LoadButton.addActionListener(e -> {
+        loadButton.addActionListener(e -> {
             eventBus.postQueued(new ScreenLoadMap());
         });
 
-        GenerateButton.addActionListener(e -> {
+        generateButton.addActionListener(e -> {
             eventBus.postQueued(new ScreenGenerateMap());
         });
 
 
         
+    }
+
+    public GenerateMapPanel getGenerateMapPanel(){
+        return this.generateMapPanel;
     }
 }

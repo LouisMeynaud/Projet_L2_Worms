@@ -9,12 +9,15 @@ import com.lllmtb.physics.Position;
 import com.lllmtb.terrain.generation.GenerateMap;
 import com.lllmtb.terrain.map.Map;
 import com.lllmtb.terrain.map.MapLoader;
+
 import org.eclipse.jdt.annotation.NonNull;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+
 import com.lllmtb.events.TheEvents.GameStateUpdatedEvent;
+import com.lllmtb.terrain.generation.ConfigMap;
 
 public class GameWorld {
     private final Map map;
@@ -37,7 +40,8 @@ public class GameWorld {
         }
         if (tmap == null) {
             System.out.println("Generating a new map...");
-            tmap = GenerateMap.createMap(settings.floatingIsland ? GenerateMap.FLYINGWORLD : GenerateMap.WORLD);
+            ConfigMap config = new ConfigMap(settings.widthMap, 4, 5, settings.floatingIsland, 17, settings.terrainType);
+            tmap = GenerateMap.createMap(config);
         }
         this.map = tmap;
         System.out.println(this.map);
