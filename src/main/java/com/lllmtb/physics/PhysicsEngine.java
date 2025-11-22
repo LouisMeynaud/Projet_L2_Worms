@@ -29,9 +29,6 @@ public class PhysicsEngine {
     /** The current wind vector applied to all bodies when {@code hasWind} is true. */
     private Vector wind;
 
-    /** The duration of one simulation tick (in seconds). */
-    public static final double ticktime = 0.0167; // Approx. 60 updates per second
-
     /** Internal counter used to regulate wind changes. */
     private int cpt = 0;
 
@@ -40,11 +37,11 @@ public class PhysicsEngine {
      * Constructs a new {@code PhysicsEngine} instance.
      * <p>
      * Gravity is initialized to (0, -9.81), simulating Earth's gravitational acceleration
-     * in meters per second squared. Wind parameters are currently disabled.
+     * in meters per second squared.
      * </p>
      *
      * @param map the {@code Map} instance representing the environment for collision detection.
-     * @param hasWind {@code true} if wind should be simulated; currently unused.
+     * @param hasWind if wind should be simulated.
      */
     public PhysicsEngine(Map map, boolean hasWind) {
         this.bodies = new CopyOnWriteArrayList<>();
@@ -57,7 +54,7 @@ public class PhysicsEngine {
     /**
      * Returns the list of all physics bodies currently managed by the physics engine.
      *
-     * @return an {@link ArrayList} containing all active {@link PhysicsBody} objects.
+     * @return an {@link CopyOnWriteArrayList} containing all active {@link PhysicsBody} objects.
      */
     public CopyOnWriteArrayList<PhysicsBody> getBodies() {
         return bodies;
@@ -70,19 +67,6 @@ public class PhysicsEngine {
      */
     public Vector getGravity() {
         return gravity;
-    }
-
-    /**
-     * Returns the duration of one simulation tick, in seconds.
-     * <p>
-     * This value determines how frequently the physics engine updates
-     * the state of all bodies in the system.
-     * </p>
-     *
-     * @return the tick duration as a {@code double}.
-     */
-    public static double getTicktime() {
-        return ticktime;
     }
 
     /**
@@ -152,10 +136,10 @@ public class PhysicsEngine {
      * The resulting wind vector is added to each body’s acceleration during the next update.
      * </p>
      */
-    public void changeWind(){
+    protected void changeWind(){
         if (this.hasWind) {
-            Vector random = new Vector(Math.random() / 3 - 1/3, Math.random() / 3 - 1/3);
-            this.wind.add(random);
+            Vector random = new Vector(Math.random() / 3 - 1f/3f, Math.random() / 3 - 1f/3f);
+            this.wind = this.wind.add(random);
         }
     }
 
@@ -164,25 +148,22 @@ public class PhysicsEngine {
      * <p>
      * This method updates all {@link PhysicsBody} instances managed by the engine,
      * applying gravity, air resistance, and other forces. The new positions and velocities
-     * of each body are computed based on the elapsed time defined by {@link #ticktime}.
+     * of each body are computed based on the elapsed time defined by the ticktime.
      * </p>
      * <p>
      * If a body’s next position results in a collision, its position is not updated
      * until collision handling is performed.
      * </p>
+     * @param ticktime the duration of the simulation tick (in seconds).
      */
-    protected void nextStep() {
+    protected void nextStep(double ticktime) {
         for (PhysicsBody body : bodies) {
-            Vector deltaV = body.getVector().copy();
-            deltaV.scale(-0.2); // Simple air resistance
-            deltaV.add(this.gravity);
+            Vector deltaV = body.getVector().scale(-0.2).add(this.gravity); // Simple air resistance + gravity effects
             // only apply wind effects to Projectiles
             if (body.getEntity() instanceof Projectile) deltaV.add(this.wind);
             deltaV.scale(ticktime / body.getMass());
 
-            Vector newVector = body.getVector().copy();
-            newVector.add(deltaV);
-
+            Vector newVector = body.getVector().add(deltaV);
             Position nextPos = newVector.newPos(body.getPos(), ticktime);
             body.setVector(newVector);
 
@@ -199,13 +180,14 @@ public class PhysicsEngine {
      * vector (every 600 ticks if enabled), and performs one simulation step through
      * {@link #nextStep()}.
      * </p>
+     * @param ticktime the duration of the simulation tick (in seconds).
      */
-    public void next(){
+    public void next(double ticktime){
         cpt++;
         if(cpt >= 600){
             cpt = 0;
             changeWind();
         }
-        nextStep();
+        nextStep(ticktime);
     }
 }

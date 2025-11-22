@@ -8,7 +8,7 @@ import java.util.Arrays;
 public class GameLoop implements Runnable {
     private final GameWorld world;
     private volatile boolean running = true;
-    private final long tickMs = 16; // ~60Hz
+    private final double ticktime = 0.0167; // ~60Hz
     private boolean isPaused = false;
 
     public GameLoop(GameWorld world) {
@@ -40,14 +40,14 @@ public class GameLoop implements Runnable {
 
             if(!isPaused){
             // 2) update physics
-            world.update();  // will have to be adapted to take in (long elapsedMs) = dt which PhysicsBody can use instead of tickTime
+            world.update(ticktime);  // will have to be adapted to take in (long elapsedMs) = dt which PhysicsBody can use instead of tickTime
 
             // 3) process events generated during physics (collisions, explosions...)
             world.getBus().processQueued();}
 
             // 4) sleep to maintain tick rate
             try {
-                Thread.sleep(Math.max(0, tickMs - (System.nanoTime() - now)/1_000_000));
+                Thread.sleep(Math.max(0, (long) ticktime * 1000 - (System.nanoTime() - now)/1_000_000));
             } catch (InterruptedException ignored) {}
         }
     }

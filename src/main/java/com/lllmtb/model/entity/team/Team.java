@@ -49,6 +49,7 @@ public class Team {
 
     /** Possible colors that can be assigned to a team. */
     private static List<TeamColor> teamColorPossible = Arrays.asList(TeamColor.values());
+    private static ArrayList<TeamColor> teamColorChoosed = new ArrayList<>();
 
 
     /**
@@ -58,7 +59,7 @@ public class Team {
      * @param inventory the inventory assigned to the team
      * @param spawn the spawn position where the worms will be placed
      */
-    private Team(String name, int numberOfPlayers, Inventory inventory, Position spawn) {
+    private Team(String name, int numberOfPlayers, Inventory inventory, Position[] spawn) {
         this.inventory = inventory;
         this.name = name;
         this.numberOfPlayers = numberOfPlayers;
@@ -74,7 +75,7 @@ public class Team {
      * @param numberOfPlayers number of worms in the team
      * @param spawn the spawn position where the worms will be placed
      */
-    public Team(String teamName, int numberOfPlayers, Position spawn) {
+    public Team(String teamName, int numberOfPlayers, Position[] spawn) {
         this(teamName, numberOfPlayers, new Inventory(), spawn);
     }
 
@@ -122,11 +123,14 @@ public class Team {
     /**
      * Creates and adds worms to the team based on the number of players.
      * @param numberOfPlayers number of worms to create
-     * @param spawn spawn position for all worms
+     * @param spawns all spawn position for all worms
      */
-    private void setUpPlayers(int numberOfPlayers, Position spawn) {
+    private void setUpPlayers(int numberOfPlayers, Position[] spawns) {
         for (int i = 1; i <= numberOfPlayers; i++) {
-            this.addPlayer(new Worm(this.name + i, this, spawn));
+            new Worm(this.name + i, this);
+            Random random = new Random();
+            Position spawn = spawns[random.nextInt(0, spawns.length)];
+            this.worms.get(i-1).spawn(spawn);
         }
     }
 
@@ -141,7 +145,7 @@ public class Team {
 
     /**
      * Removes a worm from the team based on its index.
-     * @param index index of the worm to remove
+     * @param indexPlayer index of the worm to remove
      */
     public void removePlayer(int indexPlayer) {
         this.worms.remove(indexPlayer-1);
@@ -154,7 +158,13 @@ public class Team {
      */
     public static TeamColor chooseColor() {
         Random random = new Random();
-        return Team.teamColorPossible.get(random.nextInt(Team.teamColorPossible.size()));
+        if(teamColorChoosed.size() == teamColorPossible.size()){Team.teamColorChoosed.clear();}
+        TeamColor teamcolor = Team.teamColorPossible.get(random.nextInt(Team.teamColorPossible.size()));
+        while(teamColorChoosed.contains(teamcolor)){
+            teamcolor = Team.teamColorPossible.get(random.nextInt(Team.teamColorPossible.size()));
+        }
+        teamColorChoosed.add(teamcolor);
+        return teamcolor;
     }
 
     /**

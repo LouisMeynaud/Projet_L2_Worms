@@ -32,7 +32,7 @@ class CollisionTest {
     // }
 
     
-    // //Crée un physiqueBody (1x1) pour les tests.
+    //Crée un physiqueBody (1x1) pour les tests.
     // private PhysicsBody createTestBody(double x, double y, double vx, double vy) {
     //     Position pos = new Position(x, y); 
     //     Vector vec = new Vector(vx, vy); 
