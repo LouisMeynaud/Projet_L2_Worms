@@ -36,7 +36,7 @@ class CollisionTest {
     private PhysicsBody createTestBody(double x, double y, double vx, double vy) {
         Position pos = new Position(x, y); 
         Vector vec = new Vector(vx, vy); 
-        Worm testEntity = new Worm("José", new Team("Team", 1, pos), pos);
+        Worm testEntity = new Worm("José", new Team("Team", 1, new Position[]{pos}));
         
         PhysicsBody body = new PhysicsBody(testEntity, pos, vec, 0.5, 1, 1); 
         bodies.add(body);
@@ -385,7 +385,7 @@ class CollisionTest {
 
     private PhysicsBody createTestBullet(double x, double y) {
         Position position = new Position(x, y);
-        Worm owner = new Worm("José", new Team("Team", 1, position), position);
+        Worm owner = new Worm("José", new Team("Team", 1, new Position[]{position}));
         FireParams params = new FireParams(0, position, owner);
         BulletProjectile bullet = new BulletProjectile(params);
         PhysicsBody body = bullet.getBody();
