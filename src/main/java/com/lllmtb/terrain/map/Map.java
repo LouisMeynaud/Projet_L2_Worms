@@ -14,6 +14,7 @@ public class Map {
     private Tile[][] mapMatrix;
     private String filesTxt;
     private Position[] spawnPoint;
+    private int[] hightLine;
 
     public Map(int height, int width, String filesTxt) {
         this.mapMatrix = new Tile[height][width];
@@ -50,6 +51,10 @@ public class Map {
     }
 
     
+
+    public void setHightLine(int[] hightLine) {
+        this.hightLine = hightLine;
+    }
 
     @Override
     public String toString() {
@@ -128,5 +133,7 @@ public class Map {
     public Position[] getSpawnPoint() {
         return spawnPoint;
     }
+
+    
 
 }

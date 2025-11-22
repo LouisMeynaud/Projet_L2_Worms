@@ -40,7 +40,7 @@ public class GameWorld {
         }
         if (tmap == null) {
             System.out.println("Generating a new map...");
-            ConfigMap config = new ConfigMap(settings.widthMap, 4, 5, settings.floatingIsland, 17, settings.terrainType,settings.nbWorms);
+            ConfigMap config = new ConfigMap(settings.widthMap, 4, 5, settings.floatingIsland, 17, settings.terrainType,settings.nbWorms * settings.nbTeams);
             tmap = GenerateMap.createMap(config);
         }
         this.map = tmap;
@@ -57,8 +57,7 @@ public class GameWorld {
         System.out.println("Creating the Teams...");
         for (int i = 0; i < settings.nbTeams; i++) {
             try {
-                Position[] p = {new Position(5, 50)};    // dummy position
-                Team team = new Team(settings.teamNames[i], settings.nbWorms, p);
+                Team team = new Team(settings.teamNames[i], settings.nbWorms, tmap.getSpawnPoint());
                 teams.add(team);
                 team.getTeamWorms().forEach(this::registerEntity);
                 System.out.printf("%d | %s - %d - %s\n", i, team.name, team.id, team.teamColor);

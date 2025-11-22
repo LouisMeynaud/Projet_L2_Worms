@@ -1,6 +1,7 @@
 package com.lllmtb.terrain.generation;
 
 
+import java.util.Arrays;
 import java.util.Random;
 
 import com.lllmtb.physics.Position;
@@ -35,12 +36,14 @@ public class GenerateMap {
             }
         }
 
-        map.setSpawnPoint(createSpawnPoint(config,hightLine));
 
         MapBalancer.leftRightBalancing(lowLine, hightLine, config.getHeight());
         MapBalancer.thicknessBalencer(config.getThicknessMin(),MapBalancer.averageThickness(lowLine, hightLine, 0, config.getWidth()), hightLine);
         MapFiller.fillingWater(map, config.getWaterHeight());
         MapFiller.fillingDirt(map, hightLine, lowLine);
+        map.setSpawnPoint(createSpawnPoint(config,hightLine));
+
+        map.setHightLine(hightLine);
 
         return map;
     }
@@ -77,9 +80,11 @@ public class GenerateMap {
                     exist = true;
                 }
             }
-            if(!exist){
+            if(!exist && nouvellePos.getY() > config.getWaterHeight()){
                 spawnPointPos[i] = nouvellePos;
                 i++;
+                System.out.println("nouvelle position: x ="+nouvellePos.getX() + "y =" + nouvellePos.getY());
             }
             
-        }return spawnPointPos;}}
+        }
+        return spawnPointPos;}}
