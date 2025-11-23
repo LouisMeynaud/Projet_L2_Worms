@@ -42,7 +42,7 @@ public class TeamTest {
     }
     @Test
     public void testConstructorNumberOfPlayers(){
-        assertEquals(1, team.getNumberOfPlayers());
+        assertEquals(1, team.getNumberOfWorms());
     }
     @Test
     public void testCurrentWorm(){
@@ -70,14 +70,14 @@ public class TeamTest {
     @Test
     public void testAddPlayer(){
         Worm worm = new Worm("Worm1", team);
-        assertEquals(2, team.getNumberOfPlayers() );
+        assertEquals(2, team.getNumberOfWorms() );
         Worm worm2 = team.getIndexWorm(1);
         assertEquals(worm2, worm);
     }
     @Test
-    public void testRemovePlayer(){
-        team.removePlayer(1);
-        assertEquals(0, team.getNumberOfPlayers());
+    public void testRemoveWorm(){
+        team.removeWorm(1);
+        assertEquals(0, team.getNumberOfWorms());
         assertTrue(team.getTeamWorms().isEmpty());
     }
     @Test

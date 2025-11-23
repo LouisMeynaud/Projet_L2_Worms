@@ -50,7 +50,7 @@ public class Worm extends Entity {
         this.name = name;
         this.stats = stats;
         this.team = team;
-        this.team.addPlayer(this);
+        this.team.addWorm(this);
     }
 
     /**
