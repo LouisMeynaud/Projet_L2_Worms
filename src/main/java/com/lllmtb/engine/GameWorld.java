@@ -1,9 +1,10 @@
 package com.lllmtb.engine;
 
+import com.lllmtb.engine.commands.GameCommand;
 import com.lllmtb.events.EventBus;
 import com.lllmtb.model.entity.Entity;
 import com.lllmtb.model.entity.team.Team;
-import com.lllmtb.model.entity.worm.Worm;
+import com.lllmtb.model.item.tool.UseParams;
 import com.lllmtb.physics.PhysicsEngine;
 import com.lllmtb.physics.Position;
 import com.lllmtb.terrain.generation.GenerateMap;
@@ -45,7 +46,7 @@ public class GameWorld {
         this.bus = new EventBus();
 
         // Init PhysicsEngine
-        this.physics = new PhysicsEngine(map, settings.hasWind);
+        this.physics = new PhysicsEngine(map, bus, settings.hasWind);
 
         // Init Teams
         this.teams = new ArrayList<>();
@@ -106,4 +107,43 @@ public class GameWorld {
     public void registerEntity(@NonNull Entity e) {
         physics.add(Objects.requireNonNull(e).getBody());
     }
+
+    public void processCommands(List<GameCommand> commands) {
+        for (GameCommand command : commands) command.execute(this);
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
