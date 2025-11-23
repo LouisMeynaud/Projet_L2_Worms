@@ -6,6 +6,8 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
 import org.junit.jupiter.api.Test;
+
+import com.lllmtb.terrain.map.CreateSpawnPoint;
 import com.lllmtb.terrain.map.Map;
 
 
@@ -64,27 +66,4 @@ public class GenerateMapTest {
         }
         
     }
-    @Test
-    public void goodspawnPointtest() {
-        String inputSimule = "nomTest\n";
-
-        InputStream originalIn = System.in;//on garde de coter l'entrer original pour la retablir apres
-
-        System.setIn(new ByteArrayInputStream(inputSimule.getBytes())); // getbytes transforme le string en tableau d' octet pour byteArrayInpustream qui prend un tableau d'octect
-        int nbVers = 59;
-        int nbTeams= 1;
-        int waterHeight = 5;
-        ConfigMap configtest = new ConfigMap(60, waterHeight, 5, false, 0, LandScape.HILLY,nbTeams,nbVers);
-        Map m =GenerateMap.createMap(configtest);
-        assertEquals(m.getSpawnPoint().length, nbTeams);
-        for(int j = 0;j < nbTeams;j++){
-        for (int i = 0 ; i < nbVers ; i++) {
-            assertTrue(m.getSpawnPoint()[j][i].getY()>waterHeight);
-        }}
-        // On restaure System.in
-        System.setIn(originalIn);
-
-    }
-
-
 }

@@ -18,7 +18,12 @@ import javax.swing.JPanel;
 
 import com.lllmtb.engine.GameWorld;
 import com.lllmtb.events.EventBus;
-import com.lllmtb.events.TheEvents.*;
+import com.lllmtb.events.game.GameStateUpdatedEvent;
+import com.lllmtb.events.game.WorldCreatedEvent;
+import com.lllmtb.events.move.MoveDownEvent;
+import com.lllmtb.events.move.MoveLeftEvent;
+import com.lllmtb.events.move.MoveRightEvent;
+import com.lllmtb.events.move.MoveUpEvent;
 import com.lllmtb.physics.PhysicsBody;
 import com.lllmtb.terrain.map.Tile;
 

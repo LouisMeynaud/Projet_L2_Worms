@@ -1,6 +1,6 @@
 package com.lllmtb.engine;
 
-import com.lllmtb.events.TheEvents.GamePauseEvent;
+import com.lllmtb.events.game.GamePauseEvent;
 import com.lllmtb.physics.PhysicsBody;
 
 import java.util.Arrays;

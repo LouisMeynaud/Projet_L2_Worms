@@ -13,8 +13,8 @@ import javax.swing.SwingConstants;
 
 import com.lllmtb.engine.GameSettings;
 import com.lllmtb.events.EventBus;
-import com.lllmtb.events.TheEvents.ScreenNewOrLoadEvent;
-import com.lllmtb.events.TheEvents.StartGameEvent;
+import com.lllmtb.events.game.StartGameEvent;
+import com.lllmtb.events.graphicsUi.ScreenNewOrLoadEvent;
 import com.lllmtb.terrain.generation.LandScape;
 
 public class SettingsStartPanel extends JPanel {

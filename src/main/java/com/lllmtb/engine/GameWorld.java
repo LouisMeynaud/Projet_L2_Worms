@@ -1,6 +1,7 @@
 package com.lllmtb.engine;
 
 import com.lllmtb.events.EventBus;
+import com.lllmtb.events.game.GameStateUpdatedEvent;
 import com.lllmtb.model.entity.Entity;
 import com.lllmtb.model.entity.team.Team;
 import com.lllmtb.model.entity.worm.Worm;
@@ -17,7 +18,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import com.lllmtb.events.TheEvents.GameStateUpdatedEvent;
 import com.lllmtb.terrain.generation.ConfigMap;
 
 public class GameWorld {

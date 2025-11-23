@@ -11,6 +11,16 @@ import static org.mockito.Mockito.mock;
 import com.lllmtb.engine.GameSettings;
 import com.lllmtb.engine.GameWorld;
 import com.lllmtb.events.Event;
+import com.lllmtb.events.game.*;
+import com.lllmtb.events.move.*;
+import com.lllmtb.events.graphicsUi.*;
+
+import com.lllmtb.events.game.GamePauseEvent;
+import com.lllmtb.events.game.GameStateUpdatedEvent;
+import com.lllmtb.events.game.StartGameEvent;
+import com.lllmtb.events.game.WorldCreatedEvent;
+import com.lllmtb.events.graphicsUi.ScreenGenerateMap;
+
 
 public class TheEventsTest {
 

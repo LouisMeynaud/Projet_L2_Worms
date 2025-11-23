@@ -24,9 +24,10 @@ public class MapLoaderTest {
     };
     @BeforeAll
     public static void setUp() throws IOException {
-        path = "src/main/java/com/lllmtb/terrain/MapFile/mapTest.txt";
+        path = "src/main/resources/map/mapTest/map.txt";
         mapText = Files.readString(Path.of(path));
         m = MapLoader.loadMatrix("mapTest");
+        System.out.println(m);
     }
 
     @Test

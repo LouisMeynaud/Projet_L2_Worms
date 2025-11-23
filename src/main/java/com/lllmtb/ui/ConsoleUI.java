@@ -1,8 +1,8 @@
 package com.lllmtb.ui;
 
 import com.lllmtb.engine.GameSettings;
-import com.lllmtb.events.EventBus; 
-import com.lllmtb.events.TheEvents.StartGameEvent; 
+import com.lllmtb.events.EventBus;
+import com.lllmtb.events.game.StartGameEvent;
 
 import org.jline.consoleui.elements.ConfirmChoice;
 import org.jline.consoleui.prompt.ConsolePrompt;

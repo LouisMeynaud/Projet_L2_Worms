@@ -11,9 +11,9 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 
 import com.lllmtb.events.EventBus;
-import com.lllmtb.events.TheEvents.ScreenGenerateMap;
-import com.lllmtb.events.TheEvents.ScreenLoadMap;
-import com.lllmtb.events.TheEvents.ScreenNewOrLoadEvent;
+import com.lllmtb.events.graphicsUi.ScreenGenerateMap;
+import com.lllmtb.events.graphicsUi.ScreenLoadMap;
+import com.lllmtb.events.graphicsUi.ScreenNewOrLoadEvent;
 import com.lllmtb.terrain.map.MapLoader;
 
 public class SettingMapPanel extends JPanel{

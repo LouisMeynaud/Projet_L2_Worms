@@ -7,7 +7,7 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 
 import com.lllmtb.events.EventBus;
-import com.lllmtb.events.TheEvents.GamePauseEvent; 
+import com.lllmtb.events.game.GamePauseEvent; 
 
 public class GameUIPanel extends JPanel {
 

@@ -1,4 +1,4 @@
-package com.lllmtb.events.TheEvents;
+package com.lllmtb.events.game;
 
 import com.lllmtb.engine.GameSettings; 
 import com.lllmtb.events.Event;

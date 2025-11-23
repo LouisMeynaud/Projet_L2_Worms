@@ -1,8 +1,8 @@
 package com.lllmtb.engine;
 
 import com.lllmtb.events.EventBus;
-import com.lllmtb.events.TheEvents.StartGameEvent;
-import com.lllmtb.events.TheEvents.WorldCreatedEvent;
+import com.lllmtb.events.game.StartGameEvent;
+import com.lllmtb.events.game.WorldCreatedEvent;
 import com.lllmtb.ui.ConsoleUI;
 import com.lllmtb.ui.UI;
 import com.lllmtb.ui.GraphicsUi.WindowsUi;
@@ -13,7 +13,7 @@ public class GameEngine {
 
     public static void main(String[] args) {
         
-        boolean graphique = true;
+        boolean graphique = false;
         eventBus = new EventBus();
         eventBus.subscribe(StartGameEvent.class, GameEngine::startGame);
 
