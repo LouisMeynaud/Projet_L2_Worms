@@ -1,6 +1,8 @@
 package com.lllmtb.physics;
 
+import com.lllmtb.model.entity.CollisionType;
 import com.lllmtb.model.entity.projectile.Projectile;
+import com.lllmtb.model.entity.worm.Worm;
 import com.lllmtb.terrain.map.Map;
 
 import java.util.ArrayList;
@@ -48,7 +50,7 @@ public class PhysicsEngine {
         this.gravity = new Vector(0, -9.81);
         this.hasWind = hasWind;
         this.wind = new Vector(0, 0);
-        Collision.init(this.bodies, map);
+        Collision.init(map, this.bodies);
     }
 
     /**
@@ -129,7 +131,7 @@ public class PhysicsEngine {
      * Randomly changes the wind vector to simulate natural fluctuations in wind force and direction.
      * <p>
      * The change is small and based on random perturbations in both the x and y directions.
-     * This method should typically be called less frequently than {@link #next()}, for example
+     * This method should typically be called less frequently than {@link #next(double)}, for example
      * once every few seconds of simulated time, to avoid erratic motion.
      * </p>
      * <p>
@@ -153,6 +155,7 @@ public class PhysicsEngine {
      * <p>
      * If a body’s next position results in a collision, its position is not updated
      * until collision handling is performed.
+     * It calls a different method in Collision according to the body.
      * </p>
      * @param ticktime the duration of the simulation tick (in seconds).
      */
@@ -167,7 +170,18 @@ public class PhysicsEngine {
             Position nextPos = newVector.newPos(body.getPos(), ticktime);
             body.setVector(newVector);
 
-            if (!Collision.haveCollisionMap(body, nextPos)) {
+            Collision.Impact impact = Collision.move(body, nextPos);
+            if (impact.collided) {
+                if (body.getEntity().getCollisionType() == CollisionType.SLIDE) {
+                    Collision.slide(body, impact);
+                } else if (body.getEntity().getCollisionType() == CollisionType.BOUNCE) {
+                    Collision.bounce(body, impact, 0.5);
+                } else if (body.getEntity().getCollisionType() == CollisionType.TOUCH) {
+                    Collision.touch(body, impact);
+                } else {
+                    Collision.cross(body, impact);
+                }
+            } else {
                 body.setPos(nextPos);
             }
         }
@@ -178,7 +192,7 @@ public class PhysicsEngine {
      * <p>
      * This method increments the internal time counter, periodically updates the wind
      * vector (every 600 ticks if enabled), and performs one simulation step through
-     * {@link #nextStep()}.
+     * {@link #nextStep(double)}.
      * </p>
      * @param ticktime the duration of the simulation tick (in seconds).
      */

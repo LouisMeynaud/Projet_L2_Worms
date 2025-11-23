@@ -9,6 +9,7 @@ public class PhysicsBody {
     private final double mass;
     private final double height;
     private final double width;
+    private final double radius;
 
     public PhysicsBody(Entity entity, Position position, Vector vector, double mass, double height, double width) {
         this.entity = entity;
@@ -16,7 +17,8 @@ public class PhysicsBody {
         this.vector = vector;
         this.mass = mass;
         this.width = width;
-        this.height= height;
+        this.height = height;
+        this.radius = Math.max(this.height, this.width) / 2.0;
     }
 
     public Entity getEntity(){
@@ -42,6 +44,12 @@ public class PhysicsBody {
     public double getHeight() {
         return height;
     }
+
+    /**
+     * @return the {@code double} which represents the radius of the circle that is the
+     * hitbox of the entity
+     */
+    public double getRadius() {return this.radius;}
 
     public void setPos(Position position) {
         this.position = position;
