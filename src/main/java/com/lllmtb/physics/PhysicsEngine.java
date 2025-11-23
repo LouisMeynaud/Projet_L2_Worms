@@ -171,15 +171,26 @@ public class PhysicsEngine {
             body.setVector(newVector);
 
             Collision.Impact impact = Collision.move(body, nextPos);
+            // if collision
             if (impact.collided) {
+                // if body slide along cliffs
                 if (body.getEntity().getCollisionType() == CollisionType.SLIDE) {
-                    Collision.slide(body, impact);
+                    // if the collision is with the ground
+                    if (impact.normal.getY() > 0.5) {
+                        Collision.touch(body, impact);
+                        body.setVector(new Vector(body.getVector().getX(), 0));
+                    } else {
+                        Collision.slide(body, impact);
+                    }
+                    // if body bounce
                 } else if (body.getEntity().getCollisionType() == CollisionType.BOUNCE) {
                     Collision.bounce(body, impact, 0.5);
+                    // if body stick to what it has hit
                 } else if (body.getEntity().getCollisionType() == CollisionType.TOUCH) {
                     Collision.touch(body, impact);
+                    // if body cross all (map and entities)
                 } else {
-                    Collision.cross(body, impact);
+                    Collision.cross(body, nextPos);
                 }
             } else {
                 body.setPos(nextPos);

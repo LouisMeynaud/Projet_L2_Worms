@@ -6,7 +6,7 @@ import com.lllmtb.model.entity.Entity;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
- * Central collision engine for the game, inspired by JBump principles (swept collision detection).
+ * The {@code Collision} class is the central collision engine for the game, inspired by JBump principles (swept collision detection).
  * Handles collision detection for {@link Entity} and {@link Map} (Circle-AABB) and
  * between {@link Entity} (Circle-Circle).
  */
@@ -16,15 +16,19 @@ public class Collision {
     private static CopyOnWriteArrayList<PhysicsBody> bodies;
 
     /**
-     * As in JBump, the class Impact allows to stack information from the collision test.
+     * As in JBump, the {@code Impact} class allows to stack information from the collision test.
      */
     public static class Impact {
         public final PhysicsBody hitBody; // The hit body (null if it's the map)
         public final Position collisionPos; // The exact position of the collision (= finalPos if no collision)
-        public final double ti; // Time of impact (0.0 if imediately, 1.0 if no collision)
+        public final double ti; // Time of impact (0.0 if immediately, 1.0 if no collision)
         public final Vector normal; // The normal vector (perpendicular) to the hit surface
         public final boolean collided; // true if a collision is confirmed
 
+        /**
+         * Constructor of Impact when there isn't any collision
+         * @param pos the {@link Position} that is the final position
+         */
         public Impact(Position pos) {
             this.hitBody = null;
             this.collisionPos = pos;
@@ -33,6 +37,13 @@ public class Collision {
             this.collided = false;
         }
 
+        /**
+         * Constructor of impact when there is a collision
+         * @param ti the {@code double} which represents the time of impact, between {@code 0.0} and {@code 1.0}.
+         * @param finalPos the {@link Position} at the end of the tick, at the point of collision.
+         * @param normal the normal {@link Vector} of the hit structure.
+         * @param hitBody the {@link PhysicsBody} of the collided entity ({@code null} if it's the map).
+         */
         public Impact(double ti, Position finalPos, Vector normal, PhysicsBody hitBody) {
             this.hitBody = hitBody;
             this.collisionPos = finalPos;
@@ -42,13 +53,28 @@ public class Collision {
         }
     }
 
+    /**
+     * initialization of an object collision, with the map and the entities to check
+     * @param m the {@link Map} of the game
+     * @param b the {@link CopyOnWriteArrayList} containing active {@link Entity}'s {@link PhysicsBody}.
+     */
     public static void init(Map m, CopyOnWriteArrayList<PhysicsBody> b) {
         map = m;
         bodies = b;
     }
 
+    /**
+     * <p>
+     * Simulates the displacement of a {@link PhysicsBody} based on a vector to determine
+     * when and where will be the first collision if there is one
+     * </p>
+     * @param body the {@link PhysicsBody} in movement
+     * @param endPos the final {@link Position} of {@code body} without collision.
+     * @return an {@link Impact} with the information about possible collisions
+     */
     public static Impact move(PhysicsBody body, Position endPos) {
 
+        // Creation of an Impact without any collision which is the base case
         Impact finalImpact = new Impact(endPos);
 
         Impact mapImpact = testSweptCircleTile(body, endPos);
@@ -89,7 +115,7 @@ public class Collision {
                 if (map.inMap(tilePos) && map.isSolid(tilePos)) {
 
                     if (isColliding(startPos, radius, tilePos)) {
-                        Vector normal = calculateTileNormal(startPos, tilePos, radius);
+                        Vector normal = calculateTileNormal(startPos, tilePos);
                         return new Impact(0.0, startPos, normal, null);
                     }
 
@@ -152,7 +178,7 @@ public class Collision {
         return distanceSquared < (radius * radius);
     }
 
-    private static Vector calculateTileNormal(Position hitPos, Position tilePos, double radius) {
+    private static Vector calculateTileNormal(Position hitPos, Position tilePos) {
         double cx = hitPos.getX();
         double cy = hitPos.getY();
         double tx = tilePos.getX();
@@ -236,36 +262,66 @@ public class Collision {
         return 1.0;
     }
 
+    /**
+     * <p>
+     * Simulates the case when the {@link PhysicsBody} has to slide along the hit object/cliff
+     * using the formula slippery_speed = init_speed - perpendicular_speed with
+     * perpendicular_speed = (init_speed * normal) * normal
+     * </p>
+     * @param body the {@link PhysicsBody} which move
+     * @param impact the {@link Impact} with collision's information
+     */
     public static void slide(PhysicsBody body, Impact impact) {
         body.setPos(impact.collisionPos);
-
+        // normal vector
         Vector normal = impact.normal;
+        // init_speed vector
         Vector velocity = body.getVector();
-
+        // calculation of normal vector and init_speed vector scalar product
         double dot = velocity.getX() * normal.getX() + velocity.getY() * normal.getY();
+        // End of the slippery_speed vector calculation
         Vector remainingVelocity = velocity.sub(normal.scale(dot));
-
         body.setVector(remainingVelocity);
     }
 
+    /**
+     * <p>
+     * Simulates the case when the {@link PhysicsBody} has to bounce at it first collision
+     * using the formula reflected_speed = init_speed - 2 * (init_speed * normal) * normal
+     * </p>
+     * @param body the {@link PhysicsBody} which move
+     * @param impact the {@link Impact} with collision's information
+     */
     public static void bounce(PhysicsBody body, Impact impact, double restitution) {
         body.setPos(impact.collisionPos);
-
+        // normal vector
         Vector normal = impact.normal;
+        // init_speed vector
         Vector velocity = body.getVector();
-
+        // Calculation of the scalar product of init_vector and normal
         double dot = velocity.getX() * normal.getX() + velocity.getY() * normal.getY();
-
+        // End of reflected_speed calculation
         Vector reflectedVelocity = velocity.sub(normal.scale(2 * dot));
-
         body.setVector(reflectedVelocity.scale(restitution));
     }
 
+    /**
+     * Simulates the case when the {@link PhysicsBody} has to stay where it has it first collision
+     * @param body the {@link PhysicsBody} which move
+     * @param impact the {@link Impact} with collision's information
+     */
     public static void touch(PhysicsBody body, Impact impact) {
         body.setPos(impact.collisionPos);
-
+        // body's vector set to (0, 0)
         body.setVector(new Vector(0, 0));
     }
 
-    public static void cross(PhysicsBody body, Impact impact) {}
+    /**
+     * Simulates the case when the {@link PhysicsBody} cross map and other {@link PhysicsBody}
+     * @param body the {@link PhysicsBody} which move
+     * @param pos the {@link Position} where the {@link PhysicsBody} will be after the tick
+     */
+    public static void cross(PhysicsBody body, Position pos) {
+        body.setPos(pos);
+    }
 }
