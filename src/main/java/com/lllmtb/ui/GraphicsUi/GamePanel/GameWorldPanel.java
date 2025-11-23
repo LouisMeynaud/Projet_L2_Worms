@@ -111,6 +111,8 @@ public class GameWorldPanel extends JPanel {
         super.paintComponent(g);
         Graphics2D g2d = (Graphics2D) g;
 
+        if(this.world == null){return;}
+
         double windowWidth = getWidth();
         double windowHeight = getHeight();
         double mapTilesX = world.getMap().getWidth();

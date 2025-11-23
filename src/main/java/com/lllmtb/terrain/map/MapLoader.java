@@ -1,5 +1,6 @@
 package com.lllmtb.terrain.map;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -7,11 +8,20 @@ import java.nio.file.Path;
 public class MapLoader {
     public static Map loadMatrix(String mapName) {
         try {
-            String path = "src/main/java/com/lllmtb/terrain/MapFile/" + mapName + ".txt";
-            String content = Files.readString(Path.of(path));
-            String[] row = content.split("\n");
+            String mapPath = "src/main/resources/map/"+mapName+"/map.txt";
+            String contentMap = Files.readString(Path.of(mapPath));
+            String[] row = contentMap.split("\n");
 
+            String hightLinePath = "src/main/resources/map/"+mapName+"/hightLine.txt";
+            String contentHightLine = Files.readString(Path.of(hightLinePath));
+            String[] stringtabHightLine = contentHightLine.split(",");
+            int[] intTabHightLine = new int[stringtabHightLine.length];
+            for(int i = 0;i<stringtabHightLine.length;i++){
+                intTabHightLine[i] = Integer.valueOf(stringtabHightLine[i]);
+            }
             Map tileMatrix = new Map(row.length, row[0].length(), mapName+".txt");
+            tileMatrix.setHightLine(intTabHightLine);
+
             for (int i = 0; i < row.length; i++) {
                 for (int j = 0; j < row[0].length(); j++) {
                     switch (row[i].charAt(j)) { // perhaps create another `Map.setTile(x, y)` that could be used
@@ -27,10 +37,11 @@ public class MapLoader {
                             break;
                         default:
                             throw new IllegalArgumentException(
-                                    "attention,la lettre" + content.charAt(i) + "ne correspond a aucun Tile");
+                                    "attention,la lettre" + contentHightLine.charAt(i) + "ne correspond a aucun Tile");
                     }
 
                 }
+            //tileMatrix.setHightLine(hightLine);
             }
             return tileMatrix;
 
@@ -42,4 +53,27 @@ public class MapLoader {
             return null;
         }
     }
+
+    
+    public static File[] getListeDossiersMaps() {
+    String cheminDossierMaps = "src/main/resources/map";
+    File dossierRacine = new File(cheminDossierMaps);
+    
+    if (!dossierRacine.exists() || !dossierRacine.isDirectory()) {
+        System.err.println("Erreur le chemin n'est pas bon : " + dossierRacine.getAbsolutePath());
+        return new File[0];
+    }
+
+    
+    File[] sousDossiers = dossierRacine.listFiles(f -> MapLoader.predicatEstUnDossier(f)); // ListeFiles attend un predicat 
+        if (sousDossiers == null) {
+            return new File[0];
+        }
+        return sousDossiers;
+    }
+    private static boolean predicatEstUnDossier(File fichier) {
+        return fichier.isDirectory();
+    }
+
+
 }

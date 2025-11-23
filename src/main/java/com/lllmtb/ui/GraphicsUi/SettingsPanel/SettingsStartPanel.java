@@ -19,6 +19,9 @@ import com.lllmtb.terrain.generation.LandScape;
 
 public class SettingsStartPanel extends JPanel {
     public EventBus eventBus;
+    SettingMapPanel mapSettingPanel;
+    SettingGamePanel gameSettingsPanel;
+
     public SettingsStartPanel(EventBus eventBus) {
         this.eventBus = eventBus;
         PanelSetting();
@@ -48,8 +51,8 @@ public class SettingsStartPanel extends JPanel {
 
         //zone centre (les deux partit (parametre map/partit))
         JPanel PanelCentre = new JPanel(new GridLayout(1, 2, 10, 0));// 1 ligne 2 colonne , 10 de marge horizontale
-        SettingMapPanel mapSettingPanel = new SettingMapPanel(eventBus);
-        SettingGamePanel gameSettingsPanel = new SettingGamePanel();
+        this.mapSettingPanel = new SettingMapPanel(eventBus);
+        this.gameSettingsPanel = new SettingGamePanel();
 
         PanelCentre.add(mapSettingPanel);
         PanelCentre.add(gameSettingsPanel);
@@ -61,19 +64,24 @@ public class SettingsStartPanel extends JPanel {
         });
 
         StarButton.addActionListener(e -> {
-            eventBus.postQueued(new StartGameEvent(setSettings(gameSettingsPanel, mapSettingPanel.getGenerateMapPanel())));
+            eventBus.postQueued(new StartGameEvent(setSettings(gameSettingsPanel)));
         });
     }
-
-
-
-    public GameSettings setSettings(SettingGamePanel gameSettingsPanel,GenerateMapPanel generateMapPanel) {
+    public GameSettings setSettings(SettingGamePanel gameSettingsPanel) {
         int nbEquipes = gameSettingsPanel.getNbEquipes();
         int nbVWorms = gameSettingsPanel.getNbWorms();
         String[] nomsEquipes = gameSettingsPanel.getNomsEquipes();
         boolean wind = gameSettingsPanel.getWind();
-        LandScape terrainType = generateMapPanel.getReliefType();
-        int widthMap = generateMapPanel.getWidthMapSlider();
-        return new GameSettings(nbEquipes, nomsEquipes, nbVWorms, wind, null, false,widthMap,terrainType);
+        if(this.mapSettingPanel.loadMap){
+            String mapFileName = this.mapSettingPanel.panelListeMap.getFichierSelectionne().getName();
+            return new GameSettings(nbEquipes, nomsEquipes, nbVWorms, wind, mapFileName, false,0,null);
+        }
+        else{
+            LandScape terrainType = this.mapSettingPanel.generateMapPanel.getReliefType();
+            int widthMap = this.mapSettingPanel.generateMapPanel.getWidthMapSlider();
+            return new GameSettings(nbEquipes, nomsEquipes, nbVWorms, wind, null, false,widthMap,terrainType);
+        }
+        
+        
     }
 }

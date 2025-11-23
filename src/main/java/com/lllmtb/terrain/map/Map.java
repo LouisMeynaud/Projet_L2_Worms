@@ -1,5 +1,8 @@
 package com.lllmtb.terrain.map;
+import java.util.Random;
+
 import com.lllmtb.physics.Position;
+import com.lllmtb.terrain.generation.ConfigMap;
 
 public class Map {
 /**
@@ -40,6 +43,7 @@ public class Map {
         return filesTxt;
     }
 
+    
     protected void setFilesTxt(String files){
         this.filesTxt = files;
     }
@@ -134,6 +138,8 @@ public class Map {
         return spawnPoint;
     }
 
-    
+    public int[] getHightLine() {
+        return hightLine;
+    }
 
 }

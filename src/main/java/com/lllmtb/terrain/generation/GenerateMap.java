@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.Random;
 
 import com.lllmtb.physics.Position;
+import com.lllmtb.terrain.map.CreateSpawnPoint;
 import com.lllmtb.terrain.map.Map;
 import com.lllmtb.terrain.map.SaveMap;
 
@@ -42,8 +43,6 @@ public class GenerateMap {
         MapBalancer.thicknessBalencer(config.getThicknessMin(),MapBalancer.averageThickness(lowLine, hightLine, 0, config.getWidth()), hightLine);
         MapFiller.fillingWater(map, config.getWaterHeight());
         MapFiller.fillingDirt(map, hightLine, lowLine);
-        map.setSpawnPoint(createSpawnPoint(config,hightLine));
-
         map.setHightLine(hightLine);
 
         return map;
@@ -66,40 +65,5 @@ public class GenerateMap {
             }
     }
     // attention probleme, le right balence crée une pente enorme au mileu
-
-    protected  static Position[][] createSpawnPoint(ConfigMap config,int[] highLine){
-        int getNbSpawnPoint = config.getNbTeam()*config.getNbWarms();
-        Position[] spawnPointPos = new Position[getNbSpawnPoint];
-        int i = 0;
-        boolean exist;
-        Random random = new Random();
-        while(i < getNbSpawnPoint){
-            exist = false;
-            int xPosition = random.nextInt(highLine.length);
-            Position nouvellePos = new Position(xPosition, highLine[xPosition]+10);
-            for(int j = 0; j< i;j++){
-                if(nouvellePos.equals(spawnPointPos[j])){
-                    exist = true;
-                }
-            }
-            if(!exist && (nouvellePos.getY() > config.getWaterHeight())){
-                spawnPointPos[i] = nouvellePos;
-                i++;
-            }
-            
-        }
-        return separateSpawnTeam(config,spawnPointPos);}
-    
-    protected  static Position[][] separateSpawnTeam(ConfigMap config,Position[] spawnPointPos){
-        Position[][] teamSpawnPointPositions = new Position[config.getNbTeam()][config.getNbWarms()];
-        for (int i = 0; i < config.getNbTeam(); i++) {
-            System.out.println("");
-            for (int j = 0; j < config.getNbWarms(); j++) {
-                teamSpawnPointPositions[i][j] = spawnPointPos[i*config.getNbWarms()+j];
-                System.out.println("nouvelle position: x ="+teamSpawnPointPositions[i][j].getX() + "y =" + teamSpawnPointPositions[i][j].getY());
-            }
-        }
-        return teamSpawnPointPositions;
-    }
     
     }
