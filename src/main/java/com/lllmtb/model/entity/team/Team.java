@@ -29,8 +29,8 @@ public class Team {
     /** The name of the team. */
     public final String name;
 
-    /** Number of players (worms) in the team. */
-    private int numberOfPlayers;
+    /** Number of worms in the team. */
+    private int numberOfWorms;
 
     /** Unique ID of the team. */
     public final int id;
@@ -55,16 +55,16 @@ public class Team {
     /**
      * Private constructor used to initialize a team with a given name, number of players, inventory, and spawn position.
      * @param name the name of the team
-     * @param numberOfPlayers number of worms in the team
+     * @param numberOfWorms number of worms in the team
      * @param inventory the inventory assigned to the team
      * @param spawn the spawn position where the worms will be placed
      */
-    private Team(String name, int numberOfPlayers, Inventory inventory, Position[] spawn) {
+    private Team(String name, int numberOfWorms, Inventory inventory, Position[] spawn) {
         this.inventory = inventory;
         this.name = name;
-        this.numberOfPlayers = numberOfPlayers;
+        this.numberOfWorms = numberOfWorms;
         this.id = ++Team.ids;
-        this.setUpPlayers(numberOfPlayers, spawn);
+        this.setUpWorms(numberOfWorms, spawn);
         this.currentWorm = this.worms.get(0);
         this.teamColor = Team.chooseColor();
     }
@@ -72,11 +72,11 @@ public class Team {
     /**
      * Public constructor used to initialize a team using the private constructor.
      * @param teamName the name of the team
-     * @param numberOfPlayers number of worms in the team
+     * @param numberOfWorms number of worms in the team
      * @param spawn the spawn position where the worms will be placed
      */
-    public Team(String teamName, int numberOfPlayers, Position[] spawn) {
-        this(teamName, numberOfPlayers, new Inventory(), spawn);
+    public Team(String teamName, int numberOfWorms, Position[] spawn) {
+        this(teamName, numberOfWorms, new Inventory(), spawn);
     }
 
     /**
@@ -99,8 +99,8 @@ public class Team {
      * Returns the number of worms currently in the team.
      * @return number of worms
      */
-    public int getNumberOfPlayers() {
-        return this.numberOfPlayers;
+    public int getNumberOfWorms() {
+        return this.numberOfWorms;
     }
 
     /**
@@ -125,7 +125,7 @@ public class Team {
      * @param numberOfPlayers number of worms to create
      * @param spawns all spawn position for all worms
      */
-    private void setUpPlayers(int numberOfPlayers, Position[] spawns) {
+    private void setUpWorms(int numberOfPlayers, Position[] spawns) {
         for (int i = 1; i <= numberOfPlayers; i++) {
             new Worm(this.name + i, this);
             Random random = new Random();
@@ -138,18 +138,18 @@ public class Team {
      * Adds a new worm to the team.
      * @param worm the worm to add
      */
-    public void addPlayer(Worm worm) {
+    public void addWorm(Worm worm) {
         this.worms.add(worm);
-        this.numberOfPlayers = this.worms.size();
+        this.numberOfWorms = this.worms.size();
     }
 
     /**
      * Removes a worm from the team based on its index.
      * @param indexPlayer index of the worm to remove
      */
-    public void removePlayer(int indexPlayer) {
+    public void removeWorm(int indexPlayer) {
         this.worms.remove(indexPlayer-1);
-        this.numberOfPlayers = this.worms.size();
+        this.numberOfWorms = this.worms.size();
     }
 
     /**
