@@ -73,15 +73,15 @@ public class Collision {
      * @return an {@link Impact} with the information about possible collisions
      */
     public static Impact move(PhysicsBody body, Position endPos) {
-
-        // Creation of an Impact without any collision which is the base case
         Impact finalImpact = new Impact(endPos);
 
+        // Entity-Map Test: searches for the earliest impact time
         Impact mapImpact = testSweptCircleTile(body, endPos);
         if (mapImpact.collided && mapImpact.ti < finalImpact.ti) {
             finalImpact = mapImpact;
         }
 
+        // Entity-Entity Test: iterates over all other bodies to find the earliest impact time
         for (PhysicsBody other : bodies) {
             if (other != body) {
                 if (!(body.getEntity() instanceof Worm && other.getEntity() instanceof Worm)) {
@@ -96,6 +96,12 @@ public class Collision {
         return finalImpact;
     }
 
+    /**
+     * Calculates the first swept impact between the moving body and the map's solid tiles.
+     * @param body The moving {@link PhysicsBody}.
+     * @param endPos The target {@link Position}.
+     * @return The nearest impact with a solid tile.
+     */
     private static Impact testSweptCircleTile(PhysicsBody body, Position endPos) {
         Position startPos = body.getPos();
         Vector displacement = new Vector(endPos.getX() - startPos.getX(), endPos.getY() - startPos.getY());
@@ -103,6 +109,7 @@ public class Collision {
 
         Impact nearestImpact = new Impact(endPos);
 
+        // Determine the expanded AABB area on the grid to check
         int minX = (int) Math.floor(Math.min(startPos.getX(), endPos.getX()) - radius);
         int maxX = (int) Math.ceil(Math.max(startPos.getX(), endPos.getX()) + radius);
         int minY = (int) Math.floor(Math.min(startPos.getY(), endPos.getY()) - radius);
@@ -114,11 +121,13 @@ public class Collision {
 
                 if (map.inMap(tilePos) && map.isSolid(tilePos)) {
 
+                    // Immediate overlap test (ti=0.0)
                     if (isColliding(startPos, radius, tilePos)) {
                         Vector normal = calculateTileNormal(startPos, tilePos);
                         return new Impact(0.0, startPos, normal, null);
                     }
 
+                    // Swept AABB test
                     double[] result = sweptCircleAABB(startPos, radius, displacement, tilePos);
                     double ti = result[0];
                     Vector normal = new Vector(result[1], result[2]);
@@ -131,6 +140,7 @@ public class Collision {
             }
         }
 
+        // If the body moves outside the map boundaries, treat as an immediate impact.
         if (!map.inMap(endPos)) {
             return new Impact(0.0, startPos, new Vector(0, 0), null);
         }
@@ -138,6 +148,14 @@ public class Collision {
         return nearestImpact;
     }
 
+    /**
+     * Calculates the first swept impact between two circular bodies.
+     * Reduces the problem to a Swept Point vs. Static Circle of combined radius.
+     * @param body1 The moving {@link PhysicsBody}.
+     * @param body2 The target {@link PhysicsBody} (static for this calculation).
+     * @param endPos The target {@link Position} of body1.
+     * @return The nearest impact with body2.
+     */
     private static Impact testSweptCircleCircle(PhysicsBody body1, PhysicsBody body2, Position endPos) {
         Position startPos1 = body1.getPos();
         double radius1 = body1.getRadius();
@@ -147,11 +165,14 @@ public class Collision {
         Position startPos2 = body2.getPos();
         double combinedRadius = radius1 + radius2;
 
+        // Use quadratic formula resolution to find ti
         double ti = sweptPointCircle(startPos1, displacement, startPos2, combinedRadius);
 
         if (ti >= 0.0 && ti < 1.0) {
+            // Calculate the exact impact position
             Position hitPos = body1.getVector().newPos(startPos1, ti);
 
+            // Calculate the normal vector: from body2's center to body1's center
             Vector normalVec = hitPos.sub(body2.getPos());
             double length = Math.sqrt(normalVec.getX() * normalVec.getX() + normalVec.getY() * normalVec.getY());
             Vector normal = normalVec.scale(1.0 / length);
@@ -162,12 +183,21 @@ public class Collision {
         return new Impact(endPos);
     }
 
+    /**
+     * Static collision detection (overlap) between a circle and a tile (AABB).
+     * Used for the initial overlap test (ti=0.0).
+     * @param circleCenter Center {@link Position} of the circle.
+     * @param radius Radius of the circle.
+     * @param tilePos Bottom-left corner of the tile (1x1 square).
+     * @return True if the circle overlaps the tile.
+     */
     private static boolean isColliding(Position circleCenter, double radius, Position tilePos) {
         double cx = circleCenter.getX();
         double cy = circleCenter.getY();
         double ax = tilePos.getX();
         double ay = tilePos.getY();
 
+        // Finds the closest point on the AABB to the circle center (Clamping)
         double closestX = Math.max(ax, Math.min(cx, ax + 1.0));
         double closestY = Math.max(ay, Math.min(cy, ay + 1.0));
 
@@ -178,24 +208,43 @@ public class Collision {
         return distanceSquared < (radius * radius);
     }
 
+    /**
+     * Calculates the impact normal for a circle hitting a tile.
+     * @param hitPos Center {@link Position} of the circle at the moment of impact.
+     * @param tilePos The {@link Position} of the tile.
+     * @return The unit normal vector.
+     */
     private static Vector calculateTileNormal(Position hitPos, Position tilePos) {
         double cx = hitPos.getX();
         double cy = hitPos.getY();
         double tx = tilePos.getX();
         double ty = tilePos.getY();
 
+        // Finds the closest point on the AABB (tile) to the circle center
         double closestX = Math.max(tx, Math.min(cx, tx + 1.0));
         double closestY = Math.max(ty, Math.min(cy, ty + 1.0));
 
+        // The normal vector is the vector from the closest point to the circle center
         Vector normalVec = new Vector(cx - closestX, cy - closestY);
 
+        // Normalization
         double length = Math.sqrt(normalVec.getX() * normalVec.getX() + normalVec.getY() * normalVec.getY());
         if (length == 0.0) return new Vector(0, 0);
 
         return normalVec.scale(1.0 / length);
     }
 
+    /**
+     * Calculates the Time of Impact (ti) and the normal {@link Vector} between a circle Tile (AABB).
+     * This is the "Swept Point vs Enlarged AABB" algorithm.
+     * @param startPos Starting {@link Position}.
+     * @param radius Radius of the circle.
+     * @param displacement Total displacement {@link Vector}.
+     * @param tilePos Tile corner {@link Position}.
+     * @return double[] {ti, normalX, normalY}. ti=1.0 if no collision.
+     */
     private static double[] sweptCircleAABB(Position startPos, double radius, Vector displacement, Position tilePos) {
+        // Creates the enlarged AABB (expanded by the radius)
         double tileX = tilePos.getX() - radius;
         double tileY = tilePos.getY() - radius;
         double tileW = 1.0 + 2 * radius;
@@ -206,12 +255,14 @@ public class Collision {
         double x = startPos.getX();
         double y = startPos.getY();
 
+        // Calculate Near (entry) and Far (exit) times on X and Y axes
         double txNearX = (tileX - x) / dx;
         double txFarX = (tileX + tileW - x) / dx;
 
         double tyNearY = (tileY - y) / dy;
         double tyFarY = (tileY + tileH - y) / dy;
 
+        // Invert times if direction is negative
         if (dx < 0) {
             double temp = txNearX; txNearX = txFarX; txFarX = temp;
         }
@@ -219,46 +270,64 @@ public class Collision {
             double temp = tyNearY; tyNearY = tyFarY; tyFarY = temp;
         }
 
+        // tiNear is the moment both X and Y conditions are met (take the max)
         double tiNear = Math.max(txNearX, tyNearY);
+        // tiFar is the moment the body leaves the area (take the min)
         double tiFar = Math.min(txFarX, tyFarY);
 
+        // Check impact validity
         if (tiNear >= 1.0 || tiNear < 0.0 || tiNear >= tiFar) {
             return new double[]{1.0, 0, 0};
         }
 
+        // Determine the normal (main axis of impact)
         double normalX = 0;
         double normalY = 0;
         if (txNearX > tyNearY) {
+            // Impact occurs on the X-axis (vertical wall)
             normalX = (dx > 0) ? -1 : 1;
         } else {
+            // Impact occurs on the Y-axis (ground or ceiling)
             normalY = (dy > 0) ? -1 : 1;
         }
 
         return new double[]{tiNear, normalX, normalY};
     }
 
+    /**
+     * <p>
+     * Calculate the time of impact between two {@link Entity} by using the {@link Position}
+     * of the two and the quadratic formula resolution. This quadratic resolution is looking
+     * when distance between centers at time t = combined radius
+     * </p>
+     * @param p1 the {@link Position} of the first {@link PhysicsBody}'s hitbox center
+     * @param v1 the {@link Vector} of the displacement
+     * @param c2 the {@link Position} of the second {@link PhysicsBody}'s hitbox center
+     * @param r2 the sum of the radius of the two static circles
+     * @return {@code ti} or {@code 1.0} if no collision occurs.
+     */
     private static double sweptPointCircle(Position p1, Vector v1, Position c2, double r2) {
-
         Vector p1ToC2 = c2.sub(p1);
-
+        // Coefficients for the quadratic equation 1*t^2 + B*t + C = 0
+        // A = ||V1||^2
         double a = v1.getX() * v1.getX() + v1.getY() * v1.getY();
+        // B = 2 * (V1.p1toC2)
         double b = 2.0 * (v1.getX() * p1ToC2.getX() + v1.getY() * p1ToC2.getY());
+        // C = ||p1toC2||^2 - r2^2
         double c = p1ToC2.getX() * p1ToC2.getX() + p1ToC2.getY() * p1ToC2.getY() - r2 * r2;
-
+        // if c < 0, objects already in collision
         if (c < 0) return 0.0;
-
+        // if a = 0, object1 not in movement, so no collision
         if (a == 0.0) return 1.0;
-
+        // Calculation of the discriminant
         double discriminant = b * b - 4 * a * c;
-
+        // if discriminant < 0, so no collision
         if (discriminant < 0.0) return 1.0;
-
+        // Calculation of solution, only the one with the "-" because it's the first
         double ti = (-b - Math.sqrt(discriminant)) / (2.0 * a);
-
         if (ti >= 0.0 && ti < 1.0) {
             return ti;
         }
-
         return 1.0;
     }
 
@@ -291,6 +360,7 @@ public class Collision {
      * </p>
      * @param body the {@link PhysicsBody} which move
      * @param impact the {@link Impact} with collision's information
+     * @param restitution the coefficient of restitution (energy loss, between 0 and 1).
      */
     public static void bounce(PhysicsBody body, Impact impact, double restitution) {
         body.setPos(impact.collisionPos);
