@@ -1,6 +1,6 @@
 package com.lllmtb.physics;
 
 @FunctionalInterface
-public interface Modifier {
+public interface PhysicsModifier {
     Vector apply(Vector v);
 }

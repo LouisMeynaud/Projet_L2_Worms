@@ -1,8 +1,6 @@
 package com.lllmtb.physics;
 
 import com.lllmtb.events.EventBus;
-import com.lllmtb.events.physics.AddPhysicsModifierEvent;
-import com.lllmtb.events.physics.RemovePhysicsModifierEvent;
 import com.lllmtb.model.entity.projectile.Projectile;
 import com.lllmtb.terrain.map.Map;
 
@@ -25,7 +23,7 @@ public class PhysicsEngine {
     /** The list of all physics bodies currently managed by this engine. */
     private CopyOnWriteArrayList<PhysicsBody> bodies;
 
-    private ConcurrentHashMap<PhysicsBody, ArrayList<Modifier>> modifiers;
+    private ConcurrentHashMap<PhysicsBody, ArrayList<PhysicsModifier>> modifiers;
 
     /** The gravity vector applied uniformly to all bodies. */
     private Vector gravity;
@@ -59,9 +57,6 @@ public class PhysicsEngine {
         this.hasWind = hasWind;
         this.wind = new Vector(0, 0);
         Collision.init(this.bodies, map);
-
-        bus.subscribe(AddPhysicsModifierEvent.class, e -> addModifier(e.body(), e.modifier()));
-        bus.subscribe(RemovePhysicsModifierEvent.class, e -> removeModifier(e.body(), e.modifier()));
     }
 
     /**
@@ -128,11 +123,11 @@ public class PhysicsEngine {
         bodies.remove(body);
     }
 
-    private void addModifier(PhysicsBody body, Modifier modifier) {
+    public void addModifier(PhysicsBody body, PhysicsModifier modifier, int duration) {
         modifiers.computeIfAbsent(body, b -> new ArrayList<>()).add(modifier);
     }
 
-    private void removeModifier(PhysicsBody body, Modifier modifier) {
+    public void removeModifier(PhysicsBody body, PhysicsModifier modifier) {
         if (modifiers.containsKey(body)) modifiers.get(body).remove(modifier);
     }
 
@@ -176,21 +171,21 @@ public class PhysicsEngine {
      * If a body’s next position results in a collision, its position is not updated
      * until collision handling is performed.
      * </p>
-     * @param ticktime the duration of the simulation tick (in seconds).
+     * @param dt the duration of the simulation tick (in seconds).
      */
-    protected void nextStep(double ticktime) {
+    protected void nextStep(double dt) {
         for (PhysicsBody body : bodies) {
             Vector deltaV = body.getVector().scale(-0.2).add(this.gravity); // Simple air resistance + gravity effects
             // only apply wind effects to Projectiles
             if (body.getEntity() instanceof Projectile) deltaV.add(this.wind);
-            deltaV.scale(ticktime / body.getMass());
+            deltaV.scale(dt / body.getMass());
 
             Vector newVector = body.getVector().add(deltaV);
             body.setVector(newVector);
 
-            // apply modifiers for this tick only - we don't want to stack them every tick
-            if (modifiers.containsKey(body)) for (Modifier m : modifiers.get(body)) newVector = m.apply(newVector);
-            Position nextPos = newVector.newPos(body.getPos(), ticktime);
+            // apply modifiers for this tick only - we don't want to stack them every tick - not sure about this, for example gravity in the vector keeps increasing when the parachute is deployed and we don't want that
+            if (modifiers.containsKey(body)) for (PhysicsModifier m : modifiers.get(body)) newVector = m.apply(newVector);
+            Position nextPos = newVector.newPos(body.getPos(), dt);
 
             if (!Collision.haveCollisionMap(body, nextPos)) {
                 body.setPos(nextPos);
@@ -213,6 +208,6 @@ public class PhysicsEngine {
             cpt = 0;
             changeWind();
         }
-        nextStep(ticktime);
+        nextStep(ticktime/1000.0);
     }
 }

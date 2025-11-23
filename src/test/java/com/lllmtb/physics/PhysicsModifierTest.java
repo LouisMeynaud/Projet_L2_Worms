@@ -1,16 +1,15 @@
 package com.lllmtb.physics;
 
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.Assertions.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class ModifierTest {
+public class PhysicsModifierTest {
 
     @Test
     public void modifierTest() {
         Vector v = new Vector();
-        Modifier m = new Modifier() {
+        PhysicsModifier m = new PhysicsModifier() {
             @Override
             public Vector apply(Vector v) {
                 return new Vector(1,2);
