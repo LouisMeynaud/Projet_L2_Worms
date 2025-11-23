@@ -2,9 +2,12 @@ package com.lllmtb.model.entity.team;
 
 import java.util.*;
 
+import com.lllmtb.engine.commands.GameCommand;
 import com.lllmtb.model.entity.projectile.Projectile;
 import com.lllmtb.model.entity.worm.Worm;
 import com.lllmtb.model.item.inventory.Inventory;
+import com.lllmtb.model.item.tool.ToolId;
+import com.lllmtb.model.item.tool.UseParams;
 import com.lllmtb.model.item.weapon.FireParams;
 import com.lllmtb.model.item.weapon.WeaponId;
 import com.lllmtb.physics.Position;
@@ -181,7 +184,7 @@ public class Team {
      * @throws IllegalArgumentException if the weapon ID is invalid
      */
     public void addAmmo(WeaponId id, Integer n) throws IllegalArgumentException {
-        this.inventory.addAmmo(id, n);
+        this.inventory.weapons.addAmmo(id, n);
     }
 
     /**
@@ -192,6 +195,26 @@ public class Team {
      */
     public Projectile fire(FireParams fireParams) throws IllegalArgumentException {
         return this.inventory.fire(this.currentWorm.getSelfItem(), fireParams);
+    }
+
+    /**
+     * Adds ammunition for a specific tool in the team's inventory.
+     * @param id tool for which to add ammunition
+     * @param n number of ammo units to add
+     * @throws IllegalArgumentException if the weapon ID is invalid
+     */
+    public void addAmmo(ToolId id, Integer n) throws IllegalArgumentException {
+        this.inventory.tools.addAmmo(id, n);
+    }
+
+    /**
+     * Uses the current worm's selected tool.
+     * @param useParams parameters for the use action
+     * @return the created commands to execute
+     * @throws IllegalArgumentException if the use parameters are invalid
+     */
+    public List<GameCommand> use(UseParams useParams) throws IllegalArgumentException {
+        return this.inventory.use(ToolId.PARACHUTE, useParams); // currently Parachute, we will have to adapt currentWorm.getSelfItem()
     }
 
     /**

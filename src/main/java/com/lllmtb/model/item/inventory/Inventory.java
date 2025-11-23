@@ -1,6 +1,11 @@
 package com.lllmtb.model.item.inventory;
 
+import com.lllmtb.engine.commands.GameCommand;
 import com.lllmtb.model.entity.projectile.Projectile;
+import com.lllmtb.model.item.tool.Tool;
+import com.lllmtb.model.item.tool.ToolId;
+import com.lllmtb.model.item.tool.ToolRegistry;
+import com.lllmtb.model.item.tool.UseParams;
 import com.lllmtb.model.item.weapon.FireParams;
 import com.lllmtb.model.item.weapon.Weapon;
 import com.lllmtb.model.item.weapon.WeaponId;
@@ -13,15 +18,16 @@ import java.util.*;
  * Represents the weapon inventory for a team.
  * <p>
  * This class tracks which weapons are unlocked and manages their
- * corresponding ammunition counts. It allows adding, removing, and
- * checking weapons, as well as firing them when conditions permit.
+ * corresponding ammunition counts. It allows locking and unlocking weapons,
+ * as well as firing them when conditions permit.
+ * This class also manages tools.
  * <p>
- * The inventory is typically maintained per team, rather than per worm.
+ * The inventory is maintained per team, rather than per worm.
  */
 public final class Inventory {
-    private static final WeaponRegistry registry = new WeaponRegistry();
+    public final WeaponRegistry weapons = new WeaponRegistry();
     private final Set<WeaponId> unlocked = EnumSet.noneOf(WeaponId.class);
-    private final Map<WeaponId, Integer> ammo = new EnumMap<>(WeaponId.class);
+    public final ToolRegistry tools = new ToolRegistry();
 
     /**
      * Checks if the given weapon is currently unlocked.
@@ -40,8 +46,8 @@ public final class Inventory {
      * @throws IllegalArgumentException if the weapon type is unknown
      */
     public void unlock(WeaponId id) {
-        if (!registry.contains(id)) throw new IllegalArgumentException("Unknown weapon: " + id);
-        this.unlocked.add(id);
+        if (!weapons.contains(id)) throw new IllegalArgumentException("Unknown weapon: " + id);
+        unlocked.add(id);
     }
 
     /**
@@ -50,30 +56,16 @@ public final class Inventory {
      * @param id the weapon identifier to lock
      */
     public void lock(WeaponId id) {
-        this.unlocked.remove(id);
+        unlocked.remove(id);
     }
 
     /**
-     * Returns the current ammo count for the specified weapon.
+     * Returns an unmodifiable view of the currently unlocked weapons.
      *
-     * @param id the weapon identifier
-     * @return the number of remaining ammo units, or {@code 0} if none
+     * @return an unmodifiable {@link Set} of unlocked weapon identifiers
      */
-    public int getAmmo(WeaponId id) {
-        return this.ammo.getOrDefault(id, 0);
-    }
-
-    /**
-     * Adds a specified amount of ammo for a weapon.
-     *
-     * @param id     the weapon identifier
-     * @param amount the amount of ammo to add (can be negative to reduce ammo)
-     * @throws IllegalArgumentException if the weapon type is unknown
-     */
-    public void addAmmo(WeaponId id, int amount) {
-        if (!registry.contains(id)) throw new IllegalArgumentException("Unknown weapon: " + id);
-        if (amount == 0) return;
-        this.ammo.merge(id, amount, Integer::sum);
+    public Set<WeaponId> unlockedWeapons() {
+        return Collections.unmodifiableSet(unlocked);
     }
 
     /**
@@ -86,8 +78,8 @@ public final class Inventory {
      * @throws IllegalArgumentException if the weapon type is unknown
      */
     public boolean canFire(WeaponId id) {
-        if (!registry.contains(id)) throw new IllegalArgumentException("Unknown weapon: " + id);
-        return this.isUnlocked(id) && (this.getAmmo(id) > 0);
+        if (!weapons.contains(id)) throw new IllegalArgumentException("Unknown weapon: " + id);
+        return isUnlocked(id) && (weapons.getAmmo(id) > 0);
     }
 
     /**
@@ -105,30 +97,50 @@ public final class Inventory {
      */
     public Projectile fire(WeaponId id, @NonNull FireParams params) {
         Objects.requireNonNull(params);
-        Weapon w = registry.get(id);
+        Weapon w = weapons.get(id);
         if (w == null) throw new IllegalArgumentException("Unknown weapon : " + id);
-        if (this.canFire(id)) {
-            this.ammo.merge(id, -1, Integer::sum);
+        if (canFire(id)) {
+            weapons.addAmmo(id, -1);
             return w.createProjectile(params);
         }
         throw new IllegalArgumentException("Weapon can't fire : " + id);
     }
 
     /**
-     * Returns an unmodifiable view of the currently unlocked weapons.
+     * Checks whether a tool can be used.
+     * <p>
+     * A tool can be used if it has at least one ammo unit left (more conditions later?).
      *
-     * @return an unmodifiable {@link Set} of unlocked weapon identifiers
+     * @param id the tool identifier
+     * @return {@code true} if the tool can be used, {@code false} otherwise
+     * @throws IllegalArgumentException if the tool type is unknown
      */
-    public Set<WeaponId> unlockedWeapons() {
-        return Collections.unmodifiableSet(this.unlocked);
+    public boolean canUse(ToolId id) {
+        if (!tools.contains(id)) throw new IllegalArgumentException("Unknown tool: " + id);
+        return tools.getAmmo(id) > 0;
     }
 
     /**
-     * Returns an unmodifiable snapshot of the current ammo counts.
+     * Attempts to use the given tool.
+     * <p>
+     * If the tool has ammo available, one ammo unit is consumed
+     * and a new list of instructions is created and returned.
+     * Otherwise, an {@link IllegalArgumentException} is thrown.
      *
-     * @return an unmodifiable {@link Map} mapping each {@link WeaponId} to its ammo count
+     * @param id     the tool identifier
+     * @param params the use parameters (must not be {@code null})
+     * @return the newly created {@link List<GameCommand>} commands to execute
+     * @throws NullPointerException     if {@code params} is {@code null}
+     * @throws IllegalArgumentException if the tool is unknown or cannot be used
      */
-    public Map<WeaponId, Integer> ammoSnapshot() {
-        return Collections.unmodifiableMap(this.ammo);
+    public List<GameCommand> use(ToolId id, @NonNull UseParams params) {
+        Objects.requireNonNull(params);
+        Tool t = tools.get(id);
+        if (t == null) throw new IllegalArgumentException("Unknown tool : " + id);
+        if (canUse(id)) {
+            tools.addAmmo(id, -1);
+            return t.use(params);
+        }
+        throw new IllegalArgumentException("Tool can't be used : " + id);
     }
 }
