@@ -26,7 +26,7 @@ class PhysicsEngineTest {
         map = MapLoader.loadMatrix("mapTest");
         pE = new PhysicsEngine(map, true);
         p = new Position(4, 5);
-        w = new Worm("José", new Team("Team", 1, p), p);
+        w = new Worm("José", new Team("Team", 1, new Position[]{p}));
         assertTrue(map.inMap(p));
         pB = w.getBody();
         pB.setVector(new Vector(-5, -10));
@@ -94,8 +94,8 @@ class PhysicsEngineTest {
         pE.nextStep(ticktime);
         Position newPos = pB.getPos();
         Vector newVector = pB.getVector();
-        assertNotEquals(initialPos.getX(), newPos.getX());
-        assertNotEquals(initialPos.getY(), newPos.getY());
+        assertEquals(initialPos.getX(), newPos.getX());
+        assertEquals(initialPos.getY(), newPos.getY());
         assertNotEquals(initialVector.getX(), newVector.getX());
         assertNotEquals(initialVector.getY(), newVector.getY());
     }

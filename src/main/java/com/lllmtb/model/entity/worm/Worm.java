@@ -47,16 +47,14 @@ public class Worm extends Entity {
      * @param name the name of the worm
      * @param stats the {@link Statistics} associated with the worm
      * @param team the {@link Team} the worm belongs to
-     * @param spawn the spawn position where the worm is placed
      */
-    private Worm(String name, Statistics stats, Team team, @NonNull Position spawn) {
+    private Worm(String name, Statistics stats, Team team) {
         super();
-        Objects.requireNonNull(spawn);
-        this.body = new PhysicsBody(this, spawn, new Vector(0, 0), 100, 1, 1);
+        this.body = new PhysicsBody(this, new Position(0, 0), new Vector(0, 0), 100, 1, 1);
         this.name = name;
         this.stats = stats;
         this.team = team;
-        this.spawn(spawn);
+        this.team.addPlayer(this);
     }
 
     /**
@@ -64,10 +62,9 @@ public class Worm extends Entity {
      * <p>By default, a worm starts with 100 health and basic movement and damage stats.</p>
      * @param name the name of the worm
      * @param team the {@link Team} the worm belongs to
-     * @param spawn the spawn position of the worm
      */
-    public Worm(String name, Team team, Position spawn) {
-        this(name, new Statistics(100, 1, 1), team, spawn);
+    public Worm(String name, Team team) {
+        this(name, new Statistics(100, 1, 1), team);
     }
 
     /**
