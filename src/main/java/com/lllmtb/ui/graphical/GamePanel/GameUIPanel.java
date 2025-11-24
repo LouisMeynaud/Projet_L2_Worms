@@ -1,4 +1,4 @@
-package com.lllmtb.ui.GraphicsUi.GamePanel;
+package com.lllmtb.ui.graphical.GamePanel;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;

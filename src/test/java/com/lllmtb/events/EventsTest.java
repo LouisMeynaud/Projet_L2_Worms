@@ -11,7 +11,7 @@ import com.lllmtb.engine.GameWorld;
 import com.lllmtb.events.graphicsUi.*;
 import com.lllmtb.events.move.MouseInputEvent;
 import com.lllmtb.events.move.MouseWheelMoveInputEvent;
-import com.lllmtb.ui.GraphicsUi.GamePanel.Direction;
+import com.lllmtb.ui.graphical.GamePanel.Direction;
 import com.lllmtb.events.game.GamePauseEvent;
 import com.lllmtb.events.game.GameStateUpdatedEvent;
 import com.lllmtb.events.game.MapUpdateEvent;

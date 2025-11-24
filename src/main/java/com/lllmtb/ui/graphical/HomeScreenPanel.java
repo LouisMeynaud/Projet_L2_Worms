@@ -1,4 +1,4 @@
-package com.lllmtb.ui.GraphicsUi;
+package com.lllmtb.ui.graphical;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;

@@ -2,7 +2,7 @@ package com.lllmtb.events.move;
 
 import com.lllmtb.events.Event;
 import com.lllmtb.physics.Position;
-import com.lllmtb.ui.GraphicsUi.GamePanel.Direction;
+import com.lllmtb.ui.graphical.GamePanel.Direction;
 
 public class MouseInputEvent implements Event {
     private Position pos;

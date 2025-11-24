@@ -1,4 +1,4 @@
-package com.lllmtb.ui.GraphicsUi.SettingsPanel;
+package com.lllmtb.ui.graphical.SettingsPanel;
 
 import java.awt.BorderLayout;
 import java.awt.Font;
@@ -7,7 +7,6 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.util.Hashtable;
 
-import javax.swing.BorderFactory;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;

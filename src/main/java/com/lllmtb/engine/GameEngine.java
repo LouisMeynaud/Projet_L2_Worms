@@ -5,7 +5,7 @@ import com.lllmtb.events.game.StartGameEvent;
 import com.lllmtb.events.game.WorldCreatedEvent;
 import com.lllmtb.ui.ConsoleUI;
 import com.lllmtb.ui.UI;
-import com.lllmtb.ui.GraphicsUi.WindowsUi;
+import com.lllmtb.ui.graphical.GraphicalUI;
 
 public class GameEngine {
     private static EventBus eventBus;
@@ -13,7 +13,7 @@ public class GameEngine {
 
     public static void main(String[] args) {
         
-        boolean graphique = false;
+        boolean graphique = true;
         eventBus = new EventBus();
         eventBus.subscribe(StartGameEvent.class, GameEngine::startGame);
 
@@ -27,7 +27,7 @@ public class GameEngine {
 
         UI ui;
         if (graphique) {
-            ui = new WindowsUi(eventBus);
+            ui = new GraphicalUI(eventBus);
         } else {
             ui = new ConsoleUI(eventBus);
         }

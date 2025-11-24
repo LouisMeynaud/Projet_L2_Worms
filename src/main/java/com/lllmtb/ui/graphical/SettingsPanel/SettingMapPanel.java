@@ -1,10 +1,8 @@
-package com.lllmtb.ui.GraphicsUi.SettingsPanel;
+package com.lllmtb.ui.graphical.SettingsPanel;
 
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
-import java.awt.Event;
 import java.awt.FlowLayout;
-import java.util.concurrent.Flow;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -13,7 +11,6 @@ import javax.swing.JPanel;
 import com.lllmtb.events.EventBus;
 import com.lllmtb.events.graphicsUi.ScreenGenerateMap;
 import com.lllmtb.events.graphicsUi.ScreenLoadMap;
-import com.lllmtb.events.graphicsUi.ScreenNewOrLoadEvent;
 import com.lllmtb.terrain.map.MapLoader;
 
 public class SettingMapPanel extends JPanel{

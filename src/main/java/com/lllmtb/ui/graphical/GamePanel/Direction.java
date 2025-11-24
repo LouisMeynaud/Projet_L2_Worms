@@ -1,4 +1,4 @@
-package com.lllmtb.ui.GraphicsUi.GamePanel;
+package com.lllmtb.ui.graphical.GamePanel;
 
 public enum Direction {
     Up,

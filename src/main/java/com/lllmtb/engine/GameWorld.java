@@ -28,28 +28,26 @@ public class GameWorld {
     private final GameLoop gameLoop;
     Thread loopThread;
 
-    public GameWorld(GameSettings settings,EventBus eventBus) {
+    public GameWorld(GameSettings settings, EventBus eventBus) {
         Map tmap = null;
 
         // Init Map (we'll have to handle this better once MapLoader throws catchable exceptions)
         if (settings.mapFileName != null) {
             try {
                 tmap = MapLoader.loadMatrix(settings.mapFileName);
-                tmap.setSpawnPoint(CreateSpawnPoint.createSpawnPoint(settings.nbTeams,settings.nbWorms,tmap));
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
         }
         if (tmap == null) {
             System.out.println("Generating a new map...");
-            ConfigMap config = new ConfigMap(settings.widthMap, 4, 5, settings.floatingIsland, 17, settings.terrainType,settings.nbTeams,settings.nbWorms);
+            ConfigMap config = new ConfigMap(settings.widthMap, 4, 5, settings.floatingIsland, 17, settings.terrainType, settings.nbTeams, settings.nbWorms);
             tmap = GenerateMap.createMap(config);
-            tmap.setSpawnPoint(CreateSpawnPoint.createSpawnPoint(settings.nbTeams,settings.nbWorms,tmap));
         }
         this.map = tmap;
+        this.map.setSpawnPoint(CreateSpawnPoint.createSpawnPoint(settings.nbTeams,settings.nbWorms,tmap));
         System.out.println(this.map);
 
-        // Init EventBus
         this.bus = eventBus;
 
         // Init PhysicsEngine

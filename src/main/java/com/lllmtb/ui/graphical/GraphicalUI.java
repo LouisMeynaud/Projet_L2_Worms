@@ -1,4 +1,4 @@
-package com.lllmtb.ui.GraphicsUi;
+package com.lllmtb.ui.graphical;
 import com.lllmtb.events.EventBus;
 
 import java.awt.*;
@@ -12,19 +12,18 @@ import com.lllmtb.events.graphicsUi.ScreenHomeEvent;
 import com.lllmtb.events.graphicsUi.ScreenNewOrLoadEvent;
 import com.lllmtb.events.graphicsUi.ScreenSettingsGame;
 import com.lllmtb.ui.*;
-import com.lllmtb.ui.GraphicsUi.GamePanel.GameScreen;
-import com.lllmtb.ui.GraphicsUi.GamePanel.GameWorldPanel;
-import com.lllmtb.ui.GraphicsUi.SettingsPanel.NewOrLoadPanel;
-import com.lllmtb.ui.GraphicsUi.SettingsPanel.SettingsStartPanel;;
+import com.lllmtb.ui.graphical.GamePanel.GameScreen;
+import com.lllmtb.ui.graphical.SettingsPanel.NewOrLoadPanel;
+import com.lllmtb.ui.graphical.SettingsPanel.SettingsStartPanel;;
 
-public class WindowsUi implements  UI{
+public class GraphicalUI implements  UI{
     
     public JFrame windows;
     public EventBus eventBus;
     public CardLayout cardLayout;// le controleur de page
     public JPanel mainPanel;
     
-    public WindowsUi(EventBus eventbus){
+    public GraphicalUI(EventBus eventbus){
 
         try {
             // on cherche le "style" nimbus

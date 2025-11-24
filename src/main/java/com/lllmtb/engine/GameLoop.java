@@ -28,7 +28,7 @@ public class GameLoop implements Runnable {
         while (running) {
             long now = System.nanoTime();
             long elapsedMs = (now - last) / 1_000_000;
-            if(!isPaused){
+            if (!isPaused){
             // System.out.println("[" + String.format("%4d", acc++) + "] New tick " + elapsedMs + "ms");
             // System.out.println("Entities in the game "
             //         + world.getPhysics().getBodies().size() + " : "
@@ -40,7 +40,7 @@ public class GameLoop implements Runnable {
             // 1) process queued external events (eg. input)
             world.getBus().processQueued();
 
-            if(!isPaused){
+            if (!isPaused){
             // 2) update physics
             world.update(ticktime);
 

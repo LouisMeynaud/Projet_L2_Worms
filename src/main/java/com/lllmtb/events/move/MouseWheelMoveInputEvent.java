@@ -1,7 +1,7 @@
 package com.lllmtb.events.move;
 
 import com.lllmtb.events.Event;
-import com.lllmtb.ui.GraphicsUi.GamePanel.Direction;
+import com.lllmtb.ui.graphical.GamePanel.Direction;
 
 public class MouseWheelMoveInputEvent implements Event {
     public final Direction direction;

@@ -1,4 +1,4 @@
-package com.lllmtb.ui.GraphicsUi.SettingsPanel;
+package com.lllmtb.ui.graphical.SettingsPanel;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
