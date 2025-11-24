@@ -29,7 +29,7 @@ public class TurnTest {
 
     @Test
     public void testEnd(){
-        Team team2 = new Team("TestTeam", 2, new Position[]{new Position(0, 0)});
+        Team team2 = new Team("TestTeam", 2, new Position[]{new Position(0, 0), new Position(0,0)});
         Turn turn2 = new Turn(team2);
         Worm worm1 = turn2.getWormPlayable();
         turn2.end();

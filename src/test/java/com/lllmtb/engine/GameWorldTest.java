@@ -179,7 +179,7 @@ public class GameWorldTest {
     @Test
     void startLoop_whenAlreadyRunning() throws Exception {
         GameSettings settings = new GameSettings(0, new String[]{}, 0, false, null, false,370,LandScape.HILLY);
-         EventBus eventBus = new EventBus();
+        EventBus eventBus = new EventBus();
         GameWorld gw = new GameWorld(settings,eventBus);
 
         gw.start();
@@ -204,8 +204,9 @@ public class GameWorldTest {
 
     @Test
     void getTurnManage(){
-        GameSettings settings = new GameSettings(2, new String[]{}, 2, false, null, false);
-        GameWorld gw = new GameWorld(settings);
+        GameSettings settings = new GameSettings(0, new String[]{}, 0, false, null, false,370,LandScape.HILLY);
+        EventBus eventBus = new EventBus();
+        GameWorld gw = new GameWorld(settings, eventBus);
 
         assertNotNull(gw.getTurnManager());
     }
