@@ -11,15 +11,17 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 
 import com.lllmtb.events.EventBus;
-import com.lllmtb.events.TheEvents.ScreenGenerateMap;
-import com.lllmtb.events.TheEvents.ScreenLoadMap;
-import com.lllmtb.events.TheEvents.ScreenNewOrLoadEvent;
+import com.lllmtb.events.graphicsUi.ScreenGenerateMap;
+import com.lllmtb.events.graphicsUi.ScreenLoadMap;
+import com.lllmtb.events.graphicsUi.ScreenNewOrLoadEvent;
+import com.lllmtb.terrain.map.MapLoader;
 
 public class SettingMapPanel extends JPanel{
     public CardLayout cardLayout;
     public GenerateMapPanel generateMapPanel;
-    public LoadMapPanel loadMapPanel;
+    public PanelListeMap panelListeMap;
     public EventBus eventBus;
+    public boolean loadMap = true;
     
     public SettingMapPanel(EventBus eventBus){
         this.eventBus = eventBus;
@@ -32,12 +34,13 @@ public class SettingMapPanel extends JPanel{
         JButton loadButton = new JButton("Load Map");
         JButton generateButton = new JButton("Generate Map");
 
-        GenerateMapPanel generateMapPanel = new GenerateMapPanel();
-        this.generateMapPanel = generateMapPanel;
-        LoadMapPanel loadMapPanel = new LoadMapPanel();
-        this.loadMapPanel = loadMapPanel;
-        cardPanel.add(loadMapPanel,"loadMapPanel");
-        cardPanel.add(generateMapPanel,"generateMapPanel");
+        this.generateMapPanel = new GenerateMapPanel();
+        this.panelListeMap = new PanelListeMap(MapLoader.getListeDossiersMaps());
+        
+        
+        
+        cardPanel.add(this.panelListeMap,"panelListeMap");
+        cardPanel.add(this.generateMapPanel,"generateMapPanel");
         
 
         eventBus.subscribe(ScreenGenerateMap.class, event -> {
@@ -47,7 +50,7 @@ public class SettingMapPanel extends JPanel{
         });
 
         eventBus.subscribe(ScreenLoadMap.class, event -> {
-                cardLayout.show(cardPanel, "loadMapPanel");
+                cardLayout.show(cardPanel, "panelListeMap");
                 System.out.println("event load recuperer");
             
         });
@@ -61,10 +64,12 @@ public class SettingMapPanel extends JPanel{
 
         loadButton.addActionListener(e -> {
             eventBus.postQueued(new ScreenLoadMap());
+            this.loadMap = true;
         });
 
         generateButton.addActionListener(e -> {
             eventBus.postQueued(new ScreenGenerateMap());
+            this.loadMap = false;
         });
 
 

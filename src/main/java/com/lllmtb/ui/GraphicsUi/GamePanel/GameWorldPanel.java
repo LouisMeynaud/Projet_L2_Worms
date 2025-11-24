@@ -15,7 +15,11 @@ import javax.swing.JPanel;
 
 import com.lllmtb.engine.GameWorld;
 import com.lllmtb.events.EventBus;
-import com.lllmtb.events.TheEvents.*;
+import com.lllmtb.events.TheEvents.MoveEvent;
+import com.lllmtb.events.game.GameStateUpdatedEvent;
+import com.lllmtb.events.game.WorldCreatedEvent;
+import com.lllmtb.events.move.MouseWheelMoveInputEvent;
+import com.lllmtb.events.move.MouseWheelMoveInputEvent;
 import com.lllmtb.physics.PhysicsBody;
 import com.lllmtb.physics.Position;
 import com.lllmtb.terrain.map.Tile;
@@ -23,21 +27,20 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.Point;
 
-
 public class GameWorldPanel extends JPanel {
     public EventBus eventBus;
     public GameWorld world;
     public Tile[][] mapMatrix;
-    public  double tileSize; //sera la taille des bloc et la tailel de reference pour tout le reste. poura etre choisie
-    private double defaultTileSize = 4;
-    private Map<Tile,BufferedImage> textureMatrixMap;
-    private Map<String,BufferedImage> textureEntityMap;
+    public double tileSize; // sera la taille des bloc et la tailel de reference pour tout le reste. poura etre choisie
+    private final double defaultTileSize = 4;
+    private Map<Tile, BufferedImage> textureMatrixMap;
+    private Map<String, BufferedImage> textureEntityMap;
     private final Set<Integer> pressedKeys = new HashSet<>();
 
     private int cameraX = 0;
     private int cameraY = 0;
-    
-    public GameWorldPanel(EventBus eventBus){
+
+    public GameWorldPanel(EventBus eventBus) {
         this.eventBus = eventBus;
         setFocusable(true);
         loadTextures();
@@ -110,104 +113,95 @@ public class GameWorldPanel extends JPanel {
         addMouseListener(mouseHandler);
         addMouseWheelListener(mouseHandler);
     }
-        private void loadTextures() {
-            textureMatrixMap = new HashMap<>();
-            textureEntityMap = new HashMap<>();
+
+    private void loadTextures() {
+        textureMatrixMap = new HashMap<>();
+        textureEntityMap = new HashMap<>();
         try {
-            
+
             textureMatrixMap.put(Tile.DIRT, ImageIO.read(GameWorldPanel.class.getResource("/textures/dirt.png"))); // le / designe le dossier ressource
             textureMatrixMap.put(Tile.WATER, ImageIO.read(GameWorldPanel.class.getResource("/textures/water.png")));
             textureMatrixMap.put(Tile.AIR, ImageIO.read(GameWorldPanel.class.getResource("/textures/air.png")));
 
-            textureEntityMap.put("warm1",ImageIO.read(GameWorldPanel.class.getResource("/textures/warm.png")));
-            
+            textureEntityMap.put("warm1", ImageIO.read(GameWorldPanel.class.getResource("/textures/warm.png")));
+
         } catch (IOException e) {
             e.printStackTrace();
             System.err.println("ERREUR: Impossible de charger les textures !");
         }
-        }
+    }
 
-        public void subscribeToGameEvents(){
+    public void subscribeToGameEvents() {
 
-        
-        eventBus.subscribe(WorldCreatedEvent.class,event -> {
+        eventBus.subscribe(WorldCreatedEvent.class, event -> {
             this.world = event.getWorld();
             this.mapMatrix = this.world.getMap().getMapMatrix();
 
-            repaint(); //le premier dessins
+            repaint(); // le premier dessins
         });
         eventBus.subscribe(GameStateUpdatedEvent.class, event -> {
-        
-        repaint();
-    });
-    }
 
+            repaint();
+        });
+    }
 
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        Graphics2D g2d = (Graphics2D) g; // ceci est un "pinceau" le version graphics2d contient plus de mode par default 
+        Graphics2D g2d = (Graphics2D) g;
 
-        
-        //trouver taille tuile pour remplir la map
+        if(this.world == null){return;}
+
         double windowWidth = getWidth();
         double windowHeight = getHeight();
         double mapTilesX = world.getMap().getWidth();
         double mapTilesY = world.getMap().getHeight();
+
         double widthRatio = windowWidth / mapTilesX;
         double heightRatio = windowHeight / mapTilesY;
         double sizeToFillScreen = Math.max(widthRatio, heightRatio);
         this.tileSize = Math.max(defaultTileSize, sizeToFillScreen);
 
+        double totalMapHeightPixels = mapTilesY * this.tileSize;
+        double offScreenY = windowHeight - totalMapHeightPixels; // calcule de la partit a ne pas afficher
 
+        int drawSizeInt = (int) Math.ceil(this.tileSize); // (arrondit superieur (enleve les traits blancs)
 
-        g2d.translate(0, getHeight()); // Déplace l'origine du pinceaux en bas a gauche du jpanel
-    
-        g2d.scale(1.0, -1.0);//inverse l'axe y , quand y descend , le pinceau descend et ne monte plus (comme il le fait initialement)
-        //g2d.translate(-cameraX, -cameraY); //plutot que deplacer une camera (pas possible) on deplace le monde (dans la direction inverse ducoup)
+        for (int matrixY = 0; matrixY < mapMatrix.length; matrixY++) {
+            for (int matrixX = 0; matrixX < mapMatrix[matrixY].length; matrixX++) {
+                Tile tileType = mapMatrix[matrixY][matrixX];
+                BufferedImage texture = textureMatrixMap.get(tileType);
 
-        // Dessine la map 
-        if (mapMatrix != null) {
-            for (int y = 0; y < mapMatrix.length; y++) {
-                for (int x = 0; x < mapMatrix[y].length; x++) {
-                    Tile tileType = mapMatrix[y][x];
-                    
-                    int drawY = (world.getMap().getHeight() - 1) - y;// sert a inverser la ou l'on peint (car sinon par d'en haut donc peint a l'envers)
-                    BufferedImage texture = textureMatrixMap.get(tileType);
-                    // Calcule les coordonnées de destination en PIXELS
-                    double x1 = x * tileSize;
-                    double y1 = drawY * tileSize; // Le Y en bas (basé sur drawY)
-                    double x2 = x * tileSize + tileSize;
-                    double y2 = drawY * tileSize + tileSize; // Le Y en haut (basé sur drawY
+                int screenX = (int) (matrixX * tileSize);
+                int screenY = (int) ((matrixY * tileSize) + offScreenY);
 
-                    g2d.drawImage(texture,(int)x1,(int) y2,(int) x2,(int) y1, 0, 0,texture.getWidth(), texture.getHeight(),null); //le null est important , c'est pour l'image observer (pas besoin car les texture cahrge assez vite)
-                    
-                    }
+                if (!(screenY + drawSizeInt < 0 && screenY > windowHeight)) {
+                    g2d.drawImage(texture, screenX, screenY, drawSizeInt, drawSizeInt, null);
                 }
             }
-        BufferedImage texture = textureEntityMap.get("warm1");
-        
-        for(PhysicsBody warm:world.getPhysics().getBodies()){
-            AffineTransform tx = new AffineTransform(); // outil permetant a drawImage de prendre des double (il prend initialement des int)
-            double tailleEnPixelX = warm.getWidth() * tileSize;
-            double tailleEnPixelY = warm.getHeight() * tileSize;
 
-        
-            double scaleX = tailleEnPixelX / texture.getWidth();
-            double scaleY = tailleEnPixelY / texture.getHeight();
-            
-            // attention! toute les methode tx sont appel a l'envers (regardez pourquoi il on choisie sa et comment sa marche reelement).
-            tx.translate(warm.getPos().getX() * tileSize, warm.getPos().getY() * tileSize); 
-            tx.scale(scaleX, -scaleY); //on inverse l'image sur l'axe y
-            tx.translate(0, -texture.getHeight()); // on deplace la texture de -sa hauteur car vue qu'elle est inverser elle sera au dessus de sont point y voulu
-
-            g2d.drawImage(texture, tx, null);
         }
-        
+        BufferedImage textureWorm = textureEntityMap.get("warm1");
 
-        // On réinitialise la caméra 
-        g2d.translate(cameraX, cameraY);
+        for (PhysicsBody warm : world.getPhysics().getBodies()) {
+            double entityWidthPixels = warm.getWidth() * tileSize;
+            double entityHeightPixels = warm.getHeight() * tileSize;
+
+            double xEntityPosition = warm.getPos().getX() * tileSize;
+            double yEntityPosition = warm.getPos().getY() * tileSize;
+
+            double yEntityScreenPosition = totalMapHeightPixels - yEntityPosition - entityHeightPixels;
+
+            double xEntityScreenPosition = xEntityPosition;
+            double screenY = yEntityScreenPosition + offScreenY;
+
+            AffineTransform tx = new AffineTransform();
+            tx.translate(xEntityScreenPosition, screenY);
+            double scaleX = entityWidthPixels / textureWorm.getWidth();
+            double scaleY = entityHeightPixels / textureWorm.getHeight();
+            tx.scale(scaleX, scaleY);
+            g2d.drawImage(textureWorm, tx, null);
+        }
 
     }
-    }
-   
+}

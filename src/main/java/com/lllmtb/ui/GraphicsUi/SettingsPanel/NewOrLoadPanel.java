@@ -3,8 +3,8 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 
 import com.lllmtb.events.EventBus;
-import com.lllmtb.events.TheEvents.ScreenHomeEvent;
-import com.lllmtb.events.TheEvents.ScreenSettingsGame;
+import com.lllmtb.events.graphicsUi.ScreenHomeEvent;
+import com.lllmtb.events.graphicsUi.ScreenSettingsGame;
 
 public class NewOrLoadPanel extends  JPanel {
     

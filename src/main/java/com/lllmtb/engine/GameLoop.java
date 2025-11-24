@@ -1,6 +1,6 @@
 package com.lllmtb.engine;
 
-import com.lllmtb.events.TheEvents.GamePauseEvent;
+import com.lllmtb.events.game.GamePauseEvent;
 import com.lllmtb.physics.PhysicsBody;
 
 import java.util.Arrays;
@@ -42,7 +42,7 @@ public class GameLoop implements Runnable {
 
             if(!isPaused){
             // 2) update physics
-            world.update(ticktime);  // will have to be adapted to take in (long elapsedMs) = dt which PhysicsBody can use instead of tickTime
+            world.update(ticktime);
 
             // 3) process events generated during physics (collisions, explosions...)
             world.getBus().processQueued();}
