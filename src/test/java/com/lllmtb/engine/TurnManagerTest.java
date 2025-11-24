@@ -50,7 +50,7 @@ public class TurnManagerTest {
         });
         gw.getBus().postQueued(new TurnEndEvent());
         try {
-            Thread.sleep(2000);
+            Thread.sleep(1000);
         } catch (InterruptedException ignored) {}
         assertTrue(event1.get());
         assertTrue(event2.get());
@@ -76,7 +76,7 @@ public class TurnManagerTest {
             eventEnd.set(true);});
         gw.getBus().postQueued(new TurnEndEvent());
         try {
-            Thread.sleep(2000);
+            Thread.sleep(200);
         } catch (InterruptedException ignored) {}
         assertTrue(eventEnd.get());
 
