@@ -15,4 +15,8 @@ public class MouseInputEvent implements Event {
         System.out.println("click bouton " + this.bouton + ": sec= " + this.time);
     }
 
+    public Position getPos() { return pos; }
+    public double getTime() { return time; }
+    public Direction getBouton() { return bouton; }
+
 }

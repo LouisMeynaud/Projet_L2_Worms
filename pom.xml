@@ -119,9 +119,6 @@
                         <exclude>com/lllmtb/ui/GraphicsUi/**/*</exclude>
                         <exclude>com/lllmtb/engine/GameLoop.class</exclude>
                         <exclude>com/lllmtb/physics/Collision.class</exclude> <!-- enlever une fois la nouvelle implementation de colision faite !-->
-                        <exclude>com/lllmtb/events/move/*</exclude> <!-- enlever une fois le probleme de package d'event regler !-->
-                         <exclude>com/lllmtb/events/graphicsUi/MoveEvent.class</exclude> <!-- enlever une fois le probleme de package d'event regler !-->
-                         <exclude>com/lllmtb/events/game/MapUpdateEvent.class</exclude> <!-- enlever une fois le probleme de package d'event regler !-->
 
                     </excludes>
                 </configuration>

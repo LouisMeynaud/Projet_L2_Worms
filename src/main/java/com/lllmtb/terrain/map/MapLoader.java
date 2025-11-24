@@ -56,16 +56,17 @@ public class MapLoader {
 
     
     public static File[] getListeDossiersMaps() {
-    String cheminDossierMaps = "src/main/resources/map";
-    File dossierRacine = new File(cheminDossierMaps);
-    
-    if (!dossierRacine.exists() || !dossierRacine.isDirectory()) {
-        System.err.println("Erreur le chemin n'est pas bon : " + dossierRacine.getAbsolutePath());
-        return new File[0];
+        String cheminDossierMaps = "src/main/resources/map";
+        return getListeDossiers(new File(cheminDossierMaps));
     }
 
-    
-    File[] sousDossiers = dossierRacine.listFiles(f -> MapLoader.predicatEstUnDossier(f)); // ListeFiles attend un predicat 
+    public static File[] getListeDossiers(File dossierRacine) {
+        if (!dossierRacine.exists() || !dossierRacine.isDirectory()) {
+            System.err.println("Erreur le chemin n'est pas bon : " + dossierRacine.getAbsolutePath());
+            return new File[0];
+        }
+        File[] sousDossiers = dossierRacine.listFiles(f -> MapLoader.predicatEstUnDossier(f));
+        
         if (sousDossiers == null) {
             return new File[0];
         }

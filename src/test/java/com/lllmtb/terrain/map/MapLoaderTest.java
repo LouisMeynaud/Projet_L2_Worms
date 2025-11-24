@@ -10,6 +10,7 @@ import java.util.Arrays;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import com.lllmtb.terrain.map.MapLoader;
 
 public class MapLoaderTest {
     public static String mapText;
@@ -79,6 +80,28 @@ public class MapLoaderTest {
         } finally {
             dossierTest.delete();
         }
+    }
+
+    @Test
+    void testGetListeDossiers_AvecDossierInexistant() {
+        File dossierFantome = new File("src/main/resources/DossierQuiNExistePasDuTout");
+        
+        
+        File[] resultats = MapLoader.getListeDossiers(dossierFantome);
+        
+        assertEquals(0, resultats.length, "Doit renvoyer vide si le dossier n'existe pas");
+    }
+
+    @Test
+    void testGetListeDossiers_AvecUnFichier() throws IOException {
+        
+        File fichierTemp = File.createTempFile("test", ".txt");
+        fichierTemp.deleteOnExit();
+
+       
+        File[] resultats = MapLoader.getListeDossiers(fichierTemp);
+        
+        assertEquals(0, resultats.length, "Doit renvoyer vide si on donne un fichier au lieu d'un dossier");
     }
 
 
