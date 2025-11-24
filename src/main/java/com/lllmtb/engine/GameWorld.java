@@ -4,7 +4,6 @@ import com.lllmtb.engine.commands.GameCommand;
 import com.lllmtb.events.EventBus;
 import com.lllmtb.model.entity.Entity;
 import com.lllmtb.model.entity.team.Team;
-import com.lllmtb.model.item.tool.UseParams;
 import com.lllmtb.physics.PhysicsEngine;
 import com.lllmtb.physics.Position;
 import com.lllmtb.terrain.generation.GenerateMap;

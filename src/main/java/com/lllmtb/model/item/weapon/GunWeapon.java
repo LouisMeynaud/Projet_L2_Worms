@@ -3,7 +3,6 @@ package com.lllmtb.model.item.weapon;
 import com.lllmtb.engine.commands.GameCommand;
 import com.lllmtb.engine.commands.RegisterProjectileCommand;
 import com.lllmtb.model.entity.projectile.BulletProjectile;
-import com.lllmtb.model.entity.projectile.Projectile;
 import org.eclipse.jdt.annotation.NonNull;
 
 import java.util.List;
