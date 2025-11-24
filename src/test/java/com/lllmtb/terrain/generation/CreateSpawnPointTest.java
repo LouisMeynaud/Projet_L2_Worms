@@ -11,10 +11,10 @@ public class CreateSpawnPointTest {
     @Test
     public void goodspawnPointtest() {
         
-        int nbVers = 30;
+        int nbVers = 6;
         int nbTeams= 1;
-        int waterHeight = 5;
-        ConfigMap configtest = new ConfigMap(60, waterHeight, 5, false, 0, LandScape.HILLY,nbTeams,nbVers);
+        int waterHeight = 2;
+        ConfigMap configtest = new ConfigMap(100, waterHeight, 5, false, 0, LandScape.HILLY,nbTeams,nbVers);
         Map m =GenerateMap.createMap(configtest);
         m.setSpawnPoint(CreateSpawnPoint.createSpawnPoint(nbTeams,nbVers,m));
         assertEquals(m.getSpawnPoint().length, nbTeams);

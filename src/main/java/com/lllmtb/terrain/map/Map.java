@@ -18,6 +18,7 @@ public class Map {
     private String filesTxt;
     private Position[][] spawnPoint;
     private int[] hightLine;
+    private int heightWater =0; //devra etre changer
 
     public Map(int height, int width, String filesTxt) {
         this.mapMatrix = new Tile[height][width];
@@ -59,6 +60,7 @@ public class Map {
     public void setHightLine(int[] hightLine) {
         this.hightLine = hightLine;
     }
+    
 
     @Override
     public String toString() {
@@ -93,7 +95,14 @@ public class Map {
      */
     public Tile getTile(Position position) {
         Position posMatrix = this.cooMapToCooMatrix(position);
-        return this.mapMatrix[(int) posMatrix.getY()][(int) posMatrix.getX()]; //attention int arrondit a l'entier inf penser a ajouter des -1/+1 dans le code utilisant ceci
+        int x = (int) posMatrix.getX();
+        int y = (int) posMatrix.getY();
+
+        if (y < 0 || y >= this.mapMatrix.length || x < 0 || x >= this.mapMatrix[0].length) {
+            return Tile.AIR; 
+        }
+
+        return this.mapMatrix[y][x]; 
     }
 
     /**
@@ -140,6 +149,10 @@ public class Map {
 
     public int[] getHightLine() {
         return hightLine;
+    }
+
+    public int getHeightWater() {
+        return heightWater;
     }
 
 }

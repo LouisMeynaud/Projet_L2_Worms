@@ -6,21 +6,23 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 public class SaveMap {
- public void saveMap(Map map) {
-    try {
+//  public static boolean saveMap(Map map) {
+//     try {
         
-        Path path = Paths.get("src/main/resources/map");
-        Path folderPath = path.resolve(map.getFilesTxt());//concataine
-        Files.createDirectories(folderPath);
-        Path filePath = folderPath.resolve("map.txt");
-        Files.writeString(filePath, mapToString(map));
+//         Path path = Paths.get("src/main/resources/map");
+//         Path folderPath = path.resolve(map.getFilesTxt());//concataine
+//         Files.createDirectories(folderPath);
+//         Path filePath = folderPath.resolve("map.txt");
+//         Files.writeString(filePath, mapToString(map));
 
-        System.out.println("Succès : Map sauvegardée dans " + filePath);
-    } catch (IOException e) {
-        System.err.println("Erreur lors de la sauvegarde : " + e.getMessage());
-        e.printStackTrace();
-    }
-}
+//         System.out.println("Succès : Map sauvegardée dans " + filePath);
+//         return true;
+//     } catch (IOException e) {
+//         System.err.println("Erreur lors de la sauvegarde : " + e.getMessage());
+//         e.printStackTrace();
+//         return false;
+//     }
+// }
 
     protected static String mapToString(Map m) {
         Tile[][] mMapMatrix = m.getMapMatrix();
@@ -45,7 +47,7 @@ public class SaveMap {
     }
 
     //methode demandant le fichie d'enregistrement de save quand une map est crée
-    public static String newMapSaveFile() {
+     public static String newMapSaveFile() {
         // boolean existe = false;
         // String files;
         // do {
@@ -66,7 +68,7 @@ public class SaveMap {
         //     }
         // } while (existe);
         // return files;
-        return "testMap.txt";
+         return "testMap.txt";
 
-    }
+     }
 }

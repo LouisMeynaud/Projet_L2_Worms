@@ -26,8 +26,10 @@ public class CreateSpawnPoint {
                     exist = true;
                 }
             }
-            Position sousNouvellePos = new Position(nouvellePos.getX(),nouvellePos.getY()-1);
-            if(!exist && (!map.isTileAt(sousNouvellePos, Tile.WATER))){
+            int waterLevel = map.getHeightWater(); 
+            Position sousNouvellePos = new Position(nouvellePos.getX(), nouvellePos.getY() - 1);
+            if (!exist && !map.isTileAt(sousNouvellePos, Tile.WATER) && nouvellePos.getY() > waterLevel) { 
+                
                 spawnPointPos[i] = nouvellePos;
                 i++;
             }
