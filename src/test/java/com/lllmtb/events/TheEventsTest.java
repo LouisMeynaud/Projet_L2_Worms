@@ -10,6 +10,7 @@ import com.lllmtb.engine.GameWorld;
 import com.lllmtb.events.graphicsUi.*;
 import com.lllmtb.events.game.GamePauseEvent;
 import com.lllmtb.events.game.GameStateUpdatedEvent;
+//import com.lllmtb.events.game.MapUpdateEvent;
 import com.lllmtb.events.game.StartGameEvent;
 import com.lllmtb.events.game.WorldCreatedEvent;
 
@@ -52,6 +53,7 @@ public class TheEventsTest {
         eventWithoutArgument(new ScreenLoadMap());
         eventWithoutArgument(new ScreenNewOrLoadEvent());
         eventWithoutArgument(new ScreenSettingsGame());
+        //eventWithoutArgument(new MapUpdateEvent());
     }
 
   
