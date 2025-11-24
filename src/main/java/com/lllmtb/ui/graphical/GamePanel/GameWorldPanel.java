@@ -200,9 +200,9 @@ public class GameWorldPanel extends JPanel {
         textureEntityMap = new HashMap<>();
         try {
 
-            textureMatrixMap.put(Tile.DIRT, ImageIO.read(GameWorldPanel.class.getResource("/textures/dirt.png"))); // le / designe le dossier ressource
-            textureMatrixMap.put(Tile.WATER, ImageIO.read(GameWorldPanel.class.getResource("/textures/water.png")));
-            textureMatrixMap.put(Tile.AIR, ImageIO.read(GameWorldPanel.class.getResource("/textures/air.png")));
+            textureMatrixMap.put(Tile.DIRT, ImageIO.read(GameWorldPanel.class.getResource("/sprites/block/Dirt.png"))); // le / designe le dossier ressource
+            textureMatrixMap.put(Tile.WATER, ImageIO.read(GameWorldPanel.class.getResource("/sprites/block/Water.png")));
+            textureMatrixMap.put(Tile.AIR, ImageIO.read(GameWorldPanel.class.getResource("/sprites/block/Air.png")));
 
             textureEntityMap.put("warm1", ImageIO.read(GameWorldPanel.class.getResource("/textures/warm.png")));
 
