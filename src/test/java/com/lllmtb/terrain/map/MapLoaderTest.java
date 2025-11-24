@@ -2,6 +2,7 @@ package com.lllmtb.terrain.map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -51,4 +52,34 @@ public class MapLoaderTest {
         m = MapLoader.loadMatrix("mapinexistante");
         assertEquals(m, null);;
     }
+
+    @Test
+    public void testGetListeDossiersMaps_Fonctionne() {
+        File dossierRacine = new File("src/main/resources/map");
+        if (!dossierRacine.exists()) {
+            dossierRacine.mkdirs();
+        }
+        File dossierTest = new File(dossierRacine, "MapTestUnit");
+        dossierTest.mkdir(); 
+
+        try {
+            File[] resultats = MapLoader.getListeDossiersMaps();
+
+            assertNotNull(resultats, "Ne doit pas retourner null");
+            
+            boolean aTrouveMonDossier = false;
+            for (File f : resultats) {
+                if (f.getName().equals("MapTestUnit")) {
+                    aTrouveMonDossier = true;
+                    break;
+                }
+            }
+            assertTrue(aTrouveMonDossier, "La méthode aurait dû trouver le dossier 'MapTestUnit'");
+
+        } finally {
+            dossierTest.delete();
+        }
+    }
+
+
 }
