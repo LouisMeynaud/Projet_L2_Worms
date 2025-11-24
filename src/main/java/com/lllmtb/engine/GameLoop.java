@@ -20,18 +20,18 @@ public class GameLoop implements Runnable {
         while (running) {
             long now = System.nanoTime();
             long elapsedMs = (now - last) / 1_000_000;
-            System.out.println("[" + String.format("%4d", acc++) + "] New tick " + elapsedMs + "ms");
-            System.out.println("Entities in the game "
-                    + world.getPhysics().getBodies().size() + " : "
-                    + Arrays.toString(world.getPhysics().getBodies().stream().map(PhysicsBody::getEntity).toArray()));
-            System.out.println("Bodies : " + Arrays.toString(world.getPhysics().getBodies().toArray()));
+            // System.out.println("[" + String.format("%4d", acc++) + "] New tick " + elapsedMs + "ms");
+            // System.out.println("Entities in the game "
+            //         + world.getPhysics().getBodies().size() + " : "
+            //         + Arrays.toString(world.getPhysics().getBodies().stream().map(PhysicsBody::getEntity).toArray()));
+            // System.out.println("Bodies : " + Arrays.toString(world.getPhysics().getBodies().toArray()));
             last = now;
 
             // 1) process queued external events (eg. input)
             world.getBus().processQueued();
 
-            // 2) update physics
-            world.getPhysics().next(ticktime);
+            // 2) update physics + turnManager
+            world.update(ticktime);
 
             // 3) process events generated during physics (collisions, explosions...)
             world.getBus().processQueued();

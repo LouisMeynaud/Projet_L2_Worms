@@ -20,7 +20,9 @@ public class GameWorld {
     private final EventBus bus;
     private final PhysicsEngine physics;
     private final List<Team> teams;
+    private int indexTeam;
     private final GameLoop gameLoop;
+    private final TurnManager turnManager;
     Thread loopThread;
 
     public GameWorld(GameSettings settings) {
@@ -65,6 +67,9 @@ public class GameWorld {
         // Init GameLoop
         this.gameLoop = new GameLoop(this);
         System.out.println("Game initialised");
+
+        //Init TurnManager
+        this.turnManager = new TurnManager(this);
     }
 
     public Map getMap() {
@@ -83,11 +88,18 @@ public class GameWorld {
         return teams;
     }
 
+    public TurnManager getTurnManager(){
+        return this.turnManager;
+    }
+
     public void start() {
         if (loopThread != null && loopThread.isAlive()) return;
         System.out.println("Starting the game loop...");
         loopThread = new Thread(gameLoop, "gameloop");
+        this.nextTeamTurn();
         loopThread.start();
+
+
     }
 
     public void stop() {
@@ -105,5 +117,15 @@ public class GameWorld {
 
     public void registerEntity(@NonNull Entity e) {
         physics.add(Objects.requireNonNull(e).getBody());
+    }
+
+    public void update(double ticktime){
+        this.physics.next(ticktime);
+        this.turnManager.updateTurn();
+    }
+
+    public void nextTeamTurn() {
+            this.turnManager.startTurn(teams.get(indexTeam++));
+            if(indexTeam >= teams.size())indexTeam = 0;
     }
 }
