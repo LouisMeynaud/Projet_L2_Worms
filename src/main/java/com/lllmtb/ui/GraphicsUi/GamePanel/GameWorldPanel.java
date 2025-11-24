@@ -15,30 +15,42 @@ import javax.swing.JPanel;
 
 import com.lllmtb.engine.GameWorld;
 import com.lllmtb.events.EventBus;
-import com.lllmtb.events.TheEvents.MoveEvent;
+import com.lllmtb.events.graphicsUi.*;
 import com.lllmtb.events.game.GameStateUpdatedEvent;
 import com.lllmtb.events.game.WorldCreatedEvent;
-import com.lllmtb.events.move.MouseWheelMoveInputEvent;
+import com.lllmtb.events.game.MapUpdateEvent; 
+import com.lllmtb.events.move.MouseInputEvent;
 import com.lllmtb.events.move.MouseWheelMoveInputEvent;
 import com.lllmtb.physics.PhysicsBody;
 import com.lllmtb.physics.Position;
 import com.lllmtb.terrain.map.Tile;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.Point;
 
 public class GameWorldPanel extends JPanel {
     public EventBus eventBus;
     public GameWorld world;
     public Tile[][] mapMatrix;
-    public double tileSize; // sera la taille des bloc et la tailel de reference pour tout le reste. poura etre choisie
+    public double tileSize;
     private final double defaultTileSize = 4;
     private Map<Tile, BufferedImage> textureMatrixMap;
     private Map<String, BufferedImage> textureEntityMap;
     private final Set<Integer> pressedKeys = new HashSet<>();
 
-    private int cameraX = 0;
-    private int cameraY = 0;
+   
+    private BufferedImage mapCache = null; 
+    private int lastWindowWidth = -1;
+    private int lastWindowHeight = -1;
+
+    
+    private boolean isCameraMode = false;
+    private boolean hasDraggedCamera = false;
+    private double currentZoom = 1.0;     
+    private double zoomSpeed = 0.1;
+    
+    private double cameraOffsetX = 0;
+    private double cameraOffsetY = 0;
+    private int lastMouseX = 0; 
+    private int lastMouseY = 0;
+    
 
     public GameWorldPanel(EventBus eventBus) {
         this.eventBus = eventBus;
@@ -82,6 +94,13 @@ public class GameWorldPanel extends JPanel {
             @Override
             public void mousePressed(MouseEvent e) {
                 pressStartTime = System.currentTimeMillis();
+                lastMouseX = e.getX();
+                lastMouseY = e.getY();
+
+                if (e.getButton() == MouseEvent.BUTTON3) {
+                    isCameraMode = true;
+                    hasDraggedCamera = false;
+                }
             }
 
             @Override
@@ -90,30 +109,92 @@ public class GameWorldPanel extends JPanel {
                 long duration = System.currentTimeMillis() - pressStartTime;
                 double worldX = e.getX();
                 double worldY = e.getY();
-                if (type == 1){
-                eventBus.postQueued(new MouseInputEvent(new Position(worldX, worldY),duration, Direction.Left));
+                if (type == MouseEvent.BUTTON1) {
+                    eventBus.postQueued(new MouseInputEvent(new Position(worldX, worldY),duration, Direction.Left));
                 }
-                if (type == 3){
-                    eventBus.postQueued(new MouseInputEvent(new Position(worldX, worldY),duration, Direction.Right));
+                
+                if (type == MouseEvent.BUTTON3) {
+                    isCameraMode = false;
+                    if (!hasDraggedCamera) {
+                        eventBus.postQueued(new MouseInputEvent(new Position(worldX, worldY),duration, Direction.Right));
+                    }
                 }
             }
+
+            @Override
+            public void mouseDragged(MouseEvent e) {
+                if (isCameraMode) {
+                    int currentX = e.getX();
+                    int currentY = e.getY();
+
+                    double dx = currentX - lastMouseX;
+                    double dy = currentY - lastMouseY;
+
+                    
+                        hasDraggedCamera = true;
+                        cameraOffsetX += dx;
+                        cameraOffsetY += dy;
+                        lastMouseX = currentX;
+                        lastMouseY = currentY;
+
+                        checkCameraBounds(); 
+                        repaint();
+                    
+                }
+            }
+
             @Override
             public void mouseWheelMoved(MouseWheelEvent e) {
-                int rotation = e.getWheelRotation();
-                if (rotation < 0) {
+                int rotation = e.getWheelRotation(); 
+
+                if (isCameraMode) {
+                    if (rotation < 0) currentZoom += zoomSpeed; 
+                    else currentZoom -= zoomSpeed; 
+                    
+                    checkCameraBounds(); 
+                    repaint(); 
+                } else {
+                    if (rotation < 0) {
                     eventBus.postQueued(new MouseWheelMoveInputEvent(Direction.Down));
                 }
                 if (rotation > 0) {
                     eventBus.postQueued(new MouseWheelMoveInputEvent(Direction.Up));
                 }
+                }
             }
-
         };
 
         addMouseListener(mouseHandler);
         addMouseWheelListener(mouseHandler);
+        addMouseMotionListener(mouseHandler); 
+        
     }
 
+
+    private void checkCameraBounds() {
+        double windowWidth = getWidth();
+        double windowHeight = getHeight();
+
+        //limite zoom
+        if (currentZoom < 1.0) {
+            currentZoom = 1.0;
+        }
+        if (currentZoom > 5.0) {
+            currentZoom = 5.0;
+        }
+        
+        double limitX = (windowWidth / 2.0) * (currentZoom - 1);
+        double limitY = (windowHeight / 2.0) * (currentZoom - 1);
+
+        
+        if (cameraOffsetX > limitX) cameraOffsetX = limitX;
+        if (cameraOffsetX < -limitX) cameraOffsetX = -limitX;
+
+        if (cameraOffsetY > limitY) cameraOffsetY = limitY;
+        if (cameraOffsetY < -limitY) cameraOffsetY = -limitY;
+    }
+
+   
     private void loadTextures() {
         textureMatrixMap = new HashMap<>();
         textureEntityMap = new HashMap<>();
@@ -136,24 +217,24 @@ public class GameWorldPanel extends JPanel {
         eventBus.subscribe(WorldCreatedEvent.class, event -> {
             this.world = event.getWorld();
             this.mapMatrix = this.world.getMap().getMapMatrix();
-
-            repaint(); // le premier dessins
+            this.mapCache = null; //on efface l'encienne image
+            repaint(); 
+        });
+        eventBus.subscribe(MapUpdateEvent.class, event -> {
+            this.mapMatrix = this.world.getMap().getMapMatrix();
+            this.mapCache = null; 
+            repaint();
         });
         eventBus.subscribe(GameStateUpdatedEvent.class, event -> {
-
             repaint();
         });
     }
 
-    @Override
-    protected void paintComponent(Graphics g) {
-        super.paintComponent(g);
-        Graphics2D g2d = (Graphics2D) g;
+    private void updateMapCache(int windowWidth, int windowHeight) {
 
-        if(this.world == null){return;}
+        mapCache = new BufferedImage(windowWidth, windowHeight, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g2d = mapCache.createGraphics(); //cree un crayon dans mapCache
 
-        double windowWidth = getWidth();
-        double windowHeight = getHeight();
         double mapTilesX = world.getMap().getWidth();
         double mapTilesY = world.getMap().getHeight();
 
@@ -162,46 +243,88 @@ public class GameWorldPanel extends JPanel {
         double sizeToFillScreen = Math.max(widthRatio, heightRatio);
         this.tileSize = Math.max(defaultTileSize, sizeToFillScreen);
 
+        // On garde la hauteur totale pour aligner le bas de la map au bas de l'écran
         double totalMapHeightPixels = mapTilesY * this.tileSize;
-        double offScreenY = windowHeight - totalMapHeightPixels; // calcule de la partit a ne pas afficher
+        double offScreenY = windowHeight - totalMapHeightPixels; 
 
-        int drawSizeInt = (int) Math.ceil(this.tileSize); // (arrondit superieur (enleve les traits blancs)
+        int drawSizeInt = (int) Math.ceil(this.tileSize);
+        g2d.fillRect(0, 0, windowWidth, windowHeight);
 
-        for (int matrixY = 0; matrixY < mapMatrix.length; matrixY++) {
-            for (int matrixX = 0; matrixX < mapMatrix[matrixY].length; matrixX++) {
-                Tile tileType = mapMatrix[matrixY][matrixX];
+        for (int y = 0; y < mapMatrix.length; y++) {
+            for (int x = 0; x < mapMatrix[y].length; x++) {
+                Tile tileType = mapMatrix[y][x];
+                
                 BufferedImage texture = textureMatrixMap.get(tileType);
-
-                int screenX = (int) (matrixX * tileSize);
-                int screenY = (int) ((matrixY * tileSize) + offScreenY);
-
-                if (!(screenY + drawSizeInt < 0 && screenY > windowHeight)) {
+                if (texture != null) {
+                    int screenX = (int) (x * tileSize);
+                    int screenY = (int) ((y * tileSize) + offScreenY);
                     g2d.drawImage(texture, screenX, screenY, drawSizeInt, drawSizeInt, null);
+                    
                 }
             }
-
         }
+    }
+
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g); //efface l'ecran
+
+        if (this.world == null) { return; }
+
+        int currentWidth = getWidth();//largeur fenetre
+        int currentHeight = getHeight();
+
+        if (mapCache == null) {//si on change la taille de la fenetre alors on redessine la carte 
+            updateMapCache(currentWidth, currentHeight);
+            lastWindowWidth = currentWidth;
+            lastWindowHeight = currentHeight;
+        }
+
+        Graphics2D g2d = (Graphics2D) g; // pinceau plus puissant avec les translate et les zoom
+        AffineTransform oldTransform = g2d.getTransform(); //sauvegarde l'etat initial du pinceaux , sans translate ou autre
+
+        g2d.translate(cameraOffsetX, cameraOffsetY);//decalle le pinceau en fonction de la position camera (si negatif le dessin est deplacer vers la gauche)
+        
+        //pour le zoom , on deplace le pinceaux au milieu , zoom/dezoom(ver le milieu) puis remet le pinceau au bon endroit
+        g2d.translate(currentWidth / 2.0, currentHeight / 2.0);
+        g2d.scale(currentZoom, currentZoom);
+        g2d.translate(-currentWidth / 2.0, -currentHeight / 2.0);
+
+        
+        //on dessine
+        if (mapCache != null) {
+            g2d.drawImage(mapCache, 0, 0, null);
+        }
+
+        
+        
         BufferedImage textureWorm = textureEntityMap.get("warm1");
+        double hauteurMapPixels = world.getMap().getHeight() * this.tileSize;
+        double videEnHaut = currentHeight - hauteurMapPixels;
 
-        for (PhysicsBody warm : world.getPhysics().getBodies()) {
-            double entityWidthPixels = warm.getWidth() * tileSize;
-            double entityHeightPixels = warm.getHeight() * tileSize;
+        if (world.getPhysics() != null && world.getPhysics().getBodies() != null) {
+            for (PhysicsBody warm : world.getPhysics().getBodies()) {
+                double largeurVerPx = warm.getWidth() * tileSize;
+                double hauteurVerPx = warm.getHeight() * tileSize;
+                
+                double xEcran = warm.getPos().getX() * tileSize;
+                double yPhysique = warm.getPos().getY() * tileSize;
+                double yInverse = hauteurMapPixels - yPhysique - hauteurVerPx;// -hauteurVerPx car dessin commence en haut a gauche
 
-            double xEntityPosition = warm.getPos().getX() * tileSize;
-            double yEntityPosition = warm.getPos().getY() * tileSize;
+                double yEcran = yInverse + videEnHaut;//ajout du decallage pour s'alligner
 
-            double yEntityScreenPosition = totalMapHeightPixels - yEntityPosition - entityHeightPixels;
-
-            double xEntityScreenPosition = xEntityPosition;
-            double screenY = yEntityScreenPosition + offScreenY;
-
-            AffineTransform tx = new AffineTransform();
-            tx.translate(xEntityScreenPosition, screenY);
-            double scaleX = entityWidthPixels / textureWorm.getWidth();
-            double scaleY = entityHeightPixels / textureWorm.getHeight();
-            tx.scale(scaleX, scaleY);
-            g2d.drawImage(textureWorm, tx, null);
+                
+                AffineTransform tx = new AffineTransform();
+                tx.translate(xEcran, yEcran); // On place le crayon
+                
+                //scale l'image du worms pour qu'elle soit a la bonne taille.
+                double echelleX = largeurVerPx / textureWorm.getWidth();
+                double echelleY = hauteurVerPx / textureWorm.getHeight();
+                tx.scale(echelleX, echelleY);
+                g2d.drawImage(textureWorm, tx, null);
+            }
         }
 
+        g2d.setTransform(oldTransform);
     }
 }

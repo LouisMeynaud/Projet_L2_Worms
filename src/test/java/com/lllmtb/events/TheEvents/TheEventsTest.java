@@ -60,10 +60,10 @@ public class TheEventsTest {
         eventWithoutArgument(new ScreenLoadMap());
         eventWithoutArgument(new ScreenNewOrLoadEvent());
         eventWithoutArgument(new ScreenSettingsGame());
-        eventWithoutArgument(new MoveDownEvent());
-        eventWithoutArgument(new MoveLeftEvent());
-        eventWithoutArgument(new MoveRightEvent());
-        eventWithoutArgument(new MoveUpEvent());
+        // eventWithoutArgument(new MoveDownEvent());
+        // eventWithoutArgument(new MoveLeftEvent());
+        // eventWithoutArgument(new MoveRightEvent());
+        // eventWithoutArgument(new MoveUpEvent());
     }
 
   

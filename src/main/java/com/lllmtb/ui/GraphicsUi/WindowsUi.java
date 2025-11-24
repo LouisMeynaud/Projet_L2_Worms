@@ -45,6 +45,7 @@ public class WindowsUi implements  UI{
         windows.setTitle("Worms-MI4");
         windows.setExtendedState(JFrame.MAXIMIZED_BOTH);//met la fenetre a la taille maximal de l'ecran
         windows.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        windows.setResizable(false);
 
         cardLayout = new CardLayout();
         mainPanel = new JPanel(cardLayout);
