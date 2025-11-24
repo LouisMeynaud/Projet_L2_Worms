@@ -40,13 +40,13 @@ public class Collision {
         /**
          * Constructor of impact when there is a collision
          * @param ti the {@code double} which represents the time of impact, between {@code 0.0} and {@code 1.0}.
-         * @param finalPos the {@link Position} at the end of the tick, at the point of collision.
+         * @param Pos the {@link Position} at the end of the tick, at the point of collision.
          * @param normal the normal {@link Vector} of the hit structure.
          * @param hitBody the {@link PhysicsBody} of the collided entity ({@code null} if it's the map).
          */
-        public Impact(double ti, Position finalPos, Vector normal, PhysicsBody hitBody) {
+        public Impact(double ti, Position Pos, Vector normal, PhysicsBody hitBody) {
             this.hitBody = hitBody;
-            this.collisionPos = finalPos;
+            this.collisionPos = Pos;
             this.ti = ti;
             this.normal = normal;
             this.collided = true;
@@ -67,6 +67,8 @@ public class Collision {
      * <p>
      * Simulates the displacement of a {@link PhysicsBody} based on a vector to determine
      * when and where will be the first collision if there is one
+     * Worms are rectangles with a ratio of height 2 / width 1 and others bodies are squares.
+     * So, to test the collision with a worm, we make two circles and we test them.
      * </p>
      * @param body the {@link PhysicsBody} in movement
      * @param endPos the final {@link Position} of {@code body} without collision.
@@ -75,19 +77,57 @@ public class Collision {
     public static Impact move(PhysicsBody body, Position endPos) {
         Impact finalImpact = new Impact(endPos);
 
-        // Entity-Map Test: searches for the earliest impact time
-        Impact mapImpact = testSweptCircleTile(body, endPos);
-        if (mapImpact.collided && mapImpact.ti < finalImpact.ti) {
-            finalImpact = mapImpact;
-        }
-
-        // Entity-Entity Test: iterates over all other bodies to find the earliest impact time
-        for (PhysicsBody other : bodies) {
-            if (other != body) {
-                if (!(body.getEntity() instanceof Worm && other.getEntity() instanceof Worm)) {
-                    Impact bodyImpact = testSweptCircleCircle(body, other, endPos);
-                    if (bodyImpact.collided && bodyImpact.ti < finalImpact.ti) {
+        // if the body is a worm
+        if (body.getEntity() instanceof Worm) {
+            // Calculation of the two circles radius
+            double radius = body.getWidth()/2;
+            Position pos = new Position(body.getPos().getX() + 1.0, body.getPos().getY() + 1.0);
+            // test collision for the two circles of the worm
+            Impact mapImpact1 = testSweptCircleTile(body, body.getPos(), radius, endPos);
+            Impact mapImpact2 = testSweptCircleTile(body, pos, radius, endPos);
+            if (mapImpact1.ti < finalImpact.ti) {
+                finalImpact = mapImpact1;
+            }
+            if (mapImpact2.ti < finalImpact.ti) {
+                finalImpact = mapImpact2;
+            }
+            // test with other bodies on the map without other worms
+            for (PhysicsBody other : bodies) {
+                if ((body != other) && !(other.getEntity() instanceof Worm)) {
+                    double radiusOther = other.getHeight()/2;
+                    Impact bodyImpact = testSweptCircleCircle(body, body.getPos(), radius, other, other.getPos(), radiusOther, endPos);
+                    if (bodyImpact.ti < finalImpact.ti) {
                         finalImpact = bodyImpact;
+                    }
+                    Impact bodyImpact2 = testSweptCircleCircle(body, pos, radius, other, other.getPos(), radiusOther, endPos);
+                    if (bodyImpact2.ti < finalImpact.ti) {
+                        finalImpact = bodyImpact2;
+                    }
+                }
+            }
+        } else {
+            // if the body is not a worm
+            double radius = body.getHeight()/2;
+            // Entity-Map Test: searches for the earliest impact time
+            Impact mapImpact = testSweptCircleTile(body, body.getPos(), radius, endPos);
+            if (mapImpact.collided && mapImpact.ti < finalImpact.ti) {
+                finalImpact = mapImpact;
+            }
+
+            // Entity-Entity Test: iterates over all other bodies to find the earliest impact time
+            for (PhysicsBody other : bodies) {
+                if (other != body) {
+                    double radiusOther = other.getWidth()/2;
+                    Impact bodyImpact = testSweptCircleCircle(body, body.getPos(), radius, other, other.getPos(), radiusOther, endPos);
+                    if (bodyImpact.ti < finalImpact.ti) {
+                        finalImpact = bodyImpact;
+                    }
+                    if (other.getEntity() instanceof Worm) {
+                        Position pos = new Position(other.getPos().getX() + 1.0, other.getPos().getY() + 1.0);
+                        bodyImpact = testSweptCircleCircle(body, body.getPos(), radius, other, pos, radiusOther, endPos);
+                        if (bodyImpact.ti < finalImpact.ti) {
+                            finalImpact = bodyImpact;
+                        }
                     }
                 }
             }
@@ -99,13 +139,14 @@ public class Collision {
     /**
      * Calculates the first swept impact between the moving body and the map's solid tiles.
      * @param body The moving {@link PhysicsBody}.
+     * @param startPos the {@link Position} of the body center
+     * @param radius the radius of the body hitbox circle
      * @param endPos The target {@link Position}.
      * @return The nearest impact with a solid tile.
      */
-    private static Impact testSweptCircleTile(PhysicsBody body, Position endPos) {
-        Position startPos = body.getPos();
+    private static Impact testSweptCircleTile(PhysicsBody body, Position startPos, double radius, Position endPos) {
+        endPos = new Position(endPos.getX()+(body.getWidth()/2), endPos.getY()+(body.getHeight()/2));
         Vector displacement = new Vector(endPos.getX() - startPos.getX(), endPos.getY() - startPos.getY());
-        double radius = body.getRadius();
 
         Impact nearestImpact = new Impact(endPos);
 
@@ -152,17 +193,18 @@ public class Collision {
      * Calculates the first swept impact between two circular bodies.
      * Reduces the problem to a Swept Point vs. Static Circle of combined radius.
      * @param body1 The moving {@link PhysicsBody}.
+     * @param startPos1 the {@link Position} of the first body center
+     * @param radius1 the radius of the first body hitbox circle
      * @param body2 The target {@link PhysicsBody} (static for this calculation).
+     * @param startPos2 the {@link Position} of the second body center
+     * @param radius2 the radius of the second body hitbox circle
      * @param endPos The target {@link Position} of body1.
      * @return The nearest impact with body2.
      */
-    private static Impact testSweptCircleCircle(PhysicsBody body1, PhysicsBody body2, Position endPos) {
-        Position startPos1 = body1.getPos();
-        double radius1 = body1.getRadius();
-        double radius2 = body2.getRadius();
+    private static Impact testSweptCircleCircle(PhysicsBody body1, Position startPos1, double radius1,PhysicsBody body2, Position startPos2, double radius2, Position endPos) {
+        endPos = new Position(endPos.getX()+(body1.getWidth()/2), endPos.getY()+(body1.getHeight()/2));
         Vector displacement = new Vector(endPos.getX() - startPos1.getX(), endPos.getY() - startPos1.getY());
 
-        Position startPos2 = body2.getPos();
         double combinedRadius = radius1 + radius2;
 
         // Use quadratic formula resolution to find ti
