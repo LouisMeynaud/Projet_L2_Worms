@@ -1,6 +1,9 @@
 package com.lllmtb.ui;
 
 import com.lllmtb.engine.GameSettings;
+import com.lllmtb.events.EventBus;
+import com.lllmtb.events.game.StartGameEvent;
+
 import org.jline.consoleui.elements.ConfirmChoice;
 import org.jline.consoleui.prompt.ConsolePrompt;
 import org.jline.consoleui.prompt.PromptResultItemIF;
@@ -17,6 +20,8 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Map;
 
+import com.lllmtb.terrain.generation.LandScape;
+
 // TODO - make prompt methods content-agnostic to remove duplicated code
 //  eg: promptBool(String key, String message, ConfirmChoice.ConfirmationValue defaultValue)
 //  and promptString(...)
@@ -27,10 +32,13 @@ import java.util.Map;
 
 // TODO - when prompting for a map file to load, display a list of available files in a select menu
 
-public class ConsoleUI extends UI {
+public class ConsoleUI implements UI {
     private Terminal terminal;
+    private EventBus eventBus; 
 
-    public ConsoleUI() {
+   
+    public ConsoleUI(EventBus bus) {
+        this.eventBus = bus; 
         try {
             this.terminal = TerminalBuilder.builder().system(true).build();
             terminal.puts(InfoCmp.Capability.clear_screen);
@@ -44,8 +52,9 @@ public class ConsoleUI extends UI {
         }
     }
 
-    @Override
+    
     public GameSettings promptSettings() {
+
         try {
             terminal.writer().println("=== GAME SETTINGS ===");
             int nbTeams = promptNbTeams();
@@ -74,17 +83,16 @@ public class ConsoleUI extends UI {
             );
             terminal.writer().println("   Wind: " + (hasWind ? "ON" : "OFF"));
             terminal.writer().flush();
-            return new GameSettings(nbTeams, teamNames, nbWorms, hasWind, mapFileName, floatingIsland);
+            return new GameSettings(nbTeams, teamNames, nbWorms, hasWind, mapFileName, floatingIsland,370,LandScape.HILLY);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
-
+    
     private int promptNbTeams() throws IOException {
         ConsolePrompt prompt = new ConsolePrompt(terminal);
         PromptBuilder builder = prompt.getPromptBuilder();
-
         builder.createListPrompt()
                 .name("nbTeams")
                 .message("Number of Teams")
@@ -92,7 +100,6 @@ public class ConsoleUI extends UI {
                 .newItem("3").text("3").add()
                 .newItem("4").text("4").add()
                 .addPrompt();
-
         Map<String, PromptResultItemIF> result = prompt.prompt(builder.build());
         return Integer.parseInt(result.get("nbTeams").getResult());
     }
@@ -100,7 +107,6 @@ public class ConsoleUI extends UI {
     private String[] promptTeamNames(int nbTeams) throws IOException {
         ConsolePrompt prompt = new ConsolePrompt(terminal);
         PromptBuilder builder = prompt.getPromptBuilder();
-
         String[] teamNames = new String[nbTeams];
         for (int i = 0; i < nbTeams; i++) {
             builder.createInputPrompt()
@@ -116,7 +122,6 @@ public class ConsoleUI extends UI {
     private int promptNbWorms() throws IOException {
         ConsolePrompt prompt = new ConsolePrompt(terminal);
         PromptBuilder builder = prompt.getPromptBuilder();
-
         builder.createListPrompt()
                 .name("nbWorms")
                 .message("Number of Worms per Team")
@@ -125,7 +130,6 @@ public class ConsoleUI extends UI {
                 .newItem("3").text("3").add()
                 .newItem("4").text("4").add()
                 .addPrompt();
-
         Map<String, PromptResultItemIF> result = prompt.prompt(builder.build());
         return Integer.parseInt(result.get("nbWorms").getResult());
     }
@@ -133,13 +137,11 @@ public class ConsoleUI extends UI {
     private boolean promptLoadMap() throws IOException {
         ConsolePrompt prompt = new ConsolePrompt(terminal);
         PromptBuilder builder = prompt.getPromptBuilder();
-
         builder.createConfirmPromp()
                 .name("loadMap")
                 .message("Do you want to load an existing map from a save file?")
                 .defaultValue(ConfirmChoice.ConfirmationValue.NO)
                 .addPrompt();
-
         Map<String, PromptResultItemIF> result = prompt.prompt(builder.build());
         return result.get("loadMap").getResult().equals(ConfirmChoice.ConfirmationValue.YES.toString());
     }
@@ -147,12 +149,10 @@ public class ConsoleUI extends UI {
     private String promptMapFileName() throws IOException {
         ConsolePrompt prompt = new ConsolePrompt(terminal);
         PromptBuilder builder = prompt.getPromptBuilder();
-
         builder.createInputPrompt()
                 .name("mapFileName")
                 .message("  Enter the file name:")
                 .addPrompt();
-
         Map<String, PromptResultItemIF> result = prompt.prompt(builder.build());
         return result.get("mapFileName").getResult();
     }
@@ -160,13 +160,11 @@ public class ConsoleUI extends UI {
     private boolean promptFloatingIsland() throws IOException {
         ConsolePrompt prompt = new ConsolePrompt(terminal);
         PromptBuilder builder = prompt.getPromptBuilder();
-
         builder.createConfirmPromp()
                 .name("floatingIsland")
                 .message("Do you want the map to be a floating island?")
                 .defaultValue(ConfirmChoice.ConfirmationValue.NO)
                 .addPrompt();
-
         Map<String, PromptResultItemIF> result = prompt.prompt(builder.build());
         return result.get("floatingIsland").getResult().equals(ConfirmChoice.ConfirmationValue.YES.toString());
     }
@@ -174,24 +172,43 @@ public class ConsoleUI extends UI {
     private boolean promptHasWind() throws IOException {
         ConsolePrompt prompt = new ConsolePrompt(terminal);
         PromptBuilder builder = prompt.getPromptBuilder();
-
         builder.createConfirmPromp()
                 .name("hasWind")
                 .message("Do you want to turn on the wind?")
                 .defaultValue(ConfirmChoice.ConfirmationValue.NO)
                 .addPrompt();
-
         Map<String, PromptResultItemIF> result = prompt.prompt(builder.build());
         return result.get("hasWind").getResult().equals(ConfirmChoice.ConfirmationValue.YES.toString());
     }
 
-    @Override
+    
     public boolean readyToPlay() {
+        
         LineReader reader = LineReaderBuilder.builder().terminal(terminal).appName("WORMS Game").build();
         return reader.readLine("Press Enter to start the game...") != null;
     }
 
-    @Override
+    
+    @Override 
+    public void start(){
+        try {
+            GameSettings settings = this.promptSettings();
+            boolean ready = this.readyToPlay();
+
+            if (ready) {
+                terminal.writer().println("Lancement du jeu...");
+                terminal.writer().flush();
+                
+              
+                this.eventBus.postQueued(new StartGameEvent(settings));
+            }
+        }catch (Exception e) {
+            System.err.println("Une erreur est survenue durant la configuration :");
+            e.printStackTrace();
+            close();
+        }
+    }
+    
     public void close() {
         try {
             terminal.close();
@@ -200,4 +217,3 @@ public class ConsoleUI extends UI {
         }
     }
 }
-
