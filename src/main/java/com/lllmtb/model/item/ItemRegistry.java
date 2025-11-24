@@ -1,8 +1,11 @@
 package com.lllmtb.model.item;
 
+import org.eclipse.jdt.annotation.NonNull;
+
 import java.util.Collections;
 import java.util.EnumMap;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * Immutable registry that stores canonical {@link I} instances.
@@ -35,8 +38,8 @@ public abstract class ItemRegistry<T extends Enum<T> & ItemId, I extends Item> {
      * @param id the item identifier to look up
      * @return the corresponding {@link I} instance, or {@code null} if not found
      */
-    public I get(T id) {
-        return registry.get(id);
+    public I get(@NonNull T id) {
+        return registry.get(Objects.requireNonNull(id));
     }
 
     /**
@@ -64,8 +67,8 @@ public abstract class ItemRegistry<T extends Enum<T> & ItemId, I extends Item> {
      * @param id the item identifier
      * @return the number of remaining ammo units, or {@code 0} if none
      */
-    public int getAmmo(T id) {
-        return ammo.getOrDefault(id, 0);
+    public int getAmmo(@NonNull T id) {
+        return ammo.getOrDefault(Objects.requireNonNull(id), 0);
     }
 
     /**
@@ -75,7 +78,8 @@ public abstract class ItemRegistry<T extends Enum<T> & ItemId, I extends Item> {
      * @param amount the amount of ammo to add (can be negative to reduce ammo)
      * @throws IllegalArgumentException if the item type is unknown
      */
-    public void addAmmo(T id, int amount) {
+    public void addAmmo(@NonNull T id, int amount) {
+        Objects.requireNonNull(id);
         if (!contains(id)) throw new UnknownItemException(id);
         if (amount == 0) return;
         this.ammo.merge(id, amount, Integer::sum);

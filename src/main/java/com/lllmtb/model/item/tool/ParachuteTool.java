@@ -7,6 +7,7 @@ import com.lllmtb.physics.Vector;
 import org.eclipse.jdt.annotation.NonNull;
 
 import java.util.List;
+import java.util.Objects;
 
 public class ParachuteTool extends Tool {
 
@@ -17,6 +18,7 @@ public class ParachuteTool extends Tool {
 
     @Override
     public List<GameCommand> use(@NonNull UseParams params) {
+        Objects.requireNonNull(params);
         PhysicsModifier parachute = (currentVel) -> {
             double vy = currentVel.getY();
             if (vy < 0) {
