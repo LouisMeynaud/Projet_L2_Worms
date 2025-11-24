@@ -144,7 +144,7 @@ public class Team {
 
     /**
      * Removes a worm from the team based on its index.
-     * @param index index of the worm to remove
+     * @param indexPlayer index of the worm to remove
      */
     public void removePlayer(int indexPlayer) {
         this.worms.remove(indexPlayer-1);
@@ -190,10 +190,10 @@ public class Team {
     /**
      * Fires a projectile using the current worm's selected weapon.
      * @param fireParams parameters for the firing action
-     * @return the created {@link Projectile}
+     * @return the created commands to execute
      * @throws IllegalArgumentException if the firing parameters are invalid
      */
-    public Projectile fire(FireParams fireParams) throws IllegalArgumentException {
+    public List<GameCommand> fire(FireParams fireParams) throws IllegalArgumentException {
         return this.inventory.fire(this.currentWorm.getSelfItem(), fireParams);
     }
 

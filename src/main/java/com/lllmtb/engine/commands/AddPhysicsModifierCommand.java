@@ -21,6 +21,6 @@ public final class AddPhysicsModifierCommand implements GameCommand {
     @Override
     public void execute(GameWorld world) {
         world.getPhysics().addModifier(target.getBody(), modifier, duration);
-§!        world.getBus().postQueued(new PhysicsModifierAddedEvent(target.getBody(), modifier, duration));
+        world.getBus().postQueued(new PhysicsModifierAddedEvent(target.getBody(), modifier, duration));
     }
 }

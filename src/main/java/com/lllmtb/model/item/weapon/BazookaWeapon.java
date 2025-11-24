@@ -1,9 +1,11 @@
 package com.lllmtb.model.item.weapon;
 
-import com.lllmtb.model.entity.projectile.Projectile;
+import com.lllmtb.engine.commands.GameCommand;
+import com.lllmtb.engine.commands.RegisterProjectileCommand;
 import com.lllmtb.model.entity.projectile.RocketProjectile;
 import org.eclipse.jdt.annotation.NonNull;
 
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -33,7 +35,8 @@ public final class BazookaWeapon extends Weapon {
      * @throws NullPointerException if {@code params} is {@code null}
      */
     @Override
-    public Projectile createProjectile(@NonNull FireParams params) {
-        return new RocketProjectile(Objects.requireNonNull(params));
+    public List<GameCommand> fire(@NonNull FireParams params) {
+        GameCommand cmd = new RegisterProjectileCommand(new RocketProjectile(Objects.requireNonNull(params)), params.owner);
+        return List.of(cmd);
     }
 }

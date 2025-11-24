@@ -95,13 +95,13 @@ public final class Inventory {
      * @throws NullPointerException     if {@code params} is {@code null}
      * @throws IllegalArgumentException if the weapon is unknown or cannot fire
      */
-    public Projectile fire(WeaponId id, @NonNull FireParams params) {
+    public List<GameCommand> fire(WeaponId id, @NonNull FireParams params) {
         Objects.requireNonNull(params);
         Weapon w = weapons.get(id);
         if (w == null) throw new IllegalArgumentException("Unknown weapon : " + id);
         if (canFire(id)) {
             weapons.addAmmo(id, -1);
-            return w.createProjectile(params);
+            return w.fire(params);
         }
         throw new IllegalArgumentException("Weapon can't fire : " + id);
     }

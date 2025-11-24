@@ -17,11 +17,11 @@ public class BazookaWeaponTest {
     }
 
     @Test
-    public void CreateProjectile() {
+    public void fire() {
         BazookaWeapon b = new BazookaWeapon();
         Position p = new Position(0, 0);
         Worm w = new Worm("José", new Team("Team", 1, p), p);
         FireParams fp = new FireParams(0, p, w);
-        assertEquals(RocketProjectile.class, (b.createProjectile(fp)).getClass());
+        assertEquals(RocketProjectile.class, (b.fire(fp)).getClass());
     }
 }
