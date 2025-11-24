@@ -64,4 +64,14 @@ void testSet(){
     assertEquals(y4,pB.getVector().getY());
 
 }
+
+@Test
+    public void testToString() {
+        Position position = new Position(10, 20);
+        Vector vector = new Vector(5.0, -2.5);
+        Entity entity = null; 
+        PhysicsBody body = new PhysicsBody(entity, position, vector, 10.0, 2.0, 1.0);
+        String expectedString = "Body{ " + position.toString() + " | " + vector.toString() + " }";
+        assertEquals(expectedString, body.toString(), "Le format de PhysicsBody.toString() est incorrect");
+    }
 }

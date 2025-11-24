@@ -128,8 +128,7 @@ public class Team {
     private void setUpWorms(int numberOfPlayers, Position[] spawns) {
         for (int i = 1; i <= numberOfPlayers; i++) {
             new Worm(this.name + i, this);
-            Random random = new Random();
-            Position spawn = spawns[random.nextInt(0, spawns.length)];
+            Position spawn = spawns[i-1];
             this.worms.get(i-1).spawn(spawn);
         }
     }

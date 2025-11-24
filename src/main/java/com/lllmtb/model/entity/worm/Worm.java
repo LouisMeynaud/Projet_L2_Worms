@@ -46,7 +46,7 @@ public class Worm extends Entity {
      */
     private Worm(String name, Statistics stats, Team team) {
         super();
-        this.body = new PhysicsBody(this, new Position(0, 0), new Vector(0, 0), 100, 1, 1);
+        this.body = new PhysicsBody(this, new Position(0, 0), new Vector(0, 0), 100, 2, 1);
         this.name = name;
         this.stats = stats;
         this.team = team;

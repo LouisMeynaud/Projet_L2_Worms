@@ -116,4 +116,10 @@ public class MapTest {
         assertFalse(m.isSolid(positionNoSolide));
     }
 
+    @Test
+    void testSetFiles(){
+        m.setFilesTxt("test");
+        assertEquals(m.getFilesTxt(), "test");
+    }
+
 }
