@@ -39,9 +39,9 @@ public final class Inventory {
      * @param id the weapon identifier to unlock
      * @throws UnknownWeaponException if the weapon type is unknown
      */
-    public void unlock(WeaponId id) {
+    public void unlock(@NonNull WeaponId id) {
         if (!weapons.contains(id)) throw new UnknownWeaponException(id);
-        unlocked.add(id);
+        unlocked.add(Objects.requireNonNull(id));
     }
 
     /**
@@ -49,8 +49,8 @@ public final class Inventory {
      *
      * @param id the weapon identifier to lock
      */
-    public void lock(WeaponId id) {
-        unlocked.remove(id);
+    public void lock(@NonNull WeaponId id) {
+        unlocked.remove(Objects.requireNonNull(id));
     }
 
     /**
@@ -71,7 +71,7 @@ public final class Inventory {
      * @return {@code true} if the weapon can fire, {@code false} otherwise
      * @throws UnknownWeaponException if the weapon type is unknown
      */
-    public boolean canFire(WeaponId id) {
+    public boolean canFire(@NonNull WeaponId id) {
         if (!weapons.contains(id)) throw new UnknownWeaponException(id);
         return isUnlocked(id) && (weapons.getAmmo(id) > 0);
     }
@@ -89,7 +89,7 @@ public final class Inventory {
      * @throws UnknownWeaponException if the weapon is unknown
      * @throws UnusableWeaponException if the weapon cannot fire
      */
-    public List<GameCommand> fire(WeaponId id, @NonNull FireParams params) {
+    public List<GameCommand> fire(@NonNull WeaponId id, @NonNull FireParams params) {
         Objects.requireNonNull(params);
         Weapon w = weapons.get(id);
         if (w == null) throw new UnknownWeaponException(id);
@@ -97,7 +97,7 @@ public final class Inventory {
             weapons.addAmmo(id, -1);
             return w.fire(params);
         }
-        throw new UnusableWeaponException(id, params.owner);
+        throw new UnusableWeaponException(id, params.owner.getTeam());
     }
 
     /**
@@ -109,7 +109,7 @@ public final class Inventory {
      * @return {@code true} if the tool can be used, {@code false} otherwise
      * @throws UnknownToolException if the tool type is unknown
      */
-    public boolean canUse(ToolId id) {
+    public boolean canUse(@NonNull ToolId id) {
         if (!tools.contains(id)) throw new UnknownToolException(id);
         return tools.getAmmo(id) > 0;
     }
@@ -127,7 +127,7 @@ public final class Inventory {
      * @throws UnknownToolException if the tool is unknown
      * @throws UnusableToolException if the tool is cannot be used
      */
-    public List<GameCommand> use(ToolId id, @NonNull UseParams params) {
+    public List<GameCommand> use(@NonNull ToolId id, @NonNull UseParams params) {
         Objects.requireNonNull(params);
         Tool t = tools.get(id);
         if (t == null) throw new UnknownToolException(id);
@@ -135,6 +135,6 @@ public final class Inventory {
             tools.addAmmo(id, -1);
             return t.use(params);
         }
-        throw new UnusableToolException(id, params.owner);
+        throw new UnusableToolException(id, params.owner.getTeam());
     }
 }
