@@ -18,6 +18,7 @@ public class TeamTest {
     @BeforeEach
     public void setUp(){
         team = new Team("TestTeam", 1, new Position[]{new Position(0, 0)});
+        Team.getTeamColorChoosed().clear();
 
 
     }
