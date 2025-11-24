@@ -34,6 +34,8 @@ public class PhysicsEngine {
     /** Internal counter used to regulate wind changes. */
     private int cpt = 0;
 
+    /** The {@link Collision} object of the game*/
+    private final Collision collision;
 
     /**
      * Constructs a new {@code PhysicsEngine} instance.
@@ -50,7 +52,7 @@ public class PhysicsEngine {
         this.gravity = new Vector(0, -9.81);
         this.hasWind = hasWind;
         this.wind = new Vector(0, 0);
-        Collision.init(map, this.bodies);
+        this.collision = new Collision(map, this.bodies);
     }
 
     /**
@@ -170,27 +172,27 @@ public class PhysicsEngine {
             Position nextPos = newVector.newPos(body.getPos(), ticktime);
             body.setVector(newVector);
 
-            Collision.Impact impact = Collision.move(body, nextPos);
+            Collision.Impact impact = this.collision.move(body, nextPos);
             // if collision
             if (impact.collided) {
                 // if body slide along cliffs
                 if (body.getEntity().getCollisionType() == CollisionType.SLIDE) {
                     // if the collision is with the ground
                     if (impact.normal.getY() > 0.5) {
-                        Collision.touch(body, impact);
+                        this.collision.touch(body, impact);
                         body.setVector(new Vector(body.getVector().getX(), 0));
                     } else {
-                        Collision.slide(body, impact);
+                        this.collision.slide(body, impact);
                     }
                     // if body bounce
                 } else if (body.getEntity().getCollisionType() == CollisionType.BOUNCE) {
-                    Collision.bounce(body, impact, 0.5);
+                    this.collision.bounce(body, impact, 0.5);
                     // if body stick to what it has hit
                 } else if (body.getEntity().getCollisionType() == CollisionType.TOUCH) {
-                    Collision.touch(body, impact);
+                    this.collision.touch(body, impact);
                     // if body cross all (map and entities)
                 } else {
-                    Collision.cross(body, nextPos);
+                    this.collision.cross(body, nextPos);
                 }
             } else {
                 body.setPos(nextPos);
