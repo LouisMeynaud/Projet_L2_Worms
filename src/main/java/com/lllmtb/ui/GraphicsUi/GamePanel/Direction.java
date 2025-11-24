@@ -1,6 +1,6 @@
 package com.lllmtb.ui.GraphicsUi.GamePanel;
 
-public enum Key {
+public enum Direction {
     Up,
     Down,
     Left,

@@ -1,10 +1,7 @@
 package com.lllmtb.ui.GraphicsUi.GamePanel;
 
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.event.HierarchyEvent;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
+import java.awt.*;
+import java.awt.event.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -20,7 +17,11 @@ import com.lllmtb.engine.GameWorld;
 import com.lllmtb.events.EventBus;
 import com.lllmtb.events.TheEvents.*;
 import com.lllmtb.physics.PhysicsBody;
+import com.lllmtb.physics.Position;
 import com.lllmtb.terrain.map.Tile;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.Point;
 
 
 public class GameWorldPanel extends JPanel {
@@ -38,7 +39,7 @@ public class GameWorldPanel extends JPanel {
     
     public GameWorldPanel(EventBus eventBus){
         this.eventBus = eventBus;
-        setFocusable(true);     // autorise le panel à recevoir le focus
+        setFocusable(true);
         loadTextures();
         subscribeToGameEvents();
         addHierarchyListener(e -> {
@@ -50,29 +51,64 @@ public class GameWorldPanel extends JPanel {
         addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
-                // 1. On met à jour la mémoire des touches (on ajoute celle qui vient d'être pressée)
                 pressedKeys.add(e.getKeyCode());
 
                 if (pressedKeys.contains(KeyEvent.VK_UP)) {
-                    eventBus.postQueued(new MoveUpEvent());
+                    eventBus.postQueued(new MoveEvent(Direction.Up));
                 }
                 if (pressedKeys.contains(KeyEvent.VK_DOWN)) {
-                    eventBus.postQueued(new MoveDownEvent());
+                    eventBus.postQueued(new MoveEvent(Direction.Down));
                 }
                 if (pressedKeys.contains(KeyEvent.VK_LEFT)) {
-                    eventBus.postQueued(new MoveLeftEvent());
+                    eventBus.postQueued(new MoveEvent(Direction.Left));
                 }
                 if (pressedKeys.contains(KeyEvent.VK_RIGHT)) {
-                    eventBus.postQueued(new MoveRightEvent());
+                    eventBus.postQueued(new MoveEvent(Direction.Right));
                 }
             }
 
             @Override
             public void keyReleased(KeyEvent e) {
-                // Important : on enlève la touche de la mémoire quand on la lâche
                 pressedKeys.remove(e.getKeyCode());
             }
         });
+
+        MouseAdapter mouseHandler = new MouseAdapter() {
+            private long pressStartTime;
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+                pressStartTime = System.currentTimeMillis();
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                int type = e.getButton() ;
+                long duration = System.currentTimeMillis() - pressStartTime;
+                double worldX = e.getX();
+                double worldY = e.getY();
+                if (type == 1){
+                eventBus.postQueued(new MouseInputEvent(new Position(worldX, worldY),duration, Direction.Left));
+                }
+                if (type == 3){
+                    eventBus.postQueued(new MouseInputEvent(new Position(worldX, worldY),duration, Direction.Right));
+                }
+            }
+            @Override
+            public void mouseWheelMoved(MouseWheelEvent e) {
+                int rotation = e.getWheelRotation();
+                if (rotation < 0) {
+                    eventBus.postQueued(new MouseWheelMoveInputEvent(Direction.Down));
+                }
+                if (rotation > 0) {
+                    eventBus.postQueued(new MouseWheelMoveInputEvent(Direction.Up));
+                }
+            }
+
+        };
+
+        addMouseListener(mouseHandler);
+        addMouseWheelListener(mouseHandler);
     }
         private void loadTextures() {
             textureMatrixMap = new HashMap<>();
