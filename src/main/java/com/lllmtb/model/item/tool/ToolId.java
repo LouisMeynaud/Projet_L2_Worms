@@ -1,5 +1,7 @@
 package com.lllmtb.model.item.tool;
 
-public enum ToolId {
+import com.lllmtb.model.item.ItemId;
+
+public enum ToolId implements ItemId {
     PARACHUTE
 }

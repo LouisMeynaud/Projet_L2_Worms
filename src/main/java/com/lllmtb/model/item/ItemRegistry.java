@@ -1,7 +1,5 @@
 package com.lllmtb.model.item;
 
-import com.lllmtb.model.item.weapon.WeaponId;
-
 import java.util.Collections;
 import java.util.EnumMap;
 import java.util.Map;
@@ -14,7 +12,7 @@ import java.util.Map;
  * <p>
  * Each {@link T} is associated with a single {@link I} instance.
  */
-public abstract class ItemRegistry<T extends Enum<T>, I extends Item> {
+public abstract class ItemRegistry<T extends Enum<T> & ItemId, I extends Item> {
 
     protected final EnumMap<T, I> registry;
     protected final EnumMap<T, Integer> ammo;
@@ -78,7 +76,7 @@ public abstract class ItemRegistry<T extends Enum<T>, I extends Item> {
      * @throws IllegalArgumentException if the item type is unknown
      */
     public void addAmmo(T id, int amount) {
-        if (!contains(id)) throw new IllegalArgumentException("Unknown item: " + id);
+        if (!contains(id)) throw new UnknownItemException(id);
         if (amount == 0) return;
         this.ammo.merge(id, amount, Integer::sum);
     }

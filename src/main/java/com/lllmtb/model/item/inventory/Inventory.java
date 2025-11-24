@@ -2,14 +2,8 @@ package com.lllmtb.model.item.inventory;
 
 import com.lllmtb.engine.commands.GameCommand;
 import com.lllmtb.model.entity.projectile.Projectile;
-import com.lllmtb.model.item.tool.Tool;
-import com.lllmtb.model.item.tool.ToolId;
-import com.lllmtb.model.item.tool.ToolRegistry;
-import com.lllmtb.model.item.tool.UseParams;
-import com.lllmtb.model.item.weapon.FireParams;
-import com.lllmtb.model.item.weapon.Weapon;
-import com.lllmtb.model.item.weapon.WeaponId;
-import com.lllmtb.model.item.weapon.WeaponRegistry;
+import com.lllmtb.model.item.tool.*;
+import com.lllmtb.model.item.weapon.*;
 import org.eclipse.jdt.annotation.NonNull;
 
 import java.util.*;
@@ -43,10 +37,10 @@ public final class Inventory {
      * Unlocks a weapon, making it available for use.
      *
      * @param id the weapon identifier to unlock
-     * @throws IllegalArgumentException if the weapon type is unknown
+     * @throws UnknownWeaponException if the weapon type is unknown
      */
     public void unlock(WeaponId id) {
-        if (!weapons.contains(id)) throw new IllegalArgumentException("Unknown weapon: " + id);
+        if (!weapons.contains(id)) throw new UnknownWeaponException(id);
         unlocked.add(id);
     }
 
@@ -75,10 +69,10 @@ public final class Inventory {
      *
      * @param id the weapon identifier
      * @return {@code true} if the weapon can fire, {@code false} otherwise
-     * @throws IllegalArgumentException if the weapon type is unknown
+     * @throws UnknownWeaponException if the weapon type is unknown
      */
     public boolean canFire(WeaponId id) {
-        if (!weapons.contains(id)) throw new IllegalArgumentException("Unknown weapon: " + id);
+        if (!weapons.contains(id)) throw new UnknownWeaponException(id);
         return isUnlocked(id) && (weapons.getAmmo(id) > 0);
     }
 
@@ -87,23 +81,23 @@ public final class Inventory {
      * <p>
      * If the weapon is unlocked and has ammo available, one ammo unit is consumed
      * and a new {@link Projectile} is created and returned.
-     * Otherwise, an {@link IllegalArgumentException} is thrown.
      *
      * @param id     the weapon identifier
      * @param params the firing parameters used to create the projectile (must not be {@code null})
      * @return the newly created {@link Projectile}
      * @throws NullPointerException     if {@code params} is {@code null}
-     * @throws IllegalArgumentException if the weapon is unknown or cannot fire
+     * @throws UnknownWeaponException if the weapon is unknown
+     * @throws UnusableWeaponException if the weapon cannot fire
      */
     public List<GameCommand> fire(WeaponId id, @NonNull FireParams params) {
         Objects.requireNonNull(params);
         Weapon w = weapons.get(id);
-        if (w == null) throw new IllegalArgumentException("Unknown weapon : " + id);
+        if (w == null) throw new UnknownWeaponException(id);
         if (canFire(id)) {
             weapons.addAmmo(id, -1);
             return w.fire(params);
         }
-        throw new IllegalArgumentException("Weapon can't fire : " + id);
+        throw new UnusableWeaponException(id, params.owner);
     }
 
     /**
@@ -113,10 +107,10 @@ public final class Inventory {
      *
      * @param id the tool identifier
      * @return {@code true} if the tool can be used, {@code false} otherwise
-     * @throws IllegalArgumentException if the tool type is unknown
+     * @throws UnknownToolException if the tool type is unknown
      */
     public boolean canUse(ToolId id) {
-        if (!tools.contains(id)) throw new IllegalArgumentException("Unknown tool: " + id);
+        if (!tools.contains(id)) throw new UnknownToolException(id);
         return tools.getAmmo(id) > 0;
     }
 
@@ -125,22 +119,22 @@ public final class Inventory {
      * <p>
      * If the tool has ammo available, one ammo unit is consumed
      * and a new list of instructions is created and returned.
-     * Otherwise, an {@link IllegalArgumentException} is thrown.
      *
      * @param id     the tool identifier
      * @param params the use parameters (must not be {@code null})
      * @return the newly created {@link List<GameCommand>} commands to execute
      * @throws NullPointerException     if {@code params} is {@code null}
-     * @throws IllegalArgumentException if the tool is unknown or cannot be used
+     * @throws UnknownToolException if the tool is unknown
+     * @throws UnusableToolException if the tool is cannot be used
      */
     public List<GameCommand> use(ToolId id, @NonNull UseParams params) {
         Objects.requireNonNull(params);
         Tool t = tools.get(id);
-        if (t == null) throw new IllegalArgumentException("Unknown tool : " + id);
+        if (t == null) throw new UnknownToolException(id);
         if (canUse(id)) {
             tools.addAmmo(id, -1);
             return t.use(params);
         }
-        throw new IllegalArgumentException("Tool can't be used : " + id);
+        throw new UnusableToolException(id, params.owner);
     }
 }

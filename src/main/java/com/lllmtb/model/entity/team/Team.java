@@ -3,14 +3,18 @@ package com.lllmtb.model.entity.team;
 import java.util.*;
 
 import com.lllmtb.engine.commands.GameCommand;
-import com.lllmtb.model.entity.projectile.Projectile;
 import com.lllmtb.model.entity.worm.Worm;
+import com.lllmtb.model.item.ItemId;
+import com.lllmtb.model.item.UnknownItemException;
 import com.lllmtb.model.item.inventory.Inventory;
 import com.lllmtb.model.item.tool.ToolId;
+import com.lllmtb.model.item.tool.UnknownToolException;
 import com.lllmtb.model.item.tool.UseParams;
 import com.lllmtb.model.item.weapon.FireParams;
+import com.lllmtb.model.item.weapon.UnknownWeaponException;
 import com.lllmtb.model.item.weapon.WeaponId;
 import com.lllmtb.physics.Position;
+import org.eclipse.jdt.annotation.NonNull;
 
 /**
  * Represents a team of {@link Worm} entities in the game.
@@ -163,15 +167,16 @@ public class Team {
     /**
      * Unlocks a weapon in the team's inventory.
      * @param id the ID of the weapon to unlock
-     * @throws IllegalArgumentException if the weapon ID is invalid
+     * @throws UnknownWeaponException if the weapon type is unknown
      */
-    public void unlockWeapon(WeaponId id) throws IllegalArgumentException {
+    public void unlockWeapon(WeaponId id) {
         this.inventory.unlock(id);
     }
 
     /**
      * Locks a weapon in the team's inventory.
      * @param id the ID of the weapon to lock
+     * @throws UnknownWeaponException if the weapon type is unknown
      */
     public void lockWeapon(WeaponId id) {
         this.inventory.lock(id);
@@ -181,47 +186,49 @@ public class Team {
      * Adds ammunition for a specific weapon in the team's inventory.
      * @param id weapon for which to add ammunition
      * @param n number of ammo units to add
-     * @throws IllegalArgumentException if the weapon ID is invalid
+     * @throws UnknownWeaponException if the weapon type is unknown
      */
-    public void addAmmo(WeaponId id, Integer n) throws IllegalArgumentException {
-        this.inventory.weapons.addAmmo(id, n);
+    public void addAmmo(WeaponId id, int n) {
+        try { this.inventory.weapons.addAmmo(id, n); }
+        catch (UnknownItemException e) { throw new UnknownWeaponException((WeaponId) e.id); }
     }
 
     /**
      * Fires a projectile using the current worm's selected weapon.
      * @param fireParams parameters for the firing action
      * @return the created commands to execute
-     * @throws IllegalArgumentException if the firing parameters are invalid
+     * @throws NullPointerException if the firing parameters are invalid
      */
-    public List<GameCommand> fire(FireParams fireParams) throws IllegalArgumentException {
-        return this.inventory.fire(this.currentWorm.getSelfItem(), fireParams);
+    public List<GameCommand> fire(@NonNull FireParams fireParams) {
+        return this.inventory.fire(this.currentWorm.getSelfItem(), Objects.requireNonNull(fireParams));
     }
 
     /**
      * Adds ammunition for a specific tool in the team's inventory.
      * @param id tool for which to add ammunition
      * @param n number of ammo units to add
-     * @throws IllegalArgumentException if the weapon ID is invalid
+     * @throws UnknownToolException if the tool type is unknown
      */
-    public void addAmmo(ToolId id, Integer n) throws IllegalArgumentException {
-        this.inventory.tools.addAmmo(id, n);
+    public void addAmmo(ToolId id, int n) {
+        try { this.inventory.tools.addAmmo(id, n); }
+        catch (UnknownItemException e) { throw new UnknownToolException((ToolId) e.id); }
     }
 
     /**
      * Uses the current worm's selected tool.
      * @param useParams parameters for the use action
      * @return the created commands to execute
-     * @throws IllegalArgumentException if the use parameters are invalid
+     * @throws NullPointerException if the use parameters are invalid
      */
-    public List<GameCommand> use(UseParams useParams) throws IllegalArgumentException {
-        return this.inventory.use(ToolId.PARACHUTE, useParams); // currently Parachute, we will have to adapt currentWorm.getSelfItem()
+    public List<GameCommand> use(@NonNull UseParams useParams) {
+        return this.inventory.use(ToolId.PARACHUTE, Objects.requireNonNull(useParams)); // currently Parachute, we will have to adapt currentWorm.getSelfItem()
     }
 
     /**
-     * Selects a weapon from the inventory for the current worm.
-     * @param id weapon ID to select
+     * Selects an item from the inventory for the current worm.
+     * @param id item to select
      */
-    public void selectItem(WeaponId id) {
+    public void selectItem(ItemId id) {
         this.currentWorm.setSelfItem(id);
     }
 
