@@ -190,4 +190,12 @@ public class GameWorldTest {
 
         gw.stop();
     }
+
+    @Test
+    void getTurnManage(){
+        GameSettings settings = new GameSettings(2, new String[]{}, 2, false, null, false);
+        GameWorld gw = new GameWorld(settings);
+
+        assertNotNull(gw.getTurnManager());
+    }
 }

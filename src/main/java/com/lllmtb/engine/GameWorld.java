@@ -23,6 +23,7 @@ public class GameWorld {
     private int indexTeam;
     private final GameLoop gameLoop;
     private final TurnManager turnManager;
+    private final long tourDuration;
     Thread loopThread;
 
     public GameWorld(GameSettings settings) {
@@ -69,7 +70,8 @@ public class GameWorld {
         System.out.println("Game initialised");
 
         //Init TurnManager
-        this.turnManager = new TurnManager(this);
+        tourDuration = 10_000;
+        this.turnManager = new TurnManager(this, tourDuration);
     }
 
     public Map getMap() {
@@ -88,8 +90,16 @@ public class GameWorld {
         return teams;
     }
 
+    public int getIndexTeam(){
+        return indexTeam;
+    }
+
     public TurnManager getTurnManager(){
         return this.turnManager;
+    }
+
+    public long getTourDuration(){
+        return this.tourDuration;
     }
 
     public void start() {
@@ -125,7 +135,9 @@ public class GameWorld {
     }
 
     public void nextTeamTurn() {
+        if(!teams.isEmpty()) {
             this.turnManager.startTurn(teams.get(indexTeam++));
-            if(indexTeam >= teams.size())indexTeam = 0;
+            if (indexTeam >= teams.size()) indexTeam = 0;
+        }
     }
 }

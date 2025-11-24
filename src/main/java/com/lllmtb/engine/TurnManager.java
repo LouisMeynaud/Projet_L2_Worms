@@ -13,11 +13,16 @@ public final class TurnManager {
     private final GameWorld world;
 
     private long startTime;
-    private static final long tourDurationInMs = 10_000;
+    private final long tourDurationInMs;
 
-    public TurnManager(GameWorld world) {
+    public TurnManager(GameWorld world, long tourDuration) {
         this.world = world;
+        this.tourDurationInMs = tourDuration;
         this.init();
+    }
+
+    public GameWorld getWorld(){
+        return this.world;
     }
 
     public void init(){
@@ -45,6 +50,7 @@ public final class TurnManager {
 
     private void endTurn() {
         this.turn.end();
+        world.getBus().postQueued(new TurnEndEvent());
         System.out.println("End turn - switch Team");
         world.nextTeamTurn();
     }
