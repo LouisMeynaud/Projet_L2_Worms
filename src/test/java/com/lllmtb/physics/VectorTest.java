@@ -21,9 +21,9 @@ public class VectorTest {
         Vector v3 = new Vector(5,6);
         Vector v4 = new Vector(1,2);
 
-        v4.scale(2);
-        v1.add(v2);
-        v3.sub(v2);
+        v4 = v4.scale(2);
+        v1 = v1.add(v2);
+        v3 = v3.sub(v2);
         assertEquals(4,v1.getX());
         assertEquals(5,v1.getY());
         assertEquals(4,v3.getX());

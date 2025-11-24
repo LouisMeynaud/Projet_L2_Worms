@@ -1,26 +1,28 @@
 package com.lllmtb.terrain.map;
 
-import java.io.IOException;
-//import java.util.Scanner;
-import java.io.File;
-import java.io.FileWriter;
+//import java.io.IOException;
+//import java.nio.file.Files;
+//import java.nio.file.Path;
+//import java.nio.file.Paths;
 
 public class SaveMap {
-   public static boolean saveMap(Map m) {
-    try {
-        File file = new File("src/main/java/com/lllmtb/terrain/MapFile/" + m.getFilesTxt());
-        file.createNewFile();    //Creates the file if it doesn't exist, overwrites it otherwise
-        FileWriter writer = new FileWriter(file);
-        writer.write(mapToString(m));
-        writer.close();
+//  public static boolean saveMap(Map map) {
+//     try {
 
-        System.out.println("Map enregistrée");
-        return true;
-    } catch (IOException e) {
-        System.out.println("Erreur : " + e.getMessage());
-        return false;
-    }
-}
+//         Path path = Paths.get("src/main/resources/map");
+//         Path folderPath = path.resolve(map.getFilesTxt());//concataine
+//         Files.createDirectories(folderPath);
+//         Path filePath = folderPath.resolve("map.txt");
+//         Files.writeString(filePath, mapToString(map));
+
+//         System.out.println("Succès : Map sauvegardée dans " + filePath);
+//         return true;
+//     } catch (IOException e) {
+//         System.err.println("Erreur lors de la sauvegarde : " + e.getMessage());
+//         e.printStackTrace();
+//         return false;
+//     }
+// }
 
     protected static String mapToString(Map m) {
         Tile[][] mMapMatrix = m.getMapMatrix();
@@ -45,7 +47,7 @@ public class SaveMap {
     }
 
     //methode demandant le fichie d'enregistrement de save quand une map est crée
-    public static String newMapSaveFile() {
+     public static String newMapSaveFile() {
         // boolean existe = false;
         // String files;
         // do {
@@ -66,7 +68,7 @@ public class SaveMap {
         //     }
         // } while (existe);
         // return files;
-        return "testMap.txt";
+         return "testMap.txt";
 
-    }
+     }
 }

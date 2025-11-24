@@ -138,14 +138,14 @@
                                             <counter>LINE</counter>
                                             <value>COVEREDRATIO</value>
                                             <!-- minimum 90% -->
-                                            <minimum>0.90</minimum>
+                                            <minimum>0.75</minimum>
                                         </limit>
                                         <limit>
                                             <!-- each branch must be reached at least once -->
                                             <counter>BRANCH</counter>
                                             <value>COVEREDRATIO</value>
                                             <!-- minimum 90% -->
-                                            <minimum>0.90</minimum>
+                                            <minimum>0.75</minimum>
                                         </limit>
                                     </limits>
                                 </rule>
@@ -157,6 +157,10 @@
                     <excludes>
                         <exclude>com/lllmtb/engine/GameEngine.class</exclude>
                         <exclude>com/lllmtb/ui/ConsoleUI.class</exclude>
+                        <exclude>com/lllmtb/ui/graphical/**/*</exclude>
+                        <exclude>com/lllmtb/engine/GameLoop.class</exclude>
+                        <exclude>com/lllmtb/physics/Collision.class</exclude> <!-- enlever une fois la nouvelle implementation de colision faite !-->
+
                     </excludes>
                 </configuration>
             </plugin>

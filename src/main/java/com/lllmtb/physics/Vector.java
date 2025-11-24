@@ -2,8 +2,8 @@ package com.lllmtb.physics;
 
 public class Vector {
 
-    private double x;
-    private double y;
+    private final double x;
+    private final double y;
 
 
     public Vector(double x, double y) {
@@ -18,19 +18,16 @@ public class Vector {
     public double getX() {  return this.x;  }
     public double getY() { return this.y; }
 
-    public void add(Vector other) {
-        this.x += other.x;
-        this.y += other.y;
+    public Vector add(Vector other) {
+        return new Vector(this.x + other.x, this.y + other.y);
     }
 
-    public void sub(Vector other) {
-        this.x -= other.x;
-        this.y -= other.y;
+    public Vector sub(Vector other) {
+        return new Vector(this.x - other.x, this.y - other.y);
     }
 
-    public void scale(double s) {
-        this.x *= s;
-        this.y *= s;
+    public Vector scale(double s) {
+        return new Vector(this.x * s, this.y * s);
     }
 
     public boolean equals(Vector other){
@@ -40,10 +37,6 @@ public class Vector {
 
     public Position newPos(Position pos, double time) {
         return new Position(pos.getX()+ this.x*time, pos.getY()+ this.y*time );
-    }
-
-    public Vector copy(){
-        return new Vector(this.getX(), this.getY());
     }
 
     @Override

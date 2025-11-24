@@ -1,11 +1,13 @@
 package com.lllmtb.terrain.generation;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
 import org.junit.jupiter.api.Test;
+
+import com.lllmtb.terrain.map.CreateSpawnPoint;
 import com.lllmtb.terrain.map.Map;
 
 
@@ -18,10 +20,10 @@ public class GenerateMapTest {
         InputStream originalIn = System.in;//on garde de coter l'entrer original pour la retablir apres
 
         System.setIn(new ByteArrayInputStream(inputSimule.getBytes())); // getbytes transforme le string en tableau d' octet pour byteArrayInpustream qui prend un tableau d'octect
-        ConfigMap configtest = new ConfigMap(60, 100, 2, 5, 5, 0, false, 20,40);
+        ConfigMap configtest = new ConfigMap(60, 5, 5, false, 0, LandScape.HILLY,0,0);
         Map m =GenerateMap.createMap(configtest);
         assertEquals(60, m.getWidth());//grand valeur pour bien tester les ligne qui retrie les tableau
-        assertEquals(100, m.getHeight());
+        assertEquals((int)(60*ConfigMap.RATIOWIDTHHEIGHT), m.getHeight());
         assertEquals("testMap.txt", m.getFilesTxt());
         // On restaure System.in
         System.setIn(originalIn);
@@ -35,10 +37,10 @@ public class GenerateMapTest {
         InputStream originalIn = System.in;//on garde de coter l'entrer original pour la retablir apres
 
         System.setIn(new ByteArrayInputStream(inputSimule.getBytes())); // getbytes transforme le string en tableau d' octet pour byteArrayInpustream qui prend un tableau d'octect
-        ConfigMap configtest = new ConfigMap(60, 100, 2, 5, 5, 0, true, 20,40);
+        ConfigMap configtest = new ConfigMap(60, 5, 5, false, 0, LandScape.HILLY,0,0);
         Map m =GenerateMap.createMap(configtest);
         assertEquals(60, m.getWidth());
-        assertEquals(100, m.getHeight());
+        assertEquals((int)(60*ConfigMap.RATIOWIDTHHEIGHT), m.getHeight());
         assertEquals("testMap.txt", m.getFilesTxt());
         // On restaure System.in
         System.setIn(originalIn);
@@ -51,12 +53,12 @@ public class GenerateMapTest {
     }
 
     @Test
-    void triHightLineLowLineTest(){
+    void TriHightLineLowLineTest(){
         int[] highLine = {8,2,4};
         int[] lowLine = {7,5,3};
         int[] highLineBis = {8,5,4};
         int[] lowLineBis = {7,2,3};
-        ConfigMap config = new ConfigMap(3, 5, 0, 0, 0, 0, false, 0, 40);
+        ConfigMap config = new ConfigMap(3, 0, 0, false, 0, LandScape.HILLY,0,0);
         GenerateMap.triHightLineLowLine(highLine,lowLine,config);
         for (int i = 0; i < 3; i++) {
         assertEquals(highLine[i], highLineBis[i]);

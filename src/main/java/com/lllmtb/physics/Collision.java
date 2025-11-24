@@ -45,13 +45,13 @@ public class Collision {
                     body.setVector(tempo);
                     collisionDetected = true;
 
-                } else if (haveCollisionY(body, nextPosYBasGauche)) {
+                }if (haveCollisionY(body, nextPosYBasGauche)) {
                     Vector tempo = new Vector(body.getVector().getX(), 0);
                     body.setVector(tempo);
                     collisionDetected = true;
                 }
 
-                else if (haveCollisionXY(body, nextPos)) {
+                if (haveCollisionXY(body, nextPos)) {
                     Vector tempo = new Vector(0, 0); // Important, given that it's a cubic structure, the case where there's no collision when moving along the x-axis, no collision when moving along the y-axis, but collision is possible when moving along both the x and y axes.
                     body.setVector(tempo);
                     collisionDetected = true;
@@ -78,6 +78,8 @@ public class Collision {
         Position nextPosXHautGauche = posHautGauche(nextPosXBasGauche, body);
         Position nextPosXHautDroite = posHautDroite(nextPosXBasGauche, body);
         if (body.getVector().getX() < 0) {
+            nextPosXBasGauche = new Position(nextPosXBasGauche.getX() +1, nextPosXBasGauche.getY());
+            nextPosXHautGauche = new Position(nextPosXHautGauche.getX() +1, nextPosXHautGauche.getY()); //on test l'arret droite
             return (map.inMap(nextPosXBasGauche) && map.isSolid(nextPosXBasGauche))
                     || (map.inMap(nextPosXHautGauche) && map.isSolid(nextPosXHautGauche)); // collision to the left
 
@@ -99,6 +101,8 @@ public class Collision {
         Position nextPosYHautGauche = posHautGauche(nextPosYBasGauche, body);
         Position nextPosYHautDroite = posHautDroite(nextPosYBasGauche, body);
         if (body.getVector().getY() < 0) {
+            nextPosYBasDroite = new Position(nextPosYBasDroite.getX(),nextPosYBasDroite.getY()-1);
+            nextPosYBasGauche = new Position(nextPosYBasGauche.getX(),nextPosYBasGauche.getY()-1); // on test l'arret superieur du bloque(-1 car par la suite inverser par cooptomatrix)
             return (map.inMap(nextPosYBasDroite) && map.isSolid(nextPosYBasDroite))
                     || (map.inMap(nextPosYBasGauche) && map.isSolid(nextPosYBasGauche)); // downward collision
         } else {
@@ -121,10 +125,13 @@ public class Collision {
         Position nextPosXYHautDroite = posHautDroite(nextPosXYBasGauche, body);
 
         if (body.getVector().getX() < 0 && body.getVector().getY() < 0) {
+            nextPosXYBasGauche = new Position(nextPosXYBasGauche.getX()+1, nextPosXYBasGauche.getY()-1);
             return (map.inMap(nextPosXYBasGauche) && map.isSolid(nextPosXYBasGauche)); // collision bottom/left
         } else if (body.getVector().getX() < 0 && body.getVector().getY() > 0) {
+            nextPosXYHautGauche = new Position(nextPosXYHautGauche.getX()+1,nextPosXYHautGauche.getY());
             return (map.inMap(nextPosXYHautGauche) && map.isSolid(nextPosXYHautGauche)); // collision bottom/right
         } else if (body.getVector().getX() > 0 && body.getVector().getY() < 0) {
+            nextPosXYBasDroite = new Position(nextPosXYBasDroite.getX(),nextPosXYBasDroite.getY()-1);
             return (map.inMap(nextPosXYBasDroite) && map.isSolid(nextPosXYBasDroite)); // collision top/left
         } else if (body.getVector().getX() > 0 && body.getVector().getY() > 0) {
             return (map.inMap(nextPosXYHautDroite) && map.isSolid(nextPosXYHautDroite)); // collision top/right

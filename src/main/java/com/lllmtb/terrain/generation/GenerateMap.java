@@ -1,13 +1,19 @@
 package com.lllmtb.terrain.generation;
 
 
+//import java.io.ObjectInputFilter;
+//import java.util.Arrays;
+//import java.util.Random;
+//
+//import com.lllmtb.physics.Position;
+//import com.lllmtb.terrain.map.CreateSpawnPoint;
 import com.lllmtb.terrain.map.Map;
 import com.lllmtb.terrain.map.SaveMap;
 
 
 public class GenerateMap {
-    public static ConfigMap WORLD = new ConfigMap(370, 170, 2, 3, 8, 4, false, 20, 40);
-    public static ConfigMap FLYINGWORLD = new ConfigMap(370, 170, 2, 3, 8, 4, true, 20, 40);
+    public static ConfigMap WORLD = new ConfigMap( 100, 4, 5, false, 17, LandScape.HILLY,1,4);
+    public static ConfigMap FLYINGWORLD = new ConfigMap( 100, 4, 5, true, 17, LandScape.HILLY,1,4);
     
 
     /**
@@ -17,25 +23,27 @@ public class GenerateMap {
      * @return the create map
      */
     public static Map createMap(ConfigMap config) {
-        Map map = new Map(config.height, config.width, SaveMap.newMapSaveFile());
+        Map map = new Map(config.getHeight(), config.getWidth(), SaveMap.newMapSaveFile());
         int[] lowLine;
 
         int[] hightLine = LineGenerator.createLine(config); 
-        if (config.flyingIsland) {
+        if (config.isFlyingIsland()) {
             lowLine = LineGenerator.createLine(config); 
             triHightLineLowLine(hightLine,lowLine,config);
             
         } else {
-            lowLine = new int[config.width];
-            for (int i = 0; i < config.width; i++) {
+            lowLine = new int[config.getWidth()];
+            for (int i = 0; i < config.getWidth(); i++) {
                 lowLine[i] = 0;
             }
         }
 
-        MapBalancer.leftRightBalancing(lowLine, hightLine, config.height);
-        MapBalancer.thicknessBalencer(config.thicknessMin,MapBalancer.averageThickness(lowLine, hightLine, 0, config.width), hightLine);
-        MapFiller.fillingWater(map, config.waterHeight);
+
+        MapBalancer.leftRightBalancing(lowLine, hightLine, config.getHeight());
+        MapBalancer.thicknessBalencer(config.getThicknessMin(),MapBalancer.averageThickness(lowLine, hightLine, 0, config.getWidth()), hightLine);
+        MapFiller.fillingWater(map, config.getWaterHeight());
         MapFiller.fillingDirt(map, hightLine, lowLine);
+        map.setHightLine(hightLine);
 
         return map;
     }
@@ -43,12 +51,12 @@ public class GenerateMap {
      /**
      * methode pour que la hightLine soit toujours au dessus de la lowLine
      * 
-     * @param hightLine la ligne haute
+     * @param highLine la ligne haute
      * @param lowLine la ligne basse
      * @param config la config de la map
      */
     protected  static void triHightLineLowLine(int[] hightLine,int[] lowLine,ConfigMap config){
-        for (int i = 0; i < config.width; i++) {
+        for (int i = 0; i < config.getWidth(); i++) {
                 if (lowLine[i] > hightLine[i]) {
                     int temp = lowLine[i];
                     lowLine[i] = hightLine[i];
@@ -58,4 +66,4 @@ public class GenerateMap {
     }
     // attention probleme, le right balence crée une pente enorme au mileu
 
-}
+    }

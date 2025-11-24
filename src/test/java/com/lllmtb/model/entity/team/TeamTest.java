@@ -17,7 +17,7 @@ public class TeamTest {
 
     @BeforeEach
     public void setUp(){
-        team = new Team("TestTeam", 1, new Position(0,0));
+        team = new Team("TestTeam", 1, new Position[]{new Position(0, 0)});
 
 
     }
@@ -42,7 +42,7 @@ public class TeamTest {
     }
     @Test
     public void testConstructorNumberOfPlayers(){
-        assertEquals(1, team.getNumberOfPlayers());
+        assertEquals(1, team.getNumberOfWorms());
     }
     @Test
     public void testCurrentWorm(){
@@ -55,6 +55,11 @@ public class TeamTest {
         assertEquals(TeamColor.class, team.teamColor.getClass());
     }
     @Test
+    public void testChooseColorDifferent(){
+        Team team2 = new Team("TestTeam2", 1, new Position[]{new Position(0,0)});
+        assertNotEquals(team.teamColor, team2.teamColor);
+    }
+    @Test
     public void testSetUpPlayers(){
         assertEquals(1, team.getTeamWorms().size());
         Worm worm1 = team.getIndexWorm(0);
@@ -64,16 +69,15 @@ public class TeamTest {
     }
     @Test
     public void testAddPlayer(){
-        Worm worm = new Worm("Worm1", team, new Position(0,0));
-        team.addPlayer(worm);
-        assertEquals(2, team.getNumberOfPlayers() );
+        Worm worm = new Worm("Worm1", team);
+        assertEquals(2, team.getNumberOfWorms() );
         Worm worm2 = team.getIndexWorm(1);
         assertEquals(worm2, worm);
     }
     @Test
-    public void testRemovePlayer(){
-        team.removePlayer(1);
-        assertEquals(0, team.getNumberOfPlayers());
+    public void testRemoveWorm(){
+        team.removeWorm(1);
+        assertEquals(0, team.getNumberOfWorms());
         assertTrue(team.getTeamWorms().isEmpty());
     }
     @Test
@@ -108,15 +112,13 @@ public class TeamTest {
     }
     @Test
     public void testNextWorm(){
-        Worm worm = new Worm("Test2", team, new Position(0, 0));
-        team.addPlayer(worm);
+        Worm worm = new Worm("Test2", team);
         team.nextWorm();
         assertSame(worm, team.getCurrentWorm());
     }
     @Test
     public void testNextWormLast(){
-        Worm worm = new Worm("Test2", team, new Position(0, 0));
-        team.addPlayer(worm);
+        Worm worm = new Worm("Test2", team);
         team.nextWorm();
         team.nextWorm();
         assertSame(team.getIndexWorm(0), team.getCurrentWorm());

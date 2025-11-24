@@ -29,8 +29,8 @@ public class Team {
     /** The name of the team. */
     public final String name;
 
-    /** Number of players (worms) in the team. */
-    private int numberOfPlayers;
+    /** Number of worms in the team. */
+    private int numberOfWorms;
 
     /** Unique ID of the team. */
     public final int id;
@@ -49,21 +49,22 @@ public class Team {
 
     /** Possible colors that can be assigned to a team. */
     private static List<TeamColor> teamColorPossible = Arrays.asList(TeamColor.values());
+    private static ArrayList<TeamColor> teamColorChoosed = new ArrayList<>();
 
 
     /**
      * Private constructor used to initialize a team with a given name, number of players, inventory, and spawn position.
      * @param name the name of the team
-     * @param numberOfPlayers number of worms in the team
+     * @param numberOfWorms number of worms in the team
      * @param inventory the inventory assigned to the team
      * @param spawn the spawn position where the worms will be placed
      */
-    private Team(String name, int numberOfPlayers, Inventory inventory, Position spawn) {
+    private Team(String name, int numberOfWorms, Inventory inventory, Position[] spawn) {
         this.inventory = inventory;
         this.name = name;
-        this.numberOfPlayers = numberOfPlayers;
+        this.numberOfWorms = numberOfWorms;
         this.id = ++Team.ids;
-        this.setUpPlayers(numberOfPlayers, spawn);
+        this.setUpWorms(numberOfWorms, spawn);
         this.currentWorm = this.worms.get(0);
         this.teamColor = Team.chooseColor();
     }
@@ -71,11 +72,11 @@ public class Team {
     /**
      * Public constructor used to initialize a team using the private constructor.
      * @param teamName the name of the team
-     * @param numberOfPlayers number of worms in the team
+     * @param numberOfWorms number of worms in the team
      * @param spawn the spawn position where the worms will be placed
      */
-    public Team(String teamName, int numberOfPlayers, Position spawn) {
-        this(teamName, numberOfPlayers, new Inventory(), spawn);
+    public Team(String teamName, int numberOfWorms, Position[] spawn) {
+        this(teamName, numberOfWorms, new Inventory(), spawn);
     }
 
     /**
@@ -98,8 +99,8 @@ public class Team {
      * Returns the number of worms currently in the team.
      * @return number of worms
      */
-    public int getNumberOfPlayers() {
-        return this.numberOfPlayers;
+    public int getNumberOfWorms() {
+        return this.numberOfWorms;
     }
 
     /**
@@ -122,11 +123,13 @@ public class Team {
     /**
      * Creates and adds worms to the team based on the number of players.
      * @param numberOfPlayers number of worms to create
-     * @param spawn spawn position for all worms
+     * @param spawns all spawn position for all worms
      */
-    private void setUpPlayers(int numberOfPlayers, Position spawn) {
+    private void setUpWorms(int numberOfPlayers, Position[] spawns) {
         for (int i = 1; i <= numberOfPlayers; i++) {
-            this.addPlayer(new Worm(this.name + i, this, spawn));
+            new Worm(this.name + i, this);
+            Position spawn = spawns[i-1];
+            this.worms.get(i-1).spawn(spawn);
         }
     }
 
@@ -134,18 +137,18 @@ public class Team {
      * Adds a new worm to the team.
      * @param worm the worm to add
      */
-    public void addPlayer(Worm worm) {
+    public void addWorm(Worm worm) {
         this.worms.add(worm);
-        this.numberOfPlayers = this.worms.size();
+        this.numberOfWorms = this.worms.size();
     }
 
     /**
      * Removes a worm from the team based on its index.
-     * @param index index of the worm to remove
+     * @param indexPlayer index of the worm to remove
      */
-    public void removePlayer(int indexPlayer) {
+    public void removeWorm(int indexPlayer) {
         this.worms.remove(indexPlayer-1);
-        this.numberOfPlayers = this.worms.size();
+        this.numberOfWorms = this.worms.size();
     }
 
     /**
@@ -154,7 +157,13 @@ public class Team {
      */
     public static TeamColor chooseColor() {
         Random random = new Random();
-        return Team.teamColorPossible.get(random.nextInt(Team.teamColorPossible.size()));
+        if(teamColorChoosed.size() == teamColorPossible.size()){Team.teamColorChoosed.clear();}
+        TeamColor teamcolor = Team.teamColorPossible.get(random.nextInt(Team.teamColorPossible.size()));
+        while(teamColorChoosed.contains(teamcolor)){
+            teamcolor = Team.teamColorPossible.get(random.nextInt(Team.teamColorPossible.size()));
+        }
+        teamColorChoosed.add(teamcolor);
+        return teamcolor;
     }
 
     /**
