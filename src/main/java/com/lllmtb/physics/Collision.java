@@ -3,6 +3,7 @@ package com.lllmtb.physics;
 import com.lllmtb.model.entity.worm.Worm;
 import com.lllmtb.terrain.map.Map;
 import com.lllmtb.model.entity.Entity;
+
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
@@ -52,13 +53,13 @@ public class Collision {
          * Constructor of impact when there is a collision
          *
          * @param ti      the {@code double} which represents the time of impact, between {@code 0.0} and {@code 1.0}.
-         * @param Pos     the {@link Position} at the end of the tick, at the point of collision.
+         * @param body     the {@link PhysicsBody} of the entity in movement.
          * @param normal  the normal {@link Vector} of the hit structure.
          * @param hitBody the {@link PhysicsBody} of the collided entity ({@code null} if it's the map).
          */
-        public Impact(double ti, Position Pos, Vector normal, PhysicsBody hitBody) {
+        public Impact(double ti, PhysicsBody body, Vector normal, PhysicsBody hitBody) {
             this.hitBody = hitBody;
-            this.collisionPos = Pos;
+            this.collisionPos = body.getVector().newPos(body.getPos(), ti);;
             this.ti = ti;
             this.normal = normal;
             this.collided = true;
@@ -83,10 +84,11 @@ public class Collision {
         if (body.getEntity() instanceof Worm) {
             // Calculation of the two circles radius
             double radius = body.getWidth()/2;
-            Position pos = new Position(body.getPos().getX() + 1.0, body.getPos().getY() + 1.0);
+            Position wormHead = new Position(body.getPos().getX(),body.getPos().getY() + 1.0);
+            Position endPos2 = new Position(endPos.getX(), endPos.getY() + 1.0);
             // test collision for the two circles of the worm
             Impact mapImpact1 = this.testSweptCircleTile(body, body.getPos(), radius, endPos);
-            Impact mapImpact2 = this.testSweptCircleTile(body, pos, radius, endPos);
+            Impact mapImpact2 = this.testSweptCircleTile(body, wormHead, radius, endPos2);
             if (mapImpact1.ti < finalImpact.ti) {
                 finalImpact = mapImpact1;
             }
@@ -97,11 +99,12 @@ public class Collision {
             for (PhysicsBody other : this.bodies) {
                 if ((body != other) && !(other.getEntity() instanceof Worm)) {
                     double radiusOther = other.getHeight()/2;
-                    Impact bodyImpact = this.testSweptCircleCircle(body, body.getPos(), radius, other, other.getPos(), radiusOther, endPos);
+                    Position otherPos = new Position(other.getPos().getX() + 0.5, other.getPos().getY() + 0.5);
+                    Impact bodyImpact = this.testSweptCircleCircle(body, body.getPos(), radius, other, otherPos, radiusOther, endPos);
                     if (bodyImpact.ti < finalImpact.ti) {
                         finalImpact = bodyImpact;
                     }
-                    Impact bodyImpact2 = this.testSweptCircleCircle(body, pos, radius, other, other.getPos(), radiusOther, endPos);
+                    Impact bodyImpact2 = this.testSweptCircleCircle(body, wormHead, radius, other, otherPos, radiusOther, endPos2);
                     if (bodyImpact2.ti < finalImpact.ti) {
                         finalImpact = bodyImpact2;
                     }
@@ -120,13 +123,14 @@ public class Collision {
             for (PhysicsBody other : this.bodies) {
                 if (other != body) {
                     double radiusOther = other.getWidth()/2;
-                    Impact bodyImpact = this.testSweptCircleCircle(body, body.getPos(), radius, other, other.getPos(), radiusOther, endPos);
+                    Position otherPos = new Position(other.getPos().getX() + 0.5, other.getPos().getY() + 0.5);
+                    Impact bodyImpact = this.testSweptCircleCircle(body, body.getPos(), radius, other, otherPos, radiusOther, endPos);
                     if (bodyImpact.ti < finalImpact.ti) {
                         finalImpact = bodyImpact;
                     }
                     if (other.getEntity() instanceof Worm) {
-                        Position pos = new Position(other.getPos().getX() + 1.0, other.getPos().getY() + 1.0);
-                        bodyImpact = this.testSweptCircleCircle(body, body.getPos(), radius, other, pos, radiusOther, endPos);
+                        Position wormHead = new Position(other.getPos().getX() + 0.5, other.getPos().getY() + 1.5);
+                        bodyImpact = this.testSweptCircleCircle(body, body.getPos(), radius, other, wormHead, radiusOther, endPos);
                         if (bodyImpact.ti < finalImpact.ti) {
                             finalImpact = bodyImpact;
                         }
@@ -147,45 +151,57 @@ public class Collision {
      * @return The nearest impact with a solid tile.
      */
     private Impact testSweptCircleTile(PhysicsBody body, Position startPos, double radius, Position endPos) {
-        endPos = new Position(endPos.getX()+(body.getWidth()/2), endPos.getY()+(body.getHeight()/2));
-        Vector displacement = new Vector(endPos.getX() - startPos.getX(), endPos.getY() - startPos.getY());
+        Position startPos2 = new Position(startPos.getX() + radius, startPos.getY() + radius);
+        Vector displacement = body.getVector();
 
         Impact nearestImpact = new Impact(endPos);
 
         // Determine the expanded AABB area on the grid to check
-        int minX = (int) Math.floor(Math.min(startPos.getX(), endPos.getX()) - radius);
-        int maxX = (int) Math.ceil(Math.max(startPos.getX(), endPos.getX()) + radius);
-        int minY = (int) Math.floor(Math.min(startPos.getY(), endPos.getY()) - radius);
-        int maxY = (int) Math.ceil(Math.max(startPos.getY(), endPos.getY()) + radius);
+        int minX = (int) Math.floor(Math.min(startPos.getX(), endPos.getX()));
+        int maxX = (int) Math.ceil(Math.max(startPos.getX(), endPos.getX()));
+        int minY = (int) Math.floor(Math.min(startPos.getY(), endPos.getY()));
+        int maxY = (int) Math.ceil(Math.max(startPos.getY(), endPos.getY()));
 
         for (int tx = minX; tx <= maxX; tx++) {
             for (int ty = minY; ty <= maxY; ty++) {
                 Position tilePos = new Position(tx, ty);
 
-                if (this.map.inMap(tilePos) && this.map.isSolid(tilePos)) {
+                if (this.map.inMap(tilePos)) {
 
+                    if (this.map.isSolid(tilePos)) {
+
+                        // Immediate overlap test (ti=0.0)
+                        if (isColliding(startPos2, radius, tilePos)) {
+                            Vector normal = this.calculateTileNormal(startPos2, tilePos);
+                            return new Impact(0.0, body, normal, null);
+                        }
+
+                        // Swept AABB test
+                        double[] result = this.sweptCircleAABB(startPos2, radius, displacement, tilePos);
+                        double ti = result[0];
+                        Vector normal = new Vector(result[1], result[2]);
+
+                        if (ti >= 0.0 && ti < 1.0 && ti < nearestImpact.ti) {
+                            nearestImpact = new Impact(ti, body, normal, null);
+                        }
+                    }
+                } else {
                     // Immediate overlap test (ti=0.0)
-                    if (isColliding(startPos, radius, tilePos)) {
-                        Vector normal = this.calculateTileNormal(startPos, tilePos);
-                        return new Impact(0.0, startPos, normal, null);
+                    if (isColliding(startPos2, radius, tilePos)) {
+                        Vector normal = this.calculateTileNormal(startPos2, tilePos);
+                        return new Impact(0.0, body, normal, null);
                     }
 
                     // Swept AABB test
-                    double[] result = this.sweptCircleAABB(startPos, radius, displacement, tilePos);
+                    double[] result = this.sweptCircleAABB(startPos2, radius, displacement, tilePos);
                     double ti = result[0];
                     Vector normal = new Vector(result[1], result[2]);
 
                     if (ti >= 0.0 && ti < 1.0 && ti < nearestImpact.ti) {
-                        Position hitPos = body.getVector().newPos(startPos, ti);
-                        nearestImpact = new Impact(ti, hitPos, normal, null);
+                        nearestImpact = new Impact(ti, body, normal, null);
                     }
                 }
             }
-        }
-
-        // If the body moves outside the map boundaries, treat as an immediate impact.
-        if (!this.map.inMap(endPos)) {
-            return new Impact(0.0, startPos, new Vector(0, 0), null);
         }
 
         return nearestImpact;
@@ -204,13 +220,13 @@ public class Collision {
      * @return The nearest impact with body2.
      */
     private Impact testSweptCircleCircle(PhysicsBody body1, Position startPos1, double radius1,PhysicsBody body2, Position startPos2, double radius2, Position endPos) {
-        endPos = new Position(endPos.getX()+(body1.getWidth()/2), endPos.getY()+(body1.getHeight()/2));
+        Position startPos = new Position(startPos1.getX() + radius1, startPos1.getY() + radius1);
         Vector displacement = new Vector(endPos.getX() - startPos1.getX(), endPos.getY() - startPos1.getY());
 
         double combinedRadius = radius1 + radius2;
 
         // Use quadratic formula resolution to find ti
-        double ti = sweptPointCircle(startPos1, displacement, startPos2, combinedRadius);
+        double ti = sweptPointCircle(startPos, displacement, startPos2, combinedRadius);
 
         if (ti >= 0.0 && ti < 1.0) {
             // Calculate the exact impact position
@@ -221,7 +237,7 @@ public class Collision {
             double length = Math.sqrt(normalVec.getX() * normalVec.getX() + normalVec.getY() * normalVec.getY());
             Vector normal = normalVec.scale(1.0 / length);
 
-            return new Impact(ti, hitPos, normal, body2);
+            return new Impact(ti, body1, normal, body2);
         }
 
         return new Impact(endPos);
@@ -245,11 +261,12 @@ public class Collision {
         double closestX = Math.max(ax, Math.min(cx, ax + 1.0));
         double closestY = Math.max(ay, Math.min(cy, ay + 1.0));
 
-        double distanceX = cx - closestX;
-        double distanceY = cy - closestY;
+        double distanceX = Math.abs(cx - closestX);
+        double distanceY = Math.abs(cy - closestY);
+
         double distanceSquared = (distanceX * distanceX) + (distanceY * distanceY);
 
-        return distanceSquared < (radius * radius);
+        return distanceSquared <= (radius * radius);
     }
 
     /**
@@ -261,15 +278,11 @@ public class Collision {
     private Vector calculateTileNormal(Position hitPos, Position tilePos) {
         double cx = hitPos.getX();
         double cy = hitPos.getY();
-        double tx = tilePos.getX();
-        double ty = tilePos.getY();
-
-        // Finds the closest point on the AABB (tile) to the circle center
-        double closestX = Math.max(tx, Math.min(cx, tx + 1.0));
-        double closestY = Math.max(ty, Math.min(cy, ty + 1.0));
+        double tx = tilePos.getX() + 0.5;
+        double ty = tilePos.getY() + 0.5;
 
         // The normal vector is the vector from the closest point to the circle center
-        Vector normalVec = new Vector(cx - closestX, cy - closestY);
+        Vector normalVec = new Vector(cx - tx, cy - ty);
 
         // Normalization
         double length = Math.sqrt(normalVec.getX() * normalVec.getX() + normalVec.getY() * normalVec.getY());
@@ -289,22 +302,34 @@ public class Collision {
      */
     private double[] sweptCircleAABB(Position startPos, double radius, Vector displacement, Position tilePos) {
         // Creates the enlarged AABB (expanded by the radius)
-        double tileX = tilePos.getX() - radius;
-        double tileY = tilePos.getY() - radius;
-        double tileW = 1.0 + 2 * radius;
-        double tileH = 1.0 + 2 * radius;
+        double tileX = tilePos.getX() + radius;
+        double tileY = tilePos.getY() + radius;
 
         double dx = displacement.getX();
         double dy = displacement.getY();
         double x = startPos.getX();
         double y = startPos.getY();
 
+        double txNearX;
+        double txFarX;
+        double tyNearY;
+        double tyFarY;
         // Calculate Near (entry) and Far (exit) times on X and Y axes
-        double txNearX = (tileX - x) / dx;
-        double txFarX = (tileX + tileW - x) / dx;
+        if (dx == 0) {
+            txNearX = 0;
+            txFarX = 1;
+        } else {
+            txNearX = (tileX - 1.0 - x) / dx;
+            txFarX = (tileX + 1.0 - x) / dx;
+        }
 
-        double tyNearY = (tileY - y) / dy;
-        double tyFarY = (tileY + tileH - y) / dy;
+        if (dy == 0) {
+            tyNearY = 0;
+            tyFarY = 1;
+        } else {
+            tyNearY = (tileY - 1.0 - y) / dy;
+            tyFarY = (tileY + 1.0 - y) / dy;
+        }
 
         // Invert times if direction is negative
         if (dx < 0) {
@@ -356,11 +381,9 @@ public class Collision {
         // A = ||V1||^2
         double a = v1.getX() * v1.getX() + v1.getY() * v1.getY();
         // B = 2 * (V1.p1toC2)
-        double b = 2.0 * (v1.getX() * p1ToC2.getX() + v1.getY() * p1ToC2.getY());
+        double b = -2.0 * (v1.getX() * p1ToC2.getX() + v1.getY() * p1ToC2.getY());
         // C = ||p1toC2||^2 - r2^2
         double c = p1ToC2.getX() * p1ToC2.getX() + p1ToC2.getY() * p1ToC2.getY() - r2 * r2;
-        // if c < 0, objects already in collision
-        if (c < 0) return 0.0;
         // if a = 0, object1 not in movement, so no collision
         if (a == 0.0) return 1.0;
         // Calculation of the discriminant
@@ -386,15 +409,8 @@ public class Collision {
      */
     public void slide(PhysicsBody body, Impact impact) {
         body.setPos(impact.collisionPos);
-        // normal vector
-        Vector normal = impact.normal;
-        // init_speed vector
-        Vector velocity = body.getVector();
-        // calculation of normal vector and init_speed vector scalar product
-        double dot = velocity.getX() * normal.getX() + velocity.getY() * normal.getY();
-        // End of the slippery_speed vector calculation
-        Vector remainingVelocity = velocity.sub(normal.scale(dot));
-        body.setVector(remainingVelocity);
+        Vector fallVector = new Vector(0, -1);
+        body.setVector(fallVector);
     }
 
     /**
