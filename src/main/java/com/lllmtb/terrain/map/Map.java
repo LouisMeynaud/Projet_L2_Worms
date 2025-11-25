@@ -72,7 +72,7 @@ public class Map {
                     case AIR: string.append(" ");break;
                     case DIRT : string.append("#");break;
                     case WATER : string.append("o");break;
-                    case CAVERN : string.append("‎ ");break;
+                    case CAVERN : string.append("~");break;
                     case GRASS : string.append("_");break;
                     default : throw new IllegalStateException("Tile inconnue : " + mapMatrix[i][j]);
                 }
