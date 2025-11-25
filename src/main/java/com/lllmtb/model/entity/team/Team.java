@@ -5,10 +5,11 @@ import java.util.*;
 import com.lllmtb.engine.commands.GameCommand;
 import com.lllmtb.model.entity.worm.Worm;
 import com.lllmtb.model.item.*;
-import com.lllmtb.model.item.inventory.Inventory;
 import com.lllmtb.model.item.tool.*;
 import com.lllmtb.model.item.weapon.*;
+import com.lllmtb.model.item.inventory.Inventory;
 import com.lllmtb.physics.Position;
+
 import org.eclipse.jdt.annotation.NonNull;
 
 // TODO - Decide how to handle item use:
@@ -131,6 +132,10 @@ public class Team {
         return this.currentWorm;
     }
 
+    public static ArrayList<TeamColor> getChosenTeamColors(){
+        return chosenTeamColors;
+    }
+
     /**
      * Creates and adds worms to the team based on the number of players.
      * @param numberOfPlayers number of worms to create
@@ -141,8 +146,7 @@ public class Team {
         if (spawns.length != numberOfWorms) throw new IllegalArgumentException("Team spawnpoint array does not match the number of worms!");
         for (int i = 1; i <= numberOfPlayers; i++) {
             new Worm(this.name + i, this);
-            Random random = new Random();
-            Position spawn = spawns[random.nextInt(0, spawns.length)];
+            Position spawn = spawns[i-1];
             this.worms.get(i-1).spawn(spawn);
         }
     }

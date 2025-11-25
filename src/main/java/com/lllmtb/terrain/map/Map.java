@@ -1,5 +1,8 @@
 package com.lllmtb.terrain.map;
+import java.util.Random;
+
 import com.lllmtb.physics.Position;
+import com.lllmtb.terrain.generation.ConfigMap;
 
 public class Map {
 /**
@@ -13,12 +16,16 @@ public class Map {
     private int height;
     private Tile[][] mapMatrix;
     private String filesTxt;
+    private Position[][] spawnPoint;
+    private int[] hightLine;
+    private int heightWater =0; //devra etre changer
 
     public Map(int height, int width, String filesTxt) {
         this.mapMatrix = new Tile[height][width];
         this.width = width;
         this.height = height;
         this.filesTxt = filesTxt;
+        this.spawnPoint = null;
     }
 
     public int getWidth() {
@@ -37,10 +44,24 @@ public class Map {
         return filesTxt;
     }
 
+    
     protected void setFilesTxt(String files){
         this.filesTxt = files;
     }
+
+    
    
+    public void setSpawnPoint(Position[][] spawnPoint) {
+        this.spawnPoint = spawnPoint;
+    }
+
+    
+
+    public void setHightLine(int[] hightLine) {
+        this.hightLine = hightLine;
+    }
+    
+
     @Override
     public String toString() {
         StringBuilder string = new StringBuilder("width : " + this.width + ", height : " + this.height + ", matrice : \n");
@@ -51,6 +72,8 @@ public class Map {
                     case AIR: string.append(" ");break;
                     case DIRT : string.append("#");break;
                     case WATER : string.append("o");break;
+                    case CAVERN : string.append("~");break;
+                    case GRASS : string.append("_");break;
                     default : throw new IllegalStateException("Tile inconnue : " + mapMatrix[i][j]);
                 }
             }
@@ -74,7 +97,14 @@ public class Map {
      */
     public Tile getTile(Position position) {
         Position posMatrix = this.cooMapToCooMatrix(position);
-        return this.mapMatrix[(int) posMatrix.getY()][(int) posMatrix.getX()];
+        int x = (int) posMatrix.getX();
+        int y = (int) posMatrix.getY();
+
+        if (y < 0 || y >= this.mapMatrix.length || x < 0 || x >= this.mapMatrix[0].length) {
+            return Tile.AIR; 
+        }
+
+        return this.mapMatrix[y][x]; 
     }
 
     /**
@@ -111,8 +141,21 @@ public class Map {
         Tile tile = this.getTile(position);
         switch(tile){
             case DIRT : return true;
+            case GRASS : return true;
             default: return false; //add other block in future
         }
+    }
+
+    public Position[][] getSpawnPoint() {
+        return spawnPoint;
+    }
+
+    public int[] getHightLine() {
+        return hightLine;
+    }
+
+    public int getHeightWater() {
+        return heightWater;
     }
 
 }
