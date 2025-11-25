@@ -120,6 +120,10 @@ public class Team {
         return this.currentWorm;
     }
 
+    public static ArrayList<TeamColor> getTeamColorChoosed(){
+        return teamColorChoosed;
+    }
+
     /**
      * Creates and adds worms to the team based on the number of players.
      * @param numberOfPlayers number of worms to create
@@ -128,8 +132,7 @@ public class Team {
     private void setUpWorms(int numberOfPlayers, Position[] spawns) {
         for (int i = 1; i <= numberOfPlayers; i++) {
             new Worm(this.name + i, this);
-            Random random = new Random();
-            Position spawn = spawns[random.nextInt(0, spawns.length)];
+            Position spawn = spawns[i-1];
             this.worms.get(i-1).spawn(spawn);
         }
     }

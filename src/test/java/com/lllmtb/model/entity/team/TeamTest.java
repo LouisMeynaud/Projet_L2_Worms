@@ -18,6 +18,7 @@ public class TeamTest {
     @BeforeEach
     public void setUp(){
         team = new Team("TestTeam", 1, new Position[]{new Position(0, 0)});
+        Team.getTeamColorChoosed().clear();
 
 
     }
@@ -56,8 +57,10 @@ public class TeamTest {
     }
     @Test
     public void testChooseColorDifferent(){
+        Team.getTeamColorChoosed().clear();
         Team team2 = new Team("TestTeam2", 1, new Position[]{new Position(0,0)});
-        assertNotEquals(team.teamColor, team2.teamColor);
+        Team team3 = new Team("TestTeam3", 1, new Position[]{new Position(0,0)});
+        assertNotEquals(team3.teamColor, team2.teamColor);
     }
     @Test
     public void testSetUpPlayers(){

@@ -1,5 +1,6 @@
 package com.lllmtb.engine;
 
+import com.lllmtb.events.game.GamePauseEvent;
 import com.lllmtb.physics.PhysicsBody;
 
 import java.util.Arrays;
@@ -8,10 +9,17 @@ public class GameLoop implements Runnable {
     private final GameWorld world;
     private volatile boolean running = true;
     private final double ticktime = 0.0167; // ~60Hz
+    private boolean isPaused = false;
 
     public GameLoop(GameWorld world) {
         this.world = world;
+
+        this.world.getBus().subscribe(GamePauseEvent.class, this::onPauseEvent);
     }
+    private void onPauseEvent(GamePauseEvent event) {
+        this.isPaused = event.isPaused;
+    }
+
 
     @Override
     public void run() {
@@ -20,21 +28,24 @@ public class GameLoop implements Runnable {
         while (running) {
             long now = System.nanoTime();
             long elapsedMs = (now - last) / 1_000_000;
-            System.out.println("[" + String.format("%4d", acc++) + "] New tick " + elapsedMs + "ms");
-            System.out.println("Entities in the game "
-                    + world.getPhysics().getBodies().size() + " : "
-                    + Arrays.toString(world.getPhysics().getBodies().stream().map(PhysicsBody::getEntity).toArray()));
-            System.out.println("Bodies : " + Arrays.toString(world.getPhysics().getBodies().toArray()));
+            if (!isPaused){
+            // System.out.println("[" + String.format("%4d", acc++) + "] New tick " + elapsedMs + "ms");
+            // System.out.println("Entities in the game "
+            //         + world.getPhysics().getBodies().size() + " : "
+            //         + Arrays.toString(world.getPhysics().getBodies().stream().map(PhysicsBody::getEntity).toArray()));
+            // System.out.println("Bodies : " + Arrays.toString(world.getPhysics().getBodies().toArray()));
+            }
             last = now;
 
             // 1) process queued external events (eg. input)
             world.getBus().processQueued();
 
-            // 2) update physics
-            world.getPhysics().next(ticktime);
+            if (!isPaused){
+            // 2) update physics + TurnManager
+            world.update(ticktime);
 
             // 3) process events generated during physics (collisions, explosions...)
-            world.getBus().processQueued();
+            world.getBus().processQueued();}
 
             // 4) sleep to maintain tick rate
             try {

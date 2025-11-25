@@ -1,0 +1,22 @@
+package com.lllmtb.events.move;
+
+import com.lllmtb.events.Event;
+import com.lllmtb.physics.Position;
+import com.lllmtb.ui.graphical.GamePanel.Direction;
+
+public class MouseInputEvent implements Event {
+    private Position pos;
+    private double time;
+    private Direction bouton;
+    public MouseInputEvent(Position pos, double time, Direction bouton) {
+        this.pos = pos;
+        this.time = time;
+        this.bouton= bouton;
+        System.out.println("click bouton " + this.bouton + ": sec= " + this.time);
+    }
+
+    public Position getPos() { return pos; }
+    public double getTime() { return time; }
+    public Direction getBouton() { return bouton; }
+
+}
