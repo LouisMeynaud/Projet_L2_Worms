@@ -197,6 +197,9 @@ public class PhysicsEngine {
             } else {
                 body.setPos(nextPos);
             }
+            else  {
+                body.setPos(body.getVector().newPos(body.getPos(), ticktime));
+            }
         }
     }
 
@@ -215,6 +218,6 @@ public class PhysicsEngine {
             cpt = 0;
             changeWind();
         }
-        nextStep(ticktime);
+        nextStep(ticktime/1000f);
     }
 }
