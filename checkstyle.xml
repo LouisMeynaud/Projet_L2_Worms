@@ -7,8 +7,7 @@
 
     <!--  Line Length  -->
     <module name="LineLength">
-        <property name="severity" value="warning"/>
-        <property name="max" value="140"/>
+        <property name="max" value="180"/>
     </module>
 
     <module name="TreeWalker">
