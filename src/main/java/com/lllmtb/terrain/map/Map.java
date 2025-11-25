@@ -72,6 +72,8 @@ public class Map {
                     case AIR: string.append(" ");break;
                     case DIRT : string.append("#");break;
                     case WATER : string.append("o");break;
+                    case CAVERN : string.append("~");break;
+                    case GRASS : string.append("_");break;
                     default : throw new IllegalStateException("Tile inconnue : " + mapMatrix[i][j]);
                 }
             }
@@ -139,6 +141,7 @@ public class Map {
         Tile tile = this.getTile(position);
         switch(tile){
             case DIRT : return true;
+            case GRASS : return true;
             default: return false; //add other block in future
         }
     }

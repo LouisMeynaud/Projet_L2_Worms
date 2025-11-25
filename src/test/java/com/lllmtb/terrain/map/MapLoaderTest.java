@@ -18,8 +18,8 @@ public class MapLoaderTest {
     public static String path;
     public static Tile[][] expectedMatrix = {
         {Tile.AIR,  Tile.AIR,  Tile.AIR,  Tile.AIR,  Tile.AIR},
-        {Tile.AIR,  Tile.AIR,  Tile.AIR,  Tile.AIR,  Tile.AIR},
-        {Tile.DIRT, Tile.DIRT, Tile.DIRT, Tile.DIRT, Tile.DIRT},
+        {Tile.AIR,  Tile.AIR,  Tile.AIR,  Tile.CAVERN,  Tile.AIR},
+        {Tile.DIRT, Tile.DIRT, Tile.DIRT, Tile.GRASS, Tile.DIRT},
         {Tile.DIRT, Tile.WATER, Tile.WATER, Tile.DIRT, Tile.DIRT},
         {Tile.WATER, Tile.WATER, Tile.WATER, Tile.WATER, Tile.WATER},
         {Tile.WATER, Tile.WATER, Tile.WATER, Tile.WATER, Tile.WATER}
