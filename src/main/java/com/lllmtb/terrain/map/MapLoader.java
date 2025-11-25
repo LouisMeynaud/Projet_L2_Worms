@@ -35,6 +35,12 @@ public class MapLoader {
                         case 'A':
                             tileMatrix.getMapMatrix()[i][j] = Tile.AIR;
                             break;
+                        case 'C':
+                            tileMatrix.getMapMatrix()[i][j] = Tile.CAVERN;
+                            break;
+                        case 'G':
+                            tileMatrix.getMapMatrix()[i][j] = Tile.GRASS;
+                            break;
                         default:
                             throw new IllegalArgumentException(
                                     "attention,la lettre" + contentHightLine.charAt(i) + "ne correspond a aucun Tile");
