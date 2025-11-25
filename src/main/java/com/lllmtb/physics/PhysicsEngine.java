@@ -170,6 +170,9 @@ public class PhysicsEngine {
             if (!Collision.haveCollisionMap(body, nextPos)) {
                 body.setPos(nextPos);
             }
+            else  {
+                body.setPos(body.getVector().newPos(body.getPos(), ticktime));
+            }
         }
     }
 
