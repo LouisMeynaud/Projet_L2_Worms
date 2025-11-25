@@ -120,6 +120,10 @@ public class Team {
         return this.currentWorm;
     }
 
+    public static ArrayList<TeamColor> getTeamColorChoosed(){
+        return teamColorChoosed;
+    }
+
     /**
      * Creates and adds worms to the team based on the number of players.
      * @param numberOfPlayers number of worms to create

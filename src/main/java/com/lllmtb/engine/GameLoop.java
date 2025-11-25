@@ -19,7 +19,7 @@ public class GameLoop implements Runnable {
     private void onPauseEvent(GamePauseEvent event) {
         this.isPaused = event.isPaused;
     }
-    
+
 
     @Override
     public void run() {
@@ -41,7 +41,7 @@ public class GameLoop implements Runnable {
             world.getBus().processQueued();
 
             if (!isPaused){
-            // 2) update physics
+            // 2) update physics + TurnManager
             world.update(ticktime);
 
             // 3) process events generated during physics (collisions, explosions...)

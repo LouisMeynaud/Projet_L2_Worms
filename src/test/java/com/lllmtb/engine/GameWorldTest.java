@@ -179,7 +179,7 @@ public class GameWorldTest {
     @Test
     void startLoop_whenAlreadyRunning() throws Exception {
         GameSettings settings = new GameSettings(0, new String[]{}, 0, false, null, false,370,LandScape.HILLY);
-         EventBus eventBus = new EventBus();
+        EventBus eventBus = new EventBus();
         GameWorld gw = new GameWorld(settings,eventBus);
 
         gw.start();
@@ -200,5 +200,14 @@ public class GameWorldTest {
         assertTrue(second.isAlive(), "Loop thread should still be alive after second start()");
 
         gw.stop();
+    }
+
+    @Test
+    void getTurnManage(){
+        GameSettings settings = new GameSettings(0, new String[]{}, 0, false, null, false,370,LandScape.HILLY);
+        EventBus eventBus = new EventBus();
+        GameWorld gw = new GameWorld(settings, eventBus);
+
+        assertNotNull(gw.getTurnManager());
     }
 }
