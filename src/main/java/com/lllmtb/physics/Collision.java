@@ -52,7 +52,10 @@ public class Collision {
                 }
 
                 if (haveCollisionXY(body, nextPos)) {
-                    Vector tempo = new Vector(0, 0); // Important, given that it's a cubic structure, the case where there's no collision when moving along the x-axis, no collision when moving along the y-axis, but collision is possible when moving along both the x and y axes.
+                    Vector tempo = new Vector(0, 0);
+                    // Important, given that it's a cubic structure,
+                    // the case where there's no collision when moving along the x-axis,
+                    // no collision when moving along the y-axis, but collision is possible when moving along both the x and y axes.
                     body.setVector(tempo);
                     collisionDetected = true;
                 }
@@ -102,7 +105,8 @@ public class Collision {
         Position nextPosYHautDroite = posHautDroite(nextPosYBasGauche, body);
         if (body.getVector().getY() < 0) {
             nextPosYBasDroite = new Position(nextPosYBasDroite.getX(),nextPosYBasDroite.getY()-1);
-            nextPosYBasGauche = new Position(nextPosYBasGauche.getX(),nextPosYBasGauche.getY()-1); // on test l'arret superieur du bloque(-1 car par la suite inverser par cooptomatrix)
+            nextPosYBasGauche = new Position(nextPosYBasGauche.getX(),nextPosYBasGauche.getY()-1);
+            // on test l'arret superieur du bloque(-1 car par la suite inverser par cooptomatrix)
             return (map.inMap(nextPosYBasDroite) && map.isSolid(nextPosYBasDroite))
                     || (map.inMap(nextPosYBasGauche) && map.isSolid(nextPosYBasGauche)); // downward collision
         } else {

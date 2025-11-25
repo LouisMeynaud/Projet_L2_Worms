@@ -24,7 +24,9 @@ public class MapBalancer {
         final int rightAverage = averageThickness(lowLine, hightLine, mid, width);
         final int diff = leftAverage - rightAverage;
 
-        if (diff >= diffAccepted) {// Parameter to change: the larger the difference, the less likely the terrain is to be balanced. Left side thicker, balance by increasing the right side.
+        if (diff >= diffAccepted) {
+            // Parameter to change: the larger the difference, the less likely the terrain is to be balanced.
+            // Left side thicker, balance by increasing the right side.
             for (int x = mid; x < width; x++) {
                 final int adjust = diff;
                 if (hightLine[x] + adjust < height) {
