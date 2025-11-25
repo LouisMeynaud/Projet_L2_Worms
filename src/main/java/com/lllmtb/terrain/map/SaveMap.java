@@ -47,7 +47,7 @@ public class SaveMap {
     }
 
     //methode demandant le fichie d'enregistrement de save quand une map est crée
-     public static String newMapSaveFile() {
+    public static String newMapSaveFile() {
         // boolean existe = false;
         // String files;
         // do {
@@ -68,7 +68,7 @@ public class SaveMap {
         //     }
         // } while (existe);
         // return files;
-         return "testMap.txt";
+        return "testMap.txt";
 
-     }
+    }
 }

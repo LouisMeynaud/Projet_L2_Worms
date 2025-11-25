@@ -68,7 +68,7 @@ public class GraphicalUI implements  UI{
         
     
         eventBus.subscribe(ScreenNewOrLoadEvent.class, event -> {
-                cardLayout.show(mainPanel, "newOrLoadPanel");
+            cardLayout.show(mainPanel, "newOrLoadPanel");
             
         });
 
@@ -81,7 +81,7 @@ public class GraphicalUI implements  UI{
         });
 
         eventBus.subscribe(ScreenSettingsGame.class, event -> {
-                cardLayout.show(mainPanel, "startSettingScreen");
+            cardLayout.show(mainPanel, "startSettingScreen");
         });
     }
 

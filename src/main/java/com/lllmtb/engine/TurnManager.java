@@ -1,7 +1,5 @@
 package com.lllmtb.engine;
 
-import java.util.EventListener;
-
 import com.lllmtb.events.TurnEvents.TurnEndEvent;
 import com.lllmtb.events.TurnEvents.TurnStarEvent;
 import com.lllmtb.events.TurnEvents.TurnStopEvent;

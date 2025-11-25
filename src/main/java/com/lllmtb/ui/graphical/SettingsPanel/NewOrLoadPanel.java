@@ -21,7 +21,7 @@ public class NewOrLoadPanel extends  JPanel {
         this.add(newButton);
 
         JButton backButton = new JButton("retour");
-    backButton.addActionListener(e -> {
+        backButton.addActionListener(e -> {
             eventBus.postQueued(new ScreenHomeEvent());
         });
         this.add(backButton);

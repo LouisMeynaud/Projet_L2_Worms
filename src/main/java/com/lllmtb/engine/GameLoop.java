@@ -40,11 +40,12 @@ public class GameLoop implements Runnable {
             world.getBus().processQueued();
 
             if (!isPaused){
-            // 2) update physics + TurnManager
-            world.update(ticktime);
+                // 2) update physics + TurnManager
+                world.update(ticktime);
 
-            // 3) process events generated during physics (collisions, explosions...)
-            world.getBus().processQueued();}
+                // 3) process events generated during physics (collisions, explosions...)
+                world.getBus().processQueued();
+            }
 
             // 4) sleep to maintain tick rate
             try {

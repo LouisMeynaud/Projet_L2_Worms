@@ -63,9 +63,10 @@ public class Collision {
 
             else if (body.getEntity() instanceof Projectile) { // projectile sera ajouter
                 if(haveCollisionXY(body,nextPos)){
-                bodies.remove(body);
-                collisionDetected = true;
-            }}
+                    bodies.remove(body);
+                    collisionDetected = true;
+                }
+            }
         } // on traiteras ensuite ici les cas ou c'est des grenade  etc
         return collisionDetected;
     }

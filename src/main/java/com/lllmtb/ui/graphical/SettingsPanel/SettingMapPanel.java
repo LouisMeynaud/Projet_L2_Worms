@@ -41,14 +41,14 @@ public class SettingMapPanel extends JPanel{
         
 
         eventBus.subscribe(ScreenGenerateMap.class, event -> {
-                cardLayout.show(cardPanel, "generateMapPanel");
-                System.out.println("event generate recuperer");
+            cardLayout.show(cardPanel, "generateMapPanel");
+            System.out.println("event generate recuperer");
             
         });
 
         eventBus.subscribe(ScreenLoadMap.class, event -> {
-                cardLayout.show(cardPanel, "panelListeMap");
-                System.out.println("event load recuperer");
+            cardLayout.show(cardPanel, "panelListeMap");
+            System.out.println("event load recuperer");
             
         });
 

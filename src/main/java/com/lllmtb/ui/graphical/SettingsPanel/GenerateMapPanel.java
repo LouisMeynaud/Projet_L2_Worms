@@ -78,7 +78,7 @@ public class GenerateMapPanel extends JPanel{
         row++;
 
 
-     }   
+    }
 
   
     private JSlider createSlider(int min, int max, int value, int spacing) {

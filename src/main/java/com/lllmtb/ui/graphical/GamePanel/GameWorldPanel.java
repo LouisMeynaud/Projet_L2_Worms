@@ -155,11 +155,11 @@ public class GameWorldPanel extends JPanel {
                     repaint(); 
                 } else {
                     if (rotation < 0) {
-                    eventBus.postQueued(new MouseWheelMoveInputEvent(Direction.Down));
-                }
-                if (rotation > 0) {
-                    eventBus.postQueued(new MouseWheelMoveInputEvent(Direction.Up));
-                }
+                        eventBus.postQueued(new MouseWheelMoveInputEvent(Direction.Down));
+                    }
+                    if (rotation > 0) {
+                        eventBus.postQueued(new MouseWheelMoveInputEvent(Direction.Up));
+                    }
                 }
             }
         };

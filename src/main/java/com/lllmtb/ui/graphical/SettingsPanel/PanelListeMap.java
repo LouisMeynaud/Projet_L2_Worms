@@ -44,7 +44,7 @@ public class PanelListeMap extends JPanel{
             return this.titre;
         }
     
-}
+    }
     public PanelListeMap(File[] tableauDeDossiers){
         this.setLayout(new BorderLayout());
 
@@ -74,14 +74,11 @@ public class PanelListeMap extends JPanel{
 
         //ecoute le clique de la liste
         maListe.addListSelectionListener(e -> {
-                InfoLigne elementSelectionne = maListe.getSelectedValue();
-                if (elementSelectionne != null) {
-                    System.out.println("vous avez cliquer sur:" + elementSelectionne.titre);
-                    System.out.println("le fichier correspondant est:" + elementSelectionne.fichierMap.getAbsolutePath());
-                    
-                   
-                }
-            
+            InfoLigne elementSelectionne = maListe.getSelectedValue();
+            if (elementSelectionne != null) {
+                System.out.println("vous avez cliquer sur:" + elementSelectionne.titre);
+                System.out.println("le fichier correspondant est:" + elementSelectionne.fichierMap.getAbsolutePath());
+            }
         });
        
     }
@@ -126,18 +123,15 @@ public class PanelListeMap extends JPanel{
                 Image imgRedimensionnee = imgOriginale.getScaledInstance(100, 100, Image.SCALE_FAST);
                 image = new ImageIcon(imgRedimensionnee);
             }
-            }catch (Exception e) {
-                System.out.println("Probleme avec le dossier:" + dossier.getName());
-                e.printStackTrace();
-                titre = "erreur de lecture";
-            
-            }
-            return new InfoLigne(titre, description, image, dossier);
-        } 
+        }catch (Exception e) {
+            System.out.println("Probleme avec le dossier:" + dossier.getName());
+            e.printStackTrace();
+            titre = "erreur de lecture";
+        }
+        return new InfoLigne(titre, description, image, dossier);
+    }
 
-
-        private static class ListRenderer extends JPanel implements ListCellRenderer<InfoLigne> {
-
+    private static class ListRenderer extends JPanel implements ListCellRenderer<InfoLigne> {
         JLabel labelImage = new JLabel();
         JLabel labelTitre = new JLabel();
         JLabel labelDescription = new JLabel();

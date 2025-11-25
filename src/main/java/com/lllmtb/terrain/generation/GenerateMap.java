@@ -51,19 +51,19 @@ public class GenerateMap {
      /**
      * methode pour que la hightLine soit toujours au dessus de la lowLine
      * 
-     * @param highLine la ligne haute
+     * @param hightLine la ligne haute
      * @param lowLine la ligne basse
      * @param config la config de la map
      */
     protected  static void triHightLineLowLine(int[] hightLine,int[] lowLine,ConfigMap config){
         for (int i = 0; i < config.getWidth(); i++) {
-                if (lowLine[i] > hightLine[i]) {
-                    int temp = lowLine[i];
-                    lowLine[i] = hightLine[i];
-                    hightLine[i] = temp;
-                }
+            if (lowLine[i] > hightLine[i]) {
+                int temp = lowLine[i];
+                lowLine[i] = hightLine[i];
+                hightLine[i] = temp;
             }
+        }
     }
     // attention probleme, le right balence crée une pente enorme au mileu
 
-    }
+}
