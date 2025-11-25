@@ -24,7 +24,24 @@
         <module name="MemberName"/>
 
         <!--  Format Rules -->
+        <!--  No empty Block in if or whatever -->
         <module name="EmptyBlock"/>
+        <!--  Remove unnecessary {} -->
+        <module name="AvoidNestedBlocks"/>
+        <module name="AvoidDoubleBraceInitialization"/>
+        <!-- all default case in switch will be last -->
+        <module name="DefaultComesLast"/>
+        <!-- Each file need a package declaration  -->
+        <module name="PackageDeclaration"/>
+        <!-- The indentation need to respect a format  -->
+        <module name="Indentation"/>
+        <!-- The close bracket need to respect this format  -->
+        <module name="RightCurly">
+            <property name="option" value="alone_or_singleline"/>
+            <property name="tokens" value="METHOD_DEF,LITERAL_ELSE,ENUM_DEF,INTERFACE_DEF"/>
+        </module>
+
+
 
 
         <!-- Import Rules -->
