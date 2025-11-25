@@ -4,6 +4,7 @@ import java.util.EventListener;
 
 import com.lllmtb.events.TurnEvents.TurnEndEvent;
 import com.lllmtb.events.TurnEvents.TurnStarEvent;
+import com.lllmtb.events.TurnEvents.TurnStopEvent;
 import com.lllmtb.events.TurnEvents.WormPlayable;
 import com.lllmtb.model.entity.team.Team;
 
@@ -26,7 +27,7 @@ public final class TurnManager {
     }
 
     public void init(){
-        world.getBus().subscribe(TurnEndEvent.class, event -> {this.turn.setIsEnd();});
+        world.getBus().subscribe(TurnStopEvent.class, event -> {this.turn.setIsEnd();});
     }
 
     public void startTurn(Team team) {
