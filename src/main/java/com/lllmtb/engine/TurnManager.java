@@ -58,6 +58,7 @@ public final class TurnManager {
         this.turn.end();
         System.out.println("End turn - switch Team");
         world.getBus().unsubscribe(MoveEvent.class, listener);
+        world.getBus().postQueued(new TurnEndEvent());
         world.nextTeamTurn();
 
     }
