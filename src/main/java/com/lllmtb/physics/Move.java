@@ -8,10 +8,10 @@ import com.lllmtb.ui.graphical.GamePanel.Direction;
 
 public class Move {
     protected static  int maxsaut= 1;
-    protected static int saut = 1;
+    protected static int saut = 100;
 
     public  static void move(Worm worm, Direction direction){
-        if(Collision.haveCollisionMap(worm.getBody(),worm.getBody().getPos())){
+        if(Collision.haveCollisionMap(worm.getBody().getPos())){
             saut = maxsaut;
         }
         switch (direction) {
