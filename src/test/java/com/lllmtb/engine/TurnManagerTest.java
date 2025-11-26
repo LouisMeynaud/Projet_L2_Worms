@@ -69,10 +69,9 @@ public class TurnManagerTest {
     @Test
     void testUpdateEndWithTime(){
         AtomicBoolean eventEnd = new AtomicBoolean(false);
-        this.gw.getBus().subscribe(TurnEndEvent.class, event -> {
-            eventEnd.set(true);});
+        this.gw.getBus().subscribe(TurnEndEvent.class, event -> eventEnd.set(true));
         try {
-            Thread.sleep(gw.getTourDuration());
+            Thread.sleep(gw.getTurnDuration() + 50);    // let the event bus dispatch the event
         } catch (InterruptedException ignored) {}
         assertTrue(eventEnd.get());
 

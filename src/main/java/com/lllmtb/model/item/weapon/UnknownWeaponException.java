@@ -1,10 +1,10 @@
 package com.lllmtb.model.item.weapon;
 
-public class UnknownWeaponException extends RuntimeException {
-    public final WeaponId id;
+import com.lllmtb.model.item.UnknownItemException;
+
+public class UnknownWeaponException extends UnknownItemException {
 
     public UnknownWeaponException(WeaponId id) {
-        super("No weapon was found for id: " + id);
-        this.id = id;
+        super(id);
     }
 }

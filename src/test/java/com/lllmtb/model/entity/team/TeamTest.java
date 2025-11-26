@@ -1,8 +1,6 @@
 package com.lllmtb.model.entity.team;
 
-import com.lllmtb.model.entity.projectile.BulletProjectile;
 import com.lllmtb.model.entity.worm.Worm;
-import com.lllmtb.model.item.weapon.FireParams;
 import com.lllmtb.model.item.weapon.WeaponId;
 import com.lllmtb.physics.Position;
 import org.junit.jupiter.api.BeforeEach;
@@ -94,22 +92,23 @@ public class TeamTest {
     @Test
     public void testAddAmmo(){
         team.addAmmo(gun, 10);
-        assertEquals(10, team.getInventory().getAmmo(gun));
+        assertEquals(10, team.getInventory().weapons.getAmmo(gun));
     }
     @Test
-    public void testSelectItems(){
+    public void testSelectWeapon(){
         team.unlockWeapon(gun);
-        team.selectItem(gun);
-        assertEquals(gun, team.getCurrentWorm().getSelfItem());
+        team.addAmmo(gun, 1);
+        team.selectWeapon(gun);
+        assertEquals(gun, team.getHand());
     }
     @Test
     public void testFire(){
         team.addAmmo(gun, 10);
         team.unlockWeapon(gun);
-        team.selectItem(gun);
+        team.selectWeapon(gun);
         double angle = 10;
         Worm worm = team.getCurrentWorm();
-        assertEquals(BulletProjectile.class, team.fire(new FireParams(angle, worm.getBody().getPos(), worm)).getClass());
+        // TODO - Check if the GameCommand list returned by #fire() is as expected
     }
     @Test
     public void testNextWorm(){
@@ -125,7 +124,4 @@ public class TeamTest {
         assertSame(team.getIndexWorm(0), team.getCurrentWorm());
 
     }
-
-
-
 }

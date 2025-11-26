@@ -1,10 +1,10 @@
 package com.lllmtb.model.item.tool;
 
-public class UnknownToolException extends RuntimeException {
-    public final ToolId id;
+import com.lllmtb.model.item.UnknownItemException;
+
+public class UnknownToolException extends UnknownItemException {
 
     public UnknownToolException(ToolId id) {
-        super("No tool was found for id: " + id);
-        this.id = id;
+        super(id);
     }
 }

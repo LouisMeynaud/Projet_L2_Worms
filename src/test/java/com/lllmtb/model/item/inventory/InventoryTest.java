@@ -1,8 +1,8 @@
 package com.lllmtb.model.item.inventory;
 
-import com.lllmtb.model.entity.projectile.BulletProjectile;
 import com.lllmtb.model.entity.team.Team;
 import com.lllmtb.model.entity.worm.Worm;
+import com.lllmtb.model.item.UnknownItemException;
 import com.lllmtb.model.item.weapon.*;
 import com.lllmtb.physics.Position;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,6 +11,9 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.*;
+
+
+// TODO - Remove all the registry-related tests and move them to a more generic ItemRegistryTest unit.
 
 public class InventoryTest {
 
@@ -33,19 +36,14 @@ public class InventoryTest {
     }
 
     @Test
-    public void unlock_whenWeaponIsInRegistory() {
+    public void unlock_whenWeaponIsInRegistry() {
         ivt.unlock(gun.id());
         assertTrue(ivt.isUnlocked(gun.id()));
     }
 
     @Test
-    public void unlock_whenWeaponIsNotInRegistory() {
-        try {
-            ivt.unlock(WeaponId.NONE);
-            fail("Expected exception not thrown!");
-        } catch (IllegalArgumentException e) {
-            assertEquals("Unknown weapon: " + WeaponId.NONE, e.getMessage());
-        }
+    public void unlock_whenWeaponIsNotInRegistry() {
+        assertThrows(UnknownItemException.class, () -> ivt.unlock(WeaponId.NONE));
     }
 
     @Test
@@ -57,39 +55,29 @@ public class InventoryTest {
 
     @Test
     public void getAmmo() {
-        assertEquals(0, ivt.getAmmo(gun.id()));
+        assertEquals(0, ivt.weapons.getAmmo(gun.id()));
     }
 
     @Test
-    public void addAmmo_whenWeaponIsNotInRegistery() {
-        try {
-            ivt.addAmmo(WeaponId.NONE, 0);
-            fail("Expected exception not thrown!");
-        } catch (IllegalArgumentException e) {
-            assertEquals("Unknown weapon: " + WeaponId.NONE, e.getMessage());
-        }
+    public void addAmmo_whenWeaponIsNotInRegistry() {
+        assertThrows(UnknownItemException.class, () -> ivt.weapons.addAmmo(WeaponId.NONE, 0));
     }
 
     @Test
-    public void addAmmo_whenAmoutequals0() {
-        ivt.addAmmo(gun.id(), 0);
-        assertEquals(0, ivt.getAmmo(gun.id()));
+    public void addAmmo_whenAmountEquals0() {
+        ivt.weapons.addAmmo(gun.id(), 0);
+        assertEquals(0, ivt.weapons.getAmmo(gun.id()));
     }
 
     @Test
-    public void addAmmo_whenAmoutSup0() {
-        ivt.addAmmo(gun.id(), 10);
-        assertEquals(10, ivt.getAmmo(gun.id()));
+    public void addAmmo_whenAmountSup0() {
+        ivt.weapons.addAmmo(gun.id(), 10);
+        assertEquals(10, ivt.weapons.getAmmo(gun.id()));
     }
 
     @Test
-    public void canFire_whenWeaponIsNotInRegistory() {
-        try {
-            ivt.canFire(WeaponId.NONE);
-            fail("Expected exception not thrown!");
-        } catch (IllegalArgumentException e) {
-            assertEquals("Unknown weapon: " + WeaponId.NONE, e.getMessage());
-        }
+    public void canFire_whenWeaponIsNotInRegistry() {
+        assertThrows(UnknownItemException.class, () -> ivt.canFire(WeaponId.NONE));
     }
 
     @Test
@@ -106,40 +94,30 @@ public class InventoryTest {
     @Test
     public void canFire_whenWeaponCanFire() {
         ivt.unlock(gun.id());
-        ivt.addAmmo(gun.id(), 10);
+        ivt.weapons.addAmmo(gun.id(), 10);
         assertTrue(ivt.canFire(gun.id()));
     }
 
     @Test
-    public void fire_whenWeaponIsNotInRegistory() {
-        try {
-            ivt.fire(WeaponId.NONE, fp);
-            fail("Expected exception not thrown!");
-        } catch (IllegalArgumentException e) {
-        assertEquals("Unknown weapon : " + WeaponId.NONE, e.getMessage());
-        }
+    public void fire_whenWeaponIsNotInRegistry() {
+        assertThrows(UnknownItemException.class, () -> ivt.fire(WeaponId.NONE, fp));
     }
 
     @Test
     public void fire_WhenWeaponCanFire() {
         ivt.unlock(gun.id());
-        ivt.addAmmo(gun.id(), 10);
-        assertEquals(BulletProjectile.class, (ivt.fire(gun.id(), fp).getClass()));
-        assertEquals(9, ivt.ammoSnapshot().get(gun.id()));
+        ivt.weapons.addAmmo(gun.id(), 10);
+        assertDoesNotThrow(() -> ivt.fire(gun.id(), fp));
+        assertEquals(9, ivt.weapons.ammoSnapshot().get(gun.id()));
     }
 
     @Test
     public void fire_whenWeaponCanNotFire() {
-        try{
-            ivt.fire(gun.id(), fp);
-            fail();
-        } catch (IllegalArgumentException e) {
-            assertEquals("Weapon can't fire : " + gun.id(), e.getMessage());
-        }
+        assertThrows(UnusableWeaponException.class, () -> ivt.fire(gun.id(), fp));
     }
 
     @Test
-    public void UnlockedWeapons() {
+    public void unlockedWeapons_whenEmpty() {
         Set<WeaponId> w = new HashSet<>();
         assertEquals(w, ivt.unlockedWeapons());
     }

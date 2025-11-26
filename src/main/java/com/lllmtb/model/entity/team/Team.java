@@ -245,6 +245,13 @@ public class Team {
     }
 
     /**
+     * @return the currently selected item
+     */
+    public ItemId getHand() {
+        return this.selectedItem;
+    }
+
+    /**
      * Sets the currently selected item to null
      */
     private void emptyHand() {
