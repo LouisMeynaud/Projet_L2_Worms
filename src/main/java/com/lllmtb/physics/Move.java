@@ -11,9 +11,9 @@ public class Move {
     protected static int saut = 100;
 
     public  static void move(Worm worm, Direction direction){
-        if(Collision.haveCollisionMap(worm.getBody().getPos())){
-            saut = maxsaut;
-        }
+//        if(Collision.haveCollisionMap(worm.getBody().getPos())){
+//            saut = maxsaut;
+//        }
         switch (direction) {
             case Left: worm.getBody().setVector(worm.getBody().getVector().add(new Vector(-30, 0)));
                 System.out.println("Left move");;
