@@ -72,7 +72,7 @@ public class TurnManagerTest {
         this.gw.getBus().subscribe(TurnEndEvent.class, event -> {
             eventEnd.set(true);});
         try {
-            Thread.sleep(gw.getTourDuration()*2);
+            Thread.sleep(gw.getTourDuration() +50);
         } catch (InterruptedException ignored) {}
         assertTrue(eventEnd.get());
 
