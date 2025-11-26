@@ -3,6 +3,7 @@ package com.lllmtb.engine;
 import com.lllmtb.events.EventBus;
 import com.lllmtb.events.TurnEvents.TurnEndEvent;
 import com.lllmtb.events.TurnEvents.TurnStarEvent;
+import com.lllmtb.events.TurnEvents.TurnStopEvent;
 import com.lllmtb.events.TurnEvents.WormPlayable;
 
 import com.lllmtb.terrain.generation.LandScape;
@@ -40,20 +41,28 @@ public class TurnManagerTest {
     }
 
     @Test
-    void testStart(){
+    void testStartTurnStarEvent(){
         AtomicBoolean event1 = new AtomicBoolean(false);
-        AtomicBoolean event2 = new AtomicBoolean(false);
         this.gw.getBus().subscribe(TurnStarEvent.class, event -> {
             event1.set(true);});
-        this.gw.getBus().subscribe(WormPlayable.class, event -> {
-            event2.set(true);
-        });
-        gw.getBus().postQueued(new TurnEndEvent());
+        gw.getBus().postQueued(new TurnStopEvent());
         try {
             Thread.sleep(1000);
         } catch (InterruptedException ignored) {}
         assertTrue(event1.get());
+    }
+
+    void testStartWormPlayable(){
+        AtomicBoolean event2 = new AtomicBoolean(false);
+        this.gw.getBus().subscribe(WormPlayable.class, event -> {
+            event2.set(true);
+        });
+        gw.getBus().postQueued(new TurnStopEvent());
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException ignored) {}
         assertTrue(event2.get());
+
     }
 
 
@@ -74,7 +83,7 @@ public class TurnManagerTest {
         AtomicBoolean eventEnd = new AtomicBoolean(false);
         this.gw.getBus().subscribe(TurnEndEvent.class, event -> {
             eventEnd.set(true);});
-        gw.getBus().postQueued(new TurnEndEvent());
+        gw.getBus().postQueued(new TurnStopEvent());
         try {
             Thread.sleep(200);
         } catch (InterruptedException ignored) {}
