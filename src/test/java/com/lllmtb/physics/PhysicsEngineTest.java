@@ -94,8 +94,8 @@ class PhysicsEngineTest {
         pE.nextStep(ticktime);
         Position newPos = pB.getPos();
         Vector newVector = pB.getVector();
-        assertEquals(-0.0668, newPos.getX());
-        assertEquals(-0.29742700000000005, newPos.getY());
+        assertEquals(initialPos.getX(), newPos.getX());
+        assertEquals(initialPos.getY(), newPos.getY());
         assertNotEquals(initialVector.getX(), newVector.getX());
         assertNotEquals(initialVector.getY(), newVector.getY());
     }
