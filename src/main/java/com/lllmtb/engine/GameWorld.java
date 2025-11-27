@@ -75,7 +75,7 @@ public class GameWorld {
         System.out.println("Game initialised");
 
         //Init TurnManager
-        tourDuration = 10_000;
+        tourDuration = 10000;
         this.turnManager = new TurnManager(this, tourDuration);
     }
 
