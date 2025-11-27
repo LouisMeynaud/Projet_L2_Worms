@@ -1,5 +1,6 @@
 package com.lllmtb.model.entity.worm;
 
+import com.lllmtb.model.entity.CollisionType;
 import com.lllmtb.model.entity.Entity;
 import com.lllmtb.model.entity.team.Team;
 import com.lllmtb.physics.PhysicsBody;
@@ -34,6 +35,9 @@ public class Worm extends Entity {
 
     /** Indicates if worm is alive. */
     private boolean alive = true;
+
+    /** Worms have to slide when they have a collision with a wall. */
+    private CollisionType collisionType = CollisionType.SLIDE;
 
     /**
      * Private constructor to initialize a worm with statistics, a team and a spawn point.
@@ -90,6 +94,15 @@ public class Worm extends Entity {
      */
     public PhysicsBody getBody() {
         return this.body;
+    }
+
+    /**
+     * Returns the type of collision
+     * @return the {@link CollisionType} associated with the entity
+     */
+    @Override
+    public CollisionType getCollisionType() {
+        return this.collisionType;
     }
 
     /**

@@ -16,7 +16,7 @@ public class PhysicsBody {
         this.vector = vector;
         this.mass = mass;
         this.width = width;
-        this.height= height;
+        this.height = height;
     }
 
     public Entity getEntity(){
