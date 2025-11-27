@@ -1,5 +1,6 @@
 package com.lllmtb.physics;
 
+import com.lllmtb.events.EventBus;
 import com.lllmtb.model.entity.projectile.BulletProjectile;
 import com.lllmtb.model.entity.projectile.Projectile;
 import com.lllmtb.model.entity.team.Team;
@@ -20,11 +21,13 @@ class PhysicsEngineTest {
     private Position p;
     private Worm w;
     private PhysicsBody pB;
+    private EventBus eventBus;
 
     @BeforeEach
     void setUp() {
         map = MapLoader.loadMatrix("mapTest");
-        pE = new PhysicsEngine(map, true);
+        eventBus = new EventBus(4);
+        pE = new PhysicsEngine(map, true, eventBus);
         p = new Position(4, 5);
         w = new Worm("José", new Team("Team", 1, new Position[]{p}));
         assertTrue(map.inMap(p));
@@ -57,7 +60,7 @@ class PhysicsEngineTest {
 
     @Test
     void testChangeWind_whenNoWind() {
-        PhysicsEngine tpE = new PhysicsEngine(map, false);
+        PhysicsEngine tpE = new PhysicsEngine(map, false, eventBus);
         tpE.add(pB);
 
         Vector before = tpE.getWind();
@@ -103,7 +106,7 @@ class PhysicsEngineTest {
     @Test
     void testNextStep_whenCollision() {
         double ticktime = 0.0167;
-        PhysicsEngine tpE = new PhysicsEngine(map, false);
+        PhysicsEngine tpE = new PhysicsEngine(map, false, eventBus);
         tpE.add(pB);
         System.out.println(map);
         for (int i = 0; i < 605; i++) {

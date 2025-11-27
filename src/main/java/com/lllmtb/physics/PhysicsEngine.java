@@ -1,5 +1,6 @@
 package com.lllmtb.physics;
 
+import com.lllmtb.events.EventBus;
 import com.lllmtb.model.entity.CollisionType;
 import com.lllmtb.model.entity.projectile.Projectile;
 import com.lllmtb.model.entity.worm.Worm;
@@ -37,6 +38,8 @@ public class PhysicsEngine {
     /** The {@link Collision} object of the game*/
     private final Collision collision;
 
+    private final EventBus eventBus;
+
     /**
      * Constructs a new {@code PhysicsEngine} instance.
      * <p>
@@ -47,12 +50,13 @@ public class PhysicsEngine {
      * @param map the {@code Map} instance representing the environment for collision detection.
      * @param hasWind if wind should be simulated.
      */
-    public PhysicsEngine(Map map, boolean hasWind) {
+    public PhysicsEngine(Map map, boolean hasWind, EventBus eventBus) {
         this.bodies = new CopyOnWriteArrayList<>();
         this.gravity = new Vector(0, -9.81);
         this.hasWind = hasWind;
         this.wind = new Vector(0, 0);
         this.collision = new Collision(map, this.bodies);
+        this.eventBus = eventBus;
     }
 
     /**
@@ -178,7 +182,7 @@ public class PhysicsEngine {
                 // if body slide along cliffs
                 if (body.getEntity().getCollisionType() == CollisionType.SLIDE) {
                     // if the collision is with the ground
-                    this.collision.slide(body, impact);
+                    this.collision.slide(body, impact, eventBus);
                     // if body bounce
                 } else if (body.getEntity().getCollisionType() == CollisionType.BOUNCE) {
                     this.collision.bounce(body, impact, 0.5);

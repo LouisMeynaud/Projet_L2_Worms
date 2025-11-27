@@ -1,5 +1,7 @@
 package com.lllmtb.physics;
 
+import com.lllmtb.events.EventBus;
+import com.lllmtb.events.move.GroundCheckCollision;
 import com.lllmtb.model.entity.worm.Worm;
 import com.lllmtb.terrain.map.Map;
 import com.lllmtb.model.entity.Entity;
@@ -407,12 +409,15 @@ public class Collision {
      * @param body the {@link PhysicsBody} which move
      * @param impact the {@link Impact} with collision's information
      */
-    public void slide(PhysicsBody body, Impact impact) {
+    public void slide(PhysicsBody body, Impact impact, EventBus bus) {
         body.setPos(impact.collisionPos);
         if (impact.normal.getY() == 0) {
             body.setVector(new Vector(0, body.getVector().getY()));
         } else {
             body.setVector(new Vector(body.getVector().getX(), 0));
+            if (impact.normal.getY() == 1) {
+                bus.postQueued(new GroundCheckCollision(body.getEntity()));
+            }
         }
         Position nextPos = body.getVector().newPos(body.getPos(), 1);
         Impact i = move(body, nextPos);
