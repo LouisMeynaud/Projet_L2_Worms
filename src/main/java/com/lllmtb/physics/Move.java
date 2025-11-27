@@ -1,10 +1,7 @@
 package com.lllmtb.physics;
 
-import com.lllmtb.engine.GameWorld;
-import com.lllmtb.events.EventBus;
-import com.lllmtb.events.EventListener;
-import com.lllmtb.events.graphicsUi.MoveEvent;
-import com.lllmtb.events.move.GroundCheckCollision;
+import com.lllmtb.engine.commands.AddPhysicsModifierCommand;
+import com.lllmtb.engine.commands.GameCommand;
 import com.lllmtb.model.entity.worm.Worm;
 import com.lllmtb.ui.graphical.GamePanel.Direction;
 
@@ -16,25 +13,29 @@ public class Move {
         jump = maxjump;
     }
 
-    public static void move(Worm worm, Direction direction) {
-        switch (direction) {
+    public static GameCommand move(Worm worm, Direction direction) {
+        Transform t = switch (direction) {
             case Left:
-                worm.getBody().setVector(worm.getBody().getVector().add(new Vector(-0.5, 0)));
                 System.out.println("Left move");
-                break;
+                yield v -> v.add(new Vector(-0.1, 0));
+
             case Right:
-                worm.getBody().setVector(worm.getBody().getVector().add(new Vector(0.5, 0)));
                 System.out.println("Right move");
-                break;
+                yield v -> v.add(new Vector(0.1, 0));
+
             case Up:
                 if (jump > 0) {
-                    worm.getBody().setVector(worm.getBody().getVector().add(new Vector(0, 160)));
                     System.out.println("Up move");
-                    jump -= 1;
+                    jump--;
+                    yield v -> v.add(new Vector(0, 60));
                 }
-                break;
+                yield null;
+
             default:
-                break;
-        }
+                yield null;
+        };
+        if (t == null) return null;
+
+        return new AddPhysicsModifierCommand(worm, new PhysicsModifier(t, null));
     }
 }

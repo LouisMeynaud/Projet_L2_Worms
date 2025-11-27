@@ -1,6 +1,5 @@
 package com.lllmtb.engine;
 
-import com.lllmtb.events.Event;
 import com.lllmtb.events.EventListener;
 import com.lllmtb.events.TurnEvents.TurnEndEvent;
 import com.lllmtb.events.TurnEvents.TurnStarEvent;
@@ -17,14 +16,12 @@ public final class TurnManager {
 
     private Turn turn;
     private final GameWorld world;
-    private EventListener<MoveEvent> listener = event -> {
-        move(this.turn.getWormPlayable(), event.direction);
-        System.out.println("Move");
-    };
-    private EventListener<GroundCheckCollision> listenerGround = event -> {
+
+    private EventListener<MoveEvent> moveListener;
+    private EventListener<GroundCheckCollision> groundCollisionListener = event -> {
         if (turn.getWormPlayable().uuid == event.worm.uuid) {
             Move.JumpToMax();
-            System.out.println("Reset Jump");
+            //System.out.println("Reset Jump");
         };
     };
 
@@ -53,8 +50,14 @@ public final class TurnManager {
         world.getBus().postQueued(new TurnStarEvent(team));
         System.out.println("Start turn for the team " + team.name);
         world.getBus().postQueued(new WormPlayable(turn.getWormPlayable()));
-        world.getBus().subscribe(MoveEvent.class, listener);
-        world.getBus().subscribe(GroundCheckCollision.class, listenerGround);
+
+        moveListener = event -> {
+            world.queueCommand(move(this.turn.getWormPlayable(), event.direction));
+            System.out.println("Move");
+        };
+        world.getBus().subscribe(MoveEvent.class, moveListener);
+
+        world.getBus().subscribe(GroundCheckCollision.class, groundCollisionListener);
     }
 
     public void updateTurn() {
@@ -71,8 +74,8 @@ public final class TurnManager {
     private void endTurn() {
         this.turn.end();
         System.out.println("End turn - switch Team");
-        world.getBus().unsubscribe(MoveEvent.class, listener);
-        world.getBus().unsubscribe(GroundCheckCollision.class, listenerGround);
+        world.getBus().unsubscribe(MoveEvent.class, moveListener);
+        world.getBus().unsubscribe(GroundCheckCollision.class, groundCollisionListener);
         world.getBus().postQueued(new TurnEndEvent());
         world.nextTeamTurn();
 

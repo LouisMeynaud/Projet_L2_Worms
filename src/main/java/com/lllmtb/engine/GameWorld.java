@@ -155,6 +155,7 @@ public class GameWorld {
     }
 
     public boolean queueCommand(GameCommand cmd) {
+        if (cmd == null) return false;
         return commandQueue.offer(cmd);
     }
 
