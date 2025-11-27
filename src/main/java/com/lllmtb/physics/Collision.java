@@ -409,8 +409,17 @@ public class Collision {
      */
     public void slide(PhysicsBody body, Impact impact) {
         body.setPos(impact.collisionPos);
-        Vector fallVector = new Vector(0, -1);
-        body.setVector(fallVector);
+        if (impact.normal.getY() == 0) {
+            body.setVector(new Vector(0, body.getVector().getY()));
+        } else {
+            body.setVector(new Vector(body.getVector().getX(), 0));
+        }
+        Position nextPos = body.getVector().newPos(body.getPos(), 1);
+        Impact i = move(body, nextPos);
+        body.setPos(i.collisionPos);
+        if (i.collided) {
+            body.setVector(new Vector(0,0));
+        }
     }
 
     /**

@@ -261,13 +261,13 @@ public class CollisionTest {
 
     @Test
     void slide() {
-        pBWorm1.setVector(new Vector(28, 0));
-        Position posFinal = new Position(28, 14);
+        pBWorm1.setPos(new Position(7, 10));
+        pBWorm1.setVector(new Vector(5, -2));
+        Position posFinal = new Position(12, 8);
         Collision.Impact impact = collision.move(pBWorm1, posFinal);
         collision.slide(pBWorm1, impact);
-        assertEquals(impact.collisionPos, pBWorm1.getPos());
-        assertEquals(0, pBWorm1.getVector().getX());
-        assertEquals(-1, pBWorm1.getVector().getY());
+        assertEquals(12, pBWorm1.getPos().getX());
+        assertEquals(10, pBWorm1.getPos().getY());
     }
 
     @Test

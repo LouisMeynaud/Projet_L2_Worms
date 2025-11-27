@@ -178,12 +178,7 @@ public class PhysicsEngine {
                 // if body slide along cliffs
                 if (body.getEntity().getCollisionType() == CollisionType.SLIDE) {
                     // if the collision is with the ground
-                    if (impact.normal.getY() > 0.5) {
-                        this.collision.touch(body, impact);
-                        body.setVector(new Vector(body.getVector().getX(), 0));
-                    } else {
-                        this.collision.slide(body, impact);
-                    }
+                    this.collision.slide(body, impact);
                     // if body bounce
                 } else if (body.getEntity().getCollisionType() == CollisionType.BOUNCE) {
                     this.collision.bounce(body, impact, 0.5);
