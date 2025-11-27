@@ -1,6 +1,7 @@
 package com.lllmtb.engine;
 
 import com.lllmtb.engine.commands.GameCommand;
+import com.lllmtb.events.Event;
 import com.lllmtb.events.EventBus;
 import com.lllmtb.events.game.GameStateUpdatedEvent;
 import com.lllmtb.model.entity.Entity;
@@ -17,6 +18,8 @@ import org.eclipse.jdt.annotation.NonNull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 public class GameWorld {
     private final Map map;
@@ -28,6 +31,9 @@ public class GameWorld {
     private final TurnManager turnManager;
     private final long turnDuration;
     Thread loopThread;
+
+    private final BlockingQueue<GameCommand> commandQueue;
+
 
     public GameWorld(GameSettings settings, EventBus eventBus) {
         Map tmap = null;
@@ -50,6 +56,9 @@ public class GameWorld {
         System.out.println(this.map);
 
         this.bus = eventBus;
+
+        // Init GameCommand queue
+        this.commandQueue = new LinkedBlockingQueue<>();
 
         // Init PhysicsEngine
         this.physics = new PhysicsEngine(map, bus, settings.hasWind);
@@ -131,8 +140,9 @@ public class GameWorld {
     }
 
     public void update(double tickTime){
-        this.getPhysics().next(tickTime);
-        this.turnManager.updateTurn();
+        processCommands();
+        physics.next(tickTime);
+        turnManager.updateTurn();
         bus.postQueued(new GameStateUpdatedEvent());
     }
 
@@ -144,8 +154,14 @@ public class GameWorld {
         }
     }
 
+    public boolean queueCommand(GameCommand cmd) {
+        return commandQueue.offer(cmd);
+    }
+
     // Minimal function to process GameCommands
-    public void processCommands(List<GameCommand> commands) {
-        for (GameCommand command : commands) command.execute(this);
+    public void processCommands() {
+        List<GameCommand> drained = new ArrayList<>();
+        commandQueue.drainTo(drained);
+        for (GameCommand cmd : drained) cmd.execute(this);
     }
 }

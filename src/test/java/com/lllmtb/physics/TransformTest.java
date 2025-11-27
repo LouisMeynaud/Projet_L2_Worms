@@ -4,12 +4,12 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class PhysicsModifierTest {
+public class TransformTest {
 
     @Test
     public void modifierTest() {
         Vector v = new Vector();
-        PhysicsModifier m = new PhysicsModifier() {
+        Transform m = new Transform() {
             @Override
             public Vector apply(Vector v) {
                 return new Vector(1,2);

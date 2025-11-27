@@ -10,17 +10,15 @@ import java.util.Objects;
 public final class AddPhysicsModifierCommand implements GameCommand {
     private final Entity target;
     private final PhysicsModifier modifier;
-    private final int duration;
 
-    public AddPhysicsModifierCommand(Entity target, PhysicsModifier modifier, int duration) {
+    public AddPhysicsModifierCommand(Entity target, PhysicsModifier modifier) {
         this.target = Objects.requireNonNull(target);
         this.modifier = Objects.requireNonNull(modifier);
-        this.duration = duration;
     }
 
     @Override
     public void execute(GameWorld world) {
-        world.getPhysics().addModifier(target.getBody(), modifier, duration);
-        world.getBus().postQueued(new PhysicsModifierAddedEvent(target.getBody(), modifier, duration));
+        world.getPhysics().addModifier(target.getBody(), modifier);
+        world.getBus().postQueued(new PhysicsModifierAddedEvent(target.getBody(), modifier));
     }
 }

@@ -3,9 +3,11 @@ package com.lllmtb.physics;
 import com.lllmtb.events.EventBus;
 import com.lllmtb.model.entity.CollisionType;
 import com.lllmtb.model.entity.projectile.Projectile;
+import com.lllmtb.model.item.ItemId;
 import com.lllmtb.terrain.map.Map;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -127,14 +129,6 @@ public class PhysicsEngine {
         bodies.remove(body);
     }
 
-    public void addModifier(PhysicsBody body, PhysicsModifier modifier, int duration) {
-        modifiers.computeIfAbsent(body, b -> new ArrayList<>()).add(modifier);
-    }
-
-    public void removeModifier(PhysicsBody body, PhysicsModifier modifier) {
-        if (modifiers.containsKey(body)) modifiers.get(body).remove(modifier);
-    }
-
     /**
      * Removes all physics bodies from the simulation.
      * <p>
@@ -164,6 +158,36 @@ public class PhysicsEngine {
         }
     }
 
+    public void addModifier(PhysicsBody body, PhysicsModifier modifier) {
+        modifiers.computeIfAbsent(body, b -> new ArrayList<>()).add(modifier);
+    }
+
+    public void removeModifier(PhysicsBody body, PhysicsModifier modifier) {
+        if (modifiers.containsKey(body)) modifiers.get(body).remove(modifier);
+    }
+
+    public void removeModifierFor(PhysicsBody body, ItemId source) {
+        if (modifiers.containsKey(body)) modifiers.get(body).removeIf(m -> m.source.equals(source));
+    }
+
+    public Vector applyModifiers(PhysicsBody body, Vector v, double dt) {
+        List<PhysicsModifier> list = modifiers.get(body);
+        if (list == null || list.isEmpty()) return v;
+
+        // (iterate over a copy to avoid concurrent modification when modifiers remove themselves)
+        for (PhysicsModifier m : new ArrayList<>(list)) {
+            if (!m.enabled) continue;
+            v = m.transform.apply(v);
+            if (m.oneShot) removeModifier(body, m);
+            else {
+                if (Double.isInfinite(m.remaining)) continue;
+                m.remaining -= dt;
+                if (m.remaining <= 0) removeModifier(body, m);
+            }
+        }
+        return v;
+    }
+
     /**
      * Advances the simulation by one tick.
      * <p>
@@ -188,7 +212,7 @@ public class PhysicsEngine {
             Vector newVector = body.getVector().add(deltaV);
 
             // apply modifiers for this tick only - we don't want to stack them every tick - not sure about this, for example gravity in the vector keeps increasing when the parachute is deployed and we don't want that
-            if (modifiers.containsKey(body)) for (PhysicsModifier m : modifiers.get(body)) newVector = m.apply(newVector);
+            newVector = applyModifiers(body, newVector, dt);
             body.setVector(newVector);
 
             Position nextPos = newVector.newPos(body.getPos(), dt);
@@ -196,19 +220,21 @@ public class PhysicsEngine {
             Collision.Impact impact = collision.move(body, nextPos);
             // if collision
             if (impact.collided) {
-                // if body slide along cliffs
-                if (body.getEntity().getCollisionType() == CollisionType.SLIDE) {
-                    // if the collision is with the ground
-                    collision.slide(body, impact, bus);
-                    // if body bounce
-                } else if (body.getEntity().getCollisionType() == CollisionType.BOUNCE) {
-                    collision.bounce(body, impact, 0.5);
-                    // if body stick to what it has hit
-                } else if (body.getEntity().getCollisionType() == CollisionType.TOUCH) {
-                    collision.touch(body, impact);
-                    // if body cross all (map and entities)
-                } else {
-                    collision.cross(body, nextPos);
+                switch (body.getEntity().getCollisionType()) {
+                    // if body slides along cliffs (if the collision is with the ground)
+                    case SLIDE -> collision.slide(body, impact, bus);
+
+                    // if body bounces
+                    case BOUNCE -> collision.bounce(body, impact, 0.5);
+
+                    // if body sticks to what it has hit
+                    case TOUCH -> collision.touch(body, impact);
+
+                    // if body crosses all (map and entities)
+                    case CROSS -> collision.cross(body, nextPos);
+
+                    // collision type is null (?)
+                    default -> {}
                 }
             } else {
                 body.setPos(nextPos);
