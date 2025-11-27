@@ -170,6 +170,10 @@ public class PhysicsEngine {
             if (!Collision.haveCollisionMap(body, nextPos)) {
                 body.setPos(nextPos);
             }
+            //implémentation nécessaire pour faire marcher les déplacements.
+            //else  {
+              //  body.setPos(body.getVector().newPos(body.getPos(), ticktime));
+            //}
         }
     }
 
@@ -188,6 +192,6 @@ public class PhysicsEngine {
             cpt = 0;
             changeWind();
         }
-        nextStep(ticktime);
+        nextStep(ticktime/1000f);
     }
 }

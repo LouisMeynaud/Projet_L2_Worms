@@ -44,6 +44,7 @@ public class Collision {
                     Vector tempo = new Vector(0, body.getVector().getY());
                     body.setVector(tempo);
                     collisionDetected = true;
+                    System.out.println("collision x");
 
                 }if (haveCollisionY(body, nextPosYBasGauche)) {
                     Vector tempo = new Vector(body.getVector().getX(), 0);
@@ -58,6 +59,7 @@ public class Collision {
                     // no collision when moving along the y-axis, but collision is possible when moving along both the x and y axes.
                     body.setVector(tempo);
                     collisionDetected = true;
+                    System.out.println("collision xy");
                 }
             }
 
@@ -68,6 +70,10 @@ public class Collision {
                 }
             }
         } // on traiteras ensuite ici les cas ou c'est des grenade  etc
+
+        if (collisionDetected) {
+            Move.saut = Move.maxsaut;
+        }
         return collisionDetected;
     }
 

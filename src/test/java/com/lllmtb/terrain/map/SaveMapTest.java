@@ -15,8 +15,8 @@ public class SaveMapTest {
     @Test
     public void testMapToString() {
         String mapAttendue = "AAAAA\n" +
-                             "AAAAA\n" +
-                             "DDDDD\n" +
+                             "AAACA\n" +
+                             "DDDGD\n" +
                              "DWWDD\n" +
                              "WWWWW\n" +
                              "WWWWW\n";
