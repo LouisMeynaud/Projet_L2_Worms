@@ -1,5 +1,6 @@
 package com.lllmtb.physics;
 
+import com.lllmtb.events.EventBus;
 import com.lllmtb.model.entity.projectile.BulletProjectile;
 import com.lllmtb.model.entity.worm.Worm;
 import com.lllmtb.model.entity.team.Team;
@@ -265,7 +266,7 @@ public class CollisionTest {
         pBWorm1.setVector(new Vector(5, -2));
         Position posFinal = new Position(12, 8);
         Collision.Impact impact = collision.move(pBWorm1, posFinal);
-        collision.slide(pBWorm1, impact);
+        collision.slide(pBWorm1, impact, new EventBus());
         assertEquals(12, pBWorm1.getPos().getX());
         assertEquals(10, pBWorm1.getPos().getY());
     }
