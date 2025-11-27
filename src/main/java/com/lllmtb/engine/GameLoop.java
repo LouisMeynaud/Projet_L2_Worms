@@ -29,7 +29,7 @@ public class GameLoop implements Runnable {
             long now = System.nanoTime();
             long elapsedMs = (now - last) / 1_000_000;
             if (!isPaused){
-            System.out.println("[" + String.format("%4d", acc++) + "] New tick " + elapsedMs + "ms");
+            //System.out.println("[" + String.format("%4d", acc++) + "] New tick " + elapsedMs + "ms");
             // System.out.println("Entities in the game "
             //         + world.getPhysics().getBodies().size() + " : "
             //         + Arrays.toString(world.getPhysics().getBodies().stream().map(PhysicsBody::getEntity).toArray()));

@@ -1,6 +1,9 @@
 package com.lllmtb.physics;
 
+import com.lllmtb.events.EventBus;
+import com.lllmtb.model.entity.CollisionType;
 import com.lllmtb.model.entity.projectile.Projectile;
+import com.lllmtb.model.entity.worm.Worm;
 import com.lllmtb.terrain.map.Map;
 
 import java.util.ArrayList;
@@ -32,6 +35,10 @@ public class PhysicsEngine {
     /** Internal counter used to regulate wind changes. */
     private int cpt = 0;
 
+    /** The {@link Collision} object of the game*/
+    private final Collision collision;
+
+    private final EventBus eventBus;
 
     /**
      * Constructs a new {@code PhysicsEngine} instance.
@@ -43,12 +50,13 @@ public class PhysicsEngine {
      * @param map the {@code Map} instance representing the environment for collision detection.
      * @param hasWind if wind should be simulated.
      */
-    public PhysicsEngine(Map map, boolean hasWind) {
+    public PhysicsEngine(Map map, boolean hasWind, EventBus eventBus) {
         this.bodies = new CopyOnWriteArrayList<>();
         this.gravity = new Vector(0, -9.81);
         this.hasWind = hasWind;
         this.wind = new Vector(0, 0);
-        Collision.init(this.bodies, map);
+        this.collision = new Collision(map, this.bodies);
+        this.eventBus = eventBus;
     }
 
     /**
@@ -129,7 +137,7 @@ public class PhysicsEngine {
      * Randomly changes the wind vector to simulate natural fluctuations in wind force and direction.
      * <p>
      * The change is small and based on random perturbations in both the x and y directions.
-     * This method should typically be called less frequently than {@link #next()}, for example
+     * This method should typically be called less frequently than {@link #next(double)}, for example
      * once every few seconds of simulated time, to avoid erratic motion.
      * </p>
      * <p>
@@ -153,6 +161,7 @@ public class PhysicsEngine {
      * <p>
      * If a body’s next position results in a collision, its position is not updated
      * until collision handling is performed.
+     * It calls a different method in Collision according to the body.
      * </p>
      * @param ticktime the duration of the simulation tick (in seconds).
      */
@@ -167,13 +176,26 @@ public class PhysicsEngine {
             Position nextPos = newVector.newPos(body.getPos(), ticktime);
             body.setVector(newVector);
 
-            if (!Collision.haveCollisionMap(body, nextPos)) {
+            Collision.Impact impact = this.collision.move(body, nextPos);
+            // if collision
+            if (impact.collided) {
+                // if body slide along cliffs
+                if (body.getEntity().getCollisionType() == CollisionType.SLIDE) {
+                    // if the collision is with the ground
+                    this.collision.slide(body, impact, eventBus);
+                    // if body bounce
+                } else if (body.getEntity().getCollisionType() == CollisionType.BOUNCE) {
+                    this.collision.bounce(body, impact, 0.5);
+                    // if body stick to what it has hit
+                } else if (body.getEntity().getCollisionType() == CollisionType.TOUCH) {
+                    this.collision.touch(body, impact);
+                    // if body cross all (map and entities)
+                } else {
+                    this.collision.cross(body, nextPos);
+                }
+            } else {
                 body.setPos(nextPos);
             }
-            //implémentation nécessaire pour faire marcher les déplacements.
-            //else  {
-              //  body.setPos(body.getVector().newPos(body.getPos(), ticktime));
-            //}
         }
     }
 
@@ -182,7 +204,7 @@ public class PhysicsEngine {
      * <p>
      * This method increments the internal time counter, periodically updates the wind
      * vector (every 600 ticks if enabled), and performs one simulation step through
-     * {@link #nextStep()}.
+     * {@link #nextStep(double)}.
      * </p>
      * @param ticktime the duration of the simulation tick (in seconds).
      */

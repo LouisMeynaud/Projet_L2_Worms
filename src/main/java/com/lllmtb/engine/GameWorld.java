@@ -54,7 +54,7 @@ public class GameWorld {
         this.bus = eventBus;
 
         // Init PhysicsEngine
-        this.physics = new PhysicsEngine(map, settings.hasWind);
+        this.physics = new PhysicsEngine(map, settings.hasWind, eventBus);
 
         // Init Teams
         this.teams = new ArrayList<>();
