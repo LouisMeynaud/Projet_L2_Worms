@@ -6,7 +6,6 @@ import com.lllmtb.events.game.GameStateUpdatedEvent;
 import com.lllmtb.model.entity.Entity;
 import com.lllmtb.model.entity.team.Team;
 import com.lllmtb.physics.PhysicsEngine;
-import com.lllmtb.physics.Position;
 import com.lllmtb.terrain.generation.GenerateMap;
 import com.lllmtb.terrain.generation.ConfigMap;
 import com.lllmtb.terrain.map.CreateSpawnPoint;
@@ -74,7 +73,7 @@ public class GameWorld {
         System.out.println("Game initialised");
 
         //Init TurnManager
-        turnDuration = 10_000;
+        turnDuration = 10000;
         this.turnManager = new TurnManager(this, turnDuration);
     }
 

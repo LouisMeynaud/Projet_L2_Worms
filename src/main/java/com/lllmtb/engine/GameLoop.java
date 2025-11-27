@@ -1,9 +1,6 @@
 package com.lllmtb.engine;
 
 import com.lllmtb.events.game.GamePauseEvent;
-import com.lllmtb.physics.PhysicsBody;
-
-import java.util.Arrays;
 
 public class GameLoop implements Runnable {
     private final GameWorld world;
@@ -20,6 +17,7 @@ public class GameLoop implements Runnable {
     private void onPauseEvent(GamePauseEvent event) {
         this.isPaused = event.isPaused;
     }
+
 
     @Override
     public void run() {

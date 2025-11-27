@@ -26,7 +26,7 @@ class PhysicsEngineTest {
     @BeforeEach
     void setUp() {
         map = MapLoader.loadMatrix("mapTest");
-        bus = new EventBus();
+        bus = new EventBus(4);
         pE = new PhysicsEngine(map, bus, true);
         p = new Position(4, 5);
         w = new Worm("José", new Team("Team", 1, new Position[]{p}));

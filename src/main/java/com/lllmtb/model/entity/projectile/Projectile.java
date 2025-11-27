@@ -1,5 +1,6 @@
 package com.lllmtb.model.entity.projectile;
 
+import com.lllmtb.model.entity.CollisionType;
 import com.lllmtb.model.entity.Entity;
 import com.lllmtb.model.entity.worm.Worm;
 import com.lllmtb.model.item.weapon.FireParams;
@@ -16,6 +17,7 @@ public abstract class Projectile extends Entity {
     private double mass;
     private double height;
     private double width;
+    private CollisionType collisionType;
 
     /**
      * Create a new Projectile
@@ -42,4 +44,12 @@ public abstract class Projectile extends Entity {
      * Called by collision detection when an impact is detected.
      */
     abstract void onImpact();
+
+    /**
+     * @return the {@link CollisionType} assiociated to the projectile
+     */
+    @Override
+    public CollisionType getCollisionType() {
+        return collisionType;
+    }
 }

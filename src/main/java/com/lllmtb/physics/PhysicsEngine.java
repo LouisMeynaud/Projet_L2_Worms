@@ -1,6 +1,7 @@
 package com.lllmtb.physics;
 
 import com.lllmtb.events.EventBus;
+import com.lllmtb.model.entity.CollisionType;
 import com.lllmtb.model.entity.projectile.Projectile;
 import com.lllmtb.terrain.map.Map;
 
@@ -24,6 +25,9 @@ public class PhysicsEngine {
     private CopyOnWriteArrayList<PhysicsBody> bodies;
 
     private ConcurrentHashMap<PhysicsBody, ArrayList<PhysicsModifier>> modifiers;
+
+    /** The {@link Collision} object of the game*/
+    private final Collision collision;
 
     /** The gravity vector applied uniformly to all bodies. */
     private Vector gravity;
@@ -53,10 +57,10 @@ public class PhysicsEngine {
         this.bus = bus;
         this.bodies = new CopyOnWriteArrayList<>();
         this.modifiers = new ConcurrentHashMap<>();
+        this.collision = new Collision(map, this.bodies);
         this.gravity = new Vector(0, -9.81);
         this.hasWind = hasWind;
         this.wind = new Vector(0, 0);
-        Collision.init(this.bodies, map);
     }
 
     /**
@@ -170,6 +174,7 @@ public class PhysicsEngine {
      * <p>
      * If a body’s next position results in a collision, its position is not updated
      * until collision handling is performed.
+     * It calls a different method in Collision according to the body.
      * </p>
      * @param dt the duration of the simulation tick (in seconds).
      */
@@ -181,13 +186,31 @@ public class PhysicsEngine {
             deltaV.scale(dt / body.getMass());
 
             Vector newVector = body.getVector().add(deltaV);
-            body.setVector(newVector);
 
             // apply modifiers for this tick only - we don't want to stack them every tick - not sure about this, for example gravity in the vector keeps increasing when the parachute is deployed and we don't want that
             if (modifiers.containsKey(body)) for (PhysicsModifier m : modifiers.get(body)) newVector = m.apply(newVector);
+            body.setVector(newVector);
+
             Position nextPos = newVector.newPos(body.getPos(), dt);
 
-            if (!Collision.haveCollisionMap(body, nextPos)) {
+            Collision.Impact impact = collision.move(body, nextPos);
+            // if collision
+            if (impact.collided) {
+                // if body slide along cliffs
+                if (body.getEntity().getCollisionType() == CollisionType.SLIDE) {
+                    // if the collision is with the ground
+                    collision.slide(body, impact, bus);
+                    // if body bounce
+                } else if (body.getEntity().getCollisionType() == CollisionType.BOUNCE) {
+                    collision.bounce(body, impact, 0.5);
+                    // if body stick to what it has hit
+                } else if (body.getEntity().getCollisionType() == CollisionType.TOUCH) {
+                    collision.touch(body, impact);
+                    // if body cross all (map and entities)
+                } else {
+                    collision.cross(body, nextPos);
+                }
+            } else {
                 body.setPos(nextPos);
             }
         }

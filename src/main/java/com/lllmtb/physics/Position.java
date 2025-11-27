@@ -47,6 +47,14 @@ public class Position {
         return this.y;
     }
 
+    /**
+     * @param other another {@link Position}.
+     * @return the {@link Vector} from other to this position.
+     */
+    public Vector sub(Position other) {
+        return new Vector(this.x - other.x, this.y - other.y);
+    }
+
     @Override
     public String toString() {
         return "[" + x + ", " + y + "]";

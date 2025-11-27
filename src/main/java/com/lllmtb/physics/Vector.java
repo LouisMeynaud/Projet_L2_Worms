@@ -36,7 +36,7 @@ public class Vector {
     }
 
     public Position newPos(Position pos, double time) {
-        return new Position(pos.getX()+ this.x*time, pos.getY()+ this.y*time );
+        return new Position(pos.getX() + this.x*time, pos.getY()+ this.y*time );
     }
 
     @Override

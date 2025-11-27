@@ -22,7 +22,7 @@ public class GameUIPanel extends JPanel {
        
         JButton settingsButton = new JButton();
         try {
-            BufferedImage imgRaw = ImageIO.read(getClass().getResource("/sprites/button/Pause.png"));
+            BufferedImage imgRaw = ImageIO.read(getClass().getResource("/textures/button/Pause.png"));
             Image scaledImage = imgRaw.getScaledInstance(48, 48, Image.SCALE_REPLICATE);
             settingsButton.setIcon(new ImageIcon(scaledImage));
         } catch (Exception e) {
