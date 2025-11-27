@@ -11,7 +11,7 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.imageio.ImageIO;
-import javax.swing.JPanel;
+import javax.swing.*;
 
 import com.lllmtb.engine.GameWorld;
 import com.lllmtb.events.EventBus;
@@ -29,17 +29,14 @@ public class GameWorldPanel extends JPanel {
     public EventBus eventBus;
     public GameWorld world;
     public Tile[][] mapMatrix;
-    public double tileSize;
-    private final double defaultTileSize = 4;
+    public int tileSize = 12;
+    private final int defaultTileSize = 4;
     private Map<Tile, BufferedImage> textureMatrixMap;
     private Map<String, BufferedImage> textureEntityMap;
     private final Set<Integer> pressedKeys = new HashSet<>();
 
    
-    private BufferedImage mapCache = null; 
-    private int lastWindowWidth = -1;
-    private int lastWindowHeight = -1;
-
+    private BufferedImage mapCache = null;
     
     private boolean isCameraMode = false;
     private boolean hasDraggedCamera = false;
@@ -130,16 +127,14 @@ public class GameWorldPanel extends JPanel {
                     double dx = currentX - lastMouseX;
                     double dy = currentY - lastMouseY;
 
-                    
-                        hasDraggedCamera = true;
-                        cameraOffsetX += dx;
-                        cameraOffsetY += dy;
-                        lastMouseX = currentX;
-                        lastMouseY = currentY;
+                    hasDraggedCamera = true;
+                    cameraOffsetX += dx;
+                    cameraOffsetY += dy;
+                    lastMouseX = currentX;
+                    lastMouseY = currentY;
 
-                        checkCameraBounds(); 
-                        repaint();
-                    
+                    checkCameraBounds();
+                    repaint();
                 }
             }
 
@@ -170,28 +165,27 @@ public class GameWorldPanel extends JPanel {
         
     }
 
-
     private void checkCameraBounds() {
-        double windowWidth = getWidth();
-        double windowHeight = getHeight();
+        double mWidth = mapWidth()*currentZoom;
+        double mHeight = mapHeight()*currentZoom;
 
-        //limite zoom
-        if (currentZoom < 1.0) {
-            currentZoom = 1.0;
+        double wWidth = getWidth();
+        double wHeight = getHeight();
+
+        // limite zoom
+        if (currentZoom < 0.3) {
+            currentZoom = 0.3;
         }
-        if (currentZoom > 5.0) {
-            currentZoom = 5.0;
+        if (currentZoom > 8.0) {
+            currentZoom = 8.0;
         }
-        
-        double limitX = (windowWidth / 2.0) * (currentZoom - 1);
-        double limitY = (windowHeight / 2.0) * (currentZoom - 1);
 
-        
-        if (cameraOffsetX > limitX) cameraOffsetX = limitX;
-        if (cameraOffsetX < -limitX) cameraOffsetX = -limitX;
+        System.out.println("X =" + cameraOffsetX + " | Y =" + cameraOffsetY);
+        if (cameraOffsetX < wWidth-mWidth) cameraOffsetX = wWidth-mWidth;
+        if (cameraOffsetX > 0) cameraOffsetX = 0;
 
-        if (cameraOffsetY > limitY) cameraOffsetY = limitY;
-        if (cameraOffsetY < -limitY) cameraOffsetY = -limitY;
+        if (cameraOffsetY < wHeight-mHeight) cameraOffsetY = wHeight-mHeight;
+        if (cameraOffsetY > 0) cameraOffsetY = 0;
     }
 
    
@@ -233,25 +227,24 @@ public class GameWorldPanel extends JPanel {
         });
     }
 
-    private void updateMapCache(int windowWidth, int windowHeight) {
+    private int mapWidth() {
+        int mapTilesX = world.getMap().getWidth();
+        return mapTilesX * tileSize;
+    }
 
-        mapCache = new BufferedImage(windowWidth, windowHeight, BufferedImage.TYPE_INT_ARGB);
+    private int mapHeight() {
+        int mapTilesY = world.getMap().getHeight();
+        return mapTilesY * tileSize;
+    }
+
+    private void updateMapCache() {
+        int width = mapWidth();
+        int height = mapHeight();
+
+        mapCache = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g2d = mapCache.createGraphics(); //cree un crayon dans mapCache
 
-        double mapTilesX = world.getMap().getWidth();
-        double mapTilesY = world.getMap().getHeight();
-
-        double widthRatio = windowWidth / mapTilesX;
-        double heightRatio = windowHeight / mapTilesY;
-        double sizeToFillScreen = Math.max(widthRatio, heightRatio);
-        this.tileSize = Math.max(defaultTileSize, sizeToFillScreen);
-
-        // On garde la hauteur totale pour aligner le bas de la map au bas de l'écran
-        double totalMapHeightPixels = mapTilesY * this.tileSize;
-        double offScreenY = windowHeight - totalMapHeightPixels; 
-
-        int drawSizeInt = (int) Math.ceil(this.tileSize);
-        g2d.fillRect(0, 0, windowWidth, windowHeight);
+        g2d.fillRect(0, 0, width, height);
 
         for (int y = 0; y < mapMatrix.length; y++) {
             for (int x = 0; x < mapMatrix[y].length; x++) {
@@ -259,13 +252,33 @@ public class GameWorldPanel extends JPanel {
                 
                 BufferedImage texture = textureMatrixMap.get(tileType);
                 if (texture != null) {
-                    int screenX = (int) (x * tileSize);
-                    int screenY = (int) ((y * tileSize) + offScreenY);
-                    g2d.drawImage(texture, screenX, screenY, drawSizeInt, drawSizeInt, null);
-                    
+                    int screenX = x * tileSize;
+                    int screenY = y * tileSize;
+                    g2d.drawImage(texture, screenX, screenY, tileSize, tileSize, null);
                 }
             }
         }
+
+        g2d.dispose();
+
+        // DEBUG - PAINT THE WHOLE TERRAIN
+
+        // Create a JPanel to display the image
+        JPanel imagePanel = new JPanel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                g.drawImage(mapCache, 0, 0, null);  // Draw the image at position (0,0)
+            }
+        };
+
+        // Create a JFrame to contain the JPanel
+        JFrame frame = new JFrame("TERRAIN");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(width, height); // Set the window size to match the image
+        frame.add(imagePanel); // Add the panel that draws the image
+        frame.setLocationRelativeTo(null); // Center the window on the screen
+        frame.setVisible(true); // Show the frame
     }
 
     @Override
@@ -278,22 +291,21 @@ public class GameWorldPanel extends JPanel {
         int currentHeight = getHeight();
 
         if (mapCache == null) {//si on change la taille de la fenetre alors on redessine la carte 
-            updateMapCache(currentWidth, currentHeight);
-            lastWindowWidth = currentWidth;
-            lastWindowHeight = currentHeight;
+            updateMapCache();
         }
 
         Graphics2D g2d = (Graphics2D) g; // pinceau plus puissant avec les translate et les zoom
         AffineTransform oldTransform = g2d.getTransform(); //sauvegarde l'etat initial du pinceaux , sans translate ou autre
 
-        g2d.translate(cameraOffsetX, cameraOffsetY);//decalle le pinceau en fonction de la position camera (si negatif le dessin est deplacer vers la gauche)
-        
-        //pour le zoom , on deplace le pinceaux au milieu , zoom/dezoom(ver le milieu) puis remet le pinceau au bon endroit
-        g2d.translate(currentWidth / 2.0, currentHeight / 2.0);
-        g2d.scale(currentZoom, currentZoom);
-        g2d.translate(-currentWidth / 2.0, -currentHeight / 2.0);
 
-        
+        g2d.translate(cameraOffsetX, cameraOffsetY);//decalle le pinceau en fonction de la position camera (si negatif le dessin est deplacer vers la gauche)
+
+
+        //pour le zoom , on deplace le pinceaux au milieu , zoom/dezoom(ver le milieu) puis remet le pinceau au bon endroit
+        //g2d.translate(currentWidth / 2.0, currentHeight / 2.0);
+        g2d.scale(currentZoom, currentZoom);
+        //g2d.translate(-currentWidth / (2.0 * currentZoom), -currentZoom*currentHeight / (2.0);
+
         //on dessine
         if (mapCache != null) {
             g2d.drawImage(mapCache, 0, 0, null);
@@ -303,7 +315,6 @@ public class GameWorldPanel extends JPanel {
         
         BufferedImage textureWorm = textureEntityMap.get("warm1");
         double hauteurMapPixels = world.getMap().getHeight() * this.tileSize;
-        double videEnHaut = currentHeight - hauteurMapPixels;
 
         if (world.getPhysics() != null && world.getPhysics().getBodies() != null) {
             for (PhysicsBody warm : world.getPhysics().getBodies()) {
@@ -312,9 +323,7 @@ public class GameWorldPanel extends JPanel {
                 
                 double xEcran = warm.getPos().getX() * tileSize;
                 double yPhysique = warm.getPos().getY() * tileSize;
-                double yInverse = hauteurMapPixels - yPhysique - hauteurVerPx;// -hauteurVerPx car dessin commence en haut a gauche
-
-                double yEcran = yInverse + videEnHaut;//ajout du decallage pour s'alligner
+                double yEcran = hauteurMapPixels - yPhysique - hauteurVerPx;// -hauteurVerPx car dessin commence en haut a gauche
 
                 
                 AffineTransform tx = new AffineTransform();
