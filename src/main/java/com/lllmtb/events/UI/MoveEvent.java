@@ -1,4 +1,4 @@
-package com.lllmtb.events.graphicsUi;
+package com.lllmtb.events.UI;
 
 import com.lllmtb.events.Event;
 import com.lllmtb.ui.graphical.GamePanel.Direction;

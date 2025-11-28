@@ -8,10 +8,15 @@ import static org.mockito.Mockito.mock;
 
 import com.lllmtb.engine.GameSettings;
 import com.lllmtb.engine.GameWorld;
-import com.lllmtb.events.graphicsUi.*;
 import com.lllmtb.events.move.MouseInputEvent;
 import com.lllmtb.events.move.MouseWheelMoveInputEvent;
 import com.lllmtb.ui.graphical.GamePanel.Direction;
+import com.lllmtb.events.UI.*;
+import com.lllmtb.events.UI.GraphicsUI.ScreenGenerateMap;
+import com.lllmtb.events.UI.GraphicsUI.ScreenHomeEvent;
+import com.lllmtb.events.UI.GraphicsUI.ScreenLoadMap;
+import com.lllmtb.events.UI.GraphicsUI.ScreenNewOrLoadEvent;
+import com.lllmtb.events.UI.GraphicsUI.ScreenSettingsGame;
 import com.lllmtb.events.game.GamePauseEvent;
 import com.lllmtb.events.game.GameStateUpdatedEvent;
 import com.lllmtb.events.game.MapUpdateEvent;

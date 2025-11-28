@@ -1,5 +1,8 @@
 package com.lllmtb.ui.graphical;
 import com.lllmtb.events.EventBus;
+import com.lllmtb.events.UI.GraphicsUI.ScreenHomeEvent;
+import com.lllmtb.events.UI.GraphicsUI.ScreenNewOrLoadEvent;
+import com.lllmtb.events.UI.GraphicsUI.ScreenSettingsGame;
 
 import java.awt.*;
 
@@ -8,9 +11,6 @@ import javax.swing.JPanel;
 import javax.swing.UIManager;
 
 import com.lllmtb.events.game.StartGameEvent;
-import com.lllmtb.events.graphicsUi.ScreenHomeEvent;
-import com.lllmtb.events.graphicsUi.ScreenNewOrLoadEvent;
-import com.lllmtb.events.graphicsUi.ScreenSettingsGame;
 import com.lllmtb.ui.*;
 import com.lllmtb.ui.graphical.GamePanel.GameScreen;
 import com.lllmtb.ui.graphical.SettingsPanel.NewOrLoadPanel;

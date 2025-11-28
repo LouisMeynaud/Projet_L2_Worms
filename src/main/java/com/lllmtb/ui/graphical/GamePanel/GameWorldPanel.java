@@ -15,7 +15,7 @@ import javax.swing.*;
 
 import com.lllmtb.engine.GameWorld;
 import com.lllmtb.events.EventBus;
-import com.lllmtb.events.graphicsUi.*;
+import com.lllmtb.events.UI.*;
 import com.lllmtb.events.move.MouseInputEvent;
 import com.lllmtb.events.move.MouseWheelMoveInputEvent;
 import com.lllmtb.events.game.GameStateUpdatedEvent;

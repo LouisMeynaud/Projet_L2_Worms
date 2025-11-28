@@ -9,8 +9,8 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 
 import com.lllmtb.events.EventBus;
-import com.lllmtb.events.graphicsUi.ScreenGenerateMap;
-import com.lllmtb.events.graphicsUi.ScreenLoadMap;
+import com.lllmtb.events.UI.GraphicsUI.ScreenGenerateMap;
+import com.lllmtb.events.UI.GraphicsUI.ScreenLoadMap;
 import com.lllmtb.terrain.map.MapLoader;
 
 public class SettingMapPanel extends JPanel{
