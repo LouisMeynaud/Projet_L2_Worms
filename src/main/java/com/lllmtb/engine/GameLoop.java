@@ -8,7 +8,7 @@ import java.util.Arrays;
 public class GameLoop implements Runnable {
     private final GameWorld world;
     private volatile boolean running = true;
-    private final double ticktime = 0.0167; // ~60Hz
+    private final double ticktime = 16; // ~60Hz
     private boolean isPaused = false;
 
     public GameLoop(GameWorld world) {
@@ -29,7 +29,7 @@ public class GameLoop implements Runnable {
             long now = System.nanoTime();
             long elapsedMs = (now - last) / 1_000_000;
             if (!isPaused){
-            // System.out.println("[" + String.format("%4d", acc++) + "] New tick " + elapsedMs + "ms");
+            //System.out.println("[" + String.format("%4d", acc++) + "] New tick " + elapsedMs + "ms");
             // System.out.println("Entities in the game "
             //         + world.getPhysics().getBodies().size() + " : "
             //         + Arrays.toString(world.getPhysics().getBodies().stream().map(PhysicsBody::getEntity).toArray()));
@@ -49,7 +49,7 @@ public class GameLoop implements Runnable {
 
             // 4) sleep to maintain tick rate
             try {
-                Thread.sleep(Math.max(0, (long) ticktime * 1000 - (System.nanoTime() - now)/1_000_000));
+                Thread.sleep(Math.max(0, (long) ticktime - (System.nanoTime() - now)/1_000_000));
             } catch (InterruptedException ignored) {}
         }
     }

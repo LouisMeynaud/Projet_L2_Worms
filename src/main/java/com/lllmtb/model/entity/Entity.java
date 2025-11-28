@@ -13,7 +13,5 @@ public abstract class Entity {
 
     public abstract PhysicsBody getBody();
 
-
-
-
+    public abstract CollisionType getCollisionType();
 }

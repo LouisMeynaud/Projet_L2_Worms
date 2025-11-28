@@ -1,29 +1,49 @@
 package com.lllmtb.engine;
 
-import java.util.EventListener;
-
+import com.lllmtb.events.Event;
+import com.lllmtb.events.EventListener;
 import com.lllmtb.events.TurnEvents.TurnEndEvent;
 import com.lllmtb.events.TurnEvents.TurnStarEvent;
 import com.lllmtb.events.TurnEvents.TurnStopEvent;
 import com.lllmtb.events.TurnEvents.WormPlayable;
+import com.lllmtb.events.graphicsUi.MoveEvent;
+import com.lllmtb.events.move.GroundCheckCollision;
 import com.lllmtb.model.entity.team.Team;
+import com.lllmtb.physics.Move;
+
+import static com.lllmtb.physics.Move.move;
 
 public final class TurnManager {
 
     private Turn turn;
     private final GameWorld world;
+    private EventListener<MoveEvent> listener = event -> {
+        move(this.turn.getWormPlayable(), event.direction);
+        System.out.println("Move");
+    };
+    private EventListener<GroundCheckCollision> listenerGround = event -> {
+        if (turn.getWormPlayable().uuid == event.worm.uuid) {
+            Move.JumpToMax();
+        }
+    };
+
+
 
     private long startTime;
-    private final long tourDurationInMs;
+    private final long turnDurationInMs;
 
-    public TurnManager(GameWorld world, long tourDuration) {
+    public TurnManager(GameWorld world, long turnDuration) {
         this.world = world;
-        this.tourDurationInMs = tourDuration;
+        this.turnDurationInMs = 1000 * turnDuration;
         this.init();
     }
 
     public GameWorld getWorld(){
         return this.world;
+    }
+
+    public long getTurnDuration(){
+        return this.turnDurationInMs;
     }
 
     public void init(){
@@ -36,12 +56,14 @@ public final class TurnManager {
         world.getBus().postQueued(new TurnStarEvent(team));
         System.out.println("Start turn for the team " + team.name);
         world.getBus().postQueued(new WormPlayable(turn.getWormPlayable()));
+        world.getBus().subscribe(MoveEvent.class, listener);
+        world.getBus().subscribe(GroundCheckCollision.class, listenerGround);
     }
 
     public void updateTurn() {
         long now = System.currentTimeMillis();
         // Timer
-        if (now - startTime >= tourDurationInMs) {
+        if (now - startTime >= turnDurationInMs) {
             endTurn();
         }
         if(this.turn.getIsEnd()){
@@ -51,8 +73,11 @@ public final class TurnManager {
 
     private void endTurn() {
         this.turn.end();
-        world.getBus().postQueued(new TurnEndEvent());
         System.out.println("End turn - switch Team");
+        world.getBus().unsubscribe(MoveEvent.class, listener);
+        world.getBus().unsubscribe(GroundCheckCollision.class, listenerGround);
+        world.getBus().postQueued(new TurnEndEvent());
         world.nextTeamTurn();
+
     }
 }

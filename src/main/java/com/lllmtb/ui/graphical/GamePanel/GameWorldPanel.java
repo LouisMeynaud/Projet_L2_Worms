@@ -233,14 +233,14 @@ public class GameWorldPanel extends JPanel {
         textureEntityMap = new HashMap<>();
         try {
 
-            textureMatrixMap.put(Tile.DIRT, ImageIO.read(GameWorldPanel.class.getResource("/sprites/block/Dirt.png"))); // le / designe le dossier ressource
-            textureMatrixMap.put(Tile.WATER, ImageIO.read(GameWorldPanel.class.getResource("/sprites/block/Water.png")));
-            textureMatrixMap.put(Tile.AIR, ImageIO.read(GameWorldPanel.class.getResource("/sprites/block/Air.png")));
-            textureMatrixMap.put(Tile.CAVERN, ImageIO.read(GameWorldPanel.class.getResource("/sprites/block/Cavern.png")));
-            textureMatrixMap.put(Tile.GRASS, ImageIO.read(GameWorldPanel.class.getResource("/sprites/block/Grass.png")));
+            textureMatrixMap.put(Tile.DIRT, ImageIO.read(GameWorldPanel.class.getResource("/textures/block/Dirt.png"))); // le / designe le dossier ressource
+            textureMatrixMap.put(Tile.WATER, ImageIO.read(GameWorldPanel.class.getResource("/textures/block/Water.png")));
+            textureMatrixMap.put(Tile.AIR, ImageIO.read(GameWorldPanel.class.getResource("/textures/block/Air.png")));
+            textureMatrixMap.put(Tile.CAVERN, ImageIO.read(GameWorldPanel.class.getResource("/textures/block/Cavern.png")));
+            textureMatrixMap.put(Tile.GRASS, ImageIO.read(GameWorldPanel.class.getResource("/textures/block/Grass.png")));
 
 
-            textureEntityMap.put("warm1", ImageIO.read(GameWorldPanel.class.getResource("/textures/warm.png")));
+            textureEntityMap.put("worm1", ImageIO.read(GameWorldPanel.class.getResource("/textures/worm.png")));
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -335,16 +335,16 @@ public class GameWorldPanel extends JPanel {
 
         
         
-        BufferedImage textureWorm = textureEntityMap.get("warm1");
+        BufferedImage textureWorm = textureEntityMap.get("worm1");
         double hauteurMapPixels = world.getMap().getHeight() * this.tileSize;
 
         if (world.getPhysics() != null && world.getPhysics().getBodies() != null) {
-            for (PhysicsBody warm : world.getPhysics().getBodies()) {
-                double largeurVerPx = warm.getWidth() * tileSize;
-                double hauteurVerPx = warm.getHeight() * tileSize;
+            for (PhysicsBody worm : world.getPhysics().getBodies()) {
+                double largeurVerPx = worm.getWidth() * tileSize;
+                double hauteurVerPx = worm.getHeight() * tileSize;
                 
-                double xEcran = warm.getPos().getX() * tileSize;
-                double yPhysique = warm.getPos().getY() * tileSize;
+                double xEcran = worm.getPos().getX() * tileSize;
+                double yPhysique = worm.getPos().getY() * tileSize;
                 double yEcran = hauteurMapPixels - yPhysique - hauteurVerPx;// -hauteurVerPx car dessin commence en haut a gauche
 
                 
