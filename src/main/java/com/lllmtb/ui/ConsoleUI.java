@@ -66,6 +66,8 @@ public class ConsoleUI implements UI {
 
             int nbWorms = promptNbWorms();
 
+            int turnDuration = promptTurnDuration();
+
             boolean loadMap = promptLoadMap();
             String mapFileName = null;
             int size = 0;
@@ -141,6 +143,21 @@ public class ConsoleUI implements UI {
         return Integer.parseInt(result.get("nbWorms").getResult());
     }
 
+    private int promptTurnDuration() throws IOException {
+        ConsolePrompt prompt = new ConsolePrompt(terminal);
+        PromptBuilder builder = prompt.getPromptBuilder();
+        builder.createListPrompt()
+                .name("turnDuration")
+                .message("  The duration in seconds of a single turn")
+                .newItem("10").text("10").add()
+                .newItem("20").text("20").add()
+                .newItem("30").text("30").add()
+                .newItem("40").text("40").add()
+                .addPrompt();
+        Map<String, PromptResultItemIF> result = prompt.prompt(builder.build());
+        return Integer.parseInt(result.get("turnDuration").getResult());
+    }
+
     private boolean promptLoadMap() throws IOException {
         ConsolePrompt prompt = new ConsolePrompt(terminal);
         PromptBuilder builder = prompt.getPromptBuilder();
@@ -169,7 +186,6 @@ public class ConsoleUI implements UI {
         Map<String, PromptResultItemIF> result = prompt.prompt(builder.build());
         return result.get("mapFileName").getResult();
     }
-
 
     private int promptMapSize() throws IOException {
         ConsolePrompt prompt = new ConsolePrompt(terminal);
