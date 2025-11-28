@@ -20,13 +20,21 @@ public class GraphicalUI implements  UI{
     
     public JFrame windows;
     public EventBus eventBus;
-    public CardLayout cardLayout;// le controleur de page
+    public CardLayout cardLayout;// the container for all pages
     public JPanel mainPanel;
     
+    
+    /**
+     * 
+     * @param eventbus the event bus of the game
+     * 
+     * This class represents the window; it's the container for all our other pages.
+     * We'll display the home screen, the game panel, the start setting screen, the settings, etc., inside it.
+     */
     public GraphicalUI(EventBus eventbus){
 
         try {
-            // on cherche le "style" nimbus
+            // recherche the style nimbus
             for (UIManager.LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
                 if ("Nimbus".equals(info.getName())) {
                     // On applique Nimbus
@@ -40,9 +48,10 @@ public class GraphicalUI implements  UI{
 
         this.eventBus = eventbus;
         
+        // the windows
         windows = new JFrame();
         windows.setTitle("Worms-MI4");
-        windows.setExtendedState(JFrame.MAXIMIZED_BOTH);//met la fenetre a la taille maximal de l'ecran
+        windows.setExtendedState(JFrame.MAXIMIZED_BOTH);//sets the window to the maximum screen size
         windows.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         windows.setResizable(false);
 
@@ -53,20 +62,22 @@ public class GraphicalUI implements  UI{
         SettingsStartPanel startSettingScreen = new SettingsStartPanel(this.eventBus);
         GameScreen gamePanel = new GameScreen(eventbus);
         NewOrLoadPanel newOrLoadPanel = new NewOrLoadPanel(eventbus);
-        mainPanel.add(homeScreen,"homeScreen");
-        mainPanel.add(startSettingScreen,"startSettingScreen");
-        mainPanel.add(gamePanel,"gamePanel");
-        mainPanel.add(newOrLoadPanel,"newOrLoadPanel");
-        windows.add(mainPanel);
+        mainPanel.add(homeScreen,"homeScreen"); // the principal page
+        mainPanel.add(startSettingScreen,"startSettingScreen");// the game launch settings page
+        mainPanel.add(gamePanel,"gamePanel"); // la page de jeu
+        mainPanel.add(newOrLoadPanel,"newOrLoadPanel"); //The page allowing you to choose whether you want to load or create a game
+        windows.add(mainPanel);// the page containing the others, (the card layout).
 
+
+        /**
+         *Method allowing all subscribers to be grouped in the same place.
+         */
         subscribeToNavigationEvents();
     }
 
 
 
     private void subscribeToNavigationEvents() {
-        
-    
         eventBus.subscribe(ScreenNewOrLoadEvent.class, event -> {
                 cardLayout.show(mainPanel, "newOrLoadPanel");
             
@@ -87,6 +98,9 @@ public class GraphicalUI implements  UI{
 
 
     @Override
+    /**
+     * makes the page visible
+     */
     public void start() {
         windows.setVisible(true);
     }

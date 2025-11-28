@@ -30,15 +30,15 @@ public class SettingsStartPanel extends JPanel {
 
     public void PanelSetting() {
 
-        this.setLayout(new BorderLayout(10, 10)); // zone nord,Sud,...
+        this.setLayout(new BorderLayout(10, 10)); // North zone, South,...
 
-        // titre (image plus tard);Zone nord
+        // Title (image later); Northern Zone
         JLabel titre = new JLabel("CREER UNE NOUVELLE PARTIE");
         titre.setHorizontalAlignment(SwingConstants.CENTER);
-        titre.setFont(new Font("Arial", Font.BOLD, 24)); // bold pour gras
+        titre.setFont(new Font("Arial", Font.BOLD, 24)); 
         this.add(titre, BorderLayout.NORTH);
 
-        // bouton lancée et retour: zone sud
+        // Launch and return button: southern zone
         JPanel ZoneSud = new JPanel(new FlowLayout(FlowLayout.RIGHT)); // met les bouton a droite (flowLayout afficheles un apres les autre);
         JButton backButton = new JButton("Retour");
         JButton StarButton = new JButton("Lancer la partie");
@@ -48,8 +48,8 @@ public class SettingsStartPanel extends JPanel {
         this.add(ZoneSud, BorderLayout.SOUTH);
 
 
-        //zone centre (les deux partit (parametre map/partit))
-        JPanel PanelCentre = new JPanel(new GridLayout(1, 2, 10, 0));// 1 ligne 2 colonne , 10 de marge horizontale
+        //center zone (two part (setting game/map))
+        JPanel PanelCentre = new JPanel(new GridLayout(1, 2, 10, 0));// 1 line, 2 columns, 10 horizontal margin
         this.mapSettingPanel = new SettingMapPanel(eventBus);
         this.gameSettingsPanel = new SettingGamePanel();
 
@@ -66,6 +66,11 @@ public class SettingsStartPanel extends JPanel {
             eventBus.postQueued(new StartGameEvent(setSettings(gameSettingsPanel)));
         });
     }
+    /**
+     * 
+     * @param gameSettingsPanel retrieves the parameters chosen in the gameSetting panel
+     * @returnreturns a type setting for creating the game.
+     */
     public GameSettings setSettings(SettingGamePanel gameSettingsPanel) {
         int nbEquipes = gameSettingsPanel.getNbEquipes();
         int nbVWorms = gameSettingsPanel.getNbWorms();
