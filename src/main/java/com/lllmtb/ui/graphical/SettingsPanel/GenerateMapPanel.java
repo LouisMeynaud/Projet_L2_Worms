@@ -21,7 +21,7 @@ public class GenerateMapPanel extends JPanel{
     public final int MAX_WIDTH = 400;
     public JSlider WidthMapSlider;
     public JSlider reliefSlider;
-    public JCheckBox windCheckBox;
+    public JCheckBox flightIslandCheckBox;
     
     /**
      * displays the map settings
@@ -73,6 +73,13 @@ public class GenerateMapPanel extends JPanel{
         this.reliefSlider = createReliefSlider(); 
         contentGrid.add(reliefSlider, gbc);
         row++;
+
+        gbc.gridwidth = 2; 
+        gbc.gridx = 0;
+        gbc.gridy = row;
+        this.flightIslandCheckBox = new JCheckBox("ile volante ?");
+        contentGrid.add(this.flightIslandCheckBox, gbc);
+        row++;
      }   
 
     /**
@@ -103,6 +110,9 @@ public class GenerateMapPanel extends JPanel{
     }
 
 
+    
+
+
     // getter
     public LandScape getReliefType() {
         int val = this.reliefSlider.getValue();
@@ -117,6 +127,10 @@ public class GenerateMapPanel extends JPanel{
 
     public int getWidthMapSlider() {
         return this.WidthMapSlider.getValue();
+    }
+
+     public boolean getflightIsland(){
+        return this.flightIslandCheckBox.isSelected();
     }
 
 }

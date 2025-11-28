@@ -76,12 +76,8 @@ public class PanelListeMap extends JPanel{
         maListe.addListSelectionListener(e -> {
                 InfoLigne elementSelectionne = maListe.getSelectedValue();
                 if (elementSelectionne != null) {
-                    System.out.println("vous avez cliquer sur:" + elementSelectionne.titre);
-                    System.out.println("le fichier correspondant est:" + elementSelectionne.fichierMap.getAbsolutePath());
-                    
-                   
+                   //mettre de la couleur sur la ligne choisie
                 }
-            
         });
        
     }

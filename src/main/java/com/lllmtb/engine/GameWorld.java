@@ -49,7 +49,7 @@ public class GameWorld {
         }
         this.map = tmap;
         this.map.setSpawnPoint(CreateSpawnPoint.createSpawnPoint(settings.nbTeams,settings.nbWorms,tmap));
-        System.out.println(this.map);
+        //System.out.println(this.map);
 
         this.bus = eventBus;
 
