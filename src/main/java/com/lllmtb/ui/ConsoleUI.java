@@ -1,9 +1,11 @@
 package com.lllmtb.ui;
 
 import com.lllmtb.engine.GameSettings;
+import com.lllmtb.engine.GameWorld;
 import com.lllmtb.events.EventBus;
 import com.lllmtb.events.game.StartGameEvent;
 
+import com.lllmtb.events.game.WorldCreatedEvent;
 import com.lllmtb.terrain.map.MapLoader;
 import org.jline.consoleui.elements.ConfirmChoice;
 import org.jline.consoleui.prompt.ConsolePrompt;
@@ -240,9 +242,11 @@ public class ConsoleUI implements UI {
             if (ready) {
                 terminal.writer().println("Lancement du jeu...");
                 terminal.writer().flush();
-                
-              
                 this.eventBus.postQueued(new StartGameEvent(settings));
+                eventBus.subscribe(WorldCreatedEvent.class, e -> {
+                    GameWorld world = e.getWorld();
+                    System.out.println(world.getMap());
+                });
             }
         }catch (Exception e) {
             System.err.println("Une erreur est survenue durant la configuration :");
