@@ -56,7 +56,7 @@ public class GenerateMapPanel extends JPanel{
         gbc.gridwidth = 1; // take one column
         gbc.gridx = 0;
         gbc.gridy = row;
-        JLabel mapWidthLabel = new JLabel("largeur map");
+        JLabel mapWidthLabel = new JLabel("Largeur map");
         contentGrid.add(mapWidthLabel, gbc);
 
         gbc.gridx = 1; // second columns
@@ -77,7 +77,7 @@ public class GenerateMapPanel extends JPanel{
         gbc.gridwidth = 2; 
         gbc.gridx = 0;
         gbc.gridy = row;
-        this.flightIslandCheckBox = new JCheckBox("ile volante ?");
+        this.flightIslandCheckBox = new JCheckBox("Ile volante ?");
         contentGrid.add(this.flightIslandCheckBox, gbc);
         row++;
      }   

@@ -31,7 +31,7 @@ public class SettingMapPanel extends JPanel{
      */
     public SettingMapPanel(EventBus eventBus){
         this.eventBus = eventBus;
-        this.setBorder(BorderFactory.createTitledBorder("Paramètres de la map"));
+        this.setBorder(BorderFactory.createTitledBorder(""));
         cardLayout = new CardLayout();
         this.setLayout(new BorderLayout());
         JPanel cardPanel= new JPanel(this.cardLayout);

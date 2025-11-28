@@ -35,10 +35,10 @@ public class PanelListeMap extends JPanel{
 
         public InfoLigne(String titre, String info, ImageIcon image, File fichierMap) {
             this.titre = titre;
-            this.description = info;
+            this.description =  info;
             this.image = image;
             this.fichierMap = fichierMap; 
-        }// On le sauvegarde
+        }
         
         @Override
         public String toString(){ // si quelque chose se passe mal dans le chargement du fichier on met ceci
@@ -47,6 +47,7 @@ public class PanelListeMap extends JPanel{
     
 }
     public PanelListeMap(File[] tableauDeDossiers){
+        setBackground(Color.DARK_GRAY);
         this.setLayout(new BorderLayout());
 
         ArrayList<InfoLigne> donneeMap = new ArrayList<>();
@@ -66,23 +67,16 @@ public class PanelListeMap extends JPanel{
             tableauDeDonnees[i] = donneeMap.get(i);
         }
         this.maListe = new JList<>(tableauDeDonnees);
+        this.maListe.setOpaque(false);
 
         maListe.setCellRenderer(new ListRenderer());
         JScrollPane list = new JScrollPane(maListe);
-        list.getVerticalScrollBar().setUnitIncrement(20);
+        list.setOpaque(false);
 
         this.add(list,BorderLayout.CENTER);
-
-        //ecoute le clique de la liste
-        maListe.addListSelectionListener(e -> {
-                InfoLigne elementSelectionne = maListe.getSelectedValue();
-                if (elementSelectionne != null) {
-                   //mettre de la couleur sur la ligne choisie
-                }
-        });
        
     }
-
+    
     
     public File getFichierSelectionne() {
         InfoLigne selection = maListe.getSelectedValue();
@@ -166,11 +160,12 @@ public class PanelListeMap extends JPanel{
             labelTitre.setText(valeur.titre);
             labelDescription.setText(valeur.description);
             labelImage.setIcon(valeur.image);
+             setBackground(Color.GRAY);
 
             if (isSelected) {
-                setBackground(Color.GRAY);
+                setOpaque(true);
             } else {
-                setBackground(Color.LIGHT_GRAY);
+                setOpaque(false);
             }
 
             return this;

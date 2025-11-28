@@ -33,15 +33,15 @@ public class SettingsStartPanel extends JPanel {
         this.setLayout(new BorderLayout(10, 10)); // North zone, South,...
 
         // Title (image later); Northern Zone
-        JLabel titre = new JLabel("CREER UNE NOUVELLE PARTIE");
+        JLabel titre = new JLabel("START A NEW GAME");
         titre.setHorizontalAlignment(SwingConstants.CENTER);
         titre.setFont(new Font("Arial", Font.BOLD, 24)); 
         this.add(titre, BorderLayout.NORTH);
 
         // Launch and return button: southern zone
         JPanel ZoneSud = new JPanel(new FlowLayout(FlowLayout.RIGHT)); // met les bouton a droite (flowLayout afficheles un apres les autre);
-        JButton backButton = new JButton("Retour");
-        JButton StarButton = new JButton("Lancer la partie");
+        JButton backButton = new JButton("Back");
+        JButton StarButton = new JButton("Start the game");
 
         ZoneSud.add(backButton);
         ZoneSud.add(StarButton);

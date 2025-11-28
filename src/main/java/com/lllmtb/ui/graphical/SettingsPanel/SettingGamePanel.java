@@ -29,7 +29,7 @@ public class SettingGamePanel extends JPanel {
      * This page contains all the parameters related to the map.
      */
     public SettingGamePanel(){
-        this.setBorder(BorderFactory.createTitledBorder("Paramètres de la partit"));
+        this.setBorder(BorderFactory.createTitledBorder(""));
         this.setLayout(new BorderLayout()); 
         
         
@@ -97,7 +97,7 @@ public class SettingGamePanel extends JPanel {
         //turn duration
         gbc.gridx = 0;
         gbc.gridy = row;
-        JLabel turnDurationLabel = new JLabel("temps d'un tour en seconde:");
+        JLabel turnDurationLabel = new JLabel("Temps d'un tour en seconde:");
         contentGrid.add(turnDurationLabel, gbc);
 
         gbc.gridx = 1;

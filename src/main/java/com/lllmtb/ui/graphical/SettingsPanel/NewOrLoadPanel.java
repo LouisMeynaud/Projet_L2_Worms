@@ -18,20 +18,20 @@ public class NewOrLoadPanel extends  JPanel {
         this.eventBus = new EventBus();
 
 
-        JButton NewGameButton = new JButton("new game");
+        JButton NewGameButton = new JButton("New game");
         NewGameButton.addActionListener(e -> {
             eventBus.postQueued(new ScreenSettingsGame());
         });
         this.add(NewGameButton);
 
-        JButton loadGameButton = new JButton("load game");
+        JButton loadGameButton = new JButton("Load game");
         loadGameButton.addActionListener(e -> {
         //
         });
         this.add(loadGameButton);
 
 
-        JButton backButton = new JButton("retour");
+        JButton backButton = new JButton("Back");
     backButton.addActionListener(e -> {
             eventBus.postQueued(new ScreenHomeEvent());
         });
