@@ -4,9 +4,7 @@ import com.lllmtb.events.EventBus;
 import com.lllmtb.events.game.GameStateUpdatedEvent;
 import com.lllmtb.model.entity.Entity;
 import com.lllmtb.model.entity.team.Team;
-import com.lllmtb.model.entity.worm.Worm;
 import com.lllmtb.physics.PhysicsEngine;
-import com.lllmtb.physics.Position;
 import com.lllmtb.terrain.generation.GenerateMap;
 import com.lllmtb.terrain.map.CreateSpawnPoint;
 import com.lllmtb.terrain.map.Map;
@@ -49,7 +47,6 @@ public class GameWorld {
         }
         this.map = tmap;
         this.map.setSpawnPoint(CreateSpawnPoint.createSpawnPoint(settings.nbTeams,settings.nbWorms,tmap));
-        //System.out.println(this.map);
 
         this.bus = eventBus;
 
