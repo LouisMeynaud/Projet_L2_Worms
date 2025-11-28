@@ -3,8 +3,8 @@ package com.lllmtb.physics;
 import com.lllmtb.engine.GameWorld;
 import com.lllmtb.events.EventBus;
 import com.lllmtb.events.EventListener;
-import com.lllmtb.events.graphicsUi.MoveEvent;
 import com.lllmtb.events.move.GroundCheckCollision;
+import com.lllmtb.events.ui.graphical.*;
 import com.lllmtb.model.entity.worm.Worm;
 import com.lllmtb.ui.graphical.GamePanel.Direction;
 

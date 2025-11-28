@@ -1,6 +1,7 @@
 package com.lllmtb.ui.graphical.SettingsPanel;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -34,10 +35,10 @@ public class PanelListeMap extends JPanel{
 
         public InfoLigne(String titre, String info, ImageIcon image, File fichierMap) {
             this.titre = titre;
-            this.description = info;
+            this.description =  info;
             this.image = image;
             this.fichierMap = fichierMap; 
-        }// On le sauvegarde
+        }
         
         @Override
         public String toString(){ // si quelque chose se passe mal dans le chargement du fichier on met ceci
@@ -46,6 +47,7 @@ public class PanelListeMap extends JPanel{
     
 }
     public PanelListeMap(File[] tableauDeDossiers){
+        setBackground(Color.DARK_GRAY);
         this.setLayout(new BorderLayout());
 
         ArrayList<InfoLigne> donneeMap = new ArrayList<>();
@@ -65,27 +67,16 @@ public class PanelListeMap extends JPanel{
             tableauDeDonnees[i] = donneeMap.get(i);
         }
         this.maListe = new JList<>(tableauDeDonnees);
+        this.maListe.setOpaque(false);
 
         maListe.setCellRenderer(new ListRenderer());
         JScrollPane list = new JScrollPane(maListe);
-        list.getVerticalScrollBar().setUnitIncrement(20);
+        list.setOpaque(false);
 
         this.add(list,BorderLayout.CENTER);
-
-        //ecoute le clique de la liste
-        maListe.addListSelectionListener(e -> {
-                InfoLigne elementSelectionne = maListe.getSelectedValue();
-                if (elementSelectionne != null) {
-                    System.out.println("vous avez cliquer sur:" + elementSelectionne.titre);
-                    System.out.println("le fichier correspondant est:" + elementSelectionne.fichierMap.getAbsolutePath());
-                    
-                   
-                }
-            
-        });
        
     }
-
+    
     
     public File getFichierSelectionne() {
         InfoLigne selection = maListe.getSelectedValue();
@@ -169,13 +160,12 @@ public class PanelListeMap extends JPanel{
             labelTitre.setText(valeur.titre);
             labelDescription.setText(valeur.description);
             labelImage.setIcon(valeur.image);
+             setBackground(Color.GRAY);
 
             if (isSelected) {
-                setBackground(list.getSelectionBackground());
-                setForeground(list.getSelectionForeground());
+                setOpaque(true);
             } else {
-                setBackground(list.getBackground());
-                setForeground(list.getForeground());
+                setOpaque(false);
             }
 
             return this;

@@ -11,25 +11,30 @@ public class GameScreen extends JLayeredPane {
     private GameWorldPanel gameWorldPanel;
     private GameUIPanel gameUIPanel;
 
-    public GameScreen(EventBus bus) {
-        gameWorldPanel = new GameWorldPanel(bus);
-        gameUIPanel = new GameUIPanel(bus);
+   /**
+    * This page will contain the overlay of the different page layers of the game.
+    * @param bus 
+    */
+    public GameScreen(EventBus eventBus) {
+        gameWorldPanel = new GameWorldPanel(eventBus);
+        gameUIPanel = new GameUIPanel(eventBus);
         this.add(gameWorldPanel, JLayeredPane.DEFAULT_LAYER);//default_layer : la couche du dessous
         this.add(gameUIPanel, JLayeredPane.PALETTE_LAYER); //pallette_layer = la couche du dessus
         Rectangle bounds = getBounds();
-        gameWorldPanel.setBounds(bounds); // le jeu prend tout l'ecran
+        gameWorldPanel.setBounds(bounds); // the game take all the screen
         gameUIPanel.setBounds(bounds);    
 
-        this.addComponentListener(new ComponentAdapter() { //listenner qui se declenche quand on resize la taille du composant parent/fenetre
+        //Listener that triggers when the parent/window component is resized to resize the game
+        this.addComponentListener(new ComponentAdapter() { 
             @Override
             public void componentResized(ComponentEvent e) {
                 int width = getWidth();
                 int height = getHeight();
                 
-                // On force les deux panneaux à prendre toute la place
+                // We force both panels to take up all the space
                 gameWorldPanel.setBounds(0, 0, width, height);
                 gameUIPanel.setBounds(0, 0, width, height);
-                revalidate();//permet de bien replacer les bouton etc
+                revalidate();//allows you to properly reposition the buttons etc
                 repaint();
             }
         });

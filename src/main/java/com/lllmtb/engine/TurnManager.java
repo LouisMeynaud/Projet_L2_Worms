@@ -6,10 +6,10 @@ import com.lllmtb.events.TurnEvents.TurnEndEvent;
 import com.lllmtb.events.TurnEvents.TurnStarEvent;
 import com.lllmtb.events.TurnEvents.TurnStopEvent;
 import com.lllmtb.events.TurnEvents.WormPlayable;
-import com.lllmtb.events.graphicsUi.MoveEvent;
 import com.lllmtb.events.move.GroundCheckCollision;
 import com.lllmtb.model.entity.team.Team;
 import com.lllmtb.physics.Move;
+import com.lllmtb.events.ui.MoveEvent;
 
 import static com.lllmtb.physics.Move.move;
 

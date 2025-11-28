@@ -9,8 +9,8 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 
 import com.lllmtb.events.EventBus;
-import com.lllmtb.events.graphicsUi.ScreenGenerateMap;
-import com.lllmtb.events.graphicsUi.ScreenLoadMap;
+import com.lllmtb.events.ui.graphical.ScreenGenerateMap;
+import com.lllmtb.events.ui.graphical.ScreenLoadMap;
 import com.lllmtb.terrain.map.MapLoader;
 
 public class SettingMapPanel extends JPanel{
@@ -20,9 +20,18 @@ public class SettingMapPanel extends JPanel{
     public EventBus eventBus;
     public boolean loadMap = true;
     
+    /**
+     * 
+     * @param eventBus the event bus of the game
+     * This page contains  2 panel and 2 button for choose the panel
+     * 
+     * 1: panelListeMap for choose a map
+     * 2: generateMapPanel for create a map
+     * 
+     */
     public SettingMapPanel(EventBus eventBus){
         this.eventBus = eventBus;
-        this.setBorder(BorderFactory.createTitledBorder("Paramètres de la map"));
+        this.setBorder(BorderFactory.createTitledBorder(""));
         cardLayout = new CardLayout();
         this.setLayout(new BorderLayout());
         JPanel cardPanel= new JPanel(this.cardLayout);
