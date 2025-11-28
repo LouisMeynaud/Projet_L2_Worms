@@ -4,9 +4,11 @@ import com.lllmtb.engine.GameSettings;
 import com.lllmtb.events.EventBus;
 import com.lllmtb.events.game.StartGameEvent;
 
+import com.lllmtb.terrain.map.MapLoader;
 import org.jline.consoleui.elements.ConfirmChoice;
 import org.jline.consoleui.prompt.ConsolePrompt;
 import org.jline.consoleui.prompt.PromptResultItemIF;
+import org.jline.consoleui.prompt.builder.ListPromptBuilder;
 import org.jline.consoleui.prompt.builder.PromptBuilder;
 import org.jline.reader.LineReader;
 import org.jline.reader.LineReaderBuilder;
@@ -16,6 +18,7 @@ import org.jline.utils.AttributedString;
 import org.jline.utils.AttributedStyle;
 import org.jline.utils.InfoCmp;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Map;
@@ -29,8 +32,6 @@ import com.lllmtb.terrain.generation.LandScape;
 // TODO - add better styling (colours...)
 
 // TODO - as we add more game options, a multi-select menu would be better UX (cf. createCheckboxPrompt)
-
-// TODO - when prompting for a map file to load, display a list of available files in a select menu
 
 public class ConsoleUI implements UI {
     private Terminal terminal;
@@ -65,10 +66,16 @@ public class ConsoleUI implements UI {
 
             boolean loadMap = promptLoadMap();
             String mapFileName = null;
+            int size = 0;
+            LandScape landscape = LandScape.UNKNOWN;
             boolean floatingIsland = false;
 
-            if (loadMap) mapFileName = promptMapFileName();
-            else floatingIsland = promptFloatingIsland();
+            if (loadMap) mapFileName = promptMapName();
+            else {
+                size = promptMapSize();
+                landscape = promptLandscape();
+                floatingIsland = promptFloatingIsland();
+            }
 
             boolean hasWind = promptHasWind();
 
@@ -77,19 +84,17 @@ public class ConsoleUI implements UI {
             terminal.writer().println();
             terminal.writer().println(" RECAP: ");
             terminal.writer().println("   " + nbTeams + " teams " + Arrays.toString(teamNames) + " of " + nbWorms + " worm(s) each");
-            terminal.writer().println(loadMap
-                    ? "   Load map from: " + mapFileName
-                    : "   Generate a new map " + (floatingIsland ? "(floating island mode)" : "(normal mode)")
-            );
+            if (loadMap) terminal.writer().println("   Load map from: " + mapFileName);
+            else terminal.writer().println("   Generate a new " + size + "x map with " + landscape.name() + " landscape " + (floatingIsland ? "(floating island mode)" : "(normal mode)"));
             terminal.writer().println("   Wind: " + (hasWind ? "ON" : "OFF"));
             terminal.writer().flush();
-            return new GameSettings(nbTeams, teamNames, nbWorms, hasWind, mapFileName, floatingIsland,370,LandScape.HILLY);
+            return new GameSettings(nbTeams, teamNames, nbWorms, hasWind, mapFileName, floatingIsland, size, landscape);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
-    
+
     private int promptNbTeams() throws IOException {
         ConsolePrompt prompt = new ConsolePrompt(terminal);
         PromptBuilder builder = prompt.getPromptBuilder();
@@ -146,15 +151,52 @@ public class ConsoleUI implements UI {
         return result.get("loadMap").getResult().equals(ConfirmChoice.ConfirmationValue.YES.toString());
     }
 
-    private String promptMapFileName() throws IOException {
+    private String promptMapName() throws IOException {
         ConsolePrompt prompt = new ConsolePrompt(terminal);
         PromptBuilder builder = prompt.getPromptBuilder();
-        builder.createInputPrompt()
+
+        File[] dossiers = MapLoader.getListeDossiersMaps();
+
+        ListPromptBuilder b = builder.createListPrompt()
                 .name("mapFileName")
-                .message("  Enter the file name:")
-                .addPrompt();
+                .message("  Select a map to load");
+
+        for (File d : dossiers) b.newItem(d.getName()).text(d.getName()).add();
+        b.addPrompt();
+
         Map<String, PromptResultItemIF> result = prompt.prompt(builder.build());
         return result.get("mapFileName").getResult();
+    }
+
+
+    private int promptMapSize() throws IOException {
+        ConsolePrompt prompt = new ConsolePrompt(terminal);
+        PromptBuilder builder = prompt.getPromptBuilder();
+        builder.createListPrompt()
+                .name("size")
+                .message("  The size (width) of the map")
+                .newItem("100").text("100").add()
+                .newItem("200").text("200").add()
+                .newItem("300").text("300").add()
+                .newItem("400").text("400").add()
+                .addPrompt();
+        Map<String, PromptResultItemIF> result = prompt.prompt(builder.build());
+        return Integer.parseInt(result.get("size").getResult());
+    }
+
+    private LandScape promptLandscape() throws IOException {
+        ConsolePrompt prompt = new ConsolePrompt(terminal);
+        PromptBuilder builder = prompt.getPromptBuilder();
+        builder.createListPrompt()
+                .name("size")
+                .message("  The type of landscape to use")
+                .newItem("FLAT").text("Flat").add()
+                .newItem("HILLY").text("Hilly").add()
+                .newItem("JAGGED").text("Jagged").add()
+                .newItem("CHAOTIC").text("Chaotic").add()
+                .addPrompt();
+        Map<String, PromptResultItemIF> result = prompt.prompt(builder.build());
+        return LandScape.valueOf(result.get("size").getResult());
     }
 
     private boolean promptFloatingIsland() throws IOException {
