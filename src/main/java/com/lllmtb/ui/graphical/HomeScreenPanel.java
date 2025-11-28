@@ -8,7 +8,7 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 
 import com.lllmtb.events.EventBus;
-import com.lllmtb.events.UI.GraphicsUI.ScreenNewOrLoadEvent;
+import com.lllmtb.events.ui.graphical.ScreenNewOrLoadEvent;
 
 public class HomeScreenPanel extends JPanel{
     EventBus eventBus;
