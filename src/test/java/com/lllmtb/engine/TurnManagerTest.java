@@ -22,7 +22,7 @@ public class TurnManagerTest {
 
     @BeforeEach
     public void setUp(){
-        GameSettings settings = new GameSettings(2, new String[]{"TeamTest1", "TeamTest2"}, 1, false, null, false,370, LandScape.HILLY);
+        GameSettings settings = new GameSettings(2, new String[]{"TeamTest1", "TeamTest2"}, 1,1, false, null, false,370, LandScape.HILLY);
         EventBus eventBus = new EventBus();
         this.gw = new GameWorld(settings, eventBus);
         gw.start();
@@ -72,7 +72,7 @@ public class TurnManagerTest {
         this.gw.getBus().subscribe(TurnEndEvent.class, event -> {
             eventEnd.set(true);});
         try {
-            Thread.sleep(gw.getTourDuration() +50);
+            Thread.sleep(gw.getTurnDuration() +50);
         } catch (InterruptedException ignored) {}
         assertTrue(eventEnd.get());
 

@@ -121,7 +121,7 @@ public class GameWorldTest {
                 null,   // use GenerateMap
                 true,    // floating island -> FLYINGWORLD
                 370,
-                LandScape.HILLY,
+                LandScape.HILLY
         );
          EventBus eventBus = new EventBus();
 
@@ -207,7 +207,7 @@ public class GameWorldTest {
 
     @Test
     void getTurnManage(){
-        GameSettings settings = new GameSettings(0, new String[]{}, 0, 10000, false, null, false,370,LandScape.HILLY);
+        GameSettings settings = new GameSettings(0, new String[]{}, 0, 10, false, null, false,370,LandScape.HILLY);
         EventBus eventBus = new EventBus();
         GameWorld gw = new GameWorld(settings, eventBus);
 

@@ -24,23 +24,26 @@ public final class TurnManager {
     private EventListener<GroundCheckCollision> listenerGround = event -> {
         if (turn.getWormPlayable().uuid == event.worm.uuid) {
             Move.JumpToMax();
-            System.out.println("Reset Jump");
-        };
+        }
     };
 
 
 
     private long startTime;
-    private final long tourDurationInMs;
+    private final long turnDurationInMs;
 
-    public TurnManager(GameWorld world, long tourDuration) {
+    public TurnManager(GameWorld world, long turnDuration) {
         this.world = world;
-        this.tourDurationInMs = tourDuration*1000;
+        this.turnDurationInMs = 1000 * turnDuration;
         this.init();
     }
 
     public GameWorld getWorld(){
         return this.world;
+    }
+
+    public long getTurnDuration(){
+        return this.turnDurationInMs;
     }
 
     public void init(){
@@ -60,7 +63,7 @@ public final class TurnManager {
     public void updateTurn() {
         long now = System.currentTimeMillis();
         // Timer
-        if (now - startTime >= tourDurationInMs) {
+        if (now - startTime >= turnDurationInMs) {
             endTurn();
         }
         if(this.turn.getIsEnd()){
