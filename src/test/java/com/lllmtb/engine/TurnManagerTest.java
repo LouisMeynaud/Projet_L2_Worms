@@ -22,7 +22,7 @@ public class TurnManagerTest {
 
     @BeforeEach
     public void setUp(){
-        GameSettings settings = new GameSettings(2, new String[]{"TeamTest1", "TeamTest2"}, 1, false, null, false,370, LandScape.HILLY);
+        GameSettings settings = new GameSettings(2, new String[]{"TeamTest1", "TeamTest2"}, 1,1, false, null, false,370, LandScape.HILLY);
         EventBus eventBus = new EventBus();
         this.gw = new GameWorld(settings, eventBus);
         gw.start();

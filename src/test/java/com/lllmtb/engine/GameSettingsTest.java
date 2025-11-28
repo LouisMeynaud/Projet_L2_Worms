@@ -16,7 +16,7 @@ public class GameSettingsTest
         String FileMapName = "tkt.txt";
         boolean GeneratedIsland = true;
         LandScape terrainType = LandScape.HILLY;
-        GameSettings settings = new GameSettings(nbTeams, TeamNames, numberWorms, hasWind, FileMapName, GeneratedIsland,370,LandScape.HILLY);
+        GameSettings settings = new GameSettings(nbTeams, TeamNames, numberWorms,10000, hasWind, FileMapName, GeneratedIsland,370,LandScape.HILLY);
         assertEquals(nbTeams, settings.nbTeams);
         assertEquals(TeamNames, settings.teamNames);
         assertEquals(numberWorms, settings.nbWorms);

@@ -1,9 +1,5 @@
 package com.lllmtb.terrain.map;
-import java.util.Random;
-
 import com.lllmtb.physics.Position;
-import com.lllmtb.terrain.generation.ConfigMap;
-
 public class Map {
 /**
  Represent the game cards as a matrix of TILES,

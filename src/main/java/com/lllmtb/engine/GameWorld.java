@@ -53,7 +53,6 @@ public class GameWorld {
         }
         this.map = tmap;
         this.map.setSpawnPoint(CreateSpawnPoint.createSpawnPoint(settings.nbTeams,settings.nbWorms,tmap));
-        System.out.println(this.map);
 
         this.bus = eventBus;
 
@@ -82,8 +81,8 @@ public class GameWorld {
         System.out.println("Game initialised");
 
         //Init TurnManager
-        turnDuration = 10000;
-        this.turnManager = new TurnManager(this, turnDuration);
+        this.turnManager = new TurnManager(this, settings.turnDuration);
+        this.turnDuration = this.getTurnDuration();
     }
 
     public Map getMap() {
@@ -111,7 +110,7 @@ public class GameWorld {
     }
 
     public long getTurnDuration(){
-        return this.turnDuration;
+        return this.turnManager.getTurnDuration();
     }
 
     public void start() {

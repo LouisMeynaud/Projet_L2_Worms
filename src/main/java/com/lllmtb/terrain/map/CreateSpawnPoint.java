@@ -18,9 +18,6 @@ public class CreateSpawnPoint {
             exist = false;
             int xPosition = random.nextInt(map.getHightLine().length);
             Position nouvellePos = new Position(xPosition, map.getHightLine()[xPosition]);
-            System.out.println(map.getWidth());
-            System.out.println(map.getHightLine().length);
-            System.out.println("testttttttttttt position :x" + nouvellePos.getX() + "position Y:" +nouvellePos.getY());
             for(int j = 0; j< i;j++){
                 if(nouvellePos.equals(spawnPointPos[j])){
                     exist = true;
@@ -44,7 +41,6 @@ public class CreateSpawnPoint {
             System.out.println("");
             for (int j = 0; j < nbWorms; j++) {
                 teamSpawnPointPositions[i][j] = spawnPointPos[i*nbWorms+j];
-                System.out.println("nouvelle position: x ="+teamSpawnPointPositions[i][j].getX() + "y =" + teamSpawnPointPositions[i][j].getY());
             }
         }
         return teamSpawnPointPositions;

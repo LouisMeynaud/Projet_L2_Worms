@@ -17,12 +17,19 @@ public class SettingGamePanel extends JPanel {
     public JTextField[] champsNomsEquipes;
     public final int MAX_EQUIPES = 4;
     public final int MAX_WORM = 6;
+    public final int MAX_TIME = 40;
     public JSlider equipesSlider;
-    public JSlider warmsSlider;
+    public JSlider wormsSlider;
+    public JSlider turnDurationSlider;
     public JCheckBox windCheckBox;
 
+
+    
+    /**
+     * This page contains all the parameters related to the map.
+     */
     public SettingGamePanel(){
-        this.setBorder(BorderFactory.createTitledBorder("Paramètres de la partit"));
+        this.setBorder(BorderFactory.createTitledBorder(""));
         this.setLayout(new BorderLayout()); 
         
         
@@ -30,38 +37,38 @@ public class SettingGamePanel extends JPanel {
         this.add(contentGrid, BorderLayout.NORTH);
         
 
-        //outil qui gere le GridBagLayout
+        //tool that manages the GridBagLayout
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.anchor = GridBagConstraints.WEST; 
-        gbc.insets = new Insets(5, 5, 5, 5); //marge
-        gbc.weightx = 1.0; // la grille peut s'etirer horizontalement
-        gbc.fill = GridBagConstraints.HORIZONTAL; //force les composans a remplir la case
+        gbc.insets = new Insets(5, 5, 5, 5); //margin
+        gbc.weightx = 1.0; // the grid can stretch horizontally
+        gbc.fill = GridBagConstraints.HORIZONTAL; //forces the components to fill the box
 
         
         
         int row = 0; 
 
-        //parametre partit
-        gbc.gridwidth = 2; // le titre prend 2 colonne
+        //game settings
+        gbc.gridwidth = 2; // The title takes up 2 columns
         gbc.gridx = 0;
         gbc.gridy = row++;
         JLabel titre1 = new JLabel("PARAMETRE DE LA PARTIE");
         titre1.setFont(new Font("Arial", Font.BOLD, 16));
         contentGrid.add(titre1, gbc);
 
-        //nombre d'equipe
-        gbc.gridwidth = 1; // prend 1 colonne
+        //numbers team
+        gbc.gridwidth = 1; // take 1 columns
         gbc.gridx = 0;
         gbc.gridy = row;
         JLabel NbEquipesLabel = new JLabel("Nombre d'équipes :");
         contentGrid.add(NbEquipesLabel, gbc);
 
-        gbc.gridx = 1; // 2 eme colone 
-        this.equipesSlider = createSlider(2, MAX_EQUIPES, 2, 1);
+        gbc.gridx = 1; // second colone 
+        this.equipesSlider = CreateSlider.createSlider(2, MAX_EQUIPES, 2, 1);
         contentGrid.add(equipesSlider, gbc);
         row++;
 
-        //nom des equipes
+        //teams names
         champsNomsEquipes = new JTextField[MAX_EQUIPES];
         for (int i = 0; i < MAX_EQUIPES; i++) {
             gbc.gridx = 0;
@@ -76,18 +83,29 @@ public class SettingGamePanel extends JPanel {
             row++;
         }
 
-        //nombre de worms
+        //numbers worms
         gbc.gridx = 0;
         gbc.gridy = row;
         JLabel NbWormsLabel = new JLabel("Nombre de vers :");
         contentGrid.add(NbWormsLabel, gbc);
 
         gbc.gridx = 1;
-        this.warmsSlider = createSlider(1, MAX_WORM, 3, 1);
-        contentGrid.add(warmsSlider, gbc);
+        this.wormsSlider = CreateSlider.createSlider(1, MAX_WORM, 3, 1);
+        contentGrid.add(wormsSlider, gbc);
         row++;
 
-        //parametre physique
+        //turn duration
+        gbc.gridx = 0;
+        gbc.gridy = row;
+        JLabel turnDurationLabel = new JLabel("Temps d'un tour en seconde:");
+        contentGrid.add(turnDurationLabel, gbc);
+
+        gbc.gridx = 1;
+        this.turnDurationSlider = CreateSlider.createSlider(10, MAX_TIME, 10, 10);
+        contentGrid.add(turnDurationSlider, gbc);
+        row++;
+
+        //physics parameter
         gbc.gridwidth = 2;
         gbc.gridx = 0;
         gbc.gridy = row++;
@@ -95,7 +113,7 @@ public class SettingGamePanel extends JPanel {
         titre2.setFont(new Font("Arial", Font.BOLD, 16));
         contentGrid.add(titre2, gbc);
 
-        //vent
+        //wind
         gbc.gridwidth = 2; 
         gbc.gridx = 0;
         gbc.gridy = row;
@@ -104,24 +122,26 @@ public class SettingGamePanel extends JPanel {
         row++;
     }   
 
-  
-    private JSlider createSlider(int min, int max, int value, int spacing) {
-        JSlider slider = new JSlider(JSlider.HORIZONTAL, min, max, value);  // value pour la position de depart
-        
-        slider.setMajorTickSpacing(spacing); 
-        slider.setSnapToTicks(true); 
-        slider.setPaintTicks(true);
-        slider.setPaintLabels(true);
-        
-        return slider;
-    }
+    /**
+     * This method aims to simplify the creation of sliders without code duplication.
+     * 
+     * @param min the minimun value
+     * @param max the maximum value
+     * @param value the default value
+     * @param spacing the spacing between two value
+     * @return a Slider with desired parameter 
+     */
 
     public int getNbEquipes() {
         return this.equipesSlider.getValue();
     }
     
     public int getNbWorms() {
-        return this.warmsSlider.getValue();
+        return this.wormsSlider.getValue();
+    }
+
+    public int getTurnDuration() {
+        return this.turnDurationSlider.getValue();
     }
     
     public String[] getNomsEquipes() {
