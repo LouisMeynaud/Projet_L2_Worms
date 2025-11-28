@@ -26,7 +26,7 @@ public class GameWorld {
     private int indexTeam;
     private final GameLoop gameLoop;
     private final TurnManager turnManager;
-    private final long tourDuration;
+    private final long turnDuration;
     Thread loopThread;
 
     public GameWorld(GameSettings settings, EventBus eventBus) {
@@ -72,8 +72,8 @@ public class GameWorld {
         System.out.println("Game initialised");
 
         //Init TurnManager
-        tourDuration = 10000;
-        this.turnManager = new TurnManager(this, tourDuration);
+        this.turnManager = new TurnManager(this, settings.turnDuration);
+        this.turnDuration = this.getTurnDuration();
     }
 
     public Map getMap() {
@@ -100,8 +100,8 @@ public class GameWorld {
         return this.turnManager;
     }
 
-    public long getTourDuration(){
-        return this.tourDuration;
+    public long getTurnDuration(){
+        return this.turnManager.getTurnDuration();
     }
 
     public void start() {

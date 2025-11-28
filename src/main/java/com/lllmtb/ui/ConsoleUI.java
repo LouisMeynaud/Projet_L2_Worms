@@ -92,12 +92,11 @@ public class ConsoleUI implements UI {
             else terminal.writer().println("   Generate a new " + size + "x map with " + landscape.name() + " landscape " + (floatingIsland ? "(floating island mode)" : "(normal mode)"));
             terminal.writer().println("   Wind: " + (hasWind ? "ON" : "OFF"));
             terminal.writer().flush();
-            return new GameSettings(nbTeams, teamNames, nbWorms, hasWind, mapFileName, floatingIsland, size, landscape);
+            return new GameSettings(nbTeams, teamNames, nbWorms, turnDuration, hasWind, mapFileName, floatingIsland, size, landscape);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
-
 
     private int promptNbTeams() throws IOException {
         ConsolePrompt prompt = new ConsolePrompt(terminal);
