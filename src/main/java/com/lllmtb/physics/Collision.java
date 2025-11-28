@@ -403,22 +403,26 @@ public class Collision {
     /**
      * <p>
      * Simulates the case when the {@link PhysicsBody} has to slide along the hit object/cliff
-     * using the formula slippery_speed = init_speed - perpendicular_speed with
-     * perpendicular_speed = (init_speed * normal) * normal
+     * it annulates the vector detail in collision
      * </p>
      * @param body the {@link PhysicsBody} which move
      * @param impact the {@link Impact} with collision's information
+     * @param bus the {@link EventBus} of the collisions
      */
     public void slide(PhysicsBody body, Impact impact, EventBus bus) {
+        // new position
         body.setPos(impact.collisionPos);
+        // if the collision is with a wall
         if (impact.normal.getY() == 0) {
             body.setVector(new Vector(0, body.getVector().getY()));
         } else {
             body.setVector(new Vector(body.getVector().getX(), 0));
+            // if the worm touch the ground, it can jump again
             if (impact.normal.getY() == 1) {
                 bus.postQueued(new GroundCheckCollision(body.getEntity()));
             }
         }
+        // calculate the new position
         Position nextPos = body.getVector().newPos(body.getPos(), 1);
         Impact i = move(body, nextPos);
         body.setPos(i.collisionPos);
