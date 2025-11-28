@@ -43,11 +43,13 @@ public class GameWorldTest {
                 1,                 // nbTeams
                 new String[]{"TeamA"}, // teamNames
                 2,                 // nbWorms
+                10,              //Turn Duration
                 false,             // hasWind
                 null,              // mapFileName -> will use GenerateMap.createMap(WORLD)
                 false   ,           // floatingIsland
                 370,    //widthMap
                 LandScape.HILLY     //heightMap
+
         );
         EventBus eventBus = new EventBus();
 
@@ -79,7 +81,7 @@ public class GameWorldTest {
     void whenMapFileNameProvided_MapLoaderIsUsed_insteadOfGenerateMap() {
         // we only mock MapLoader.loadMatrix to return a real map created by GenerateMap
         Map generated = MapLoader.loadMatrix("mapTest");
-        GameSettings settings = new GameSettings(0, new String[]{}, 0, true, "mapTest", false,370,LandScape.HILLY);
+        GameSettings settings = new GameSettings(0, new String[]{}, 0, 10, true, "mapTest", false,370,LandScape.HILLY);
         EventBus eventBus = new EventBus();
         GameWorld gw = new GameWorld(settings,eventBus);
 
@@ -98,7 +100,7 @@ public class GameWorldTest {
             mocked.when(() -> MapLoader.loadMatrix("badPath")).thenThrow(new IllegalStateException("io fail"));
 
             GameSettings settings = new GameSettings(
-                    0, new String[]{}, 0, false, "badPath", false,370,LandScape.HILLY);
+                    0, new String[]{}, 0, 10, false, "badPath", false,370,LandScape.HILLY);
             EventBus eventBus = new EventBus();
             RuntimeException e = assertThrows(RuntimeException.class, () -> new GameWorld(settings,eventBus));
             assertNotNull(e.getCause());
@@ -114,11 +116,12 @@ public class GameWorldTest {
                 3,
                 new String[]{"SoloTeam"},
                 3,      // 3 worms for the created team
+                10000,
                 true,
                 null,   // use GenerateMap
                 true,    // floating island -> FLYINGWORLD
                 370,
-                LandScape.HILLY
+                LandScape.HILLY,
         );
          EventBus eventBus = new EventBus();
 
@@ -135,7 +138,7 @@ public class GameWorldTest {
     @Test
     void startRunsLoopAndStopStopsIt_whenStartedInSeparateThread() throws Exception {
         // use a small, simple world (no teams) so physics starts empty
-        GameSettings settings = new GameSettings(0, new String[]{}, 0, false, null, false,370,LandScape.HILLY);
+        GameSettings settings = new GameSettings(0, new String[]{}, 0, 10, false, null, false,370,LandScape.HILLY);
          EventBus eventBus = new EventBus();
         GameWorld gw = new GameWorld(settings,eventBus);
 
@@ -158,7 +161,7 @@ public class GameWorldTest {
 
     @Test
     void registerEntity_null_throwsNPE() {
-        GameSettings settings = new GameSettings(0, new String[]{}, 0, false, null, false,370,LandScape.HILLY);
+        GameSettings settings = new GameSettings(0, new String[]{}, 0, 10, false, null, false,370,LandScape.HILLY);
          EventBus eventBus = new EventBus();
         GameWorld gw = new GameWorld(settings,eventBus);
 
@@ -167,7 +170,7 @@ public class GameWorldTest {
 
     @Test
     void stopLoop_whenNotRunning() {
-        GameSettings settings = new GameSettings(0, new String[]{}, 0, false, null, false,370,LandScape.HILLY);
+        GameSettings settings = new GameSettings(0, new String[]{}, 0, 10, false, null, false,370,LandScape.HILLY);
          EventBus eventBus = new EventBus();
         GameWorld gw = new GameWorld(settings,eventBus);
 
@@ -178,7 +181,7 @@ public class GameWorldTest {
 
     @Test
     void startLoop_whenAlreadyRunning() throws Exception {
-        GameSettings settings = new GameSettings(0, new String[]{}, 0, false, null, false,370,LandScape.HILLY);
+        GameSettings settings = new GameSettings(0, new String[]{}, 0, 10, false, null, false,370,LandScape.HILLY);
         EventBus eventBus = new EventBus();
         GameWorld gw = new GameWorld(settings,eventBus);
 
@@ -204,7 +207,7 @@ public class GameWorldTest {
 
     @Test
     void getTurnManage(){
-        GameSettings settings = new GameSettings(0, new String[]{}, 0, false, null, false,370,LandScape.HILLY);
+        GameSettings settings = new GameSettings(0, new String[]{}, 0, 10000, false, null, false,370,LandScape.HILLY);
         EventBus eventBus = new EventBus();
         GameWorld gw = new GameWorld(settings, eventBus);
 

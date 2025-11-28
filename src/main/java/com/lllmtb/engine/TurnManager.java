@@ -35,7 +35,7 @@ public final class TurnManager {
 
     public TurnManager(GameWorld world, long tourDuration) {
         this.world = world;
-        this.tourDurationInMs = tourDuration;
+        this.tourDurationInMs = tourDuration*1000;
         this.init();
     }
 
