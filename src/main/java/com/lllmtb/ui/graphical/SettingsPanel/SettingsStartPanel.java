@@ -76,6 +76,7 @@ public class SettingsStartPanel extends JPanel {
         int nbVWorms = gameSettingsPanel.getNbWorms();
         String[] nomsEquipes = gameSettingsPanel.getNomsEquipes();
         boolean wind = gameSettingsPanel.getWind();
+        int turnDuration = gameSettingsPanel.getTurnDuration();
         if(this.mapSettingPanel.loadMap){
             String mapFileName = this.mapSettingPanel.panelListeMap.getFichierSelectionne().getName();
             return new GameSettings(nbEquipes, nomsEquipes, nbVWorms, wind, mapFileName, false,0,null);

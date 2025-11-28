@@ -17,9 +17,12 @@ public class SettingGamePanel extends JPanel {
     public JTextField[] champsNomsEquipes;
     public final int MAX_EQUIPES = 4;
     public final int MAX_WORM = 6;
+    public final int MAX_TIME = 40;
     public JSlider equipesSlider;
-    public JSlider warmsSlider;
+    public JSlider wormsSlider;
+    public JSlider turnDurationSlider;
     public JCheckBox windCheckBox;
+
 
     
     /**
@@ -87,8 +90,19 @@ public class SettingGamePanel extends JPanel {
         contentGrid.add(NbWormsLabel, gbc);
 
         gbc.gridx = 1;
-        this.warmsSlider = CreateSlider.createSlider(1, MAX_WORM, 3, 1);
-        contentGrid.add(warmsSlider, gbc);
+        this.wormsSlider = CreateSlider.createSlider(1, MAX_WORM, 3, 1);
+        contentGrid.add(wormsSlider, gbc);
+        row++;
+
+        //turn duration
+        gbc.gridx = 0;
+        gbc.gridy = row;
+        JLabel turnDurationLabel = new JLabel("temps d'un tour en seconde:");
+        contentGrid.add(turnDurationLabel, gbc);
+
+        gbc.gridx = 1;
+        this.turnDurationSlider = CreateSlider.createSlider(10, MAX_TIME, 10, 10);
+        contentGrid.add(turnDurationSlider, gbc);
         row++;
 
         //physics parameter
@@ -123,7 +137,11 @@ public class SettingGamePanel extends JPanel {
     }
     
     public int getNbWorms() {
-        return this.warmsSlider.getValue();
+        return this.wormsSlider.getValue();
+    }
+
+    public int getTurnDuration() {
+        return this.turnDurationSlider.getValue();
     }
     
     public String[] getNomsEquipes() {

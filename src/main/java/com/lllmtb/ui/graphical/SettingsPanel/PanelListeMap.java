@@ -1,6 +1,7 @@
 package com.lllmtb.ui.graphical.SettingsPanel;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -167,11 +168,9 @@ public class PanelListeMap extends JPanel{
             labelImage.setIcon(valeur.image);
 
             if (isSelected) {
-                setBackground(list.getSelectionBackground());
-                setForeground(list.getSelectionForeground());
+                setBackground(Color.GRAY);
             } else {
-                setBackground(list.getBackground());
-                setForeground(list.getForeground());
+                setBackground(Color.LIGHT_GRAY);
             }
 
             return this;
