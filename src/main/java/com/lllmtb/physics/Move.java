@@ -18,10 +18,10 @@ public class Move {
 
     public  static void move(Worm worm, Direction direction){
         switch (direction) {
-            case Left: worm.getBody().setVector(worm.getBody().getVector().add(new Vector(-0.5, 0)));
+            case Left: worm.getBody().setVector(worm.getBody().getVector().add(new Vector(-7, 0)));
                 System.out.println("Left move");;
             break;
-            case Right:  worm.getBody().setVector(worm.getBody().getVector().add(new Vector(0.5, 0)));
+            case Right:  worm.getBody().setVector(worm.getBody().getVector().add(new Vector(7, 0)));
             System.out.println("Right move");;
             break;
             case Up:  if (jump > 0) {
