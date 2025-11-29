@@ -1,6 +1,9 @@
 package com.lllmtb.physics;
 
+import org.eclipse.jdt.annotation.NonNull;
+
 @FunctionalInterface
 public interface Transform {
-    Vector apply(Vector v);
+    @NonNull
+    Vector apply(@NonNull Vector v);
 }

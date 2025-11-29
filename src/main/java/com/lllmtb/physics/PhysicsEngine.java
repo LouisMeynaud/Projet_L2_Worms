@@ -1,10 +1,12 @@
 package com.lllmtb.physics;
 
 import com.lllmtb.events.EventBus;
-import com.lllmtb.model.entity.CollisionType;
+import com.lllmtb.events.physics.PhysicsModifierAddedEvent;
+import com.lllmtb.events.physics.PhysicsModifierRemovedEvent;
 import com.lllmtb.model.entity.projectile.Projectile;
 import com.lllmtb.model.item.ItemId;
 import com.lllmtb.terrain.map.Map;
+import org.eclipse.jdt.annotation.NonNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -158,19 +160,41 @@ public class PhysicsEngine {
         }
     }
 
-    public void addModifier(PhysicsBody body, PhysicsModifier modifier) {
+    public void addModifier(@NonNull PhysicsBody body, @NonNull PhysicsModifier modifier) {
+        Objects.requireNonNull(body);
+        Objects.requireNonNull(modifier);
         modifiers.computeIfAbsent(body, b -> new ArrayList<>()).add(modifier);
+        bus.postQueued(new PhysicsModifierAddedEvent(body, modifier));
     }
 
-    public void removeModifier(PhysicsBody body, PhysicsModifier modifier) {
-        if (modifiers.containsKey(body)) modifiers.get(body).remove(modifier);
+    public void removeModifier(@NonNull PhysicsBody body, @NonNull PhysicsModifier modifier) {
+        Objects.requireNonNull(body);
+        Objects.requireNonNull(modifier);
+        List<PhysicsModifier> list = modifiers.get(body);
+        if (list == null) return;
+
+        if (list.remove(modifier)) bus.postQueued(new PhysicsModifierRemovedEvent(body, modifier));
+        if (list.isEmpty()) modifiers.remove(body);
     }
 
-    public void removeModifierFor(PhysicsBody body, ItemId source) {
-        if (modifiers.containsKey(body)) modifiers.get(body).removeIf(m -> m.source.equals(source));
+    public void removeModifierFor(@NonNull PhysicsBody body, ItemId source) {
+        Objects.requireNonNull(body);
+        List<PhysicsModifier> list = modifiers.get(body);
+        if (list == null) return;
+
+        // (iterate over a copy to avoid concurrent modification when modifiers remove themselves)
+        for (PhysicsModifier m : new ArrayList<>(list)) {
+            if (Objects.equals(m.source, source)) {
+                list.remove(m);
+                bus.postQueued(new PhysicsModifierRemovedEvent(body, m));
+            }
+        }
+        if (list.isEmpty()) modifiers.remove(body);
     }
 
-    public Vector applyModifiers(PhysicsBody body, Vector v, double dt) {
+    public Vector applyModifiers(@NonNull PhysicsBody body, @NonNull Vector v, double dt) {
+        Objects.requireNonNull(body);
+        Objects.requireNonNull(v);
         List<PhysicsModifier> list = modifiers.get(body);
         if (list == null || list.isEmpty()) return v;
 
@@ -232,9 +256,6 @@ public class PhysicsEngine {
 
                     // if body crosses all (map and entities)
                     case CROSS -> collision.cross(body, nextPos);
-
-                    // collision type is null (?)
-                    default -> {}
                 }
             } else {
                 body.setPos(nextPos);
