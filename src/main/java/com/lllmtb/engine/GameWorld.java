@@ -1,7 +1,6 @@
 package com.lllmtb.engine;
 
 import com.lllmtb.engine.commands.GameCommand;
-import com.lllmtb.events.Event;
 import com.lllmtb.events.EventBus;
 import com.lllmtb.events.game.GameStateUpdatedEvent;
 import com.lllmtb.model.entity.Entity;
@@ -153,15 +152,30 @@ public class GameWorld {
         }
     }
 
+    /**
+     * Queue a GameCommand to be executed in the next update cycle.
+     * @param cmd the GameCommand to queue
+     * @return true if the command was successfully queued, false otherwise
+     */
     public boolean queueCommand(GameCommand cmd) {
         if (cmd == null) return false;
         return commandQueue.offer(cmd);
     }
 
-    // Minimal function to process GameCommands
+    /**
+     * Process and execute all queued GameCommands in order.
+     * This method is called during the update cycle.
+     * If a command throws an exception, it is caught and logged, allowing subsequent commands to be processed.
+     */
     public void processCommands() {
         List<GameCommand> drained = new ArrayList<>();
         commandQueue.drainTo(drained);
-        for (GameCommand cmd : drained) cmd.execute(this);
+        for (GameCommand cmd : drained) {
+            try {
+                cmd.execute(this);
+            } catch (Exception ex) {
+                ex.printStackTrace(); // temporary error log until we implement a proper logging system
+            }
+        }
     }
 }

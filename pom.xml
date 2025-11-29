@@ -119,7 +119,6 @@
                         <exclude>com/lllmtb/ui/ConsoleUI.class</exclude>
                         <exclude>com/lllmtb/ui/graphical/**/*</exclude>
                         <exclude>com/lllmtb/physics/Move.class</exclude>
-
                     </excludes>
                 </configuration>
             </plugin>

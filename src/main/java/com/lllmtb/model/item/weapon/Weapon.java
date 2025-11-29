@@ -14,9 +14,8 @@ public abstract class Weapon implements Item {
     // + metadata (sprites, audio...)
 
     /**
-     * Create a projectile for this firing action.
-     * Implementations must return a fresh Projectile instance.
-     * If firing is not allowed for other reasons this should still return a projectile
+     * Create commands for this weapon firing action.
+     * If firing is not allowed for other reasons this should still return commands
      * or higher-level Inventory.fire() should have prevented the call.
      */
     public abstract List<GameCommand> fire(@NonNull FireParams params);

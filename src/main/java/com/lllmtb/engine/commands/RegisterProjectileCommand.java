@@ -8,6 +8,9 @@ import org.eclipse.jdt.annotation.NonNull;
 
 import java.util.Objects;
 
+/**
+ * A command that registers a projectile within the game world.
+ */
 public final class RegisterProjectileCommand implements GameCommand {
     private final Projectile projectile;
     private final Entity owner;

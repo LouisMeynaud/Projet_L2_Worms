@@ -7,6 +7,9 @@ import org.eclipse.jdt.annotation.NonNull;
 
 import java.util.Objects;
 
+/**
+ * A command that adds a physics modifier to a specified entity within the game world.
+ */
 public final class AddPhysicsModifierCommand implements GameCommand {
     private final Entity target;
     private final PhysicsModifier modifier;

@@ -159,6 +159,16 @@ public class PhysicsEngine {
         }
     }
 
+    /**
+     * Adds a physics modifier to a specific body.
+     * <p>
+     * The modifier will be applied to the body during the next simulation update.
+     * </p>
+     *
+     * @param body the {@link PhysicsBody} to which the modifier will be added.
+     * @param modifier the {@link PhysicsModifier} to add.
+     * @throws NullPointerException if {@code body} or {@code modifier} is {@code null}.
+     */
     public void addModifier(@NonNull PhysicsBody body, @NonNull PhysicsModifier modifier) {
         Objects.requireNonNull(body);
         Objects.requireNonNull(modifier);
@@ -166,6 +176,16 @@ public class PhysicsEngine {
         bus.postQueued(new PhysicsModifierAddedEvent(body, modifier));
     }
 
+    /**
+     * Removes a specific physics modifier from a body.
+     * <p>
+     * If the modifier is not present on the body, this method has no effect.
+     * </p>
+     *
+     * @param body the {@link PhysicsBody} from which the modifier will be removed.
+     * @param modifier the {@link PhysicsModifier} to remove.
+     * @throws NullPointerException if {@code body} or {@code modifier} is {@code null}.
+     */
     public void removeModifier(@NonNull PhysicsBody body, @NonNull PhysicsModifier modifier) {
         Objects.requireNonNull(body);
         Objects.requireNonNull(modifier);
@@ -176,6 +196,17 @@ public class PhysicsEngine {
         if (list.isEmpty()) modifiers.remove(body);
     }
 
+    /**
+     * Removes all physics modifiers from a body that originate from a specific source item.
+     * <p>
+     * This method iterates through all modifiers applied to the body and removes those
+     * whose source matches the provided {@code source} item ID.
+     * </p>
+     *
+     * @param body the {@link PhysicsBody} from which modifiers will be removed.
+     * @param source the {@link ItemId} representing the source of the modifiers to remove.
+     * @throws NullPointerException if {@code body} is {@code null}.
+     */
     public void removeModifierFor(@NonNull PhysicsBody body, ItemId source) {
         Objects.requireNonNull(body);
         List<PhysicsModifier> list = modifiers.get(body);
@@ -191,6 +222,20 @@ public class PhysicsEngine {
         if (list.isEmpty()) modifiers.remove(body);
     }
 
+    /**
+     * Applies all active physics modifiers to a given velocity vector for a specific body.
+     * <p>
+     * This method iterates through all modifiers associated with the body, applying their
+     * transformations to the provided velocity vector. Modifiers that are one-shot or have
+     * expired durations are removed after application.
+     * </p>
+     *
+     * @param body the {@link PhysicsBody} whose modifiers will be applied.
+     * @param v the original {@link Vector} representing the velocity to be modified.
+     * @param dt the time delta (in seconds) since the last update, used for duration calculations.
+     * @return a new {@link Vector} representing the modified velocity after applying all active modifiers.
+     * @throws NullPointerException if {@code body} or {@code v} is {@code null}.
+     */
     public Vector applyModifiers(@NonNull PhysicsBody body, @NonNull Vector v, double dt) {
         Objects.requireNonNull(body);
         Objects.requireNonNull(v);
