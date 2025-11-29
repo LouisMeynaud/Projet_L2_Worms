@@ -11,6 +11,7 @@ public final class GameSettings {
     public final boolean floatingIsland;
     public final int widthMap;
     public final LandScape terrainType;
+    public final long turnDuration;
 
 
     /**
@@ -21,7 +22,7 @@ public final class GameSettings {
      * @param mapFileName     Path of the MapFiles (.txt)
      * @param floatingIsland  Is the map generation on Island mode ?
      */
-    public GameSettings(int nbTeams, String[] teamNames, int nbWorms, boolean hasWind, String mapFileName, boolean floatingIsland, int widthMap, LandScape terrainType) {
+    public GameSettings(int nbTeams, String[] teamNames, int nbWorms, long turnDuration, boolean hasWind, String mapFileName, boolean floatingIsland, int widthMap, LandScape terrainType) {
         this.nbTeams = nbTeams;
         this.teamNames = teamNames;
         this.nbWorms = nbWorms;
@@ -30,5 +31,6 @@ public final class GameSettings {
         this.floatingIsland = floatingIsland;
         this.widthMap = widthMap;
         this.terrainType = terrainType;
+        this.turnDuration = turnDuration;
     }
 }

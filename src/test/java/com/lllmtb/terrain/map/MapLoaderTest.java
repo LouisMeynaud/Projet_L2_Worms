@@ -26,8 +26,8 @@ public class MapLoaderTest {
     };
     @BeforeAll
     public static void setUp() throws IOException {
-        path = "src/main/resources/map/mapTest/map.txt";
-        mapText = Files.readString(Path.of(path));
+        // path = "src/main/resources/map/mapTest/map.txt";
+        // mapText = Files.readString(Path.of(path));
         m = MapLoader.loadMatrix("mapTest");
         System.out.println(m);
     }

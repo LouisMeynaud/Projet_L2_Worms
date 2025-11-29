@@ -6,13 +6,22 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 public class MapLoader {
+     
     public static Map loadMatrix(String mapName) {
+        String path;
+        if(mapName.contains("Test")){
+            path = "src/test/resources/map/";
+        }
+        else{path = "src/main/resources/map/";
+        }
+
         try {
-            String mapPath = "src/main/resources/map/"+mapName+"/map.txt";
+            String mapPath = path+mapName+"/map.txt";
+            System.out.println("TEST " + mapPath);
             String contentMap = Files.readString(Path.of(mapPath));
             String[] row = contentMap.split("\n");
 
-            String hightLinePath = "src/main/resources/map/"+mapName+"/hightLine.txt";
+            String hightLinePath = path+mapName+"/hightLine.txt";
             String contentHightLine = Files.readString(Path.of(hightLinePath));
             String[] stringtabHightLine = contentHightLine.split(",");
             int[] intTabHightLine = new int[stringtabHightLine.length];
@@ -52,7 +61,6 @@ public class MapLoader {
             return tileMatrix;
 
         } catch (IOException e) { // we should propagate the exception instead so GameWorld can catch and respond accordingly
-            System.out.println("Ce chemin de fichier n'est pas valide!");
             return null;
         } catch (Exception e) {
             System.out.println(e); // NB. Il faudra mieux gérer cette exception
