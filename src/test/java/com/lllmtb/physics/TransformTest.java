@@ -9,12 +9,7 @@ public class TransformTest {
     @Test
     public void modifierTest() {
         Vector v = new Vector();
-        Transform m = new Transform() {
-            @Override
-            public Vector apply(Vector v) {
-                return new Vector(1,2);
-            }
-        };
+        Transform m = v1 -> new Vector(1,2);
         Vector v2 = m.apply(v);
         assertEquals(1, v2.getX());
         assertEquals(2, v2.getY());
