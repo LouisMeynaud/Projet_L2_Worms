@@ -45,7 +45,7 @@ public class Move {
                 if (jump > 0) {
                     System.out.println("Up move");
                     jump--;
-                    yield v -> v.add(new Vector(0, 40));
+                    yield v -> v.add(new Vector(0, 20));
                 }
                 yield null;
 
