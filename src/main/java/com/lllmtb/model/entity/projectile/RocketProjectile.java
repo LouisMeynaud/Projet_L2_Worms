@@ -11,7 +11,7 @@ public final class RocketProjectile extends Projectile {
     private final double height = 0.4;
 
     public RocketProjectile(@NonNull FireParams params) {
-        super(params);
+        super(params, 30.0, 10, 0.6, 0.4);
     }
 
     @Override
