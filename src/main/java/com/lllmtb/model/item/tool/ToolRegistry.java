@@ -7,6 +7,6 @@ public final class ToolRegistry extends ItemRegistry<ToolId, Tool> {
     public ToolRegistry() {
         super(ToolId.class);
 
-        this.registry.put(ToolId.PARACHUTE, new ParachuteTool());
+        this.register(ToolId.PARACHUTE, new ParachuteTool());
     }
 }

@@ -33,6 +33,23 @@ public abstract class ItemRegistry<T extends Enum<T> & ItemId, I extends Item> {
     }
 
     /**
+     * Registers a new {@link I} instance with the given {@link T},
+     * and initializes its ammo count to zero.
+     * This method is intended for use during registry setup only,
+     * because it overwrites any existing entry for the same {@link T}.
+     *
+     * @param id   the item identifier
+     * @param item the item instance to register
+     * @throws NullPointerException if {@code id} or {@code item} is {@code null}
+     */
+    protected void register(@NonNull T id, @NonNull I item) {
+        Objects.requireNonNull(id);
+        Objects.requireNonNull(item);
+        registry.put(id, item);
+        ammo.put(id, 0);
+    }
+
+    /**
      * Retrieves the {@link I} associated with the given {@link T}.
      *
      * @param id the item identifier to look up
@@ -58,7 +75,7 @@ public abstract class ItemRegistry<T extends Enum<T> & ItemId, I extends Item> {
      * @return an unmodifiable {@link Map} mapping each {@link T} to its ammo count
      */
     public Map<T, Integer> ammoSnapshot() {
-        return Collections.unmodifiableMap(ammo);
+        return Collections.unmodifiableMap(new EnumMap<>(ammo));
     }
 
     /**

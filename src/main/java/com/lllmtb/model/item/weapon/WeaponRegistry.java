@@ -7,7 +7,7 @@ public final class WeaponRegistry extends ItemRegistry<WeaponId, Weapon> {
     public WeaponRegistry() {
         super(WeaponId.class);
 
-        this.registry.put(WeaponId.GUN, new GunWeapon());
-        this.registry.put(WeaponId.BAZOOKA, new BazookaWeapon());
+        this.register(WeaponId.GUN, new GunWeapon());
+        this.register(WeaponId.BAZOOKA, new BazookaWeapon());
     }
 }
