@@ -37,7 +37,7 @@ public class CollisionTest {
         Position posW1 = new Position(1, 14);
         Position posW2 = new Position(14, 14);
         Position[] positions = {posW1, posW2};
-        team = new Team("Jeff team", 1, positions);
+        team = new Team("Jeff team", 2, positions);
         worm1 = new Worm("Jeff", team);
         worm2 = new Worm("José", team);
         team.addWorm(worm1);
@@ -266,7 +266,7 @@ public class CollisionTest {
         pBWorm1.setVector(new Vector(5, -2));
         Position posFinal = new Position(12, 8);
         Collision.Impact impact = collision.move(pBWorm1, posFinal);
-        collision.slide(pBWorm1, impact, new EventBus());
+        collision.slide(pBWorm1, impact, 1, new EventBus());
         assertEquals(12, pBWorm1.getPos().getX());
         assertEquals(10, pBWorm1.getPos().getY());
     }

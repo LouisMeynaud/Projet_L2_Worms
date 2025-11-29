@@ -13,7 +13,7 @@ import javax.swing.SwingConstants;
 import com.lllmtb.engine.GameSettings;
 import com.lllmtb.events.EventBus;
 import com.lllmtb.events.game.StartGameEvent;
-import com.lllmtb.events.graphicsUi.ScreenNewOrLoadEvent;
+import com.lllmtb.events.ui.graphical.ScreenNewOrLoadEvent;
 import com.lllmtb.terrain.generation.LandScape;
 
 public class SettingsStartPanel extends JPanel {
@@ -23,62 +23,68 @@ public class SettingsStartPanel extends JPanel {
 
     public SettingsStartPanel(EventBus eventBus) {
         this.eventBus = eventBus;
-        panelSetting();
+        PanelSetting();
         
 
     }
 
-    public void panelSetting() {
+    public void PanelSetting() {
 
-        this.setLayout(new BorderLayout(10, 10)); // zone nord,Sud,...
+        this.setLayout(new BorderLayout(10, 10)); // North zone, South,...
 
-        // titre (image plus tard);Zone nord
-        JLabel titre = new JLabel("CREER UNE NOUVELLE PARTIE");
+        // Title (image later); Northern Zone
+        JLabel titre = new JLabel("START A NEW GAME");
         titre.setHorizontalAlignment(SwingConstants.CENTER);
-        titre.setFont(new Font("Arial", Font.BOLD, 24)); // bold pour gras
+        titre.setFont(new Font("Arial", Font.BOLD, 24)); 
         this.add(titre, BorderLayout.NORTH);
 
-        // bouton lancée et retour: zone sud
-        JPanel zoneSud = new JPanel(new FlowLayout(FlowLayout.RIGHT)); // met les bouton a droite (flowLayout afficheles un apres les autre);
-        JButton backButton = new JButton("Retour");
-        JButton starButton = new JButton("Lancer la partie");
+        // Launch and return button: southern zone
+        JPanel ZoneSud = new JPanel(new FlowLayout(FlowLayout.RIGHT)); // met les bouton a droite (flowLayout afficheles un apres les autre);
+        JButton backButton = new JButton("Back");
+        JButton StarButton = new JButton("Start the game");
 
-        zoneSud.add(backButton);
-        zoneSud.add(starButton);
-        this.add(zoneSud, BorderLayout.SOUTH);
+        ZoneSud.add(backButton);
+        ZoneSud.add(StarButton);
+        this.add(ZoneSud, BorderLayout.SOUTH);
 
 
-        //zone centre (les deux partit (parametre map/partit))
-        JPanel panelCentre = new JPanel(new GridLayout(1, 2, 10, 0));// 1 ligne 2 colonne , 10 de marge horizontale
+        //center zone (two part (setting game/map))
+        JPanel PanelCentre = new JPanel(new GridLayout(1, 2, 10, 0));// 1 line, 2 columns, 10 horizontal margin
         this.mapSettingPanel = new SettingMapPanel(eventBus);
         this.gameSettingsPanel = new SettingGamePanel();
 
-        panelCentre.add(mapSettingPanel);
-        panelCentre.add(gameSettingsPanel);
-        this.add(panelCentre, BorderLayout.CENTER);
+        PanelCentre.add(mapSettingPanel);
+        PanelCentre.add(gameSettingsPanel);
+        this.add(PanelCentre, BorderLayout.CENTER);
 
 
         backButton.addActionListener(e -> {
             eventBus.postQueued(new ScreenNewOrLoadEvent());
         });
 
-        starButton.addActionListener(e -> {
+        StarButton.addActionListener(e -> {
             eventBus.postQueued(new StartGameEvent(setSettings(gameSettingsPanel)));
         });
     }
+    /**
+     * 
+     * @param gameSettingsPanel retrieves the parameters chosen in the gameSetting panel
+     * @returnreturns a type setting for creating the game.
+     */
     public GameSettings setSettings(SettingGamePanel gameSettingsPanel) {
         int nbEquipes = gameSettingsPanel.getNbEquipes();
         int nbVWorms = gameSettingsPanel.getNbWorms();
         String[] nomsEquipes = gameSettingsPanel.getNomsEquipes();
         boolean wind = gameSettingsPanel.getWind();
+        int turnDuration = gameSettingsPanel.getTurnDuration();
         if(this.mapSettingPanel.loadMap){
             String mapFileName = this.mapSettingPanel.panelListeMap.getFichierSelectionne().getName();
-            return new GameSettings(nbEquipes, nomsEquipes, nbVWorms, wind, mapFileName, false,0,null);
+            return new GameSettings(nbEquipes, nomsEquipes, nbVWorms, turnDuration, wind, mapFileName, false,0,null);
         }
         else{
             LandScape terrainType = this.mapSettingPanel.generateMapPanel.getReliefType();
             int widthMap = this.mapSettingPanel.generateMapPanel.getWidthMapSlider();
-            return new GameSettings(nbEquipes, nomsEquipes, nbVWorms, wind, null, false,widthMap,terrainType);
+            return new GameSettings(nbEquipes, nomsEquipes, nbVWorms, turnDuration, wind, null, false,widthMap,terrainType);
         }
         
         

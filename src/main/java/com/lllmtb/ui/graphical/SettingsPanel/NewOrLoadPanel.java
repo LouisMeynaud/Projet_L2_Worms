@@ -3,25 +3,36 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 
 import com.lllmtb.events.EventBus;
-import com.lllmtb.events.graphicsUi.ScreenHomeEvent;
-import com.lllmtb.events.graphicsUi.ScreenSettingsGame;
+import com.lllmtb.events.ui.graphical.ScreenHomeEvent;
+import com.lllmtb.events.ui.graphical.ScreenSettingsGame;
 
 public class NewOrLoadPanel extends  JPanel {
     
     EventBus eventBus;
-
+    /**
+     * 
+     * @param eventBus the event bus of the game.
+     * a simple panel allowing you to choose  to load or create a new game
+     */
     public NewOrLoadPanel(EventBus eventBus){
         this.eventBus = new EventBus();
 
 
-        JButton newButton = new JButton("new game");
-        newButton.addActionListener(e -> {
+        JButton NewGameButton = new JButton("New game");
+        NewGameButton.addActionListener(e -> {
             eventBus.postQueued(new ScreenSettingsGame());
         });
-        this.add(newButton);
+        this.add(NewGameButton);
 
-        JButton backButton = new JButton("retour");
-        backButton.addActionListener(e -> {
+        JButton loadGameButton = new JButton("Load game");
+        loadGameButton.addActionListener(e -> {
+        //
+        });
+        this.add(loadGameButton);
+
+
+        JButton backButton = new JButton("Back");
+    backButton.addActionListener(e -> {
             eventBus.postQueued(new ScreenHomeEvent());
         });
         this.add(backButton);

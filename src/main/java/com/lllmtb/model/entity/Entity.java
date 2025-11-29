@@ -13,5 +13,8 @@ public abstract class Entity {
 
     public abstract PhysicsBody getBody();
 
+    /**
+     * @return the {@link CollisionType} associated with the entity.
+     */
     public abstract CollisionType getCollisionType();
 }

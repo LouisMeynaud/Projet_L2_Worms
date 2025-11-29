@@ -1,6 +1,7 @@
 package com.lllmtb.ui.graphical.SettingsPanel;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -34,18 +35,19 @@ public class PanelListeMap extends JPanel{
 
         public InfoLigne(String titre, String info, ImageIcon image, File fichierMap) {
             this.titre = titre;
-            this.description = info;
+            this.description =  info;
             this.image = image;
             this.fichierMap = fichierMap; 
-        }// On le sauvegarde
+        }
         
         @Override
         public String toString(){ // si quelque chose se passe mal dans le chargement du fichier on met ceci
             return this.titre;
         }
     
-    }
+}
     public PanelListeMap(File[] tableauDeDossiers){
+        setBackground(Color.DARK_GRAY);
         this.setLayout(new BorderLayout());
 
         ArrayList<InfoLigne> donneeMap = new ArrayList<>();
@@ -65,24 +67,16 @@ public class PanelListeMap extends JPanel{
             tableauDeDonnees[i] = donneeMap.get(i);
         }
         this.maListe = new JList<>(tableauDeDonnees);
+        this.maListe.setOpaque(false);
 
         maListe.setCellRenderer(new ListRenderer());
         JScrollPane list = new JScrollPane(maListe);
-        list.getVerticalScrollBar().setUnitIncrement(20);
+        list.setOpaque(false);
 
         this.add(list,BorderLayout.CENTER);
-
-        //ecoute le clique de la liste
-        maListe.addListSelectionListener(e -> {
-            InfoLigne elementSelectionne = maListe.getSelectedValue();
-            if (elementSelectionne != null) {
-                System.out.println("vous avez cliquer sur:" + elementSelectionne.titre);
-                System.out.println("le fichier correspondant est:" + elementSelectionne.fichierMap.getAbsolutePath());
-            }
-        });
        
     }
-
+    
     
     public File getFichierSelectionne() {
         InfoLigne selection = maListe.getSelectedValue();
@@ -123,15 +117,18 @@ public class PanelListeMap extends JPanel{
                 Image imgRedimensionnee = imgOriginale.getScaledInstance(100, 100, Image.SCALE_FAST);
                 image = new ImageIcon(imgRedimensionnee);
             }
-        }catch (Exception e) {
-            System.out.println("Probleme avec le dossier:" + dossier.getName());
-            e.printStackTrace();
-            titre = "erreur de lecture";
-        }
-        return new InfoLigne(titre, description, image, dossier);
-    }
+            }catch (Exception e) {
+                System.out.println("Probleme avec le dossier:" + dossier.getName());
+                e.printStackTrace();
+                titre = "erreur de lecture";
+            
+            }
+            return new InfoLigne(titre, description, image, dossier);
+        } 
 
-    private static class ListRenderer extends JPanel implements ListCellRenderer<InfoLigne> {
+
+        private static class ListRenderer extends JPanel implements ListCellRenderer<InfoLigne> {
+
         JLabel labelImage = new JLabel();
         JLabel labelTitre = new JLabel();
         JLabel labelDescription = new JLabel();
@@ -158,18 +155,17 @@ public class PanelListeMap extends JPanel{
         }
 
         @Override
-        public Component getListCellRendererComponent(JList<? extends InfoLigne> list, InfoLigne valeur, int index,boolean isSelected, boolean cellHasFocus) {
-            ///fdsssssssssssssssssssss
+        public Component getListCellRendererComponent(JList<? extends InfoLigne> list, InfoLigne valeur, int index,boolean isSelected, boolean cellHasFocus) {///fdsssssssssssssssssssss
+
             labelTitre.setText(valeur.titre);
             labelDescription.setText(valeur.description);
             labelImage.setIcon(valeur.image);
+             setBackground(Color.GRAY);
 
             if (isSelected) {
-                setBackground(list.getSelectionBackground());
-                setForeground(list.getSelectionForeground());
+                setOpaque(true);
             } else {
-                setBackground(list.getBackground());
-                setForeground(list.getForeground());
+                setOpaque(false);
             }
 
             return this;

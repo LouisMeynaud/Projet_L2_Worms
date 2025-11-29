@@ -11,13 +11,13 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.imageio.ImageIO;
-import javax.swing.JPanel;
+import javax.swing.*;
 
 import com.lllmtb.engine.GameWorld;
 import com.lllmtb.events.EventBus;
-import com.lllmtb.events.graphicsUi.*;
 import com.lllmtb.events.move.MouseInputEvent;
 import com.lllmtb.events.move.MouseWheelMoveInputEvent;
+import com.lllmtb.events.ui.*;
 import com.lllmtb.events.game.GameStateUpdatedEvent;
 import com.lllmtb.events.game.WorldCreatedEvent;
 import com.lllmtb.events.game.MapUpdateEvent;
@@ -29,22 +29,19 @@ public class GameWorldPanel extends JPanel {
     public EventBus eventBus;
     public GameWorld world;
     public Tile[][] mapMatrix;
-    public double tileSize;
-    private final double defaultTileSize = 4;
+    public int tileSize = 12;
     private Map<Tile, BufferedImage> textureMatrixMap;
     private Map<String, BufferedImage> textureEntityMap;
     private final Set<Integer> pressedKeys = new HashSet<>();
 
    
-    private BufferedImage mapCache = null; 
-    private int lastWindowWidth = -1;
-    private int lastWindowHeight = -1;
-
+    private BufferedImage mapCache = null;
     
     private boolean isCameraMode = false;
     private boolean hasDraggedCamera = false;
+    private boolean initialFitDone = false; 
     private double currentZoom = 1.0;     
-    private double zoomSpeed = 0.1;
+    private double zoomSpeed = 0.2;
     
     private double cameraOffsetX = 0;
     private double cameraOffsetY = 0;
@@ -107,8 +104,8 @@ public class GameWorldPanel extends JPanel {
             public void mouseReleased(MouseEvent e) {
                 int type = e.getButton() ;
                 long duration = System.currentTimeMillis() - pressStartTime;
-                double worldX = e.getX();
-                double worldY = e.getY();
+                double worldX = (e.getX() - cameraOffsetX) / currentZoom;
+                double worldY = (e.getY() - cameraOffsetY) / currentZoom;
                 if (type == MouseEvent.BUTTON1) {
                     eventBus.postQueued(new MouseInputEvent(new Position(worldX, worldY),duration, Direction.Left));
                 }
@@ -130,16 +127,14 @@ public class GameWorldPanel extends JPanel {
                     double dx = currentX - lastMouseX;
                     double dy = currentY - lastMouseY;
 
-                    
-                        hasDraggedCamera = true;
-                        cameraOffsetX += dx;
-                        cameraOffsetY += dy;
-                        lastMouseX = currentX;
-                        lastMouseY = currentY;
+                    hasDraggedCamera = true;
+                    cameraOffsetX += dx;
+                    cameraOffsetY += dy;
+                    lastMouseX = currentX;
+                    lastMouseY = currentY;
 
-                        checkCameraBounds(); 
-                        repaint();
-                    
+                    checkCameraBounds();
+                    repaint();
                 }
             }
 
@@ -148,9 +143,22 @@ public class GameWorldPanel extends JPanel {
                 int rotation = e.getWheelRotation(); 
 
                 if (isCameraMode) {
+                    double centerX = getWidth() / 2.0;
+                    double centerY = getHeight() / 2.0;
+
+                    double mapPointX = (centerX - cameraOffsetX) / currentZoom;
+                    double mapPointY = (centerY - cameraOffsetY) / currentZoom;
+
                     if (rotation < 0) currentZoom += zoomSpeed; 
                     else currentZoom -= zoomSpeed; 
                     
+                    double minZoom = Math.max(getWidth() / mapWidth(),getHeight() / mapHeight());
+                    if (currentZoom < minZoom) currentZoom = minZoom;
+                    if (currentZoom > 8.0) currentZoom = 8.0;
+
+                    cameraOffsetX = centerX - (mapPointX * currentZoom);
+                    cameraOffsetY = centerY - (mapPointY * currentZoom);
+
                     checkCameraBounds(); 
                     repaint(); 
                 } else {
@@ -167,31 +175,56 @@ public class GameWorldPanel extends JPanel {
         addMouseListener(mouseHandler);
         addMouseWheelListener(mouseHandler);
         addMouseMotionListener(mouseHandler); 
-        
     }
 
+    
+    private void fitMapToScreen() {
+
+        double screenWidth = getWidth();
+        double screenHeight = getHeight();
+        double mapW = mapWidth(); 
+        double mapH = mapHeight();
+
+        
+        this.currentZoom = screenWidth / mapW;
+        
+        double zoomedH = mapH * currentZoom;
+        this.cameraOffsetX = 0;
+        
+        if (zoomedH > screenHeight) {
+            this.cameraOffsetY = screenHeight - zoomedH;
+        } else {
+            this.cameraOffsetY = 0;
+        }
+        
+        this.initialFitDone = true; 
+    }
 
     private void checkCameraBounds() {
-        double windowWidth = getWidth();
-        double windowHeight = getHeight();
+        if (mapCache == null) return;
 
-        //limite zoom
-        if (currentZoom < 1.0) {
-            currentZoom = 1.0;
-        }
-        if (currentZoom > 5.0) {
-            currentZoom = 5.0;
-        }
+        double screenWidth = getWidth();
+        double screenHeight = getHeight();
         
-        double limitX = (windowWidth / 2.0) * (currentZoom - 1);
-        double limitY = (windowHeight / 2.0) * (currentZoom - 1);
+        double mapRealWidth = mapWidth();
+        double mapRealHeight = mapHeight();
 
-        
-        if (cameraOffsetX > limitX) cameraOffsetX = limitX;
-        if (cameraOffsetX < -limitX) cameraOffsetX = -limitX;
+        double minZoom = Math.max(screenWidth / mapRealWidth, screenHeight / mapRealHeight); 
+        if (currentZoom < minZoom) 
+            {currentZoom = minZoom;}
+        if (currentZoom > 8.0) 
+            {currentZoom = 8.0;}
 
-        if (cameraOffsetY > limitY) cameraOffsetY = limitY;
-        if (cameraOffsetY < -limitY) cameraOffsetY = -limitY;
+        double zoomedWidth = mapRealWidth * currentZoom;
+        double zoomedHeigth = mapRealHeight* currentZoom;
+
+        double minX = screenWidth - zoomedWidth;
+        if (cameraOffsetX > 0) cameraOffsetX = 0;
+        if (cameraOffsetX < minX) cameraOffsetX = minX;
+
+        double minY = screenHeight- zoomedHeigth;
+        if (cameraOffsetY > 0) cameraOffsetY = 0;
+        if (cameraOffsetY < minY) cameraOffsetY = minY;
     }
 
    
@@ -221,6 +254,7 @@ public class GameWorldPanel extends JPanel {
             this.world = event.getWorld();
             this.mapMatrix = this.world.getMap().getMapMatrix();
             this.mapCache = null; //on efface l'encienne image
+            this.initialFitDone = false; 
             repaint(); 
         });
         eventBus.subscribe(MapUpdateEvent.class, event -> {
@@ -233,25 +267,23 @@ public class GameWorldPanel extends JPanel {
         });
     }
 
-    private void updateMapCache(int windowWidth, int windowHeight) {
+    private int mapWidth() {
+        return world.getMap().getWidth() * tileSize;
+    }
 
-        mapCache = new BufferedImage(windowWidth, windowHeight, BufferedImage.TYPE_INT_ARGB);
+    private int mapHeight() {
+        return world.getMap().getHeight() * tileSize;
+    }
+
+    private void updateMapCache() {
+        int width = mapWidth();
+        int height = mapHeight();
+
+        mapCache = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g2d = mapCache.createGraphics(); //cree un crayon dans mapCache
 
-        double mapTilesX = world.getMap().getWidth();
-        double mapTilesY = world.getMap().getHeight();
-
-        double widthRatio = windowWidth / mapTilesX;
-        double heightRatio = windowHeight / mapTilesY;
-        double sizeToFillScreen = Math.max(widthRatio, heightRatio);
-        this.tileSize = Math.max(defaultTileSize, sizeToFillScreen);
-
-        // On garde la hauteur totale pour aligner le bas de la map au bas de l'écran
-        double totalMapHeightPixels = mapTilesY * this.tileSize;
-        double offScreenY = windowHeight - totalMapHeightPixels; 
-
-        int drawSizeInt = (int) Math.ceil(this.tileSize);
-        g2d.fillRect(0, 0, windowWidth, windowHeight);
+        g2d.setColor(new Color(135, 206, 235)); 
+        g2d.fillRect(0, 0, width, height);
 
         for (int y = 0; y < mapMatrix.length; y++) {
             for (int x = 0; x < mapMatrix[y].length; x++) {
@@ -259,13 +291,18 @@ public class GameWorldPanel extends JPanel {
                 
                 BufferedImage texture = textureMatrixMap.get(tileType);
                 if (texture != null) {
-                    int screenX = (int) (x * tileSize);
-                    int screenY = (int) ((y * tileSize) + offScreenY);
-                    g2d.drawImage(texture, screenX, screenY, drawSizeInt, drawSizeInt, null);
-                    
+                    int screenX = x * tileSize;
+                    int screenY = y * tileSize;
+                    g2d.drawImage(texture, screenX, screenY, tileSize, tileSize, null);
                 }
             }
         }
+        g2d.dispose();
+        
+        if (!initialFitDone && getWidth() > 0) {
+            fitMapToScreen();
+        }
+        checkCameraBounds();
     }
 
     @Override
@@ -274,26 +311,23 @@ public class GameWorldPanel extends JPanel {
 
         if (this.world == null) { return; }
 
-        int currentWidth = getWidth();//largeur fenetre
-        int currentHeight = getHeight();
+        if (!initialFitDone && getWidth() > 0) {
+            fitMapToScreen();
+        }
 
-        if (mapCache == null) {//si on change la taille de la fenetre alors on redessine la carte 
-            updateMapCache(currentWidth, currentHeight);
-            lastWindowWidth = currentWidth;
-            lastWindowHeight = currentHeight;
+        if (mapCache == null) {
+            updateMapCache();
         }
 
         Graphics2D g2d = (Graphics2D) g; // pinceau plus puissant avec les translate et les zoom
-        AffineTransform oldTransform = g2d.getTransform(); //sauvegarde l'etat initial du pinceaux , sans translate ou autre
 
         g2d.translate(cameraOffsetX, cameraOffsetY);//decalle le pinceau en fonction de la position camera (si negatif le dessin est deplacer vers la gauche)
-        
-        //pour le zoom , on deplace le pinceaux au milieu , zoom/dezoom(ver le milieu) puis remet le pinceau au bon endroit
-        g2d.translate(currentWidth / 2.0, currentHeight / 2.0);
-        g2d.scale(currentZoom, currentZoom);
-        g2d.translate(-currentWidth / 2.0, -currentHeight / 2.0);
 
-        
+
+        //pour le zoom , on deplace le pinceaux au milieu , zoom/dezoom(ver le milieu) puis remet le pinceau au bon endroit
+        //g2d.translate(currentWidth / 2.0, currentHeight / 2.0);
+        g2d.scale(currentZoom, currentZoom);
+
         //on dessine
         if (mapCache != null) {
             g2d.drawImage(mapCache, 0, 0, null);
@@ -303,7 +337,6 @@ public class GameWorldPanel extends JPanel {
         
         BufferedImage textureWorm = textureEntityMap.get("worm1");
         double hauteurMapPixels = world.getMap().getHeight() * this.tileSize;
-        double videEnHaut = currentHeight - hauteurMapPixels;
 
         if (world.getPhysics() != null && world.getPhysics().getBodies() != null) {
             for (PhysicsBody worm : world.getPhysics().getBodies()) {
@@ -312,9 +345,7 @@ public class GameWorldPanel extends JPanel {
                 
                 double xEcran = worm.getPos().getX() * tileSize;
                 double yPhysique = worm.getPos().getY() * tileSize;
-                double yInverse = hauteurMapPixels - yPhysique - hauteurVerPx;// -hauteurVerPx car dessin commence en haut a gauche
-
-                double yEcran = yInverse + videEnHaut;//ajout du decallage pour s'alligner
+                double yEcran = hauteurMapPixels - yPhysique - hauteurVerPx;// -hauteurVerPx car dessin commence en haut a gauche
 
                 
                 AffineTransform tx = new AffineTransform();
@@ -327,7 +358,5 @@ public class GameWorldPanel extends JPanel {
                 g2d.drawImage(textureWorm, tx, null);
             }
         }
-
-        g2d.setTransform(oldTransform);
     }
 }

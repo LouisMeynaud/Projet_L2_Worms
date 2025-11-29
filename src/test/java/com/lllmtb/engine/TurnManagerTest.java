@@ -1,14 +1,13 @@
 package com.lllmtb.engine;
 
 import com.lllmtb.events.EventBus;
-import com.lllmtb.events.TurnEvents.TurnEndEvent;
-import com.lllmtb.events.TurnEvents.TurnStarEvent;
-import com.lllmtb.events.TurnEvents.TurnStopEvent;
-import com.lllmtb.events.TurnEvents.WormPlayable;
+import com.lllmtb.events.turn.TurnEndEvent;
+import com.lllmtb.events.turn.TurnStarEvent;
+import com.lllmtb.events.turn.TurnStopEvent;
+import com.lllmtb.events.turn.WormPlayable;
 
 import com.lllmtb.terrain.generation.LandScape;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -22,7 +21,7 @@ public class TurnManagerTest {
 
     @BeforeEach
     public void setUp(){
-        GameSettings settings = new GameSettings(2, new String[]{"TeamTest1", "TeamTest2"}, 1, false, null, false,370, LandScape.HILLY);
+        GameSettings settings = new GameSettings(2, new String[]{"TeamTest1", "TeamTest2"}, 1,1, false, null, false,370, LandScape.HILLY);
         EventBus eventBus = new EventBus();
         this.gw = new GameWorld(settings, eventBus);
         gw.start();
@@ -69,10 +68,9 @@ public class TurnManagerTest {
     @Test
     void testUpdateEndWithTime(){
         AtomicBoolean eventEnd = new AtomicBoolean(false);
-        this.gw.getBus().subscribe(TurnEndEvent.class, event -> {
-            eventEnd.set(true);});
+        this.gw.getBus().subscribe(TurnEndEvent.class, event -> eventEnd.set(true));
         try {
-            Thread.sleep(gw.getTourDuration() +50);
+            Thread.sleep(gw.getTurnDuration() + 50);    // let the event bus dispatch the event
         } catch (InterruptedException ignored) {}
         assertTrue(eventEnd.get());
 
