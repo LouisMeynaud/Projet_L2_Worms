@@ -1,14 +1,13 @@
 package com.lllmtb.engine;
 
 import com.lllmtb.events.EventBus;
-import com.lllmtb.events.TurnEvents.TurnEndEvent;
-import com.lllmtb.events.TurnEvents.TurnStarEvent;
-import com.lllmtb.events.TurnEvents.TurnStopEvent;
-import com.lllmtb.events.TurnEvents.WormPlayable;
+import com.lllmtb.events.turn.TurnEndEvent;
+import com.lllmtb.events.turn.TurnStarEvent;
+import com.lllmtb.events.turn.TurnStopEvent;
+import com.lllmtb.events.turn.WormPlayable;
 
 import com.lllmtb.terrain.generation.LandScape;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

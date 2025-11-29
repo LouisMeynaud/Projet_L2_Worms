@@ -1,10 +1,10 @@
 package com.lllmtb.engine;
 
 import com.lllmtb.events.EventListener;
-import com.lllmtb.events.TurnEvents.TurnEndEvent;
-import com.lllmtb.events.TurnEvents.TurnStarEvent;
-import com.lllmtb.events.TurnEvents.TurnStopEvent;
-import com.lllmtb.events.TurnEvents.WormPlayable;
+import com.lllmtb.events.turn.TurnEndEvent;
+import com.lllmtb.events.turn.TurnStarEvent;
+import com.lllmtb.events.turn.TurnStopEvent;
+import com.lllmtb.events.turn.WormPlayable;
 import com.lllmtb.events.move.GroundCheckCollision;
 import com.lllmtb.events.ui.MoveEvent;
 import com.lllmtb.model.entity.team.Team;
@@ -23,8 +23,6 @@ public final class TurnManager {
             Move.JumpToMax();
         }
     };
-
-
 
     private long startTime;
     private final long turnDurationInMs;

@@ -1,6 +1,9 @@
 package com.lllmtb.engine;
 
 import com.lllmtb.events.game.GamePauseEvent;
+import org.eclipse.jdt.annotation.NonNull;
+
+import java.util.Objects;
 
 public class GameLoop implements Runnable {
     private final GameWorld world;
@@ -8,17 +11,33 @@ public class GameLoop implements Runnable {
     private final double ticktime = 16; // ~60Hz
     private boolean isPaused = false;
 
-    public GameLoop(GameWorld world) {
-        this.world = world;
+    /**
+     * Creates a new {@code GameLoop} instance.
+     *
+     * @param world the game world to be updated by this game loop
+     * @throws NullPointerException if {@code world} is {@code null}
+     */
+    public GameLoop(@NonNull GameWorld world) {
+        this.world = Objects.requireNonNull(world);
 
         this.world.getBus().subscribe(GamePauseEvent.class, this::onPauseEvent);
     }
 
-    private void onPauseEvent(GamePauseEvent event) {
-        this.isPaused = event.isPaused;
+    /**
+     * Handles game pause events to update the paused state of the game loop.
+     *
+     * @param event the {@link GamePauseEvent} containing the new paused state
+     * @throws NullPointerException if {@code event} is {@code null}
+     */
+    private void onPauseEvent(@NonNull GamePauseEvent event) {
+        this.isPaused = Objects.requireNonNull(event).isPaused;
     }
 
 
+    /**
+     * The main game loop method.
+     * It processes events, updates the game world, and maintains a consistent tick rate.
+     */
     @Override
     public void run() {
         long last = System.nanoTime();
@@ -56,6 +75,9 @@ public class GameLoop implements Runnable {
         }
     }
 
+    /**
+     * Stops the game loop and clears the event bus and physics engine.
+     */
     public void stop() {
         running = false;
         world.getBus().clear();
