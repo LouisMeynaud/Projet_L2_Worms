@@ -281,6 +281,9 @@ public class PhysicsEngine {
 
             // apply modifiers for this tick only - we don't want to stack them every tick - not sure about this, for example gravity in the vector keeps increasing when the parachute is deployed and we don't want that
             newVector = applyModifiers(body, newVector, dt);
+            if (-0.5 < newVector.getX() && newVector.getX() < 0.5) {
+                newVector = new Vector(0, newVector.getY());
+            }
             body.setVector(newVector);
 
             Position nextPos = newVector.newPos(body.getPos(), dt);
@@ -290,7 +293,7 @@ public class PhysicsEngine {
             if (impact.collided) {
                 switch (body.getEntity().getCollisionType()) {
                     // if body slides along cliffs (if the collision is with the ground)
-                    case SLIDE -> collision.slide(body, impact, bus);
+                    case SLIDE -> collision.slide(body, impact, dt, bus);
 
                     // if body bounces
                     case BOUNCE -> collision.bounce(body, impact, 0.5);

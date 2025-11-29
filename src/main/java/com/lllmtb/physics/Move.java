@@ -17,11 +17,11 @@ public class Move {
         Transform t = switch (direction) {
             case Left:
                 System.out.println("Left move");
-                yield v -> v.add(new Vector(-0.1, 0));
+                yield v -> v.add(new Vector(-7, 0));
 
             case Right:
                 System.out.println("Right move");
-                yield v -> v.add(new Vector(0.1, 0));
+                yield v -> v.add(new Vector(7, 0));
 
             case Up:
                 if (jump > 0) {
