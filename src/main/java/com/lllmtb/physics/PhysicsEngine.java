@@ -173,6 +173,9 @@ public class PhysicsEngine {
             deltaV.scale(ticktime / body.getMass());
 
             Vector newVector = body.getVector().add(deltaV);
+            if (newVector.getX() < 0.5 && newVector.getX() > -0.5) {
+                newVector = new Vector(0, newVector.getY());
+            }
             Position nextPos = newVector.newPos(body.getPos(), ticktime);
             body.setVector(newVector);
 
@@ -182,7 +185,7 @@ public class PhysicsEngine {
                 // if body slide along cliffs
                 if (body.getEntity().getCollisionType() == CollisionType.SLIDE) {
                     // if the collision is with the ground
-                    this.collision.slide(body, impact, eventBus);
+                    this.collision.slide(body, impact, ticktime, eventBus);
                     // if body bounce
                 } else if (body.getEntity().getCollisionType() == CollisionType.BOUNCE) {
                     this.collision.bounce(body, impact, 0.5);

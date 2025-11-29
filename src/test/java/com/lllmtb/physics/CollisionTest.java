@@ -266,7 +266,7 @@ public class CollisionTest {
         pBWorm1.setVector(new Vector(5, -2));
         Position posFinal = new Position(12, 8);
         Collision.Impact impact = collision.move(pBWorm1, posFinal);
-        collision.slide(pBWorm1, impact, new EventBus());
+        collision.slide(pBWorm1, impact, 1, new EventBus());
         assertEquals(12, pBWorm1.getPos().getX());
         assertEquals(10, pBWorm1.getPos().getY());
     }

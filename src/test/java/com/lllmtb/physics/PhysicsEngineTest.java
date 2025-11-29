@@ -18,9 +18,12 @@ class PhysicsEngineTest {
 
     private Map map;
     private PhysicsEngine pE;
-    private Position p;
+    private Position pw;
+    private Position pBP;
     private Worm w;
-    private PhysicsBody pB;
+    private BulletProjectile bP;
+    private PhysicsBody pBWorm;
+    private PhysicsBody pBBP;
     private EventBus eventBus;
 
     @BeforeEach
@@ -28,12 +31,20 @@ class PhysicsEngineTest {
         map = MapLoader.loadMatrix("mapTest");
         eventBus = new EventBus(4);
         pE = new PhysicsEngine(map, true, eventBus);
-        p = new Position(4, 5);
-        w = new Worm("José", new Team("Team", 1, new Position[]{p}));
-        assertTrue(map.inMap(p));
-        pB = w.getBody();
-        pB.setVector(new Vector(-5, -10));
-        pE.add(pB);
+        pw = new Position(4, 4);
+        w = new Worm("José", new Team("Team", 1, new Position[]{pw}));
+        assertTrue(map.inMap(pw));
+        pBP = new Position(0, 5);
+        bP = new BulletProjectile(new FireParams(0, pBP, w));
+        assertTrue(map.inMap(pw));
+        pBWorm = w.getBody();
+        pBBP = bP.getBody();
+        pBWorm.setVector(new Vector(-5, -10));
+        pBWorm.setPos(pw);
+        pBBP.setVector(new Vector(0, -4));
+        pBBP.setPos(pBP);
+        pE.add(pBWorm);
+        pE.add(pBBP);
     }
 
     @Test
@@ -61,7 +72,7 @@ class PhysicsEngineTest {
     @Test
     void testChangeWind_whenNoWind() {
         PhysicsEngine tpE = new PhysicsEngine(map, false, eventBus);
-        tpE.add(pB);
+        tpE.add(pBWorm);
 
         Vector before = tpE.getWind();
         tpE.changeWind();
@@ -78,9 +89,9 @@ class PhysicsEngineTest {
 
     @Test
     void testAddAndRemove() {
-        assertTrue(pE.getBodies().contains(pB));
-        pE.remove(pB);
-        assertFalse(pE.getBodies().contains(pB));
+        assertTrue(pE.getBodies().contains(pBWorm));
+        pE.remove(pBWorm);
+        assertFalse(pE.getBodies().contains(pBWorm));
     }
 
     @Test
@@ -92,12 +103,12 @@ class PhysicsEngineTest {
     @Test
     void testNextStep(){
         double ticktime = 0.0167;
-        Vector initialVector = pB.getVector();
-        Position initialPos = pB.getPos();
+        Vector initialVector = pBWorm.getVector();
+        Position initialPos = pBWorm.getPos();
         pE.nextStep(ticktime);
-        Position newPos = pB.getPos();
-        Vector newVector = pB.getVector();
-        assertEquals(initialPos.getX(), newPos.getX());
+        Position newPos = pBWorm.getPos();
+        Vector newVector = pBWorm.getVector();
+        assertEquals(3.9332, newPos.getX());
         assertEquals(initialPos.getY(), newPos.getY());
         assertNotEquals(initialVector.getX(), newVector.getX());
         assertNotEquals(initialVector.getY(), newVector.getY());
@@ -107,20 +118,17 @@ class PhysicsEngineTest {
     void testNextStep_whenCollision() {
         double ticktime = 0.0167;
         PhysicsEngine tpE = new PhysicsEngine(map, false, eventBus);
-        tpE.add(pB);
+        tpE.add(pBWorm);
+        tpE.add(pBBP);
         System.out.println(map);
         for (int i = 0; i < 605; i++) {
             // System.out.printf("\nPOS : %s, %s | inMap = %b", pB.getPos().getX(), pB.getPos().getY(), map.inMap(pB.getPos()));
             tpE.nextStep(ticktime);
         }
-    }
-
-    @Test
-    void testNextStep_whenProjectile(){
-        double ticktime = 0.0167;
-        Projectile pr = new BulletProjectile(new FireParams(0, p, w));
-        pE.add(pr.getBody());
-        pE.nextStep(ticktime);
+        assertEquals(0, pBBP.getPos().getX());
+        assertEquals(4, pBBP.getPos().getY());
+        assertEquals(3.7018629769216, pBWorm.getPos().getX());
+        assertEquals(4, pBWorm.getPos().getY());
     }
 
     @Test
@@ -139,7 +147,7 @@ class PhysicsEngineTest {
     void testNext(){
         double ticktime = 0.0167;
         pE.next(ticktime);
-        assertTrue(pB.getPos().getX() < 10);
+        assertTrue(pBWorm.getPos().getX() < 10);
     }
 }
 

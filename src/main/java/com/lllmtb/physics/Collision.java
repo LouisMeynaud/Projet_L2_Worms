@@ -407,9 +407,10 @@ public class Collision {
      * </p>
      * @param body the {@link PhysicsBody} which move
      * @param impact the {@link Impact} with collision's information
+     * @param ticktime the duration of a simulation tick
      * @param bus the {@link EventBus} of the collisions
      */
-    public void slide(PhysicsBody body, Impact impact, EventBus bus) {
+    public void slide(PhysicsBody body, Impact impact, double ticktime, EventBus bus) {
         // new position
         body.setPos(impact.collisionPos);
         // if the collision is with a wall
@@ -423,7 +424,7 @@ public class Collision {
             }
         }
         // calculate the new position
-        Position nextPos = body.getVector().newPos(body.getPos(), 1);
+        Position nextPos = body.getVector().newPos(body.getPos(), ticktime);
         Impact i = move(body, nextPos);
         body.setPos(i.collisionPos);
         if (i.collided) {
