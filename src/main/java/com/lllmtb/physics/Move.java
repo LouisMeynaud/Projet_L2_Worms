@@ -35,17 +35,17 @@ public class Move {
         Transform t = switch (Objects.requireNonNull(direction)) {
             case Left:
                 System.out.println("Left move");
-                yield v -> v.add(new Vector(-7, 0));
+                yield v -> new Vector(Math.max(v.getX()-5, -8), v.getY());
 
             case Right:
                 System.out.println("Right move");
-                yield v -> v.add(new Vector(7, 0));
+                yield v -> new Vector(Math.min(v.getX()+5, 8), v.getY());
 
             case Up:
                 if (jump > 0) {
                     System.out.println("Up move");
                     jump--;
-                    yield v -> v.add(new Vector(0, 60));
+                    yield v -> v.add(new Vector(0, 40));
                 }
                 yield null;
 

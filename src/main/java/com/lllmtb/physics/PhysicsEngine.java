@@ -62,7 +62,7 @@ public class PhysicsEngine {
         this.bodies = new CopyOnWriteArrayList<>();
         this.modifiers = new ConcurrentHashMap<>();
         this.collision = new Collision(map, this.bodies);
-        this.gravity = new Vector(0, -9.81);
+        this.gravity = new Vector(0, -9810);
         this.hasWind = hasWind;
         this.wind = new Vector(0, 0);
     }
@@ -274,8 +274,8 @@ public class PhysicsEngine {
         for (PhysicsBody body : bodies) {
             Vector deltaV = body.getVector().scale(-0.2).add(this.gravity); // Simple air resistance + gravity effects
             // only apply wind effects to Projectiles
-            if (body.getEntity() instanceof Projectile) deltaV.add(this.wind);
-            deltaV.scale(dt / body.getMass());
+            if (body.getEntity() instanceof Projectile) deltaV = deltaV.add(this.wind);
+            deltaV = deltaV.scale(dt / body.getMass());
 
             Vector newVector = body.getVector().add(deltaV);
 
