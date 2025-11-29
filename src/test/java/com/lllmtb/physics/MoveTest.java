@@ -1,11 +1,9 @@
 package com.lllmtb.physics;
 
-import com.lllmtb.engine.GameSettings;
 import com.lllmtb.engine.commands.AddPhysicsModifierCommand;
 import com.lllmtb.engine.commands.GameCommand;
 import com.lllmtb.model.entity.worm.Worm;
 import com.lllmtb.ui.graphical.GamePanel.Direction;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -41,7 +39,7 @@ public class MoveTest {
         assertNotNull(gameCommand, "La commande ne doit pas être null");
         assertInstanceOf(AddPhysicsModifierCommand.class, gameCommand, "La commande doit être de type AddPhysicsModifierCommand");
         assertTrue(m.oneShot);
-        assertEquals(-0.1, vector.getX());
+        assertEquals(-7.0, vector.getX());
         assertEquals(v.getY(), vector.getY());
     }
 
@@ -60,12 +58,12 @@ public class MoveTest {
         assertNotNull(gameCommand, "La commande ne doit pas être null");
         assertInstanceOf(AddPhysicsModifierCommand.class, gameCommand, "La commande doit être de type AddPhysicsModifierCommand");
         assertTrue(m.oneShot);
-        assertEquals(0.1, vector.getX());
+        assertEquals(7.0, vector.getX());
         assertEquals(v.getY(), vector.getY());
     }
 
     @Test
-    void testMoveUpWithoutJump() throws NoSuchFieldException, IllegalAccessException {
+    void testMoveUpWithoutJump() {
         Worm wormMock = Mockito.mock(Worm.class);
         GameCommand gameCommand =   Move.move(wormMock, Direction.Up);
         assertNull(gameCommand);
@@ -90,7 +88,7 @@ public class MoveTest {
         assertEquals(60, vector.getY());
     }
     @Test
-    void testMoveDown() throws NoSuchFieldException, IllegalAccessException {
+    void testMoveDown() {
         Worm wormMock = Mockito.mock(Worm.class);
         GameCommand gameCommand =   Move.move(wormMock, Direction.Down);
         assertNull(gameCommand);
