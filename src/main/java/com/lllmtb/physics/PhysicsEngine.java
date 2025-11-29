@@ -23,21 +23,21 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * </p>
  */
 public class PhysicsEngine {
-    private EventBus bus;
+    private final EventBus bus;
 
     /** The list of all physics bodies currently managed by this engine. */
-    private CopyOnWriteArrayList<PhysicsBody> bodies;
+    private final CopyOnWriteArrayList<PhysicsBody> bodies;
 
-    private ConcurrentHashMap<PhysicsBody, ArrayList<PhysicsModifier>> modifiers;
+    private final ConcurrentHashMap<PhysicsBody, ArrayList<PhysicsModifier>> modifiers;
 
     /** The {@link Collision} object of the game*/
     private final Collision collision;
 
     /** The gravity vector applied uniformly to all bodies. */
-    private Vector gravity;
+    private final Vector gravity;
 
     /** Whether wind simulation is enabled. */
-    private boolean hasWind;
+    private final boolean hasWind;
 
     /** The current wind vector applied to all bodies when {@code hasWind} is true. */
     private Vector wind;
@@ -114,9 +114,8 @@ public class PhysicsEngine {
      * @param body the {@link PhysicsBody} to add.
      * @throws NullPointerException if {@code body} is {@code null}.
      */
-    public void add(PhysicsBody body) {
-        Objects.requireNonNull(body);
-        bodies.add(body);
+    public void add(@NonNull PhysicsBody body) {
+        bodies.add(Objects.requireNonNull(body));
     }
 
     /**
