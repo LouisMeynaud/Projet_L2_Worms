@@ -9,10 +9,9 @@ public final class RocketProjectile extends Projectile {
     private final double mass   = 10;
     private final double width  = 0.6;
     private final double height = 0.4;
-    private final CollisionType collisionType = CollisionType.TOUCH;
 
     public RocketProjectile(@NonNull FireParams params) {
-        super(params);
+        super(params, CollisionType.TOUCH);
     }
 
     @Override
