@@ -101,7 +101,7 @@ public class SettingGamePanel extends JPanel {
         contentGrid.add(turnDurationLabel, gbc);
 
         gbc.gridx = 1;
-        this.turnDurationSlider = CreateSlider.createSlider(10, MAX_TIME, 10, 10);
+        this.turnDurationSlider = CreateSlider.createSlider(10, MAX_TIME, 30, 10);
         contentGrid.add(turnDurationSlider, gbc);
         row++;
 
