@@ -115,12 +115,9 @@
                 <configuration>
                     <excludes>
                         <exclude>com/lllmtb/engine/GameEngine.class</exclude>
+                        <exclude>com/lllmtb/engine/GameLoop.class</exclude>
                         <exclude>com/lllmtb/ui/ConsoleUI.class</exclude>
                         <exclude>com/lllmtb/ui/graphical/**/*</exclude>
-                        <exclude>com/lllmtb/engine/GameLoop.class</exclude>
-                        <exclude>com/lllmtb/physics/Collision.class</exclude> <!-- enlever une fois la nouvelle implementation de colision faite !-->
-                        <exclude>com/lllmtb/physics/Move.class</exclude>
-
                     </excludes>
                 </configuration>
             </plugin>

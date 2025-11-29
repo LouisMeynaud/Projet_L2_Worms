@@ -61,7 +61,7 @@ public class Collision {
          */
         public Impact(double ti, PhysicsBody body, Vector normal, PhysicsBody hitBody) {
             this.hitBody = hitBody;
-            this.collisionPos = body.getVector().newPos(body.getPos(), ti);;
+            this.collisionPos = body.getVector().newPos(body.getPos(), ti);
             this.ti = ti;
             this.normal = normal;
             this.collided = true;

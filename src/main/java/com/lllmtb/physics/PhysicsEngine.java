@@ -1,13 +1,17 @@
 package com.lllmtb.physics;
 
 import com.lllmtb.events.EventBus;
-import com.lllmtb.model.entity.CollisionType;
+import com.lllmtb.events.physics.PhysicsModifierAddedEvent;
+import com.lllmtb.events.physics.PhysicsModifierRemovedEvent;
 import com.lllmtb.model.entity.projectile.Projectile;
-import com.lllmtb.model.entity.worm.Worm;
+import com.lllmtb.model.item.ItemId;
 import com.lllmtb.terrain.map.Map;
+import org.eclipse.jdt.annotation.NonNull;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
@@ -19,15 +23,21 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * </p>
  */
 public class PhysicsEngine {
+    private final EventBus bus;
 
     /** The list of all physics bodies currently managed by this engine. */
-    private CopyOnWriteArrayList<PhysicsBody> bodies;
+    private final CopyOnWriteArrayList<PhysicsBody> bodies;
+
+    private final ConcurrentHashMap<PhysicsBody, ArrayList<PhysicsModifier>> modifiers;
+
+    /** The {@link Collision} object of the game*/
+    private final Collision collision;
 
     /** The gravity vector applied uniformly to all bodies. */
-    private Vector gravity;
+    private final Vector gravity;
 
     /** Whether wind simulation is enabled. */
-    private boolean hasWind;
+    private final boolean hasWind;
 
     /** The current wind vector applied to all bodies when {@code hasWind} is true. */
     private Vector wind;
@@ -35,10 +45,6 @@ public class PhysicsEngine {
     /** Internal counter used to regulate wind changes. */
     private int cpt = 0;
 
-    /** The {@link Collision} object of the game*/
-    private final Collision collision;
-
-    private final EventBus eventBus;
 
     /**
      * Constructs a new {@code PhysicsEngine} instance.
@@ -48,15 +54,17 @@ public class PhysicsEngine {
      * </p>
      *
      * @param map the {@code Map} instance representing the environment for collision detection.
+     * @param bus the global {@code EventBus} instance created upstream.
      * @param hasWind if wind should be simulated.
      */
-    public PhysicsEngine(Map map, boolean hasWind, EventBus eventBus) {
+    public PhysicsEngine(Map map, EventBus bus, boolean hasWind) {
+        this.bus = bus;
         this.bodies = new CopyOnWriteArrayList<>();
-        this.gravity = new Vector(0, -9.81);
+        this.modifiers = new ConcurrentHashMap<>();
+        this.collision = new Collision(map, this.bodies);
+        this.gravity = new Vector(0, -9810);
         this.hasWind = hasWind;
         this.wind = new Vector(0, 0);
-        this.collision = new Collision(map, this.bodies);
-        this.eventBus = eventBus;
     }
 
     /**
@@ -106,9 +114,8 @@ public class PhysicsEngine {
      * @param body the {@link PhysicsBody} to add.
      * @throws NullPointerException if {@code body} is {@code null}.
      */
-    public void add(PhysicsBody body) {
-        Objects.requireNonNull(body);
-        bodies.add(body);
+    public void add(@NonNull PhysicsBody body) {
+        bodies.add(Objects.requireNonNull(body));
     }
 
     /**
@@ -131,6 +138,7 @@ public class PhysicsEngine {
      */
     public void clear() {
         bodies.clear();
+        modifiers.clear();
     }
 
     /**
@@ -152,6 +160,103 @@ public class PhysicsEngine {
     }
 
     /**
+     * Adds a physics modifier to a specific body.
+     * <p>
+     * The modifier will be applied to the body during the next simulation update.
+     * </p>
+     *
+     * @param body the {@link PhysicsBody} to which the modifier will be added.
+     * @param modifier the {@link PhysicsModifier} to add.
+     * @throws NullPointerException if {@code body} or {@code modifier} is {@code null}.
+     */
+    public void addModifier(@NonNull PhysicsBody body, @NonNull PhysicsModifier modifier) {
+        Objects.requireNonNull(body);
+        Objects.requireNonNull(modifier);
+        modifiers.computeIfAbsent(body, b -> new ArrayList<>()).add(modifier);
+        bus.postQueued(new PhysicsModifierAddedEvent(body, modifier));
+    }
+
+    /**
+     * Removes a specific physics modifier from a body.
+     * <p>
+     * If the modifier is not present on the body, this method has no effect.
+     * </p>
+     *
+     * @param body the {@link PhysicsBody} from which the modifier will be removed.
+     * @param modifier the {@link PhysicsModifier} to remove.
+     * @throws NullPointerException if {@code body} or {@code modifier} is {@code null}.
+     */
+    public void removeModifier(@NonNull PhysicsBody body, @NonNull PhysicsModifier modifier) {
+        Objects.requireNonNull(body);
+        Objects.requireNonNull(modifier);
+        List<PhysicsModifier> list = modifiers.get(body);
+        if (list == null) return;
+
+        if (list.remove(modifier)) bus.postQueued(new PhysicsModifierRemovedEvent(body, modifier));
+        if (list.isEmpty()) modifiers.remove(body);
+    }
+
+    /**
+     * Removes all physics modifiers from a body that originate from a specific source item.
+     * <p>
+     * This method iterates through all modifiers applied to the body and removes those
+     * whose source matches the provided {@code source} item ID.
+     * </p>
+     *
+     * @param body the {@link PhysicsBody} from which modifiers will be removed.
+     * @param source the {@link ItemId} representing the source of the modifiers to remove.
+     * @throws NullPointerException if {@code body} is {@code null}.
+     */
+    public void removeModifierFor(@NonNull PhysicsBody body, ItemId source) {
+        Objects.requireNonNull(body);
+        List<PhysicsModifier> list = modifiers.get(body);
+        if (list == null) return;
+
+        // (iterate over a copy to avoid concurrent modification when modifiers remove themselves)
+        for (PhysicsModifier m : new ArrayList<>(list)) {
+            if (Objects.equals(m.source, source)) {
+                list.remove(m);
+                bus.postQueued(new PhysicsModifierRemovedEvent(body, m));
+            }
+        }
+        if (list.isEmpty()) modifiers.remove(body);
+    }
+
+    /**
+     * Applies all active physics modifiers to a given velocity vector for a specific body.
+     * <p>
+     * This method iterates through all modifiers associated with the body, applying their
+     * transformations to the provided velocity vector. Modifiers that are one-shot or have
+     * expired durations are removed after application.
+     * </p>
+     *
+     * @param body the {@link PhysicsBody} whose modifiers will be applied.
+     * @param v the original {@link Vector} representing the velocity to be modified.
+     * @param dt the time delta (in seconds) since the last update, used for duration calculations.
+     * @return a new {@link Vector} representing the modified velocity after applying all active modifiers.
+     * @throws NullPointerException if {@code body} or {@code v} is {@code null}.
+     */
+    public Vector applyModifiers(@NonNull PhysicsBody body, @NonNull Vector v, double dt) {
+        Objects.requireNonNull(body);
+        Objects.requireNonNull(v);
+        List<PhysicsModifier> list = modifiers.get(body);
+        if (list == null || list.isEmpty()) return v;
+
+        // (iterate over a copy to avoid concurrent modification when modifiers remove themselves)
+        for (PhysicsModifier m : new ArrayList<>(list)) {
+            if (!m.enabled) continue;
+            v = m.transform.apply(v);
+            if (m.oneShot) removeModifier(body, m);
+            else {
+                if (Double.isInfinite(m.remaining)) continue;
+                m.remaining -= dt;
+                if (m.remaining <= 0) removeModifier(body, m);
+            }
+        }
+        return v;
+    }
+
+    /**
      * Advances the simulation by one tick.
      * <p>
      * This method updates all {@link PhysicsBody} instances managed by the engine,
@@ -163,38 +268,41 @@ public class PhysicsEngine {
      * until collision handling is performed.
      * It calls a different method in Collision according to the body.
      * </p>
-     * @param ticktime the duration of the simulation tick (in seconds).
+     * @param dt the duration of the simulation tick (in seconds).
      */
-    protected void nextStep(double ticktime) {
+    protected void nextStep(double dt) {
         for (PhysicsBody body : bodies) {
             Vector deltaV = body.getVector().scale(-0.2).add(this.gravity); // Simple air resistance + gravity effects
             // only apply wind effects to Projectiles
-            if (body.getEntity() instanceof Projectile) deltaV.add(this.wind);
-            deltaV.scale(ticktime / body.getMass());
+            if (body.getEntity() instanceof Projectile) deltaV = deltaV.add(this.wind);
+            deltaV = deltaV.scale(dt / body.getMass());
 
             Vector newVector = body.getVector().add(deltaV);
-            if (newVector.getX() < 0.5 && newVector.getX() > -0.5) {
+
+            // apply modifiers for this tick only - we don't want to stack them every tick - not sure about this, for example gravity in the vector keeps increasing when the parachute is deployed and we don't want that
+            newVector = applyModifiers(body, newVector, dt);
+            if (-0.5 < newVector.getX() && newVector.getX() < 0.5) {
                 newVector = new Vector(0, newVector.getY());
             }
-            Position nextPos = newVector.newPos(body.getPos(), ticktime);
             body.setVector(newVector);
 
-            Collision.Impact impact = this.collision.move(body, nextPos);
+            Position nextPos = newVector.newPos(body.getPos(), dt);
+
+            Collision.Impact impact = collision.move(body, nextPos);
             // if collision
             if (impact.collided) {
-                // if body slide along cliffs
-                if (body.getEntity().getCollisionType() == CollisionType.SLIDE) {
-                    // if the collision is with the ground
-                    this.collision.slide(body, impact, ticktime, eventBus);
-                    // if body bounce
-                } else if (body.getEntity().getCollisionType() == CollisionType.BOUNCE) {
-                    this.collision.bounce(body, impact, 0.5);
-                    // if body stick to what it has hit
-                } else if (body.getEntity().getCollisionType() == CollisionType.TOUCH) {
-                    this.collision.touch(body, impact);
-                    // if body cross all (map and entities)
-                } else {
-                    this.collision.cross(body, nextPos);
+                switch (body.getEntity().getCollisionType()) {
+                    // if body slides along cliffs (if the collision is with the ground)
+                    case SLIDE -> collision.slide(body, impact, dt, bus);
+
+                    // if body bounces
+                    case BOUNCE -> collision.bounce(body, impact, 0.5);
+
+                    // if body sticks to what it has hit
+                    case TOUCH -> collision.touch(body, impact);
+
+                    // if body crosses all (map and entities)
+                    case CROSS -> collision.cross(body, nextPos);
                 }
             } else {
                 body.setPos(nextPos);
@@ -217,6 +325,6 @@ public class PhysicsEngine {
             cpt = 0;
             changeWind();
         }
-        nextStep(ticktime/1000f);
+        nextStep(ticktime/1000.0);
     }
 }

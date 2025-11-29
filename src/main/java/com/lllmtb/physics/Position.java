@@ -1,21 +1,15 @@
 package com.lllmtb.physics;
 
+import org.eclipse.jdt.annotation.NonNull;
+
+import java.util.Objects;
+
 /**
- * The {@code Position} class represents a two-dimensional point in space
+ * The {@link Position} class represents a two-dimensional point in space
  * using Cartesian coordinates {@code (x, y)}.
- * <p>
- * This class is typically used to describe the spatial location of a 
- * {@link PhysicsBody} or any entity in a physics simulation.
- * Instances of {@code Position} are immutable in the sense that their
- * fields are not modified directly after construction.
- * </p>
  */
 public class Position {
-
-    /** The x-coordinate of this position. */
     private double x;
-
-    /** The y-coordinate of this position. */
     private double y;
 
     /**
@@ -29,20 +23,10 @@ public class Position {
         this.y = y;
     }
 
-    /**
-     * Returns the x-coordinate of this position.
-     *
-     * @return the x-coordinate
-     */
+    /** Getters */
     public double getX() {
         return this.x;
     }
-
-    /**
-     * Returns the y-coordinate of this position.
-     *
-     * @return the y-coordinate
-     */
     public double getY() {
         return this.y;
     }
@@ -51,7 +35,8 @@ public class Position {
      * @param other another {@link Position}.
      * @return the {@link Vector} from other to this position.
      */
-    public Vector sub(Position other) {
+    public Vector sub(@NonNull Position other) {
+        Objects.requireNonNull(other);
         return new Vector(this.x - other.x, this.y - other.y);
     }
 
@@ -60,7 +45,8 @@ public class Position {
         return "[" + x + ", " + y + "]";
     }
 
-    public boolean equals(Position pos2){
-        return this.getX() == pos2.getX() && this.getY() == pos2.getY();
+    public boolean equals(Position other){
+        if (other == null) return false;
+        return this.getX() == other.getX() && this.getY() == other.getY();
     }
 }

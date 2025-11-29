@@ -1,11 +1,13 @@
 package com.lllmtb.engine;
 
+import com.lllmtb.engine.commands.GameCommand;
 import com.lllmtb.events.EventBus;
 import com.lllmtb.events.game.GameStateUpdatedEvent;
 import com.lllmtb.model.entity.Entity;
 import com.lllmtb.model.entity.team.Team;
 import com.lllmtb.physics.PhysicsEngine;
 import com.lllmtb.terrain.generation.GenerateMap;
+import com.lllmtb.terrain.generation.ConfigMap;
 import com.lllmtb.terrain.map.CreateSpawnPoint;
 import com.lllmtb.terrain.map.Map;
 import com.lllmtb.terrain.map.MapLoader;
@@ -15,19 +17,22 @@ import org.eclipse.jdt.annotation.NonNull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-
-import com.lllmtb.terrain.generation.ConfigMap;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 public class GameWorld {
     private final Map map;
     private final EventBus bus;
     private final PhysicsEngine physics;
     private final List<Team> teams;
-    private int indexTeam;
     private final GameLoop gameLoop;
+    private int indexTeam;
     private final TurnManager turnManager;
     private final long turnDuration;
     Thread loopThread;
+
+    private final BlockingQueue<GameCommand> commandQueue;
+
 
     public GameWorld(GameSettings settings, EventBus eventBus) {
         Map tmap = null;
@@ -50,8 +55,11 @@ public class GameWorld {
 
         this.bus = eventBus;
 
+        // Init GameCommand queue
+        this.commandQueue = new LinkedBlockingQueue<>();
+
         // Init PhysicsEngine
-        this.physics = new PhysicsEngine(map, settings.hasWind, eventBus);
+        this.physics = new PhysicsEngine(map, bus, settings.hasWind);
 
         // Init Teams
         this.teams = new ArrayList<>();
@@ -130,8 +138,9 @@ public class GameWorld {
     }
 
     public void update(double tickTime){
-        this.getPhysics().next(tickTime);
-        this.turnManager.updateTurn();
+        processCommands();
+        physics.next(tickTime);
+        turnManager.updateTurn();
         bus.postQueued(new GameStateUpdatedEvent());
     }
 
@@ -140,6 +149,33 @@ public class GameWorld {
         if(!teams.isEmpty()) {
             this.turnManager.startTurn(teams.get(indexTeam++));
             if (indexTeam >= teams.size()) indexTeam = 0;
+        }
+    }
+
+    /**
+     * Queue a GameCommand to be executed in the next update cycle.
+     * @param cmd the GameCommand to queue
+     * @return true if the command was successfully queued, false otherwise
+     */
+    public boolean queueCommand(GameCommand cmd) {
+        if (cmd == null) return false;
+        return commandQueue.offer(cmd);
+    }
+
+    /**
+     * Process and execute all queued GameCommands in order.
+     * This method is called during the update cycle.
+     * If a command throws an exception, it is caught and logged, allowing subsequent commands to be processed.
+     */
+    public void processCommands() {
+        List<GameCommand> drained = new ArrayList<>();
+        commandQueue.drainTo(drained);
+        for (GameCommand cmd : drained) {
+            try {
+                cmd.execute(this);
+            } catch (Exception ex) {
+                ex.printStackTrace(); // temporary error log until we implement a proper logging system
+            }
         }
     }
 }

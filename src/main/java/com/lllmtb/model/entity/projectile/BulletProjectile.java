@@ -11,7 +11,12 @@ public final class BulletProjectile extends Projectile {
     private final double height = 0.1;
 
     public BulletProjectile(@NonNull FireParams params) {
-        super(params, CollisionType.TOUCH);
+        super(params, 60.0, 1, 0.2, 0.1);
+    }
+
+    @Override
+    public CollisionType getCollisionType() {
+        return CollisionType.TOUCH;
     }
 
     @Override

@@ -37,7 +37,7 @@ public class CollisionTest {
         Position posW1 = new Position(1, 14);
         Position posW2 = new Position(14, 14);
         Position[] positions = {posW1, posW2};
-        team = new Team("Jeff team", 1, positions);
+        team = new Team("Jeff team", 2, positions);
         worm1 = new Worm("Jeff", team);
         worm2 = new Worm("José", team);
         team.addWorm(worm1);

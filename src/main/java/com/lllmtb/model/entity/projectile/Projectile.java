@@ -17,19 +17,17 @@ public abstract class Projectile extends Entity {
     private double mass;
     private double height;
     private double width;
-    private final CollisionType collisionType;
 
     /**
      * Create a new Projectile
      * @param params the {@code FireParams} sent to the Team
      */
-    public Projectile(@NonNull FireParams params, CollisionType type) {
+    public Projectile(@NonNull FireParams params, double force, double mass, double height, double width) {
         Objects.requireNonNull(params);
         Vector velocity = new Vector(Math.cos(params.angleRadians), Math.sin(params.angleRadians));
         velocity.scale(force);
         this.body = new PhysicsBody(this, params.spawnPos, velocity, mass, height, width);
         this.owner = params.owner;
-        this.collisionType = type;
     }
 
     @Override
@@ -45,10 +43,4 @@ public abstract class Projectile extends Entity {
      * Called by collision detection when an impact is detected.
      */
     abstract void onImpact();
-
-    /**
-     * @return the {@link CollisionType} assiociated to the projectile
-     */
-    @Override
-    public CollisionType getCollisionType() { return this.collisionType;}
 }

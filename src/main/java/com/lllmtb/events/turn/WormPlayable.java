@@ -1,4 +1,4 @@
-package com.lllmtb.events.TurnEvents;
+package com.lllmtb.events.turn;
 
 import com.lllmtb.events.Event;
 import com.lllmtb.model.entity.worm.Worm;
