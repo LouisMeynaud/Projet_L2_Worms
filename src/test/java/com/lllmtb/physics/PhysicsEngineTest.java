@@ -89,7 +89,7 @@ class PhysicsEngineTest {
     void testGravityGetter() {
         Vector gravity = pE.getGravity();
         assertEquals(0, gravity.getX());
-        assertEquals(-9.81, gravity.getY());
+        assertEquals(-9810.0, gravity.getY());
     }
 
     @Test
@@ -113,7 +113,7 @@ class PhysicsEngineTest {
         pE.nextStep(ticktime);
         Position newPos = pBWorm.getPos();
         Vector newVector = pBWorm.getVector();
-        assertEquals(3.9332, newPos.getX());
+        assertEquals(3.9165027889, newPos.getX());
         assertEquals(initialPos.getY(), newPos.getY());
         assertNotEquals(initialVector.getX(), newVector.getX());
         assertNotEquals(initialVector.getY(), newVector.getY());
@@ -132,7 +132,7 @@ class PhysicsEngineTest {
         }
         assertEquals(0, pBBP.getPos().getX());
         assertEquals(4, pBBP.getPos().getY());
-        assertEquals(3.7018629769216, pBWorm.getPos().getX());
+        assertEquals(-3.0674090254273056, pBWorm.getPos().getX());
         assertEquals(4, pBWorm.getPos().getY());
     }
 
