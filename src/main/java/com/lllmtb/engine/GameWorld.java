@@ -110,6 +110,10 @@ public class GameWorld {
 
     public long getTurnDuration(){
         return this.turnManager.getTurnDuration();
+    } 
+
+    public GameLoop getGameLoop() {
+        return gameLoop;
     }
 
     public void start() {

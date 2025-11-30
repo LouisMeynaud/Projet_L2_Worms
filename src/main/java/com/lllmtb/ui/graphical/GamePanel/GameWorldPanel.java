@@ -22,6 +22,8 @@ import com.lllmtb.events.game.GamePauseEvent;
 import com.lllmtb.events.game.GameStateUpdatedEvent;
 import com.lllmtb.events.game.WorldCreatedEvent;
 import com.lllmtb.events.game.MapUpdateEvent;
+import com.lllmtb.model.entity.Entity;
+import com.lllmtb.model.entity.worm.Statistics;
 import com.lllmtb.model.entity.worm.Worm;
 import com.lllmtb.physics.PhysicsBody;
 import com.lllmtb.physics.Position;
@@ -315,12 +317,16 @@ public class GameWorldPanel extends JPanel {
 
     //////////////dessins//////////////////////////://
     
-    private void paintEntity(Graphics2D g2d){
+    private void paintEntity(Graphics2D g2d) {
         BufferedImage textureWorm = TextureManager.ENTITIES.get("worm1");
         double hauteurMapPixels = world.getMap().getHeight() * this.tileSize;
+        Worm activeWorm = world.getTurnManager().getTurn().getWormPlayable();
 
         if (world.getPhysics() != null && world.getPhysics().getBodies() != null) {
-            for (PhysicsBody worm : world.getPhysics().getBodies()) {
+            for (PhysicsBody body : world.getPhysics().getBodies()) {
+                if (body.getEntity() instanceof Worm) {
+                    PhysicsBody worm = body;
+                    
                 double largeurVerPx = worm.getWidth() * tileSize;
                 double hauteurVerPx = worm.getHeight() * tileSize;
                 
@@ -337,8 +343,68 @@ public class GameWorldPanel extends JPanel {
                 double echelleY = hauteurVerPx / textureWorm.getHeight();
                 tx.scale(echelleX, echelleY);
                 g2d.drawImage(textureWorm, tx, null);
+
+  
+                paintHealthBar(g2d, (Worm) worm.getEntity(), xEcran, yEcran, largeurVerPx);
+
+                    
+                    if (worm.getEntity() == activeWorm) {
+                        paintCurrentWorsArrow(g2d, xEcran, yEcran, largeurVerPx);
+                    }
+
+                } else {
+                    // autre entite
+                }
             }
         }
+    }
+
+    private void paintCurrentWorsArrow(Graphics2D g2d, double x, double y, double width) {
+    
+        double offsetAnimation = Math.sin(world.getGameLoop().getTicks() /10) * 5;
+        int centerX = (int) (x + (width / 2.0));
+        
+        
+        int bottomY = (int) (y - 35 + offsetAnimation); 
+
+        int size = 12; 
+
+        int[] xPoints = { centerX - size, centerX + size, centerX };
+        int[] yPoints = { bottomY - size, bottomY - size, bottomY };
+        
+        g2d.setColor(Color.YELLOW);
+        g2d.fillPolygon(xPoints, yPoints, 3);
+
+        g2d.setColor(Color.BLACK);
+        g2d.setStroke(new BasicStroke(1));
+        g2d.drawPolygon(xPoints, yPoints, 3);
+    }
+
+    
+    private void paintHealthBar(Graphics2D g2d, Worm worm, double x, double y, double width) {
+        
+        int maxHp = Statistics.getMaxHp();
+        int currentHp = worm.getStats().getHp();
+        
+        int barHeight = 4; 
+        int barWidth = (int) width + 10;
+        
+        
+        int barX = (int) (x - 5); 
+        int barY = (int) (y - barHeight - 5); 
+
+        g2d.setColor(Color.RED);
+        g2d.fillRect(barX, barY, barWidth, barHeight);
+
+        double ratio = (double) currentHp / maxHp;
+        int greenBarWidth = (int) (barWidth * ratio);
+        
+        g2d.setColor(Color.GREEN);
+        g2d.fillRect(barX, barY, greenBarWidth, barHeight);
+
+        g2d.setColor(Color.BLACK);
+        g2d.setStroke(new BasicStroke(1)); 
+        g2d.drawRect(barX, barY, barWidth, barHeight);
     }
 
     private void paintAim(Graphics2D g2d){
