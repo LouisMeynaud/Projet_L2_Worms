@@ -168,40 +168,23 @@ public class Collision {
             for (int ty = minY; ty <= maxY; ty++) {
                 Position tilePos = new Position(tx, ty);
 
-                if (this.map.inMap(tilePos)) {
+                if ((this.map.inMap(tilePos) && !this.map.isSolid(tilePos))) {
+                    continue; // Skip non-solid tiles
+                }
 
-                    if (this.map.isSolid(tilePos)) {
+                // Immediate overlap test (ti=0.0)
+                if (isColliding(startPos2, radius, tilePos)) {
+                    Vector normal = this.calculateTileNormal(startPos2, tilePos);
+                    return new Impact(0.0, body, normal, null);
+                }
 
-                        // Immediate overlap test (ti=0.0)
-                        if (isColliding(startPos2, radius, tilePos)) {
-                            Vector normal = this.calculateTileNormal(startPos2, tilePos);
-                            return new Impact(0.0, body, normal, null);
-                        }
+                // Swept AABB test
+                double[] result = this.sweptCircleAABB(startPos2, radius, displacement, tilePos);
+                double ti = result[0];
+                Vector normal = new Vector(result[1], result[2]);
 
-                        // Swept AABB test
-                        double[] result = this.sweptCircleAABB(startPos2, radius, displacement, tilePos);
-                        double ti = result[0];
-                        Vector normal = new Vector(result[1], result[2]);
-
-                        if (ti >= 0.0 && ti < 1.0 && ti < nearestImpact.ti) {
-                            nearestImpact = new Impact(ti, body, normal, null);
-                        }
-                    }
-                } else {
-                    // Immediate overlap test (ti=0.0)
-                    if (isColliding(startPos2, radius, tilePos)) {
-                        Vector normal = this.calculateTileNormal(startPos2, tilePos);
-                        return new Impact(0.0, body, normal, null);
-                    }
-
-                    // Swept AABB test
-                    double[] result = this.sweptCircleAABB(startPos2, radius, displacement, tilePos);
-                    double ti = result[0];
-                    Vector normal = new Vector(result[1], result[2]);
-
-                    if (ti >= 0.0 && ti < 1.0 && ti < nearestImpact.ti) {
-                        nearestImpact = new Impact(ti, body, normal, null);
-                    }
+                if (ti >= 0.0 && ti < 1.0 && ti < nearestImpact.ti) {
+                    nearestImpact = new Impact(ti, body, normal, null);
                 }
             }
         }
