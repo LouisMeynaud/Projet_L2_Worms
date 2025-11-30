@@ -31,20 +31,20 @@ public class HomeScreenPanel extends JPanel{
         gbc.insets = new Insets(15, 0, 15, 0);
         
         
-        JButton startButton = new JButton("start");
-        JButton SettingButton = new JButton("game Setting");
-        JButton CloseButton = new JButton("close");
+        JButton playButton = new JButton("Play");
+        JButton settingsButton = new JButton("Game Settings");
+        JButton exitButton = new JButton("Exit");
         
 
 
-        startButton.addActionListener(e -> {
+        playButton.addActionListener(e -> {
             eventBus.postQueued(new ScreenNewOrLoadEvent());
         });
         gbc.gridy = 0;
-        this.add(startButton,gbc);
+        this.add(playButton,gbc);
         gbc.gridy = 1;
-        this.add(SettingButton,gbc);
+        this.add(settingsButton,gbc);
         gbc.gridy = 2;
-        this.add(CloseButton,gbc);
+        this.add(exitButton,gbc);
     }
 }
