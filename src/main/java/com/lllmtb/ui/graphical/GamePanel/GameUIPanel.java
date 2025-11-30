@@ -8,7 +8,8 @@ import javax.swing.border.EmptyBorder;
 
 import com.lllmtb.events.EventBus;
 import com.lllmtb.events.game.GamePauseEvent;
-import com.lllmtb.events.ui.ShootMode; 
+import com.lllmtb.events.ui.ShootMode;
+import com.lllmtb.ui.graphical.TextureManager; 
 
 public class GameUIPanel extends JPanel {
 
@@ -94,12 +95,12 @@ public class GameUIPanel extends JPanel {
     private JButton pauseButton(){
         JButton pauseButton = new JButton();
         try {
-            BufferedImage imgRaw = ImageIO.read(getClass().getResource("/textures/button/Pause.png"));
+            BufferedImage imgRaw = TextureManager.UI.get("Pause");
             Image scaledImage = imgRaw.getScaledInstance(48, 48, Image.SCALE_REPLICATE);
             pauseButton.setIcon(new ImageIcon(scaledImage));
         } catch (Exception e) {
-            System.err.println("Erreur image settings: " + e.getMessage());
-            pauseButton.setText("Settings");
+            System.err.println("Erreur image pause: " + e.getMessage());
+            pauseButton.setText("pause");
         }
         pauseButton.setFocusable(false);
         pauseButton.setBackground(Color.LIGHT_GRAY);
@@ -115,7 +116,7 @@ public class GameUIPanel extends JPanel {
         
         JButton shootModeButton = new JButton();
         try {
-            BufferedImage imgRaw = ImageIO.read(getClass().getResource("/textures/button/ShootMode.png"));
+            BufferedImage imgRaw = TextureManager.UI.get("ShootMode");
             Image scaledImage = imgRaw.getScaledInstance(48, 48, Image.SCALE_REPLICATE);
             shootModeButton.setIcon(new ImageIcon(scaledImage));
         } catch (Exception e) {

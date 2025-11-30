@@ -26,15 +26,14 @@ import com.lllmtb.model.entity.worm.Worm;
 import com.lllmtb.physics.PhysicsBody;
 import com.lllmtb.physics.Position;
 import com.lllmtb.terrain.map.Tile;
+import com.lllmtb.ui.graphical.TextureManager;
 
 public class GameWorldPanel extends JPanel {
     private EventBus eventBus;
     private GameWorld world;
     private Tile[][] mapMatrix;
-    private int tileSize = 12;
+    private final int tileSize = 12;
     private boolean shootMode;
-    private Map<Tile, BufferedImage> textureMatrixMap;
-    private Map<String, BufferedImage> textureEntityMap;
     private final Set<Integer> pressedKeys = new HashSet<>();
 
    
@@ -57,7 +56,6 @@ public class GameWorldPanel extends JPanel {
     public GameWorldPanel(EventBus eventBus) {
         this.eventBus = eventBus;
         setFocusable(true);
-        loadTextures();
         subscribeToGameEvents();
         
         
@@ -233,27 +231,6 @@ public class GameWorldPanel extends JPanel {
         });
     }
 
-    
-
-     private void loadTextures() {
-        textureMatrixMap = new HashMap<>();
-        textureEntityMap = new HashMap<>();
-        try {
-
-            textureMatrixMap.put(Tile.DIRT, ImageIO.read(GameWorldPanel.class.getResource("/textures/block/Dirt.png"))); // le / designe le dossier ressource
-            textureMatrixMap.put(Tile.WATER, ImageIO.read(GameWorldPanel.class.getResource("/textures/block/Water.png")));
-            textureMatrixMap.put(Tile.AIR, ImageIO.read(GameWorldPanel.class.getResource("/textures/block/Air.png")));
-            textureMatrixMap.put(Tile.CAVERN, ImageIO.read(GameWorldPanel.class.getResource("/textures/block/Cavern.png")));
-            textureMatrixMap.put(Tile.GRASS, ImageIO.read(GameWorldPanel.class.getResource("/textures/block/Grass.png")));
-
-
-            textureEntityMap.put("worm1", ImageIO.read(GameWorldPanel.class.getResource("/textures/worm.png")));
-
-        } catch (IOException e) {
-            e.printStackTrace();
-            System.err.println("ERREUR: Impossible de charger les textures !");
-        }
-    }
 
     /////////////map/////////////////:
     private void fitMapToScreen() {
@@ -320,7 +297,7 @@ public class GameWorldPanel extends JPanel {
             for (int x = 0; x < mapMatrix[y].length; x++) {
                 Tile tileType = mapMatrix[y][x];
                 
-                BufferedImage texture = textureMatrixMap.get(tileType);
+                BufferedImage texture = TextureManager.TILES.get(tileType);
                 if (texture != null) {
                     int screenX = x * tileSize;
                     int screenY = y * tileSize;
@@ -339,7 +316,7 @@ public class GameWorldPanel extends JPanel {
     //////////////dessins//////////////////////////://
     
     private void paintEntity(Graphics2D g2d){
-        BufferedImage textureWorm = textureEntityMap.get("worm1");
+        BufferedImage textureWorm = TextureManager.ENTITIES.get("worm1");
         double hauteurMapPixels = world.getMap().getHeight() * this.tileSize;
 
         if (world.getPhysics() != null && world.getPhysics().getBodies() != null) {

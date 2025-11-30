@@ -5,11 +5,13 @@ import java.awt.*;
 import java.awt.event.*;
 
 import com.lllmtb.events.EventBus;
+import com.lllmtb.ui.graphical.TextureManager;
 
 public class GameScreen extends JLayeredPane { 
 
     private GameWorldPanel gameWorldPanel;
     private GameUIPanel gameUIPanel;
+    
 
    /**
     * This page will contain the overlay of the different page layers of the game.
@@ -18,6 +20,7 @@ public class GameScreen extends JLayeredPane {
     public GameScreen(EventBus eventBus) {
         gameWorldPanel = new GameWorldPanel(eventBus);
         gameUIPanel = new GameUIPanel(eventBus);
+        TextureManager.load(); // charge les texture
         this.add(gameWorldPanel, JLayeredPane.DEFAULT_LAYER);//default_layer : la couche du dessous
         this.add(gameUIPanel, JLayeredPane.PALETTE_LAYER); //pallette_layer = la couche du dessus
         Rectangle bounds = getBounds();
