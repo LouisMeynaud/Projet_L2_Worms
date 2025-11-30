@@ -20,7 +20,6 @@ public class GameScreen extends JLayeredPane {
     public GameScreen(EventBus eventBus) {
         gameWorldPanel = new GameWorldPanel(eventBus);
         gameUIPanel = new GameUIPanel(eventBus);
-        TextureManager.load(); // charge les texture
         this.add(gameWorldPanel, JLayeredPane.DEFAULT_LAYER);//default_layer : la couche du dessous
         this.add(gameUIPanel, JLayeredPane.PALETTE_LAYER); //pallette_layer = la couche du dessus
         Rectangle bounds = getBounds();

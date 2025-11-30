@@ -37,8 +37,15 @@ public class GameUIPanel extends JPanel {
         this.add(topBar, BorderLayout.NORTH);
         this.add(lowerBar, BorderLayout.SOUTH);
 
-        topBar.add(pauseButton());
-        lowerBar.add(shootModeButton());
+        JButton pauseButton = createButton("Pause");
+        JButton inventoryButton = createButton("InventoryButton");
+        JButton shootModeButton = createButton("ShootMode");
+        pauseButton.addActionListener(e -> PauseMenu(true));
+        shootModeButton.addActionListener(e -> this.eventBus.postQueued(new ShootMode()));
+        topBar.add(pauseButton);
+        lowerBar.add(inventoryButton);
+        lowerBar.add(shootModeButton);
+
         
     }
 
@@ -92,44 +99,23 @@ public class GameUIPanel extends JPanel {
         }
     }
 
-    private JButton pauseButton(){
-        JButton pauseButton = new JButton();
+
+    private JButton createButton(String name){
+        JButton button = new JButton();
+        System.out.println(name);
         try {
-            BufferedImage imgRaw = TextureManager.UI.get("Pause");
+            BufferedImage imgRaw = TextureManager.UI.get(name);
             Image scaledImage = imgRaw.getScaledInstance(48, 48, Image.SCALE_REPLICATE);
-            pauseButton.setIcon(new ImageIcon(scaledImage));
+            button.setIcon(new ImageIcon(scaledImage));
         } catch (Exception e) {
-            System.err.println("Erreur image pause: " + e.getMessage());
-            pauseButton.setText("pause");
+            System.err.println("Erreur image" + name + ":"  + e.getMessage());
+            button.setText(name);
         }
-        pauseButton.setFocusable(false);
-        pauseButton.setBackground(Color.LIGHT_GRAY);
-        pauseButton.setBorder(BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
-        pauseButton.setPreferredSize(new Dimension(64, 64));
+        button.setFocusable(false);
+        button.setBackground(Color.LIGHT_GRAY);
+        button.setBorder(BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        button.setPreferredSize(new Dimension(64, 64));
 
-        
-        pauseButton.addActionListener(e -> PauseMenu(true));
-        return pauseButton;
+        return button;
     }
-
-    private JButton shootModeButton(){
-        
-        JButton shootModeButton = new JButton();
-        try {
-            BufferedImage imgRaw = TextureManager.UI.get("ShootMode");
-            Image scaledImage = imgRaw.getScaledInstance(48, 48, Image.SCALE_REPLICATE);
-            shootModeButton.setIcon(new ImageIcon(scaledImage));
-        } catch (Exception e) {
-            System.err.println("Erreur image shootMode: " + e.getMessage());
-            shootModeButton.setText("shoot");
-        }
-        shootModeButton.setFocusable(false);
-        shootModeButton.setBackground(Color.LIGHT_GRAY);
-        shootModeButton.setBorder(BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
-        shootModeButton.setPreferredSize(new Dimension(64, 64));
-
-        
-        shootModeButton.addActionListener(e -> this.eventBus.postQueued(new ShootMode()));
-        return shootModeButton;
     }
-}
