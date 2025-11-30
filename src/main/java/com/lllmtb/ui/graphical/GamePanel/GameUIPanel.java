@@ -7,7 +7,8 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 
 import com.lllmtb.events.EventBus;
-import com.lllmtb.events.game.GamePauseEvent; 
+import com.lllmtb.events.game.GamePauseEvent;
+import com.lllmtb.events.ui.ShootMode; 
 
 public class GameUIPanel extends JPanel {
 
@@ -18,32 +19,26 @@ public class GameUIPanel extends JPanel {
         this.eventBus = eventBus;
         setOpaque(false); 
         setLayout(new BorderLayout());
+        createPauseMenu();
 
        
-        JButton settingsButton = new JButton();
-        try {
-            BufferedImage imgRaw = ImageIO.read(getClass().getResource("/textures/button/Pause.png"));
-            Image scaledImage = imgRaw.getScaledInstance(48, 48, Image.SCALE_REPLICATE);
-            settingsButton.setIcon(new ImageIcon(scaledImage));
-        } catch (Exception e) {
-            System.err.println("Erreur image settings: " + e.getMessage());
-            settingsButton.setText("Settings");
-        }
-        settingsButton.setBackground(Color.LIGHT_GRAY);
-        settingsButton.setBorder(BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
-        settingsButton.setPreferredSize(new Dimension(64, 64));
 
-        
-        settingsButton.addActionListener(e -> PauseMenu(true));
 
         JPanel topBar = new JPanel(new FlowLayout(FlowLayout.LEFT));
         topBar.setOpaque(false);
-        topBar.add(settingsButton);
-        
-        this.add(topBar, BorderLayout.NORTH);
+
+        JPanel lowerBar = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        lowerBar.setOpaque(false);
+
 
         
-        createPauseMenu();
+        
+        this.add(topBar, BorderLayout.NORTH);
+        this.add(lowerBar, BorderLayout.SOUTH);
+
+        topBar.add(pauseButton());
+        lowerBar.add(shootModeButton());
+        
     }
 
    
@@ -87,9 +82,53 @@ public class GameUIPanel extends JPanel {
     private void PauseMenu(boolean show) {
         this.pauseMenucontainer.setVisible(show);
         
+        this.revalidate(); 
+        this.repaint();    
+        
         this.eventBus.postQueued(new GamePauseEvent(show));
         if (!show) {
             SwingUtilities.getWindowAncestor(this).requestFocus();
         }
+    }
+
+    private JButton pauseButton(){
+        JButton pauseButton = new JButton();
+        try {
+            BufferedImage imgRaw = ImageIO.read(getClass().getResource("/textures/button/Pause.png"));
+            Image scaledImage = imgRaw.getScaledInstance(48, 48, Image.SCALE_REPLICATE);
+            pauseButton.setIcon(new ImageIcon(scaledImage));
+        } catch (Exception e) {
+            System.err.println("Erreur image settings: " + e.getMessage());
+            pauseButton.setText("Settings");
+        }
+        pauseButton.setFocusable(false);
+        pauseButton.setBackground(Color.LIGHT_GRAY);
+        pauseButton.setBorder(BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        pauseButton.setPreferredSize(new Dimension(64, 64));
+
+        
+        pauseButton.addActionListener(e -> PauseMenu(true));
+        return pauseButton;
+    }
+
+    private JButton shootModeButton(){
+        
+        JButton shootModeButton = new JButton();
+        try {
+            BufferedImage imgRaw = ImageIO.read(getClass().getResource("/textures/button/ShootMode.png"));
+            Image scaledImage = imgRaw.getScaledInstance(48, 48, Image.SCALE_REPLICATE);
+            shootModeButton.setIcon(new ImageIcon(scaledImage));
+        } catch (Exception e) {
+            System.err.println("Erreur image shootMode: " + e.getMessage());
+            shootModeButton.setText("shoot");
+        }
+        shootModeButton.setFocusable(false);
+        shootModeButton.setBackground(Color.LIGHT_GRAY);
+        shootModeButton.setBorder(BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        shootModeButton.setPreferredSize(new Dimension(64, 64));
+
+        
+        shootModeButton.addActionListener(e -> this.eventBus.postQueued(new ShootMode()));
+        return shootModeButton;
     }
 }

@@ -81,4 +81,10 @@ public final class TurnManager {
         world.nextTeamTurn();
 
     }
+
+    public Turn getTurn() {
+        return turn;
+    }
+
+    
 }

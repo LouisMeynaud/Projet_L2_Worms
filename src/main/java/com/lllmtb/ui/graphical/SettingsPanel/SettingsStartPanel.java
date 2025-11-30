@@ -84,7 +84,8 @@ public class SettingsStartPanel extends JPanel {
         else{
             LandScape terrainType = this.mapSettingPanel.generateMapPanel.getReliefType();
             int widthMap = this.mapSettingPanel.generateMapPanel.getWidthMapSlider();
-            return new GameSettings(nbEquipes, nomsEquipes, nbVWorms, turnDuration, wind, null, false,widthMap,terrainType);
+            boolean flightIsland = this.mapSettingPanel.generateMapPanel.getflightIsland();
+            return new GameSettings(nbEquipes, nomsEquipes, nbVWorms, turnDuration, wind, null, flightIsland,widthMap,terrainType);
         }
         
         
