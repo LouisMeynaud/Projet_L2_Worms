@@ -1,13 +1,5 @@
 package com.lllmtb.terrain.generation;
 
-
-//import java.io.ObjectInputFilter;
-//import java.util.Arrays;
-//import java.util.Random;
-//
-//import com.lllmtb.physics.Position;
-//import com.lllmtb.terrain.map.CreateSpawnPoint;
-
 import com.lllmtb.terrain.map.Map;
 import com.lllmtb.terrain.map.SaveMap;
 
