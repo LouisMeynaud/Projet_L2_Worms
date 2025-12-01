@@ -29,22 +29,21 @@ public class HomeScreenPanel extends JPanel {
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
         gbc.insets = new Insets(15, 0, 15, 0);
-        
-        
+
+
         JButton playButton = new JButton("Play");
         JButton settingsButton = new JButton("Game Settings");
         JButton exitButton = new JButton("Exit");
-        
 
 
         playButton.addActionListener(e -> {
             eventBus.postQueued(new ScreenNewOrLoadEvent());
         });
         gbc.gridy = 0;
-        this.add(playButton,gbc);
+        this.add(playButton, gbc);
         gbc.gridy = 1;
-        this.add(settingsButton,gbc);
+        this.add(settingsButton, gbc);
         gbc.gridy = 2;
-        this.add(exitButton,gbc);
+        this.add(exitButton, gbc);
     }
 }
