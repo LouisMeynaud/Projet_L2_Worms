@@ -22,6 +22,7 @@ import com.lllmtb.events.game.GamePauseEvent;
 import com.lllmtb.events.game.GameStateUpdatedEvent;
 import com.lllmtb.events.game.WorldCreatedEvent;
 import com.lllmtb.events.game.MapUpdateEvent;
+import com.lllmtb.events.ui.graphical.RequestFocus;
 import com.lllmtb.model.entity.Entity;
 import com.lllmtb.model.entity.worm.Statistics;
 import com.lllmtb.model.entity.worm.Worm;
@@ -226,10 +227,11 @@ public class GameWorldPanel extends JPanel {
         });
 
         eventBus.subscribe(GamePauseEvent.class, event -> {
-    
-            if (!event.isPaused) {
-                this.requestFocusInWindow(); 
-            }
+
+        });
+
+        eventBus.subscribe(RequestFocus.class, event -> {
+            this.requestFocusInWindow();
         });
     }
 

@@ -2,25 +2,45 @@ package com.lllmtb.ui.graphical.GamePanel;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import javax.imageio.ImageIO;
+
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 
+import com.lllmtb.engine.GameWorld;
 import com.lllmtb.events.EventBus;
-import com.lllmtb.events.game.GamePauseEvent;
+import com.lllmtb.events.game.*;
 import com.lllmtb.events.ui.ShootMode;
+import com.lllmtb.events.ui.graphical.RequestFocus;
 import com.lllmtb.ui.graphical.TextureManager; 
 
 public class GameUIPanel extends JPanel {
 
     private EventBus eventBus;
     private JPanel pauseMenucontainer; 
+    private JPanel inventoryContainer;
+    private GameWorld world;
+    private final CardLayout cardLayout;
+    private final JPanel centerContainer;
 
     public GameUIPanel(EventBus eventBus) {
         this.eventBus = eventBus;
         setOpaque(false); 
         setLayout(new BorderLayout());
+
+        //create contner
+        this.cardLayout = new CardLayout();
+        this.centerContainer = new JPanel(cardLayout);
+        this.centerContainer.setOpaque(false);
+
+        //empty panel for view the game if there are not pannel selected
+        JPanel emptyCard = new JPanel();
+        emptyCard.setOpaque(false);
+        this.centerContainer.add(emptyCard, "EMPTY");
+        this.add(this.centerContainer, BorderLayout.CENTER);
+
         createPauseMenu();
+        eventBus.subscribe(WorldCreatedEvent.class, event -> {
+            this.world = event.getWorld();});
 
        
 
@@ -49,11 +69,12 @@ public class GameUIPanel extends JPanel {
         
     }
 
-   
+    
+
+   ////////////PAUSE/////////////////
     private void createPauseMenu() {
         this.pauseMenucontainer = new JPanel(new GridBagLayout()); // un conteneur pour pour centre le vrai pannel
         this.pauseMenucontainer.setOpaque(false);
-        this.pauseMenucontainer.setVisible(false);
 
         
         JPanel menuPanel = new JPanel();
@@ -83,23 +104,27 @@ public class GameUIPanel extends JPanel {
         
         this.pauseMenucontainer.add(menuPanel);
         
-        this.add(this.pauseMenucontainer, BorderLayout.CENTER);
+        this.centerContainer.add(this.pauseMenucontainer, "PAUSE");
     }
 
    
     private void PauseMenu(boolean show) {
-        this.pauseMenucontainer.setVisible(show);
-        
-        this.revalidate(); 
-        this.repaint();    
-        
-        this.eventBus.postQueued(new GamePauseEvent(show));
-        if (!show) {
-            SwingUtilities.getWindowAncestor(this).requestFocus();
-        }
+    
+    if (show) {
+        cardLayout.show(centerContainer, "PAUSE");
+    } else {
+        cardLayout.show(centerContainer, "EMPTY"); 
+    }
+    this.revalidate();
+    this.repaint();
+    this.eventBus.postQueued(new GamePauseEvent(show));
+    if (!show) {
+        this.eventBus.postQueued(new RequestFocus());
+    }
     }
 
 
+    /////////////utiliraire//////////////////
     private JButton createButton(String name){
         JButton button = new JButton();
         System.out.println(name);
