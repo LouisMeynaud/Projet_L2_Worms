@@ -39,7 +39,7 @@ public abstract class ItemRegistry<T extends Enum<T> & ItemId, I extends Item> {
      * because it overwrites any existing entry for the same {@link T}.
      * @param id   the item identifier
      * @param item the item instance to register
-     * @exception NullPointerException if {@code id} or {@code item} is {@code null}
+     * @throws NullPointerException if {@code id} or {@code item} is {@code null}
      */
     protected void register(@NonNull T id, @NonNull I item) {
         Objects.requireNonNull(id);
@@ -87,7 +87,7 @@ public abstract class ItemRegistry<T extends Enum<T> & ItemId, I extends Item> {
      * Adds a specified amount of ammo for an item.
      * @param id     the item identifier
      * @param amount the amount of ammo to add (can be negative to reduce ammo)
-     * @exception IllegalArgumentException if the item type is unknown
+     * @throws  IllegalArgumentException if the item type is unknown
      */
     public void addAmmo(@NonNull T id, int amount) {
         Objects.requireNonNull(id);

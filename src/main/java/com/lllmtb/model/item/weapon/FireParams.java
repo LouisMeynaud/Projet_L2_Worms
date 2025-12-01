@@ -25,7 +25,7 @@ public final class FireParams {
      * @param angleRadians the firing angle, in radians
      * @param spawnPos     the initial spawn position of the projectile (must not be {@code null})
      * @param owner        the worm that initiated the firing action (must not be {@code null})
-     * @exception NullPointerException if {@code spawnPos} or {@code owner} is {@code null}
+     * @throws  NullPointerException if {@code spawnPos} or {@code owner} is {@code null}
      */
     public FireParams(double angleRadians, @NonNull Position spawnPos, @NonNull Worm owner) {
         this.angleRadians = angleRadians;

@@ -29,7 +29,7 @@ public final class GunWeapon extends Weapon {
      * Creates a new {@link BulletProjectile} based on the given firing parameters.
      * @param params the firing parameters defining the projectile’s origin and direction (must not be {@code null})
      * @return a new {@link BulletProjectile} initialized with the given parameters
-     * @exception NullPointerException if {@code params} is {@code null}
+     * @throws NullPointerException if {@code params} is {@code null}
      */
     @Override
     public List<GameCommand> fire(@NonNull FireParams params) {

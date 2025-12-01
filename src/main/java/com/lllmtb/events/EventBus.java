@@ -45,7 +45,7 @@ public class EventBus {
     /**
      * Create an EventBus with a given queue capacity.
      * @param capacity the maximum number of queued events the bus will hold; must be > 0
-     * @exception IllegalArgumentException if {@code capacity <= 0}
+     * @throws IllegalArgumentException if {@code capacity <= 0}
      */
     public EventBus(int capacity) {
         if (capacity <= 0) {
@@ -61,7 +61,7 @@ public class EventBus {
      * @param eventType the class of events to listen for
      * @param listener  the listener to register
      * @param <T>       event type
-     * @exception NullPointerException if {@code eventType} or {@code listener} is null
+     * @throws NullPointerException if {@code eventType} or {@code listener} is null
      */
     public <T extends Event> void subscribe(@NonNull Class<T> eventType, @NonNull EventListener<T> listener) {
         listeners
@@ -75,7 +75,7 @@ public class EventBus {
      * @param listener  the listener to remove
      * @param <T>       event type
      * @return {@code true} if the listener was found and removed, {@code false} otherwise
-     * @exception NullPointerException if {@code eventType} or {@code listener} is null
+     * @throws NullPointerException if {@code eventType} or {@code listener} is null
      */
     public <T extends Event> boolean unsubscribe(@NonNull Class<T> eventType, @NonNull EventListener<T> listener) {
         Objects.requireNonNull(eventType);
@@ -88,7 +88,7 @@ public class EventBus {
      * Post an event for immediate synchronous dispatch.
      * Prefer {@link #postQueued(Event)} when possible.
      * @param event the event to dispatch
-     * @exception NullPointerException if {@code event} is null
+     * @throws NullPointerException if {@code event} is null
      */
     public void postSync(@NonNull Event event) {
         Objects.requireNonNull(event);
@@ -100,7 +100,7 @@ public class EventBus {
      * If the queue is full, the event is not enqueued and the method returns {@code false}.
      * @param event the event to enqueue
      * @return {@code true} if the event was accepted into the queue, {@code false} if the queue is full
-     * @exception NullPointerException if {@code event} is null
+     * @throws NullPointerException if {@code event} is null
      */
     public boolean postQueued(@NonNull Event event) {
         Objects.requireNonNull(event);

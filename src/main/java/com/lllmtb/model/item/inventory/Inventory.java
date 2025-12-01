@@ -34,7 +34,7 @@ public final class Inventory {
     /**
      * Unlocks a weapon, making it available for use.
      * @param id the weapon identifier to unlock
-     * @exception UnknownWeaponException if the weapon type is unknown
+     * @throws UnknownWeaponException if the weapon type is unknown
      */
     public void unlock(@NonNull WeaponId id) {
         if (!weapons.contains(id)) {
@@ -65,7 +65,7 @@ public final class Inventory {
      * A weapon can fire if it is unlocked and has at least one ammo unit left.
      * @param id the weapon identifier
      * @return {@code true} if the weapon can fire, {@code false} otherwise
-     * @exception UnknownWeaponException if the weapon type is unknown
+     * @throws UnknownWeaponException if the weapon type is unknown
      */
     public boolean canFire(@NonNull WeaponId id) {
         if (!weapons.contains(id)) {
@@ -82,9 +82,9 @@ public final class Inventory {
      * @param id     the weapon identifier
      * @param params the firing parameters used to create the projectile (must not be {@code null})
      * @return the newly created {@link Projectile}
-     * @exception NullPointerException    if {@code params} is {@code null}
-     * @exception UnknownWeaponException  if the weapon is unknown
-     * @exception UnusableWeaponException if the weapon cannot fire
+     * @throws NullPointerException    if {@code params} is {@code null}
+     * @throws UnknownWeaponException  if the weapon is unknown
+     * @throws UnusableWeaponException if the weapon cannot fire
      */
     public List<GameCommand> fire(@NonNull WeaponId id, @NonNull FireParams params) {
         Objects.requireNonNull(params);
@@ -105,7 +105,7 @@ public final class Inventory {
      * A tool can be used if it has at least one ammo unit left (more conditions later?).
      * @param id the tool identifier
      * @return {@code true} if the tool can be used, {@code false} otherwise
-     * @exception UnknownToolException if the tool type is unknown
+     * @throws UnknownToolException if the tool type is unknown
      */
     public boolean canUse(@NonNull ToolId id) {
         if (!tools.contains(id)) {
@@ -122,9 +122,9 @@ public final class Inventory {
      * @param id     the tool identifier
      * @param params the use parameters (must not be {@code null})
      * @return the newly created {@link List<GameCommand>} commands to execute
-     * @exception NullPointerException  if {@code params} is {@code null}
-     * @exception UnknownToolException  if the tool is unknown
-     * @exception UnusableToolException if the tool is cannot be used
+     * @throws NullPointerException  if {@code params} is {@code null}
+     * @throws UnknownToolException  if the tool is unknown
+     * @throws UnusableToolException if the tool is cannot be used
      */
     public List<GameCommand> use(@NonNull ToolId id, @NonNull UseParams params) {
         Objects.requireNonNull(params);

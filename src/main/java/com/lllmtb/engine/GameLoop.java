@@ -14,7 +14,7 @@ public class GameLoop implements Runnable {
     /**
      * Creates a new {@code GameLoop} instance.
      * @param world the game world to be updated by this game loop
-     * @exception NullPointerException if {@code world} is {@code null}
+     * @throws NullPointerException if {@code world} is {@code null}
      */
     public GameLoop(@NonNull GameWorld world) {
         this.world = Objects.requireNonNull(world);
@@ -25,7 +25,7 @@ public class GameLoop implements Runnable {
     /**
      * Handles game pause events to update the paused state of the game loop.
      * @param event the {@link GamePauseEvent} containing the new paused state
-     * @exception NullPointerException if {@code event} is {@code null}
+     * @throws NullPointerException if {@code event} is {@code null}
      */
     private void onPauseEvent(@NonNull GamePauseEvent event) {
         this.isPaused = Objects.requireNonNull(event).isPaused;

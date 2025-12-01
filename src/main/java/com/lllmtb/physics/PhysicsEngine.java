@@ -118,7 +118,7 @@ public class PhysicsEngine {
     /**
      * Adds a physics body to the simulation.
      * @param body the {@link PhysicsBody} to add.
-     * @exception NullPointerException if {@code body} is {@code null}.
+     * @throws NullPointerException if {@code body} is {@code null}.
      */
     public void add(@NonNull PhysicsBody body) {
         bodies.add(Objects.requireNonNull(body));
@@ -187,7 +187,7 @@ public class PhysicsEngine {
      * </p>
      * @param body     the {@link PhysicsBody} from which the modifier will be removed.
      * @param modifier the {@link PhysicsModifier} to remove.
-     * @exception NullPointerException if {@code body} or {@code modifier} is {@code null}.
+     * @throws NullPointerException if {@code body} or {@code modifier} is {@code null}.
      */
     public void removeModifier(@NonNull PhysicsBody body, @NonNull PhysicsModifier modifier) {
         Objects.requireNonNull(body);
@@ -213,7 +213,7 @@ public class PhysicsEngine {
      * </p>
      * @param body   the {@link PhysicsBody} from which modifiers will be removed.
      * @param source the {@link ItemId} representing the source of the modifiers to remove.
-     * @exception NullPointerException if {@code body} is {@code null}.
+     * @throws NullPointerException if {@code body} is {@code null}.
      */
     public void removeModifierFor(@NonNull PhysicsBody body, ItemId source) {
         Objects.requireNonNull(body);
@@ -245,7 +245,7 @@ public class PhysicsEngine {
      * @param v    the original {@link Vector} representing the velocity to be modified.
      * @param dt   the time delta (in seconds) since the last update, used for duration calculations.
      * @return a new {@link Vector} representing the modified velocity after applying all active modifiers.
-     * @exception NullPointerException if {@code body} or {@code v} is {@code null}.
+     * @throws NullPointerException if {@code body} or {@code v} is {@code null}.
      */
     public Vector applyModifiers(@NonNull PhysicsBody body, @NonNull Vector v, double dt) {
         Objects.requireNonNull(body);

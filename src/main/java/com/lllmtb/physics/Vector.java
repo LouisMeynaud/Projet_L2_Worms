@@ -43,7 +43,7 @@ public class Vector {
      * Adds another vector to this vector.
      * @param other the vector to add
      * @return a new Vector representing the sum of the two vectors
-     * @exception NullPointerException if {@code other} is {@code null}
+     * @throws NullPointerException if {@code other} is {@code null}
      */
     public Vector add(@NonNull Vector other) {
         Objects.requireNonNull(other);
@@ -54,7 +54,7 @@ public class Vector {
      * Subtracts another vector from this vector.
      * @param other the vector to subtract
      * @return a new Vector representing the difference of the two vectors
-     * @exception NullPointerException if {@code other} is {@code null}
+     * @throws NullPointerException if {@code other} is {@code null}
      */
     public Vector sub(@NonNull Vector other) {
         Objects.requireNonNull(other);
@@ -87,7 +87,7 @@ public class Vector {
      * @param pos  the current position
      * @param time the time duration
      * @return a new Position after applying the vector over the specified time
-     * @exception NullPointerException if {@code pos} is {@code null}
+     * @throws NullPointerException if {@code pos} is {@code null}
      */
     public Position newPos(@NonNull Position pos, double time) {
         Objects.requireNonNull(pos);

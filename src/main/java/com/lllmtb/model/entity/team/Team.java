@@ -213,7 +213,7 @@ public class Team {
     /**
      * Unlocks a weapon in the team's inventory.
      * @param id the ID of the weapon to unlock
-     * @exception UnknownWeaponException if the weapon type is unknown
+     * @throws UnknownWeaponException if the weapon type is unknown
      */
     public void unlockWeapon(@NonNull WeaponId id) {
         this.inventory.unlock(id);
@@ -222,7 +222,7 @@ public class Team {
     /**
      * Locks a weapon in the team's inventory.
      * @param id the ID of the weapon to lock
-     * @exception UnknownWeaponException if the weapon type is unknown
+     * @throws UnknownWeaponException if the weapon type is unknown
      */
     public void lockWeapon(@NonNull WeaponId id) {
         this.inventory.lock(id);
@@ -232,7 +232,7 @@ public class Team {
      * Adds ammunition for a specific weapon in the team's inventory.
      * @param id weapon for which to add ammunition
      * @param n  number of ammo units to add
-     * @exception UnknownWeaponException if the weapon type is unknown
+     * @throws UnknownWeaponException if the weapon type is unknown
      */
     public void addAmmo(@NonNull WeaponId id, int n) {
         try {
@@ -246,7 +246,7 @@ public class Team {
      * Fires a projectile using the current worm's selected weapon.
      * @param fireParams parameters for the firing action
      * @return the created commands to execute
-     * @exception NullPointerException if the firing parameters are invalid
+     * @throws NullPointerException if the firing parameters are invalid
      */
     public List<GameCommand> fire(@NonNull FireParams fireParams) {
         return this.inventory.fire((WeaponId) this.selectedItem, fireParams);
@@ -256,7 +256,7 @@ public class Team {
      * Adds ammunition for a specific tool in the team's inventory.
      * @param id tool for which to add ammunition
      * @param n  number of ammo units to add
-     * @exception UnknownToolException if the tool type is unknown
+     * @throws UnknownToolException if the tool type is unknown
      */
     public void addAmmo(@NonNull ToolId id, int n) {
         try {
@@ -270,7 +270,7 @@ public class Team {
      * Uses the current worm's selected tool.
      * @param useParams parameters for the use action
      * @return the created commands to execute
-     * @exception NullPointerException if the use parameters are invalid
+     * @throws NullPointerException if the use parameters are invalid
      */
     public List<GameCommand> use(@NonNull UseParams useParams) {
         return this.inventory.use((ToolId) this.selectedItem, Objects.requireNonNull(useParams));
