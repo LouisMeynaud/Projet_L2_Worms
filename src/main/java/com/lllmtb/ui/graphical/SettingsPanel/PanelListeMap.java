@@ -155,7 +155,7 @@ public class PanelListeMap extends JPanel{
         }
 
         @Override
-        public Component getListCellRendererComponent(JList<? extends InfoLigne> list, InfoLigne valeur, int index,boolean isSelected, boolean cellHasFocus) {///fdsssssssssssssssssssss
+        public Component getListCellRendererComponent(JList<? extends InfoLigne> list, InfoLigne valeur, int index,boolean isSelected, boolean cellHasFocus) {
 
             labelTitre.setText(valeur.titre);
             labelDescription.setText(valeur.description);

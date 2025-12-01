@@ -21,10 +21,12 @@ public class SettingGamePanel extends JPanel {
     public final int MAX_EQUIPES = 4;
     public final int MAX_WORM = 6;
     public final int MAX_TIME = 40;
+    public final int MAX_JUMP = 5;
     public JSlider equipesSlider;
     public JSlider wormsSlider;
     public JSlider turnDurationSlider;
     public JCheckBox windCheckBox;
+    public JSlider maxJumpSlider;
 
 
     
@@ -123,6 +125,20 @@ public class SettingGamePanel extends JPanel {
         this.windCheckBox = new JCheckBox("Vent activé ?");
         contentGrid.add(this.windCheckBox, gbc);
         row++;
+
+
+        //turn duration
+        gbc.gridx = 0;
+        gbc.gridy = row;
+        JLabel maxJumpLabel = new JLabel("Maximum de saut:");
+        contentGrid.add(maxJumpLabel, gbc);
+
+        gbc.gridx = 1;
+        this.maxJumpSlider = Utilitaire.createSlider(1, MAX_JUMP, 1, 1);
+        contentGrid.add(maxJumpSlider, gbc);
+        row++;
+
+        
     }   
 
     /**
@@ -141,6 +157,10 @@ public class SettingGamePanel extends JPanel {
     
     public int getNbWorms() {
         return this.wormsSlider.getValue();
+    }
+
+    public int getMaxJumps() {
+        return this.maxJumpSlider.getValue();
     }
 
     public int getTurnDuration() {
