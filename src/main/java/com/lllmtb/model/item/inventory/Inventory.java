@@ -1,10 +1,8 @@
 package com.lllmtb.model.item.inventory;
 
-import com.lllmtb.model.entity.projectile.Projectile;
-import com.lllmtb.model.item.weapon.FireParams;
-import com.lllmtb.model.item.weapon.Weapon;
-import com.lllmtb.model.item.weapon.WeaponId;
-import com.lllmtb.model.item.weapon.WeaponRegistry;
+import com.lllmtb.engine.commands.GameCommand;
+import com.lllmtb.model.item.tool.*;
+import com.lllmtb.model.item.weapon.*;
 import org.eclipse.jdt.annotation.NonNull;
 
 import java.util.*;
@@ -13,19 +11,19 @@ import java.util.*;
  * Represents the weapon inventory for a team.
  * <p>
  * This class tracks which weapons are unlocked and manages their
- * corresponding ammunition counts. It allows adding, removing, and
- * checking weapons, as well as firing them when conditions permit.
+ * corresponding ammunition counts. It allows locking and unlocking weapons,
+ * as well as firing them when conditions permit.
+ * This class also manages tools.
  * <p>
- * The inventory is typically maintained per team, rather than per worm.
+ * The inventory is maintained per team, rather than per worm.
  */
 public final class Inventory {
-    private static final WeaponRegistry registry = new WeaponRegistry();
+    public final WeaponRegistry weapons = new WeaponRegistry();
     private final Set<WeaponId> unlocked = EnumSet.noneOf(WeaponId.class);
-    private final Map<WeaponId, Integer> ammo = new EnumMap<>(WeaponId.class);
+    public final ToolRegistry tools = new ToolRegistry();
 
     /**
      * Checks if the given weapon is currently unlocked.
-     *
      * @param id the weapon identifier
      * @return {@code true} if the weapon is unlocked, {@code false} otherwise
      */
@@ -35,59 +33,45 @@ public final class Inventory {
 
     /**
      * Unlocks a weapon, making it available for use.
-     *
      * @param id the weapon identifier to unlock
-     * @throws IllegalArgumentException if the weapon type is unknown
+     * @throws UnknownWeaponException if the weapon type is unknown
      */
-    public void unlock(WeaponId id) {
-        if (!registry.contains(id)) throw new IllegalArgumentException("Unknown weapon: " + id);
-        this.unlocked.add(id);
+    public void unlock(@NonNull WeaponId id) {
+        if (!weapons.contains(id)) {
+            throw new UnknownWeaponException(id);
+        }
+        unlocked.add(Objects.requireNonNull(id));
     }
 
     /**
      * Locks a weapon, removing its availability.
-     *
      * @param id the weapon identifier to lock
      */
-    public void lock(WeaponId id) {
-        this.unlocked.remove(id);
+    public void lock(@NonNull WeaponId id) {
+        unlocked.remove(Objects.requireNonNull(id));
     }
 
     /**
-     * Returns the current ammo count for the specified weapon.
-     *
-     * @param id the weapon identifier
-     * @return the number of remaining ammo units, or {@code 0} if none
+     * Returns an unmodifiable view of the currently unlocked weapons.
+     * @return an unmodifiable {@link Set} of unlocked weapon identifiers
      */
-    public int getAmmo(WeaponId id) {
-        return this.ammo.getOrDefault(id, 0);
-    }
-
-    /**
-     * Adds a specified amount of ammo for a weapon.
-     *
-     * @param id     the weapon identifier
-     * @param amount the amount of ammo to add (can be negative to reduce ammo)
-     * @throws IllegalArgumentException if the weapon type is unknown
-     */
-    public void addAmmo(WeaponId id, int amount) {
-        if (!registry.contains(id)) throw new IllegalArgumentException("Unknown weapon: " + id);
-        if (amount == 0) return;
-        this.ammo.merge(id, amount, Integer::sum);
+    public Set<WeaponId> unlockedWeapons() {
+        return Collections.unmodifiableSet(unlocked);
     }
 
     /**
      * Checks whether a weapon can currently be fired.
      * <p>
      * A weapon can fire if it is unlocked and has at least one ammo unit left.
-     *
      * @param id the weapon identifier
      * @return {@code true} if the weapon can fire, {@code false} otherwise
-     * @throws IllegalArgumentException if the weapon type is unknown
+     * @throws UnknownWeaponException if the weapon type is unknown
      */
-    public boolean canFire(WeaponId id) {
-        if (!registry.contains(id)) throw new IllegalArgumentException("Unknown weapon: " + id);
-        return this.isUnlocked(id) && (this.getAmmo(id) > 0);
+    public boolean canFire(@NonNull WeaponId id) {
+        if (!weapons.contains(id)) {
+            throw new UnknownWeaponException(id);
+        }
+        return isUnlocked(id) && (weapons.getAmmo(id) > 0);
     }
 
     /**
@@ -95,40 +79,63 @@ public final class Inventory {
      * <p>
      * If the weapon is unlocked and has ammo available, one ammo unit is consumed
      * and a new {@link Projectile} is created and returned.
-     * Otherwise, an {@link IllegalArgumentException} is thrown.
-     *
      * @param id     the weapon identifier
      * @param params the firing parameters used to create the projectile (must not be {@code null})
      * @return the newly created {@link Projectile}
-     * @throws NullPointerException     if {@code params} is {@code null}
-     * @throws IllegalArgumentException if the weapon is unknown or cannot fire
+     * @throws NullPointerException    if {@code params} is {@code null}
+     * @throws UnknownWeaponException  if the weapon is unknown
+     * @throws UnusableWeaponException if the weapon cannot fire
      */
-    public Projectile fire(WeaponId id, @NonNull FireParams params) {
+    public List<GameCommand> fire(@NonNull WeaponId id, @NonNull FireParams params) {
         Objects.requireNonNull(params);
-        Weapon w = registry.get(id);
-        if (w == null) throw new IllegalArgumentException("Unknown weapon : " + id);
-        if (this.canFire(id)) {
-            this.ammo.merge(id, -1, Integer::sum);
-            return w.createProjectile(params);
+        Weapon w = weapons.get(id);
+        if (w == null) {
+            throw new UnknownWeaponException(id);
         }
-        throw new IllegalArgumentException("Weapon can't fire : " + id);
+        if (canFire(id)) {
+            weapons.addAmmo(id, -1);
+            return w.fire(params);
+        }
+        throw new UnusableWeaponException(id, params.owner.getTeam());
     }
 
     /**
-     * Returns an unmodifiable view of the currently unlocked weapons.
-     *
-     * @return an unmodifiable {@link Set} of unlocked weapon identifiers
+     * Checks whether a tool can be used.
+     * <p>
+     * A tool can be used if it has at least one ammo unit left (more conditions later?).
+     * @param id the tool identifier
+     * @return {@code true} if the tool can be used, {@code false} otherwise
+     * @throws UnknownToolException if the tool type is unknown
      */
-    public Set<WeaponId> unlockedWeapons() {
-        return Collections.unmodifiableSet(this.unlocked);
+    public boolean canUse(@NonNull ToolId id) {
+        if (!tools.contains(id)) {
+            throw new UnknownToolException(id);
+        }
+        return tools.getAmmo(id) > 0;
     }
 
     /**
-     * Returns an unmodifiable snapshot of the current ammo counts.
-     *
-     * @return an unmodifiable {@link Map} mapping each {@link WeaponId} to its ammo count
+     * Attempts to use the given tool.
+     * <p>
+     * If the tool has ammo available, one ammo unit is consumed
+     * and a new list of instructions is created and returned.
+     * @param id     the tool identifier
+     * @param params the use parameters (must not be {@code null})
+     * @return the newly created {@link List<GameCommand>} commands to execute
+     * @throws NullPointerException  if {@code params} is {@code null}
+     * @throws UnknownToolException  if the tool is unknown
+     * @throws UnusableToolException if the tool is cannot be used
      */
-    public Map<WeaponId, Integer> ammoSnapshot() {
-        return Collections.unmodifiableMap(this.ammo);
+    public List<GameCommand> use(@NonNull ToolId id, @NonNull UseParams params) {
+        Objects.requireNonNull(params);
+        Tool t = tools.get(id);
+        if (t == null) {
+            throw new UnknownToolException(id);
+        }
+        if (canUse(id)) {
+            tools.addAmmo(id, -1);
+            return t.use(params);
+        }
+        throw new UnusableToolException(id, params.owner.getTeam());
     }
 }

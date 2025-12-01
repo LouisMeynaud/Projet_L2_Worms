@@ -12,19 +12,14 @@ import java.util.Objects;
 public abstract class Projectile extends Entity {
     private final PhysicsBody body;
     private final Worm owner;
-    private double force;
-    private double mass;
-    private double height;
-    private double width;
 
     /**
      * Create a new Projectile
      * @param params the {@code FireParams} sent to the Team
      */
-    public Projectile(@NonNull FireParams params) {
+    public Projectile(@NonNull FireParams params, double force, double mass, double height, double width) {
         Objects.requireNonNull(params);
-        Vector velocity = new Vector(Math.cos(params.angleRadians), Math.sin(params.angleRadians));
-        velocity.scale(force);
+        Vector velocity = new Vector(Math.cos(params.angleRadians), Math.sin(params.angleRadians)).scale(force);
         this.body = new PhysicsBody(this, params.spawnPos, velocity, mass, height, width);
         this.owner = params.owner;
     }

@@ -2,9 +2,9 @@ package com.lllmtb.model.entity.worm;
 
 import com.lllmtb.model.entity.Entity;
 import com.lllmtb.model.entity.team.Team;
+import com.lllmtb.model.entity.CollisionType;
 import com.lllmtb.physics.PhysicsBody;
 import com.lllmtb.physics.Position;
-import com.lllmtb.model.item.weapon.WeaponId;
 import com.lllmtb.physics.Vector;
 import org.eclipse.jdt.annotation.NonNull;
 
@@ -12,47 +12,53 @@ import java.util.Objects;
 
 /**
  * Represents a single worm entity in the game.
- * <p>A worm belongs to a {@link Team}, has its own {@link PhysicsBody}, {@link Statistics},
- * and can carry a currently selected weapon ({@link WeaponId}). Each worm has a name,
- * health-related statistics, and a physical presence in the game world.</p>
- * <p>The {@code Worm} class extends {@link Entity} and manages the worm's physical state,
- * spawning position, current weapon, and alive status.</p>
+ * <p>A worm belongs to a {@link Team} and has its own {@link PhysicsBody} and {@link Statistics}.</p>
  */
 public class Worm extends Entity {
 
-    /** The physical body of the worm used for physics simulation and position tracking. */
+    /**
+     * The physical body of the worm used for physics simulation and position tracking.
+     */
     private final PhysicsBody body;
 
-    /** The team this worm belongs to. */
+    /**
+     * The team this worm belongs to.
+     */
     private Team team;
 
-    /** The name of the worm. */
+    /**
+     * The name of the worm.
+     */
     public final String name;
 
-    /** The currently selected weapon for the worm. */
-    private WeaponId selfItem = null;
-
-    /** The statistics of the worm (ex health, speed, strength). */
+    /**
+     * The statistics of the worm (ex health, speed, strength).
+     */
     private final Statistics stats;
 
-    /** Indicates if worm is alive. */
+    /**
+     * Indicates if worm is alive.
+     */
     private boolean alive = true;
 
     /**
-     * Private constructor to initialize a worm with statistics, a team and a spawn point.
-     * @param name the name of the worm
-     * @param stats the {@link Statistics} associated with the worm
-     * @param team the {@link Team} the worm belongs to
-     * @param spawn the spawn position where the worm is placed
+     * Worms have to slide when they have a collision with a wall.
      */
-    private Worm(String name, Statistics stats, Team team, @NonNull Position spawn) {
+    private final CollisionType collisionType = CollisionType.SLIDE;
+
+    /**
+     * Private constructor to initialize a worm with statistics, a team and a spawn point.
+     * @param name  the name of the worm
+     * @param stats the {@link Statistics} associated with the worm
+     * @param team  the {@link Team} the worm belongs to
+     */
+    private Worm(@NonNull String name, @NonNull Statistics stats, @NonNull Team team) {
         super();
-        Objects.requireNonNull(spawn);
-        this.body = new PhysicsBody(this, spawn, new Vector(0, 0), 100, 1, 1);
-        this.name = name;
-        this.stats = stats;
-        this.team = team;
-        this.spawn(spawn);
+        this.body = new PhysicsBody(this, new Position(0, 0), new Vector(0, 0), 100, 2, 1);
+        this.name = Objects.requireNonNull(name);
+        this.stats = Objects.requireNonNull(stats);
+        this.team = Objects.requireNonNull(team);
+        this.team.addWorm(this);
     }
 
     /**
@@ -60,18 +66,9 @@ public class Worm extends Entity {
      * <p>By default, a worm starts with 100 health and basic movement and damage stats.</p>
      * @param name the name of the worm
      * @param team the {@link Team} the worm belongs to
-     * @param spawn the spawn position of the worm
      */
-    public Worm(String name, Team team, Position spawn) {
-        this(name, new Statistics(100, 1, 1), team, spawn);
-    }
-
-    /**
-     * Returns the currently selected weapon of the worm.
-     * @return the current {@link WeaponId}, or {@code null} if none is selected
-     */
-    public WeaponId getSelfItem() {
-        return this.selfItem;
+    public Worm(@NonNull String name, @NonNull Team team) {
+        this(name, new Statistics(100, 1, 1), team);
     }
 
     /**
@@ -99,11 +96,12 @@ public class Worm extends Entity {
     }
 
     /**
-     * Sets the currently selected weapon for this worm.
-     * @param id the {@link WeaponId} to assign as the current weapon
+     * Returns the type of collision
+     * @return the {@link CollisionType} associated with the entity
      */
-    public void setSelfItem(WeaponId id) {
-        this.selfItem = id;
+    @Override
+    public CollisionType getCollisionType() {
+        return this.collisionType;
     }
 
     /**
@@ -111,8 +109,8 @@ public class Worm extends Entity {
      * <p>This sets the worm's {@link PhysicsBody} position in the game world.</p>
      * @param spawn the {@link Position} to place the worm
      */
-    public void spawn(Position spawn) {
-        this.body.setPos(spawn);
+    public void spawn(@NonNull Position spawn) {
+        this.body.setPos(Objects.requireNonNull(spawn));
     }
 
     /**

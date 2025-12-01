@@ -1,6 +1,7 @@
 image: maven:3.8.5-openjdk-17
 
 stages:
+  - validate
   - build
   - test
   - package
@@ -8,6 +9,20 @@ stages:
 variables:
   MAVEN_CLI_OPTS: "-B -ntp -e" # non-interactive, no progress bars, show errors
   MAVEN_OPTS: "-Dhttps.proxyHost=194.254.199.96 -Dhttps.proxyPort=3128 -Djava.awt.headless=true"  # proxy + disable gui
+
+#Validate - checkstyle before compile
+validate:
+  stage: validate
+  script:
+    - mvn $MAVEN_CLI_OPTS -DskipTests clean validate
+  artifacts:
+    when: always
+    expire_in: 3 days
+    paths:
+      - target/site/checkstyle/checkstyle-result.xml
+      - target/reports/checkstyle.html
+      - target/reports/**
+
 
 # Compile - validates pom and compiles sources
 compile:

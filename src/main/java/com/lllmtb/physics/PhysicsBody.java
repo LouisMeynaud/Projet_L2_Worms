@@ -1,6 +1,9 @@
 package com.lllmtb.physics;
 
 import com.lllmtb.model.entity.Entity;
+import org.eclipse.jdt.annotation.NonNull;
+
+import java.util.Objects;
 
 public class PhysicsBody {
     private final Entity entity;
@@ -10,16 +13,26 @@ public class PhysicsBody {
     private final double height;
     private final double width;
 
-    public PhysicsBody(Entity entity, Position position, Vector vector, double mass, double height, double width) {
-        this.entity = entity;
-        this.position = position;
-        this.vector = vector;
+    /**
+     * Constructs a PhysicsBody with the specified parameters.
+     * @param entity   The entity associated with this physics body.
+     * @param position The initial position of the body.
+     * @param vector   The initial velocity vector of the body.
+     * @param mass     The mass of the body.
+     * @param height   The height of the body.
+     * @param width    The width of the body.
+     */
+    public PhysicsBody(@NonNull Entity entity, @NonNull Position position, @NonNull Vector vector, double mass, double height, double width) {
+        this.entity = Objects.requireNonNull(entity);
+        this.position = Objects.requireNonNull(position);
+        this.vector = Objects.requireNonNull(vector);
         this.mass = mass;
         this.width = width;
-        this.height= height;
+        this.height = height;
     }
 
-    public Entity getEntity(){
+    /* Getters */
+    public Entity getEntity() {
         return entity;
     }
 
@@ -43,12 +56,13 @@ public class PhysicsBody {
         return height;
     }
 
-    public void setPos(Position position) {
-        this.position = position;
+    /* Setters */
+    public void setPos(@NonNull Position position) {
+        this.position = Objects.requireNonNull(position);
     }
 
-    public void setVector(Vector vector) {
-        this.vector = vector;
+    public void setVector(@NonNull Vector vector) {
+        this.vector = Objects.requireNonNull(vector);
     }
 
     @Override

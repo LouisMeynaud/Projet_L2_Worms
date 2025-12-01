@@ -1,421 +1,302 @@
 package com.lllmtb.physics;
 
+import com.lllmtb.events.EventBus;
+import com.lllmtb.model.entity.projectile.BulletProjectile;
+import com.lllmtb.model.entity.worm.Worm;
 import com.lllmtb.model.entity.team.Team;
+import com.lllmtb.model.item.weapon.FireParams;
 import com.lllmtb.terrain.map.Map;
 import com.lllmtb.terrain.map.MapLoader;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.DisplayName;
-
-
-import java.util.ArrayList;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import com.lllmtb.model.entity.projectile.BulletProjectile;
-import com.lllmtb.model.item.weapon.FireParams;
-
-import com.lllmtb.model.entity.worm.Worm;
-
-class CollisionTest {
+public class CollisionTest {
 
     Map map;
+    Team team;
+    Worm worm1;
+    PhysicsBody pBWorm1;
+    Worm worm2;
+    PhysicsBody pBWorm2;
+    FireParams fP1;
+    BulletProjectile bP1;
+    PhysicsBody pBBP1;
+    FireParams fP2;
+    BulletProjectile bP2;
+    PhysicsBody pBBP2;
     CopyOnWriteArrayList<PhysicsBody> bodies;
+    Collision collision;
 
     @BeforeEach
     void setUp() {
-        map = MapLoader.loadMatrix("MapTestColision"); 
+        map = MapLoader.loadMatrix("MapTestCollision");
+        Position posW1 = new Position(1, 14);
+        Position posW2 = new Position(14, 14);
+        Position[] positions = {posW1, posW2};
+        team = new Team("Jeff team", 2, positions);
+        worm1 = new Worm("Jeff", team);
+        worm2 = new Worm("José", team);
+        team.addWorm(worm1);
+        team.addWorm(worm2);
+        pBWorm1 = new PhysicsBody(worm1, posW1, new Vector(5, 0), 1, 2, 1);
+        pBWorm2 = new PhysicsBody(worm2, posW2, new Vector(5, 0), 1, 2, 1);
+        Position posBP1 = new Position(14, 18);
+        fP1 = new FireParams(0, posBP1, worm1);
+        bP1 = new BulletProjectile(fP1);
+        pBBP1 = new PhysicsBody(bP1, posBP1, new Vector(0,0), 1, 1, 1);
+        Position posBP2 = new Position(4, 6);
+        fP2 = new FireParams(0, posBP2, worm2);
+        bP2 = new BulletProjectile(fP2);
+        pBBP2 = new PhysicsBody(bP2, posBP2, new Vector(1, 0), 1, 1, 1);
         bodies = new CopyOnWriteArrayList<>();
-        Collision.init(bodies, map); 
-    }
-
-    
-    //Crée un physiqueBody (1x1) pour les tests.
-    private PhysicsBody createTestBody(double x, double y, double vx, double vy) {
-        Position pos = new Position(x, y); 
-        Vector vec = new Vector(vx, vy); 
-        Worm testEntity = new Worm("José", new Team("Team", 1, pos), pos);
-        
-        PhysicsBody body = new PhysicsBody(testEntity, pos, vec, 0.5, 1, 1); 
-        bodies.add(body);
-        return body;
-    }
-
-    // Pour simplifier les nom de teste : Rate = pas de colision detecter
-    // ==========================================================
-    //             Tests pour haveCollisionX
-    
-
-    @Test
-    @DisplayName("X: Touche à droite (Coin Bas)")
-    void haveCollisionX_QuandToucheDroiteCoinBas() {
-        PhysicsBody body = createTestBody(4, 5, 1, 0);
-        Position nextPos = new Position(5, 5); 
-        assertTrue(Collision.haveCollisionX(body, nextPos)); 
+        bodies.add(pBWorm1);
+        bodies.add(pBWorm2);
+        bodies.add(pBBP1);
+        bodies.add(pBBP2);
+        collision = new Collision(map, bodies);
     }
 
     @Test
-    @DisplayName("X: Touche à droite (Coin Haut uniquement)")
-    void haveCollisionX_QuandToucheDroiteCoinHautUniquement() {
-        PhysicsBody body = createTestBody(4, 4, 1, 0);
-        Position nextPos = new Position(5, 4);
-        assertTrue(Collision.haveCollisionX(body, nextPos));
+    void Collision_whenWormHasNotCollision() {
+        Position posFinal = new Position(5, 14);
+        Collision.Impact impact = collision.move(pBWorm1, posFinal);
+        assertNull(impact.hitBody);
+        assertEquals(posFinal, impact.collisionPos);
+        assertEquals(1.0, impact.ti);
+        assertEquals(0, impact.normal.getX());
+        assertEquals(0, impact.normal.getY());
+        assertFalse(impact.collided);
     }
 
     @Test
-    @DisplayName("X: Touche à gauche (Coin Bas)")
-    void haveCollisionX_QuandToucheGaucheCoinBas() {
-        PhysicsBody body = createTestBody(12, 5, -1, 0);
-        Position nextPos = new Position(11, 5); 
-        assertTrue(Collision.haveCollisionX(body, nextPos)); 
+    void Collision_whenWormHasCollisionWithMap() {
+        pBWorm1.setVector(new Vector(28, 0));
+        Position posFinal = new Position(28, 14);
+        Collision.Impact impact = collision.move(pBWorm1, posFinal);
+        assertNull(impact.hitBody);
+        assertEquals(14, impact.collisionPos.getX());
+        assertEquals(14, impact.collisionPos.getY());
+        assertTrue(0.5 > impact.ti);
+        assertTrue(0.4 < impact.ti);
+        assertEquals(-1, impact.normal.getX());
+        assertEquals(0, impact.normal.getY());
+        assertTrue(impact.collided);
     }
 
     @Test
-    @DisplayName("X: Touche à gauche (Coin Haut uniquement)")
-    void haveCollisionX_QuandToucheGaucheCoinHautUniquement() {
-        PhysicsBody body = createTestBody(12, 4, -1, 0);
-        Position nextPos = new Position(11, 4);
-        assertTrue(Collision.haveCollisionX(body, nextPos));
+    void Collision_whenWormHasCollisionWithMap2() {
+        pBWorm1.setVector(new Vector(28, 0));
+        pBWorm1.setPos((new Position(1, 13)));
+        Position posFinal = new Position(28, 13);
+        Collision.Impact impact = collision.move(pBWorm1, posFinal);
+        assertNull(impact.hitBody);
+        assertEquals(14, impact.collisionPos.getX());
+        assertEquals(13, impact.collisionPos.getY());
+        assertTrue(0.5 > impact.ti);
+        assertTrue(0.4 < impact.ti);
+        assertEquals(-1, impact.normal.getX());
+        assertEquals(0, impact.normal.getY());
+        assertTrue(impact.collided);
     }
 
     @Test
-    @DisplayName("X: Rate (va à droite dans l'air)")
-    void haveCollisionX_QuandRateDroiteDansAir() {
-        PhysicsBody body = createTestBody(0, 0, 1, 0);
-        Position nextPos = new Position(1, 0); 
-        assertFalse(Collision.haveCollisionX(body, nextPos)); 
+    void Collision_whenWormCanNotMove() {
+        Position posFinal = new Position(19, 14);
+        Collision.Impact impact = collision.move(pBWorm2, posFinal);
+        assertNull(impact.hitBody);
+        assertEquals(14, impact.collisionPos.getX());
+        assertEquals(14, impact.collisionPos.getY());
+        assertEquals(0.0, impact.ti);
+        assertEquals(-1, impact.normal.getX());
+        assertEquals(0, impact.normal.getY());
+        assertTrue(impact.collided);
     }
 
     @Test
-    @DisplayName("X: Rate (va à gauche dans l'air)")
-    void haveCollisionX_QuandRateGaucheDansAir() {
-        PhysicsBody body = createTestBody(2, 0, -1, 0);
-        Position nextPos = new Position(1, 0); 
-        assertFalse(Collision.haveCollisionX(body, nextPos)); 
+    void Collision_whenWormCanNotMove2() {
+        Position posFinal = new Position(19, 13);
+        pBWorm2.setPos(new Position(14, 13));
+        Collision.Impact impact = collision.move(pBWorm2, posFinal);
+        assertNull(impact.hitBody);
+        assertEquals(14, impact.collisionPos.getX());
+        assertEquals(13, impact.collisionPos.getY());
+        assertEquals(0.0, impact.ti);
+        assertEquals(-1, impact.normal.getX());
+        assertEquals(0, impact.normal.getY());
+        assertTrue(impact.collided);
     }
 
     @Test
-    @DisplayName("X: Rate (hors carte à droite)")
-    void haveCollisionX_QuandRateHorsCarteDroite() {
-        PhysicsBody body = createTestBody(29, 5, 1, 0);
-        Position nextPos = new Position(30, 5); 
-        assertFalse(Collision.haveCollisionX(body, nextPos));
+    void Collision_WormWithProjectile() {
+        Position pos = new Position(14, 16);
+        pBWorm1.setPos(pos);
+        pBWorm2.setPos(new Position(14, 14));
+        pBWorm2.setVector(new Vector(0, 4));
+        Position posFinal = new Position(14, 18);
+        Collision.Impact impact = collision.move(pBWorm2, posFinal);
+        assertEquals(pBBP1, impact.hitBody);
+        assertEquals(14, impact.collisionPos.getX());
+        assertEquals(16, impact.collisionPos.getY());
+        assertTrue(1.0 > impact.ti);
+        assertTrue(0.8 < impact.collisionPos.getY());
+        assertEquals(0, impact.normal.getX());
+        assertEquals(-1, impact.normal.getY());
+        assertTrue(impact.collided);
     }
 
     @Test
-    @DisplayName("X: Rate (hors carte à gauche)")
-    void haveCollisionX_QuandRateHorsCarteGauche() {
-        PhysicsBody body = createTestBody(0, 5, -1, 0);
-        Position nextPos = new Position(-1, 5);
-        assertFalse(Collision.haveCollisionX(body, nextPos));
+    void Collision_ProjectileWithoutCollision() {
+        Position posFinal = new Position(5, 14);
+        Collision.Impact impact = collision.move(pBBP1, posFinal);
+        assertNull(impact.hitBody);
+        assertEquals(posFinal, impact.collisionPos);
+        assertEquals(1.0, impact.ti);
+        assertEquals(0, impact.normal.getX());
+        assertEquals(0, impact.normal.getY());
+        assertFalse(impact.collided);
     }
 
     @Test
-    @DisplayName("X: Rate (vitesse X nulle)")
-    void haveCollisionX_QuandVitesseXEstNulle() {
-        PhysicsBody body = createTestBody(10, 10, 0, 1);
-        Position nextPos = new Position(10, 11); 
-        assertFalse(Collision.haveCollisionX(body, nextPos)); 
-    }
-
-    // ===========================================================
-    //              Tests pour haveCollisionY
-    
-
-    @Test
-    @DisplayName("Y: Touche en haut (Coin Gauche)")
-    void haveCollisionY_QuandToucheHautCoinGauche() {
-        PhysicsBody body = createTestBody(5, 4, 0, 1);
-        Position nextPos = new Position(5, 5); 
-        assertTrue(Collision.haveCollisionY(body, nextPos)); 
+    void Collision_ProjectileCanNotMove() {
+        Position posFinal = new Position(10, 6);
+        Collision.Impact impact = collision.move(pBBP2, posFinal);
+        assertNull(impact.hitBody);
+        assertEquals(4, impact.collisionPos.getX());
+        assertEquals(6, impact.collisionPos.getY());
+        assertEquals(0.0, impact.ti);
+        assertEquals(-1, impact.normal.getX());
+        assertEquals(0, impact.normal.getY());
+        assertTrue(impact.collided);
     }
 
     @Test
-    @DisplayName("Y: Touche en haut (Coin Droit uniquement)")
-    void haveCollisionY_QuandToucheHautCoinDroitUniquement() {
-        PhysicsBody body = createTestBody(4, 4, 0, 1);
-        Position nextPos = new Position(4, 5);
-        assertTrue(Collision.haveCollisionY(body, nextPos));
+    void Collision_ProjectileWithProjectile() {
+        pBBP2.setPos(new Position(7, 13));
+        pBBP2.setVector(new Vector(0, -6));
+        pBBP1.setPos(new Position(7, 10));
+        Position posFinal = new Position(7, 7);
+        Collision.Impact impact = collision.move(pBBP2, posFinal);
+        assertEquals(pBBP1, impact.hitBody);
+        assertEquals(7, impact.collisionPos.getX());
+        assertEquals(11, impact.collisionPos.getY());
+        assertTrue(0.35 > impact.ti);
+        assertTrue(0.3 < impact.ti);
+        assertEquals(0, impact.normal.getX());
+        assertEquals(1, impact.normal.getY());
+        assertTrue(impact.collided);
     }
 
     @Test
-    @DisplayName("Y: Touche en bas (Coin Gauche)")
-    void haveCollisionY_QuandToucheBasCoinGauche() {
-        PhysicsBody body = createTestBody(5, 10, 0, -1);
-        Position nextPos = new Position(5, 9); 
-        assertTrue(Collision.haveCollisionY(body, nextPos)); 
+    void Collision_ProjectileWithWormHead() {
+        Position posFinal = new Position(14, 12);
+        pBBP1.setVector(new Vector(0, -6));
+        Collision.Impact impact = collision.move(pBBP1, posFinal);
+        assertEquals(pBWorm2, impact.hitBody);
+        assertEquals(14, impact.collisionPos.getX());
+        assertEquals(16, impact.collisionPos.getY());
+        assertTrue(0.35 > impact.ti);
+        assertTrue(0.3 < impact.ti);
+        assertEquals(0, impact.normal.getX());
+        assertEquals(1, impact.normal.getY());
+        assertTrue(impact.collided);
     }
 
     @Test
-    @DisplayName("Y: Touche en bas (Coin Droit uniquement)")
-    void haveCollisionY_QuandToucheBasCoinDroitUniquement() {
-        PhysicsBody body = createTestBody(4, 10, 0, -1);
-        Position nextPos = new Position(4, 9);
-        assertTrue(Collision.haveCollisionY(body, nextPos));
+    void TestSweptCircleTile_whenEndPosOutOfMap() {
+        pBWorm1.setVector(new Vector(-10, 5));
+        Collision.Impact impact = collision.move(pBWorm1, new Position(-9, 19));
+        assertNull(impact.hitBody);
+        assertEquals(0.0, impact.collisionPos.getX());
+        assertEquals(14.5, impact.collisionPos.getY());
+        assertEquals(0.1, impact.ti);
+        assertEquals(1, impact.normal.getX());
+        assertEquals(0, impact.normal.getY());
+        assertTrue(impact.collided);
     }
 
     @Test
-    @DisplayName("Y: Rate (va en haut dans l'air)")
-    void haveCollisionY_QuandRateHautDansAir() {
-        PhysicsBody body = createTestBody(0, 0, 0, 1);
-        Position nextPos = new Position(0, 1); 
-        assertFalse(Collision.haveCollisionY(body, nextPos)); 
+    void TestSweptCircleTile_whenEndPosOutOfMap2() {
+        pBWorm1.setPos(new Position(0, 14));
+        pBWorm1.setVector(new Vector(-10, 0));
+        Collision.Impact impact = collision.move(pBWorm1, new Position(-10, 14));
+        assertNull(impact.hitBody);
+        assertEquals(0.0, impact.collisionPos.getX());
+        assertEquals(14, impact.collisionPos.getY());
+        assertEquals(0.0, impact.ti);
+        assertEquals(1, impact.normal.getX());
+        assertEquals(0, impact.normal.getY());
+        assertTrue(impact.collided);
     }
 
     @Test
-    @DisplayName("Y: Rate (va en bas dans l'air)")
-    void haveCollisionY_QuandRateBasDansAir() {
-        PhysicsBody body = createTestBody(0, 2, 0, -1);
-        Position nextPos = new Position(0, 1); 
-        assertFalse(Collision.haveCollisionY(body, nextPos)); 
+    void calculateTileNormal() {
+        pBWorm1.setPos(new Position(7, 7));
+        pBWorm1.setVector(new Vector(9, 0));
+        Collision.Impact impact = collision.move(pBWorm1, new Position(16, 7));
+        assertNull(impact.hitBody);
+        assertEquals(7, impact.collisionPos.getX());
+        assertEquals(7, impact.collisionPos.getY());
+        assertEquals(0.0, impact.ti);
+        assertEquals(0, impact.normal.getX());
+        assertEquals(0, impact.normal.getY());
+        assertTrue(impact.collided);
     }
 
     @Test
-    @DisplayName("Y: Rate (hors carte en haut)")
-    void haveCollisionY_QuandRateHorsCarteHaut() {
-        PhysicsBody body = createTestBody(0, 19, 0, 1);
-        Position nextPos = new Position(0, 20);
-        assertFalse(Collision.haveCollisionY(body, nextPos));
+    void sweptPointCircle_whenAlreadyInCollision() {
+        pBBP1.setVector(new Vector(0, 0));
+        Position posFinal = new Position(14, 18);
+        Collision.Impact impact = collision.move(pBBP1, posFinal);
+        assertNull(impact.hitBody);
+        assertEquals(14, impact.collisionPos.getX());
+        assertEquals(18, impact.collisionPos.getY());
+        assertEquals(1.0, impact.ti);
+        assertEquals(0, impact.normal.getX());
+        assertEquals(0, impact.normal.getY());
+        assertFalse(impact.collided);
     }
 
     @Test
-    @DisplayName("Y: Rate (hors carte en bas)")
-    void haveCollisionY_QuandRateHorsCarteBas() {
-        PhysicsBody body = createTestBody(0, 0, 0, -1);
-        Position nextPos = new Position(0, -1);
-        assertFalse(Collision.haveCollisionY(body, nextPos));
+    void slide() {
+        pBWorm1.setPos(new Position(7, 10));
+        pBWorm1.setVector(new Vector(5, -2));
+        Position posFinal = new Position(12, 8);
+        Collision.Impact impact = collision.move(pBWorm1, posFinal);
+        collision.slide(pBWorm1, impact, 1, new EventBus());
+        assertEquals(12, pBWorm1.getPos().getX());
+        assertEquals(10, pBWorm1.getPos().getY());
     }
 
     @Test
-    @DisplayName("Y: Rate (vitesse Y nulle)")
-    void haveCollisionY_QuandVitesseYEstNulle() {
-        PhysicsBody body = createTestBody(10, 10, 1, 0);
-        Position nextPos = new Position(11, 10); 
-        assertFalse(Collision.haveCollisionY(body, nextPos)); 
-    }
-
-
-    // =============================================
-    //           Tests pour haveCollisionXY
-
-    @Test
-    @DisplayName("XY: Touche en Bas-Gauche")
-    void haveCollisionXY_QuandToucheBasGauche() {
-        PhysicsBody body = createTestBody(12, 10, -1, -1);
-        Position nextPos = new Position(11, 9); 
-        assertTrue(Collision.haveCollisionXY(body, nextPos)); 
+    void bounce() {
+        pBWorm1.setVector(new Vector(28, 0));
+        Position posFinal = new Position(28, 14);
+        Collision.Impact impact = collision.move(pBWorm1, posFinal);
+        collision.bounce(pBWorm1, impact, 0.5);
+        assertEquals(impact.collisionPos, pBWorm1.getPos());
+        assertEquals(-14, pBWorm1.getVector().getX());
+        assertEquals(0, pBWorm1.getVector().getY());
     }
 
     @Test
-    @DisplayName("XY: Touche en Haut-Gauche")
-    void haveCollisionXY_QuandToucheHautGauche() {
-        PhysicsBody body = createTestBody(12, 4, -1, 1);
-        Position nextPos = new Position(11, 5); 
-        assertTrue(Collision.haveCollisionXY(body, nextPos)); 
+    void touch() {
+        pBWorm1.setVector(new Vector(28, 0));
+        Position posFinal = new Position(28, 14);
+        Collision.Impact impact = collision.move(pBWorm1, posFinal);
+        collision.touch(pBWorm1, impact);
+        assertEquals(impact.collisionPos, pBWorm1.getPos());
+        assertEquals(0, pBWorm1.getVector().getX());
+        assertEquals(0, pBWorm1.getVector().getY());
     }
 
     @Test
-    @DisplayName("XY: Touche en Bas-Droite")
-    void haveCollisionXY_QuandToucheBasDroite() {
-        PhysicsBody body = createTestBody(4, 10, 1, -1);
-        Position nextPos = new Position(5, 9); 
-        assertTrue(Collision.haveCollisionXY(body, nextPos)); 
-    }
-
-    @Test
-    @DisplayName("XY: Touche en Haut-Droite")
-    void haveCollisionXY_QuandToucheHautDroite() {
-        PhysicsBody body = createTestBody(4, 4, 1, 1);
-        Position nextPos = new Position(5, 5); 
-        assertTrue(Collision.haveCollisionXY(body, nextPos)); 
-    }
-
-    @Test
-    @DisplayName("XY: Rate (Haut-Droite dans l'air)")
-    void haveCollisionXY_QuandRateHautDroiteDansAir() {
-        PhysicsBody body = createTestBody(0, 0, 1, 1);
-        Position nextPos = new Position(1, 1); 
-        assertFalse(Collision.haveCollisionXY(body, nextPos)); 
-    }
-
-    @Test
-    @DisplayName("XY: Rate (Bas-Gauche dans l'air)")
-    void haveCollisionXY_QuandRateBasGaucheDansAir() {
-        PhysicsBody body = createTestBody(2, 2, -1, -1);
-        Position nextPos = new Position(1, 1); 
-        assertFalse(Collision.haveCollisionXY(body, nextPos)); 
-    }
-    
-    @Test
-    @DisplayName("XY: Rate (Haut-Gauche dans l'air)")
-    void haveCollisionXY_QuandRateHautGaucheDansAir() {
-        PhysicsBody body = createTestBody(2, 2, -1, 1);
-        Position nextPos = new Position(1, 3); 
-        assertFalse(Collision.haveCollisionXY(body, nextPos)); 
-    }
-    
-    @Test
-    @DisplayName("XY: Rate (Bas-Droite dans l'air)")
-    void haveCollisionXY_QuandRateBasDroiteDansAir() {
-        PhysicsBody body = createTestBody(2, 2, 1, -1);
-        Position nextPos = new Position(3, 1); 
-        assertFalse(Collision.haveCollisionXY(body, nextPos)); 
-    }
-
-    @Test
-    @DisplayName("XY: Rate (Haut-Droite hors carte)")
-    void haveCollisionXY_QuandRateHautDroiteHorsCarte() {
-        PhysicsBody body = createTestBody(29, 19, 1, 1);
-        Position nextPos = new Position(30, 20); 
-        assertFalse(Collision.haveCollisionXY(body, nextPos)); 
-    }
-
-    @Test
-    @DisplayName("XY: Rate (Bas-Gauche hors carte)")
-    void haveCollisionXY_QuandRateBasGaucheHorsCarte() {
-        PhysicsBody body = createTestBody(0, 0, -1, -1);
-        Position nextPos = new Position(-1, -1);
-        assertFalse(Collision.haveCollisionXY(body, nextPos)); 
-    }
-
-    @Test
-    @DisplayName("XY: Rate (Haut-Gauche hors carte)")
-    void haveCollisionXY_QuandRateHautGaucheHorsCarte() {
-        PhysicsBody body = createTestBody(0, 19, -1, 1);
-        Position nextPos = new Position(-1, 20);
-        assertFalse(Collision.haveCollisionXY(body, nextPos)); 
-    }
-
-    @Test
-    @DisplayName("XY: Rate (Bas-Droite hors carte)")
-    void haveCollisionXY_QuandRateBasDroiteHorsCarte() {
-        PhysicsBody body = createTestBody(29, 0, 1, -1);
-        Position nextPos = new Position(30, -1);
-        assertFalse(Collision.haveCollisionXY(body, nextPos)); 
-    }
-
-    // ========================================================
-    //        Tests pour haveCollisionMap
-
-    @Test
-    @DisplayName("Map: Touche statiquement (Coin Bas-Gauche)")
-    void haveCollisionMap_QuandToucheStatiqueBasGauche() {
-        PhysicsBody body = createTestBody(5, 5, 0, 0); 
-        assertTrue(Collision.haveCollisionMap(body, body.getPos()));
-    }
-
-    @Test
-    @DisplayName("Map: Touche statiquement (Coin Bas-Droit)")
-    void haveCollisionMap_QuandToucheStatiqueBasDroit() {
-        PhysicsBody body = createTestBody(10, 5, 0, 0); 
-        assertTrue(Collision.haveCollisionMap(body, body.getPos()));
-    }
-
-    @Test
-    @DisplayName("Map: Touche statiquement (Coin Haut-Gauche)")
-    void haveCollisionMap_QuandToucheStatiqueHautGauche() {
-        PhysicsBody body = createTestBody(5, 8, 0, 0); 
-        assertTrue(Collision.haveCollisionMap(body, body.getPos()));
-    }
-
-    @Test
-    @DisplayName("Map: Touche statiquement (Coin Haut-Droit)")
-    void haveCollisionMap_QuandToucheStatiqueHautDroit() {
-        PhysicsBody body = createTestBody(10, 8, 0, 0);
-        assertTrue(Collision.haveCollisionMap(body, body.getPos()));
-    }
-
-    @Test
-    @DisplayName("Map: Rate (statique dans l'air)")
-    void haveCollisionMap_QuandRateStatiqueDansAir() {
-        PhysicsBody body = createTestBody(0, 0, 0, 0);
-        assertFalse(Collision.haveCollisionMap(body, body.getPos())); 
-    }
-
-    @Test
-    @DisplayName("Map: Hors carte (doit retirer le corps)")
-    void haveCollisionMap_QuandHorsCarte_DoitRetirerCorps() {
-        PhysicsBody body = createTestBody(-5, -5, 0, 0);
-        assertEquals(1, bodies.size());
-        assertTrue(Collision.haveCollisionMap(body, body.getPos()));
-        assertEquals(0, bodies.size(), "Le corps hors carte aurait dû être retiré");
-    }
-
-    @Test
-    @DisplayName("Map: Touche Y (vX=0), doit arrêter Y")
-    void haveCollisionMap_QuandToucheYSeulement() {
-        PhysicsBody body = createTestBody(5, 10, 0, -1);
-        assertTrue(Collision.haveCollisionMap(body, new Position(5, 9)));
-        assertEquals(0, body.getVector().getY(), "Le vecteur Y aurait dû être mis à 0");
-    }
-
-
-
-    @Test
-    @DisplayName("Map: Touche XY, doit arrêter X et Y")
-    void haveCollisionMap_QuandToucheXYSeulement() {
-        PhysicsBody body = createTestBody(0, 0, 1, -1);
-        Position nextPos = new Position(4, 9); 
-        
-        assertTrue(Collision.haveCollisionMap(body, nextPos));
-        assertEquals(0, body.getVector().getX(), "Le vecteur X aurait dû être mis à 0");
-        assertEquals(0, body.getVector().getY(), "Le vecteur Y aurait dû être mis à 0");
-    }
-
-    @Test
-    @DisplayName("Map: Touche X (vY=0), doit arrêter X")
-    void haveCollisionMap_QuandToucheXSeulement() {
-        PhysicsBody body = createTestBody(4, 5, 1, 0);
-        assertTrue(Collision.haveCollisionMap(body, new Position(5, 5)));
-        assertEquals(0, body.getVector().getX(), "Le vecteur X aurait dû être mis à 0");
-    }
-
-    @Test
-    @DisplayName("Map: Rate (dans l'air), ne doit rien faire")
-    void haveCollisionMap_QuandRateDansAir() {
-        PhysicsBody body = createTestBody(0, 0, 1, 1);
-        assertFalse(Collision.haveCollisionMap(body, new Position(1, 1)));
-    }
-    
-
-    // ====================================================================
-    //                    collision projectile/map
-
-    private PhysicsBody createTestBullet(double x, double y) {
-        Position position = new Position(x, y);
-        Worm owner = new Worm("José", new Team("Team", 1, position), position);
-        FireParams params = new FireParams(0, position, owner);
-        BulletProjectile bullet = new BulletProjectile(params);
-        PhysicsBody body = bullet.getBody();
-        bodies.add(body);
-        return body;
-    }
-
-
-    @Test
-    @DisplayName("map: projectile Rate ")
-    void haveCollisionMap_ProjectileRate(){
-        PhysicsBody bulletBody = createTestBullet(0, 0);
-        bulletBody.setVector(new Vector(1,1));
-        assertFalse(Collision.haveCollisionMap(bulletBody, new Position(1, 1)));
-    }
-
-     @Test
-    @DisplayName("map: projectile contact : detruire")
-    void haveCollisionMap_Projectile(){
-        PhysicsBody bulletBody = createTestBullet(0, 0);
-        bulletBody.setVector(new Vector(1,1));
-        assertTrue(Collision.haveCollisionMap(bulletBody, new Position(5, 5)));
-        assertEquals(bodies.size(),0);
-    }
-    // ==========================================================================
-    //                    Test de Classe
-   
-    @Test
-    @DisplayName("test: Constructeur (pour Jacoco)")
-    void testConstructeurPourCouverture() {
-        new Collision();
+    void cross() {
+        Position pos = new Position(5, 12);
+        collision.cross(pBWorm1, pos);
+        assertEquals(pos, pBWorm1.getPos());
     }
 }

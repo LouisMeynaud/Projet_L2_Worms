@@ -1,12 +1,10 @@
 package com.lllmtb.model.entity.worm;
 
-import com.lllmtb.model.item.weapon.WeaponId;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import com.lllmtb.model.entity.team.Team;
 import com.lllmtb.physics.Position;
-import org.mockito.Mockito;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -19,8 +17,8 @@ public class WormTest {
     public void setUp(){
         String name = "Test";
         Position pos = new Position(0, 0);
-        team = new Team("Team", 1, pos);
-        worm = new Worm(name, team, pos);
+        team = new Team("Team", 1, new Position[]{pos});
+        worm = new Worm(name, team);
     }
 
 
@@ -37,14 +35,6 @@ public class WormTest {
     @Test
     public void testConstructorTeam(){
         assertEquals(team, worm.getTeam());
-    }
-
-    @Test
-    public void testSetItem(){
-        WeaponId gun = WeaponId.GUN;
-        assertNull(worm.getSelfItem());
-        worm.setSelfItem(gun);
-        assertEquals(gun, worm.getSelfItem());
     }
 
     @Test

@@ -2,12 +2,20 @@ package com.lllmtb.model.entity.team;
 
 import java.util.*;
 
-import com.lllmtb.model.entity.projectile.Projectile;
+import com.lllmtb.engine.commands.GameCommand;
 import com.lllmtb.model.entity.worm.Worm;
+import com.lllmtb.model.item.*;
+import com.lllmtb.model.item.tool.*;
+import com.lllmtb.model.item.weapon.*;
 import com.lllmtb.model.item.inventory.Inventory;
-import com.lllmtb.model.item.weapon.FireParams;
-import com.lllmtb.model.item.weapon.WeaponId;
 import com.lllmtb.physics.Position;
+
+import org.eclipse.jdt.annotation.NonNull;
+
+// TODO - Decide how to handle item use:
+//  #fire for weapons and #use for tools but this.selectedItem is an ItemId
+//  both methods use different xParams, impossible to surcharge
+//  -> how to decide which one to use? instanceof? item type boolean?
 
 /**
  * Represents a team of {@link Worm} entities in the game.
@@ -20,62 +28,89 @@ import com.lllmtb.physics.Position;
  */
 public class Team {
 
-    /** List of worms belonging to the team. */
+    /**
+     * List of worms belonging to the team.
+     */
     private final ArrayList<Worm> worms = new ArrayList<>();
 
-    /** Inventory containing weapons and items for the team. */
+    /**
+     * Inventory containing weapons and items for the team.
+     */
     private final Inventory inventory;
 
-    /** The name of the team. */
+    /**
+     * The name of the team.
+     */
     public final String name;
 
-    /** Number of players (worms) in the team. */
-    private int numberOfPlayers;
+    /**
+     * Number of worms in the team.
+     */
+    private int numberOfWorms;
 
-    /** Unique ID of the team. */
+    /**
+     * Unique ID of the team.
+     */
     public final int id;
 
-    /** Static counter for assigning unique team IDs. */
+    /**
+     * Static counter for assigning unique team IDs.
+     */
     private static int ids;
 
-    /** The currently active worm of the team. */
+    /**
+     * The currently active worm of the team.
+     */
     private Worm currentWorm;
 
-    /** Index of the currently active worm. */
+    /**
+     * Index of the currently active worm.
+     */
     private int index = 0;
 
-    /** The color associated with this team. */
+    /**
+     * The item currently selected by the player
+     */
+    private ItemId selectedItem;
+
+    /**
+     * The color associated with this team.
+     */
     public final TeamColor teamColor;
 
-    /** Possible colors that can be assigned to a team. */
-    private static List<TeamColor> teamColorPossible = Arrays.asList(TeamColor.values());
+    /**
+     * Possible colors that can be assigned to a team.
+     */
+    private static final List<TeamColor> possibleTeamColors = Arrays.asList(TeamColor.values());
+    private static final ArrayList<TeamColor> chosenTeamColors = new ArrayList<>();
 
 
     /**
      * Private constructor used to initialize a team with a given name, number of players, inventory, and spawn position.
-     * @param name the name of the team
-     * @param numberOfPlayers number of worms in the team
-     * @param inventory the inventory assigned to the team
-     * @param spawn the spawn position where the worms will be placed
+     * @param name          the name of the team
+     * @param numberOfWorms number of worms in the team
+     * @param inventory     the inventory assigned to the team
+     * @param spawn         the spawn position where the worms will be placed
      */
-    private Team(String name, int numberOfPlayers, Inventory inventory, Position spawn) {
-        this.inventory = inventory;
-        this.name = name;
-        this.numberOfPlayers = numberOfPlayers;
+    private Team(@NonNull String name, int numberOfWorms, @NonNull Inventory inventory, @NonNull Position[] spawn) {
+        this.inventory = Objects.requireNonNull(inventory);
+        this.name = Objects.requireNonNull(name);
+        this.numberOfWorms = numberOfWorms;
         this.id = ++Team.ids;
-        this.setUpPlayers(numberOfPlayers, spawn);
+        this.setUpWorms(numberOfWorms, spawn);
         this.currentWorm = this.worms.get(0);
+        this.selectedItem = null;
         this.teamColor = Team.chooseColor();
     }
 
     /**
      * Public constructor used to initialize a team using the private constructor.
-     * @param teamName the name of the team
-     * @param numberOfPlayers number of worms in the team
-     * @param spawn the spawn position where the worms will be placed
+     * @param teamName      the name of the team
+     * @param numberOfWorms number of worms in the team
+     * @param spawn         the spawn position where the worms will be placed
      */
-    public Team(String teamName, int numberOfPlayers, Position spawn) {
-        this(teamName, numberOfPlayers, new Inventory(), spawn);
+    public Team(@NonNull String teamName, int numberOfWorms, @NonNull Position[] spawn) {
+        this(teamName, numberOfWorms, new Inventory(), spawn);
     }
 
     /**
@@ -98,8 +133,8 @@ public class Team {
      * Returns the number of worms currently in the team.
      * @return number of worms
      */
-    public int getNumberOfPlayers() {
-        return this.numberOfPlayers;
+    public int getNumberOfWorms() {
+        return this.numberOfWorms;
     }
 
     /**
@@ -119,14 +154,24 @@ public class Team {
         return this.currentWorm;
     }
 
+    public static ArrayList<TeamColor> getChosenTeamColors() {
+        return chosenTeamColors;
+    }
+
     /**
      * Creates and adds worms to the team based on the number of players.
      * @param numberOfPlayers number of worms to create
-     * @param spawn spawn position for all worms
+     * @param spawns          all spawn position for all worms
      */
-    private void setUpPlayers(int numberOfPlayers, Position spawn) {
+    private void setUpWorms(int numberOfPlayers, @NonNull Position[] spawns) {
+        Objects.requireNonNull(spawns);
+        if (spawns.length != numberOfWorms) {
+            throw new IllegalArgumentException("Team spawnpoint array does not match the number of worms!");
+        }
         for (int i = 1; i <= numberOfPlayers; i++) {
-            this.addPlayer(new Worm(this.name + i, this, spawn));
+            new Worm(this.name + i, this);
+            Position spawn = spawns[i - 1];
+            this.worms.get(i - 1).spawn(spawn);
         }
     }
 
@@ -134,18 +179,18 @@ public class Team {
      * Adds a new worm to the team.
      * @param worm the worm to add
      */
-    public void addPlayer(Worm worm) {
-        this.worms.add(worm);
-        this.numberOfPlayers = this.worms.size();
+    public void addWorm(@NonNull Worm worm) {
+        this.worms.add(Objects.requireNonNull(worm));
+        this.numberOfWorms = this.worms.size();
     }
 
     /**
      * Removes a worm from the team based on its index.
-     * @param index index of the worm to remove
+     * @param indexPlayer index of the worm to remove
      */
-    public void removePlayer(int indexPlayer) {
-        this.worms.remove(indexPlayer-1);
-        this.numberOfPlayers = this.worms.size();
+    public void removeWorm(int indexPlayer) {
+        this.worms.remove(indexPlayer - 1);
+        this.numberOfWorms = this.worms.size();
     }
 
     /**
@@ -154,52 +199,134 @@ public class Team {
      */
     public static TeamColor chooseColor() {
         Random random = new Random();
-        return Team.teamColorPossible.get(random.nextInt(Team.teamColorPossible.size()));
+        if (chosenTeamColors.size() == possibleTeamColors.size()) {
+            Team.chosenTeamColors.clear();
+        }
+        TeamColor teamcolor = Team.possibleTeamColors.get(random.nextInt(Team.possibleTeamColors.size()));
+        while (chosenTeamColors.contains(teamcolor)) {
+            teamcolor = Team.possibleTeamColors.get(random.nextInt(Team.possibleTeamColors.size()));
+        }
+        chosenTeamColors.add(teamcolor);
+        return teamcolor;
     }
 
     /**
      * Unlocks a weapon in the team's inventory.
      * @param id the ID of the weapon to unlock
-     * @throws IllegalArgumentException if the weapon ID is invalid
+     * @throws UnknownWeaponException if the weapon type is unknown
      */
-    public void unlockWeapon(WeaponId id) throws IllegalArgumentException {
+    public void unlockWeapon(@NonNull WeaponId id) {
         this.inventory.unlock(id);
     }
 
     /**
      * Locks a weapon in the team's inventory.
      * @param id the ID of the weapon to lock
+     * @throws UnknownWeaponException if the weapon type is unknown
      */
-    public void lockWeapon(WeaponId id) {
+    public void lockWeapon(@NonNull WeaponId id) {
         this.inventory.lock(id);
     }
 
     /**
      * Adds ammunition for a specific weapon in the team's inventory.
      * @param id weapon for which to add ammunition
-     * @param n number of ammo units to add
-     * @throws IllegalArgumentException if the weapon ID is invalid
+     * @param n  number of ammo units to add
+     * @throws UnknownWeaponException if the weapon type is unknown
      */
-    public void addAmmo(WeaponId id, Integer n) throws IllegalArgumentException {
-        this.inventory.addAmmo(id, n);
+    public void addAmmo(@NonNull WeaponId id, int n) {
+        try {
+            this.inventory.weapons.addAmmo(id, n);
+        } catch (UnknownItemException e) {
+            throw new UnknownWeaponException((WeaponId) e.id);
+        }
     }
 
     /**
      * Fires a projectile using the current worm's selected weapon.
      * @param fireParams parameters for the firing action
-     * @return the created {@link Projectile}
-     * @throws IllegalArgumentException if the firing parameters are invalid
+     * @return the created commands to execute
+     * @throws NullPointerException if the firing parameters are invalid
      */
-    public Projectile fire(FireParams fireParams) throws IllegalArgumentException {
-        return this.inventory.fire(this.currentWorm.getSelfItem(), fireParams);
+    public List<GameCommand> fire(@NonNull FireParams fireParams) {
+        return this.inventory.fire((WeaponId) this.selectedItem, fireParams);
     }
 
     /**
-     * Selects a weapon from the inventory for the current worm.
-     * @param id weapon ID to select
+     * Adds ammunition for a specific tool in the team's inventory.
+     * @param id tool for which to add ammunition
+     * @param n  number of ammo units to add
+     * @throws UnknownToolException if the tool type is unknown
      */
-    public void selectItem(WeaponId id) {
-        this.currentWorm.setSelfItem(id);
+    public void addAmmo(@NonNull ToolId id, int n) {
+        try {
+            this.inventory.tools.addAmmo(id, n);
+        } catch (UnknownItemException e) {
+            throw new UnknownToolException((ToolId) e.id);
+        }
+    }
+
+    /**
+     * Uses the current worm's selected tool.
+     * @param useParams parameters for the use action
+     * @return the created commands to execute
+     * @throws NullPointerException if the use parameters are invalid
+     */
+    public List<GameCommand> use(@NonNull UseParams useParams) {
+        return this.inventory.use((ToolId) this.selectedItem, Objects.requireNonNull(useParams));
+    }
+
+    /**
+     * @return the currently selected item
+     */
+    public ItemId getHand() {
+        return this.selectedItem;
+    }
+
+    /**
+     * Sets the currently selected item to null
+     */
+    private void emptyHand() {
+        this.selectedItem = null;
+    }
+
+    /**
+     * Selects an item from the inventory.
+     * @param id item to select
+     */
+    private void selectItem(@NonNull ItemId id) {
+        this.selectedItem = Objects.requireNonNull(id);
+    }
+
+    /**
+     * Selects a weapon from the inventory.
+     * @param id weapon to select
+     */
+    public void selectWeapon(WeaponId id) {
+        if (!inventory.weapons.contains(id)) {
+            throw new UnknownWeaponException(id);
+        }
+        if (!inventory.isUnlocked(id)) {
+            throw new LockedWeaponException(id, this);
+        }
+        if (!inventory.canFire(id)) {
+            throw new UnusableWeaponException(id, this);
+        }
+        selectItem(id);
+    }
+
+    /**
+     * Selects a tool from the inventory.
+     * @param id tool to select
+     */
+    public void selectTool(ToolId id) {
+        if (!inventory.tools.contains(id)) {
+            throw new UnknownToolException(id);
+        }
+        if (!inventory.canUse(id)) {
+            throw new UnusableToolException(id, this);
+        }
+        selectItem(id);
     }
 
     /**

@@ -1,6 +1,7 @@
 package com.lllmtb.events;
 
 import org.eclipse.jdt.annotation.NonNull;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -43,12 +44,13 @@ public class EventBus {
 
     /**
      * Create an EventBus with a given queue capacity.
-     *
      * @param capacity the maximum number of queued events the bus will hold; must be > 0
      * @throws IllegalArgumentException if {@code capacity <= 0}
      */
     public EventBus(int capacity) {
-        if (capacity <= 0) throw new IllegalArgumentException("queue capacity must be > 0");
+        if (capacity <= 0) {
+            throw new IllegalArgumentException("queue capacity must be > 0");
+        }
         this.queuedEvents = new LinkedBlockingQueue<>(capacity);
     }
 
@@ -56,7 +58,6 @@ public class EventBus {
      * Subscribe a listener for a specific event type.
      * <p>
      * The listener will be invoked when events of the given {@code eventType} are dispatched.
-     *
      * @param eventType the class of events to listen for
      * @param listener  the listener to register
      * @param <T>       event type
@@ -64,13 +65,12 @@ public class EventBus {
      */
     public <T extends Event> void subscribe(@NonNull Class<T> eventType, @NonNull EventListener<T> listener) {
         listeners
-            .computeIfAbsent(Objects.requireNonNull(eventType), l -> new CopyOnWriteArraySet<>())
-            .add(Objects.requireNonNull(listener));
+                .computeIfAbsent(Objects.requireNonNull(eventType), l -> new CopyOnWriteArraySet<>())
+                .add(Objects.requireNonNull(listener));
     }
 
     /**
      * Unsubscribe a listener for a specific event type.
-     *
      * @param eventType the class of events the listener was registered for
      * @param listener  the listener to remove
      * @param <T>       event type
@@ -87,7 +87,6 @@ public class EventBus {
     /**
      * Post an event for immediate synchronous dispatch.
      * Prefer {@link #postQueued(Event)} when possible.
-     *
      * @param event the event to dispatch
      * @throws NullPointerException if {@code event} is null
      */
@@ -99,7 +98,6 @@ public class EventBus {
     /**
      * Post an event to the internal queue for later processing by {@link #processQueued()} in the main game engine.
      * If the queue is full, the event is not enqueued and the method returns {@code false}.
-     *
      * @param event the event to enqueue
      * @return {@code true} if the event was accepted into the queue, {@code false} if the queue is full
      * @throws NullPointerException if {@code event} is null
@@ -116,12 +114,13 @@ public class EventBus {
     public void processQueued() {
         List<Event> drained = new ArrayList<>();
         queuedEvents.drainTo(drained);
-        for (Event event : drained) dispatch(event);
+        for (Event event : drained) {
+            dispatch(event);
+        }
     }
 
     /**
      * Internal dispatch implementation. It invokes listeners registered for the exact runtime class of the event.
-     *
      * @param event the event to dispatch
      */
     @SuppressWarnings("unchecked")
@@ -133,7 +132,9 @@ public class EventBus {
         //      if we end up adding subclasses to events.
         //      Alternatively, we could register the listener in all compatible subclasses directly and keep the logic below
         CopyOnWriteArraySet<EventListener<? extends Event>> matching = listeners.get(event.getClass());
-        if (matching == null || matching.isEmpty()) return;
+        if (matching == null || matching.isEmpty()) {
+            return;
+        }
 
         for (EventListener<? extends Event> listener : matching) {
             try {
@@ -157,7 +158,9 @@ public class EventBus {
      */
     public int listenerCount() {
         int sum = 0;
-        for (CopyOnWriteArraySet<EventListener<? extends Event>> set : listeners.values()) sum += set.size();
+        for (CopyOnWriteArraySet<EventListener<? extends Event>> set : listeners.values()) {
+            sum += set.size();
+        }
         return sum;
     }
 

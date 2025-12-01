@@ -1,24 +1,28 @@
 package com.lllmtb.terrain.map;
+
 import com.lllmtb.physics.Position;
 
 public class Map {
-/**
- Represent the game cards as a matrix of TILES,
-* representing the different elements present at a given x y position.
-* A cell in the matrix is ​​represented by an integer x y coordinate (0,0)
-* in the bottom left corner.
-
- */
+    /**
+     * Represent the game cards as a matrix of TILES,
+     * representing the different elements present at a given x y position.
+     * A cell in the matrix is ​​represented by an integer x y coordinate (0,0)
+     * in the bottom left corner.
+     */
     private int width;
     private int height;
     private Tile[][] mapMatrix;
     private String filesTxt;
+    private Position[][] spawnPoint;
+    private int[] hightLine;
+    private int heightWater = 0; //devra etre changer
 
     public Map(int height, int width, String filesTxt) {
         this.mapMatrix = new Tile[height][width];
         this.width = width;
         this.height = height;
         this.filesTxt = filesTxt;
+        this.spawnPoint = null;
     }
 
     public int getWidth() {
@@ -37,10 +41,22 @@ public class Map {
         return filesTxt;
     }
 
-    protected void setFilesTxt(String files){
+
+    protected void setFilesTxt(String files) {
         this.filesTxt = files;
     }
-   
+
+
+    public void setSpawnPoint(Position[][] spawnPoint) {
+        this.spawnPoint = spawnPoint;
+    }
+
+
+    public void setHightLine(int[] hightLine) {
+        this.hightLine = hightLine;
+    }
+
+
     @Override
     public String toString() {
         StringBuilder string = new StringBuilder("width : " + this.width + ", height : " + this.height + ", matrice : \n");
@@ -48,16 +64,29 @@ public class Map {
             string.append("\n");
             for (int j = 0; j < this.width; j++) {
                 switch (this.mapMatrix[i][j]) {
-                    case AIR: string.append(" ");break;
-                    case DIRT : string.append("#");break;
-                    case WATER : string.append("o");break;
-                    default : throw new IllegalStateException("Tile inconnue : " + mapMatrix[i][j]);
+                    case AIR:
+                        string.append(" ");
+                        break;
+                    case DIRT:
+                        string.append("#");
+                        break;
+                    case WATER:
+                        string.append("o");
+                        break;
+                    case CAVERN:
+                        string.append("~");
+                        break;
+                    case GRASS:
+                        string.append("_");
+                        break;
+                    default:
+                        throw new IllegalStateException("Tile inconnue : " + mapMatrix[i][j]);
                 }
             }
         }
         return string.toString();
     }
-     
+
     /**
      * @param position
      * @return a new position corresponding to the case in the matrix
@@ -68,30 +97,37 @@ public class Map {
     }
 
     /**
-     * 
+     *
      * @param position
      * @return the tile at the position.
      */
     public Tile getTile(Position position) {
         Position posMatrix = this.cooMapToCooMatrix(position);
-        return this.mapMatrix[(int) posMatrix.getY()][(int) posMatrix.getX()];
+        int x = (int) posMatrix.getX();
+        int y = (int) posMatrix.getY();
+
+        if (y < 0 || y >= this.mapMatrix.length || x < 0 || x >= this.mapMatrix[0].length) {
+            return Tile.AIR;
+        }
+
+        return this.mapMatrix[y][x];
     }
 
     /**
      * Setter modifying a case of the matrix.
-     * 
      * @param position the position or the tile will be changed
-     * @param tile the Tile by which the case will be changed
+     * @param tile     the Tile by which the case will be changed
      */
     public void setTile(Position position, Tile tile) {
         Position posMatrix = this.cooMapToCooMatrix(position);
         this.mapMatrix[(int) posMatrix.getY()][(int) posMatrix.getX()] = tile;
 
     }
+
     /**
      *
      * @param position the checking position
-     * @param tile the Tile whose presence we are checking.
+     * @param tile     the Tile whose presence we are checking.
      */
     public boolean isTileAt(Position position, Tile tile) {
 
@@ -107,12 +143,28 @@ public class Map {
         return (0 <= position.getX() && 0 <= position.getY() && position.getX() < this.width && position.getY() < this.height);
     }
 
-    public boolean isSolid(Position position){
+    public boolean isSolid(Position position) {
         Tile tile = this.getTile(position);
-        switch(tile){
-            case DIRT : return true;
-            default: return false; //add other block in future
+        switch (tile) {
+            case DIRT:
+                return true;
+            case GRASS:
+                return true;
+            default:
+                return false; //add other block in future
         }
+    }
+
+    public Position[][] getSpawnPoint() {
+        return spawnPoint;
+    }
+
+    public int[] getHightLine() {
+        return hightLine;
+    }
+
+    public int getHeightWater() {
+        return heightWater;
     }
 
 }

@@ -85,8 +85,8 @@ public class MapTest {
         String attentue = "width : 5, height : 6, matrice : \n" +
                 "\n" +
                 "     \n" +
-                "     \n" +
-                "#####\n" +
+                "   ~ \n" +
+                "###_#\n" +
                 "#oo##\n" +
                 "ooooo\n" +
                 "ooooo";
@@ -114,6 +114,12 @@ public class MapTest {
         Position positionNoSolide = new Position(0, 4);
         assertTrue(m.isSolid(positionSolide));
         assertFalse(m.isSolid(positionNoSolide));
+    }
+
+    @Test
+    void testSetFiles(){
+        m.setFilesTxt("test");
+        assertEquals(m.getFilesTxt(), "test");
     }
 
 }

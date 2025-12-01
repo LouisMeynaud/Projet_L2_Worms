@@ -1,9 +1,16 @@
 package com.lllmtb.ui;
 
 import com.lllmtb.engine.GameSettings;
+import com.lllmtb.engine.GameWorld;
+import com.lllmtb.events.EventBus;
+import com.lllmtb.events.game.StartGameEvent;
+
+import com.lllmtb.events.game.WorldCreatedEvent;
+import com.lllmtb.terrain.map.MapLoader;
 import org.jline.consoleui.elements.ConfirmChoice;
 import org.jline.consoleui.prompt.ConsolePrompt;
 import org.jline.consoleui.prompt.PromptResultItemIF;
+import org.jline.consoleui.prompt.builder.ListPromptBuilder;
 import org.jline.consoleui.prompt.builder.PromptBuilder;
 import org.jline.reader.LineReader;
 import org.jline.reader.LineReaderBuilder;
@@ -13,9 +20,12 @@ import org.jline.utils.AttributedString;
 import org.jline.utils.AttributedStyle;
 import org.jline.utils.InfoCmp;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Map;
+
+import com.lllmtb.terrain.generation.LandScape;
 
 // TODO - make prompt methods content-agnostic to remove duplicated code
 //  eg: promptBool(String key, String message, ConfirmChoice.ConfirmationValue defaultValue)
@@ -25,12 +35,13 @@ import java.util.Map;
 
 // TODO - as we add more game options, a multi-select menu would be better UX (cf. createCheckboxPrompt)
 
-// TODO - when prompting for a map file to load, display a list of available files in a select menu
-
-public class ConsoleUI extends UI {
+public class ConsoleUI implements UI {
     private Terminal terminal;
+    private EventBus eventBus;
 
-    public ConsoleUI() {
+
+    public ConsoleUI(EventBus bus) {
+        this.eventBus = bus;
         try {
             this.terminal = TerminalBuilder.builder().system(true).build();
             terminal.puts(InfoCmp.Capability.clear_screen);
@@ -44,8 +55,9 @@ public class ConsoleUI extends UI {
         }
     }
 
-    @Override
+
     public GameSettings promptSettings() {
+
         try {
             terminal.writer().println("=== GAME SETTINGS ===");
             int nbTeams = promptNbTeams();
@@ -54,12 +66,21 @@ public class ConsoleUI extends UI {
 
             int nbWorms = promptNbWorms();
 
+            int turnDuration = promptTurnDuration();
+
             boolean loadMap = promptLoadMap();
             String mapFileName = null;
+            int size = 0;
+            LandScape landscape = LandScape.UNKNOWN;
             boolean floatingIsland = false;
 
-            if (loadMap) mapFileName = promptMapFileName();
-            else floatingIsland = promptFloatingIsland();
+            if (loadMap) {
+                mapFileName = promptMapName();
+            } else {
+                size = promptMapSize();
+                landscape = promptLandscape();
+                floatingIsland = promptFloatingIsland();
+            }
 
             boolean hasWind = promptHasWind();
 
@@ -68,23 +89,23 @@ public class ConsoleUI extends UI {
             terminal.writer().println();
             terminal.writer().println(" RECAP: ");
             terminal.writer().println("   " + nbTeams + " teams " + Arrays.toString(teamNames) + " of " + nbWorms + " worm(s) each");
-            terminal.writer().println(loadMap
-                    ? "   Load map from: " + mapFileName
-                    : "   Generate a new map " + (floatingIsland ? "(floating island mode)" : "(normal mode)")
-            );
+            if (loadMap) {
+                terminal.writer().println("   Load map from: " + mapFileName);
+            } else {
+                terminal.writer()
+                        .println("   Generate a new " + size + "x map with " + landscape.name() + " landscape " + (floatingIsland ? "(floating island mode)" : "(normal mode)"));
+            }
             terminal.writer().println("   Wind: " + (hasWind ? "ON" : "OFF"));
             terminal.writer().flush();
-            return new GameSettings(nbTeams, teamNames, nbWorms, hasWind, mapFileName, floatingIsland);
+            return new GameSettings(nbTeams, teamNames, nbWorms, turnDuration, hasWind, mapFileName, floatingIsland, size, landscape);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
-
     private int promptNbTeams() throws IOException {
         ConsolePrompt prompt = new ConsolePrompt(terminal);
         PromptBuilder builder = prompt.getPromptBuilder();
-
         builder.createListPrompt()
                 .name("nbTeams")
                 .message("Number of Teams")
@@ -92,7 +113,6 @@ public class ConsoleUI extends UI {
                 .newItem("3").text("3").add()
                 .newItem("4").text("4").add()
                 .addPrompt();
-
         Map<String, PromptResultItemIF> result = prompt.prompt(builder.build());
         return Integer.parseInt(result.get("nbTeams").getResult());
     }
@@ -100,23 +120,23 @@ public class ConsoleUI extends UI {
     private String[] promptTeamNames(int nbTeams) throws IOException {
         ConsolePrompt prompt = new ConsolePrompt(terminal);
         PromptBuilder builder = prompt.getPromptBuilder();
-
         String[] teamNames = new String[nbTeams];
         for (int i = 0; i < nbTeams; i++) {
             builder.createInputPrompt()
                     .name("nameTeam" + i)
-                    .message("Enter the name of Team n°" + (i+1))
+                    .message("Enter the name of Team n°" + (i + 1))
                     .addPrompt();
         }
         Map<String, PromptResultItemIF> result = prompt.prompt(builder.build());
-        for (int i = 0; i < nbTeams; i++) teamNames[i] = result.get("nameTeam" + i).getResult();
+        for (int i = 0; i < nbTeams; i++) {
+            teamNames[i] = result.get("nameTeam" + i).getResult();
+        }
         return teamNames;
     }
 
     private int promptNbWorms() throws IOException {
         ConsolePrompt prompt = new ConsolePrompt(terminal);
         PromptBuilder builder = prompt.getPromptBuilder();
-
         builder.createListPrompt()
                 .name("nbWorms")
                 .message("Number of Worms per Team")
@@ -125,48 +145,94 @@ public class ConsoleUI extends UI {
                 .newItem("3").text("3").add()
                 .newItem("4").text("4").add()
                 .addPrompt();
-
         Map<String, PromptResultItemIF> result = prompt.prompt(builder.build());
         return Integer.parseInt(result.get("nbWorms").getResult());
+    }
+
+    private int promptTurnDuration() throws IOException {
+        ConsolePrompt prompt = new ConsolePrompt(terminal);
+        PromptBuilder builder = prompt.getPromptBuilder();
+        builder.createListPrompt()
+                .name("turnDuration")
+                .message("  The duration in seconds of a single turn")
+                .newItem("10").text("10").add()
+                .newItem("20").text("20").add()
+                .newItem("30").text("30").add()
+                .newItem("40").text("40").add()
+                .addPrompt();
+        Map<String, PromptResultItemIF> result = prompt.prompt(builder.build());
+        return Integer.parseInt(result.get("turnDuration").getResult());
     }
 
     private boolean promptLoadMap() throws IOException {
         ConsolePrompt prompt = new ConsolePrompt(terminal);
         PromptBuilder builder = prompt.getPromptBuilder();
-
         builder.createConfirmPromp()
                 .name("loadMap")
                 .message("Do you want to load an existing map from a save file?")
                 .defaultValue(ConfirmChoice.ConfirmationValue.NO)
                 .addPrompt();
-
         Map<String, PromptResultItemIF> result = prompt.prompt(builder.build());
         return result.get("loadMap").getResult().equals(ConfirmChoice.ConfirmationValue.YES.toString());
     }
 
-    private String promptMapFileName() throws IOException {
+    private String promptMapName() throws IOException {
         ConsolePrompt prompt = new ConsolePrompt(terminal);
         PromptBuilder builder = prompt.getPromptBuilder();
 
-        builder.createInputPrompt()
+        File[] dossiers = MapLoader.getListeDossiersMaps();
+
+        ListPromptBuilder b = builder.createListPrompt()
                 .name("mapFileName")
-                .message("  Enter the file name:")
-                .addPrompt();
+                .message("  Select a map to load");
+
+        for (File d : dossiers) {
+            b.newItem(d.getName()).text(d.getName()).add();
+        }
+        b.addPrompt();
 
         Map<String, PromptResultItemIF> result = prompt.prompt(builder.build());
         return result.get("mapFileName").getResult();
     }
 
+    private int promptMapSize() throws IOException {
+        ConsolePrompt prompt = new ConsolePrompt(terminal);
+        PromptBuilder builder = prompt.getPromptBuilder();
+        builder.createListPrompt()
+                .name("size")
+                .message("  The size (width) of the map")
+                .newItem("100").text("100").add()
+                .newItem("200").text("200").add()
+                .newItem("300").text("300").add()
+                .newItem("400").text("400").add()
+                .addPrompt();
+        Map<String, PromptResultItemIF> result = prompt.prompt(builder.build());
+        return Integer.parseInt(result.get("size").getResult());
+    }
+
+    private LandScape promptLandscape() throws IOException {
+        ConsolePrompt prompt = new ConsolePrompt(terminal);
+        PromptBuilder builder = prompt.getPromptBuilder();
+        builder.createListPrompt()
+                .name("size")
+                .message("  The type of landscape to use")
+                .newItem("FLAT").text("Flat").add()
+                .newItem("HILLY").text("Hilly").add()
+                .newItem("JAGGED").text("Jagged").add()
+                .newItem("CHAOTIC").text("Chaotic").add()
+                .addPrompt();
+        Map<String, PromptResultItemIF> result = prompt.prompt(builder.build());
+        return LandScape.valueOf(result.get("size").getResult());
+    }
+
     private boolean promptFloatingIsland() throws IOException {
         ConsolePrompt prompt = new ConsolePrompt(terminal);
         PromptBuilder builder = prompt.getPromptBuilder();
-
         builder.createConfirmPromp()
                 .name("floatingIsland")
                 .message("Do you want the map to be a floating island?")
                 .defaultValue(ConfirmChoice.ConfirmationValue.NO)
                 .addPrompt();
-
         Map<String, PromptResultItemIF> result = prompt.prompt(builder.build());
         return result.get("floatingIsland").getResult().equals(ConfirmChoice.ConfirmationValue.YES.toString());
     }
@@ -174,24 +240,45 @@ public class ConsoleUI extends UI {
     private boolean promptHasWind() throws IOException {
         ConsolePrompt prompt = new ConsolePrompt(terminal);
         PromptBuilder builder = prompt.getPromptBuilder();
-
         builder.createConfirmPromp()
                 .name("hasWind")
                 .message("Do you want to turn on the wind?")
                 .defaultValue(ConfirmChoice.ConfirmationValue.NO)
                 .addPrompt();
-
         Map<String, PromptResultItemIF> result = prompt.prompt(builder.build());
         return result.get("hasWind").getResult().equals(ConfirmChoice.ConfirmationValue.YES.toString());
     }
 
-    @Override
+
     public boolean readyToPlay() {
+
         LineReader reader = LineReaderBuilder.builder().terminal(terminal).appName("WORMS Game").build();
         return reader.readLine("Press Enter to start the game...") != null;
     }
 
+
     @Override
+    public void start() {
+        try {
+            GameSettings settings = this.promptSettings();
+            boolean ready = this.readyToPlay();
+
+            if (ready) {
+                terminal.writer().println("Lancement du jeu...");
+                terminal.writer().flush();
+                this.eventBus.postQueued(new StartGameEvent(settings));
+                eventBus.subscribe(WorldCreatedEvent.class, e -> {
+                    GameWorld world = e.getWorld();
+                    System.out.println(world.getMap());
+                });
+            }
+        } catch (Exception e) {
+            System.err.println("Une erreur est survenue durant la configuration :");
+            e.printStackTrace();
+            close();
+        }
+    }
+
     public void close() {
         try {
             terminal.close();
@@ -200,4 +287,3 @@ public class ConsoleUI extends UI {
         }
     }
 }
-

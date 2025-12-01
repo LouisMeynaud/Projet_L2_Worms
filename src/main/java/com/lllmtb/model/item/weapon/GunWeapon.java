@@ -1,9 +1,11 @@
 package com.lllmtb.model.item.weapon;
 
+import com.lllmtb.engine.commands.GameCommand;
+import com.lllmtb.engine.commands.RegisterProjectileCommand;
 import com.lllmtb.model.entity.projectile.BulletProjectile;
-import com.lllmtb.model.entity.projectile.Projectile;
 import org.eclipse.jdt.annotation.NonNull;
 
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -16,7 +18,6 @@ public final class GunWeapon extends Weapon {
 
     /**
      * Returns the unique identifier for this weapon type.
-     *
      * @return the {@link WeaponId#GUN} constant
      */
     @Override
@@ -26,13 +27,13 @@ public final class GunWeapon extends Weapon {
 
     /**
      * Creates a new {@link BulletProjectile} based on the given firing parameters.
-     *
      * @param params the firing parameters defining the projectile’s origin and direction (must not be {@code null})
      * @return a new {@link BulletProjectile} initialized with the given parameters
      * @throws NullPointerException if {@code params} is {@code null}
      */
     @Override
-    public Projectile createProjectile(@NonNull FireParams params) {
-        return new BulletProjectile(Objects.requireNonNull(params));
+    public List<GameCommand> fire(@NonNull FireParams params) {
+        GameCommand cmd = new RegisterProjectileCommand(new BulletProjectile(Objects.requireNonNull(params)), params.owner);
+        return List.of(cmd);
     }
 }
