@@ -8,7 +8,7 @@ import java.util.Objects;
 public class GameLoop implements Runnable {
     private final GameWorld world;
     private volatile boolean running = true;
-    private final double ticktime = 16; // ~60Hz
+    private final double ticktime = 8; // ~60Hz
     private boolean isPaused = false;
     private long totalTicks = 0;
 
