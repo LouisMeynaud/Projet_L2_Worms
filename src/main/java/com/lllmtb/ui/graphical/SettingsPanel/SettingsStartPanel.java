@@ -15,6 +15,8 @@ import com.lllmtb.events.EventBus;
 import com.lllmtb.events.game.StartGameEvent;
 import com.lllmtb.events.ui.graphical.ScreenNewOrLoadEvent;
 import com.lllmtb.terrain.generation.LandScape;
+import com.lllmtb.ui.graphical.TextureManager;
+import com.lllmtb.ui.graphical.Utilitaire;
 
 public class SettingsStartPanel extends JPanel {
     public EventBus eventBus;
@@ -40,8 +42,8 @@ public class SettingsStartPanel extends JPanel {
 
         // Launch and return button: southern zone
         JPanel ZoneSud = new JPanel(new FlowLayout(FlowLayout.RIGHT)); // met les bouton a droite (flowLayout afficheles un apres les autre);
-        JButton backButton = new JButton("Back");
-        JButton StarButton = new JButton("Start the game");
+        JButton backButton = Utilitaire.createImageButton(TextureManager.UI, "Back", 128, 64, 64, 48);
+        JButton StarButton = Utilitaire.createImageButton(TextureManager.UI, "Start", 128, 64, 64, 48);
 
         ZoneSud.add(backButton);
         ZoneSud.add(StarButton);

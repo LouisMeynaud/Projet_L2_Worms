@@ -12,6 +12,7 @@ import com.lllmtb.events.game.*;
 import com.lllmtb.events.ui.ShootMode;
 import com.lllmtb.events.ui.graphical.RequestFocus;
 import com.lllmtb.ui.graphical.TextureManager; 
+import com.lllmtb.ui.graphical.Utilitaire;
 
 public class GameUIPanel extends JPanel {
 
@@ -57,9 +58,9 @@ public class GameUIPanel extends JPanel {
         this.add(topBar, BorderLayout.NORTH);
         this.add(lowerBar, BorderLayout.SOUTH);
 
-        JButton pauseButton = createButton("Pause");
-        JButton inventoryButton = createButton("InventoryButton");
-        JButton shootModeButton = createButton("ShootMode");
+        JButton pauseButton = Utilitaire.createImageButton(TextureManager.UI, "Pause", 64, 64, 48, 48);
+        JButton inventoryButton = Utilitaire.createImageButton(TextureManager.UI, "InventoryButton", 64, 64, 48, 48);
+        JButton shootModeButton = Utilitaire.createImageButton(TextureManager.UI, "ShootMode", 64, 64, 48, 48);
         pauseButton.addActionListener(e -> PauseMenu(true));
         shootModeButton.addActionListener(e -> this.eventBus.postQueued(new ShootMode()));
         topBar.add(pauseButton);
@@ -121,26 +122,5 @@ public class GameUIPanel extends JPanel {
     if (!show) {
         this.eventBus.postQueued(new RequestFocus());
     }
-    }
-
-
-    /////////////utiliraire//////////////////
-    private JButton createButton(String name){
-        JButton button = new JButton();
-        System.out.println(name);
-        try {
-            BufferedImage imgRaw = TextureManager.UI.get(name);
-            Image scaledImage = imgRaw.getScaledInstance(48, 48, Image.SCALE_REPLICATE);
-            button.setIcon(new ImageIcon(scaledImage));
-        } catch (Exception e) {
-            System.err.println("Erreur image" + name + ":"  + e.getMessage());
-            button.setText(name);
-        }
-        button.setFocusable(false);
-        button.setBackground(Color.LIGHT_GRAY);
-        button.setBorder(BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
-        button.setPreferredSize(new Dimension(64, 64));
-
-        return button;
     }
     }
