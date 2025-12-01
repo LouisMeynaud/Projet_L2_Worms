@@ -5,12 +5,15 @@ import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+
 import javax.swing.BorderFactory;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
+
+import com.lllmtb.ui.graphical.Utilitaire;
 
 
 public class SettingGamePanel extends JPanel {
@@ -64,7 +67,7 @@ public class SettingGamePanel extends JPanel {
         contentGrid.add(NbEquipesLabel, gbc);
 
         gbc.gridx = 1; // second colone 
-        this.equipesSlider = CreateSlider.createSlider(2, MAX_EQUIPES, 2, 1);
+        this.equipesSlider = Utilitaire.createSlider(2, MAX_EQUIPES, 2, 1);
         contentGrid.add(equipesSlider, gbc);
         row++;
 
@@ -90,7 +93,7 @@ public class SettingGamePanel extends JPanel {
         contentGrid.add(NbWormsLabel, gbc);
 
         gbc.gridx = 1;
-        this.wormsSlider = CreateSlider.createSlider(1, MAX_WORM, 3, 1);
+        this.wormsSlider = Utilitaire.createSlider(1, MAX_WORM, 3, 1);
         contentGrid.add(wormsSlider, gbc);
         row++;
 
@@ -101,7 +104,7 @@ public class SettingGamePanel extends JPanel {
         contentGrid.add(turnDurationLabel, gbc);
 
         gbc.gridx = 1;
-        this.turnDurationSlider = CreateSlider.createSlider(10, MAX_TIME, 30, 10);
+        this.turnDurationSlider = Utilitaire.createSlider(10, MAX_TIME, 30, 10);
         contentGrid.add(turnDurationSlider, gbc);
         row++;
 

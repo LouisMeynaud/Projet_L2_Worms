@@ -11,6 +11,7 @@ import javax.swing.JButton;
 
 import java.awt.Color;
 
+import javax.swing.JSlider;
 import javax.swing.border.BevelBorder;
 
 
@@ -41,6 +42,17 @@ public class Utilitaire {
         button.setPreferredSize(new Dimension(buttonWidth, buttonHeight));
 
         return button;
+    }
+
+    public static JSlider createSlider(int min, int max, int value, int spacing) {
+        JSlider slider = new JSlider(JSlider.HORIZONTAL, min, max, value);  
+        
+        slider.setMajorTickSpacing(spacing); 
+        slider.setSnapToTicks(true); 
+        slider.setPaintTicks(true);
+        slider.setPaintLabels(true);
+        
+        return slider;
     }
 
     
