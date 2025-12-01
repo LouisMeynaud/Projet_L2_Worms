@@ -341,7 +341,7 @@ public class PhysicsEngine {
      * vector (every 600 ticks if enabled), and performs one simulation step through
      * {@link #nextStep(double)}.
      * </p>
-     * @param ticktime the duration of the simulation tick (in seconds).
+     * @param ticktime the duration of the simulation tick (in milliseconds).
      */
     public void next(double ticktime) {
         cpt++;

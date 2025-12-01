@@ -19,9 +19,9 @@ public class PhysicsModifier {
     /**
      * Creates a new timed PhysicsModifier.
      * @param transform The transformation to apply.
-     * @param source    The source item ID of the modifier.
-     * @param duration  The duration for which the modifier is active (set to {@code Double.POSITIVE_INFINITY} for infinite duration).
-     * @param enabled   Whether the modifier is initially enabled.
+     * @param source The source item ID of the modifier.
+     * @param duration The duration in seconds for which the modifier is active (set to {@code Double.POSITIVE_INFINITY} for infinite duration).
+     * @param enabled Whether the modifier is initially enabled.
      */
     public PhysicsModifier(@NonNull Transform transform, ItemId source, double duration, boolean enabled) {
         this.transform = Objects.requireNonNull(transform);
