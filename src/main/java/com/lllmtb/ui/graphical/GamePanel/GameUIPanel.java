@@ -11,6 +11,9 @@ import com.lllmtb.events.EventBus;
 import com.lllmtb.events.game.*;
 import com.lllmtb.events.ui.ShootMode;
 import com.lllmtb.events.ui.graphical.RequestFocus;
+import com.lllmtb.model.entity.team.Team;
+import com.lllmtb.model.item.inventory.Inventory;
+import com.lllmtb.model.item.weapon.WeaponId;
 import com.lllmtb.ui.graphical.TextureManager; 
 import com.lllmtb.ui.graphical.Utilitaire;
 
@@ -22,6 +25,7 @@ public class GameUIPanel extends JPanel {
     private GameWorld world;
     private final CardLayout cardLayout;
     private final JPanel centerContainer;
+    private JPanel inventoryGrid;
 
     public GameUIPanel(EventBus eventBus) {
         this.eventBus = eventBus;
@@ -40,6 +44,7 @@ public class GameUIPanel extends JPanel {
         this.add(this.centerContainer, BorderLayout.CENTER);
 
         createPauseMenu();
+        createInventoryContainer();
         eventBus.subscribe(WorldCreatedEvent.class, event -> {
             this.world = event.getWorld();});
 
@@ -63,6 +68,7 @@ public class GameUIPanel extends JPanel {
         JButton shootModeButton = Utilitaire.createImageButton(TextureManager.UI, "ShootMode", 64, 64, 48, 48);
         pauseButton.addActionListener(e -> PauseMenu(true));
         shootModeButton.addActionListener(e -> this.eventBus.postQueued(new ShootMode()));
+        inventoryButton.addActionListener(e -> OpenCloseInventory());
         topBar.add(pauseButton);
         lowerBar.add(inventoryButton);
         lowerBar.add(shootModeButton);
@@ -123,4 +129,65 @@ public class GameUIPanel extends JPanel {
         this.eventBus.postQueued(new RequestFocus());
     }
     }
+
+    ///////////////INVENTAIRE/////////////
+    private void createInventoryContainer() {
+        this.inventoryContainer = new JPanel(new GridBagLayout());
+        this.inventoryContainer.setOpaque(false);
+
+        
+        this.inventoryGrid = new JPanel(); 
+        
+        this.inventoryGrid.setBackground(new Color(0, 0, 0, 200)); 
+        this.inventoryGrid.setBorder(new EmptyBorder(15, 15, 15, 15));
+        this.inventoryGrid.setLayout(new GridLayout(0, 6, 10, 10)); 
+        this.inventoryContainer.add(this.inventoryGrid);
+        this.centerContainer.add(this.inventoryContainer, "INVENTORY");
     }
+
+    private void OpenCloseInventory() {
+        boolean isInventoryOpen = this.inventoryContainer.isVisible(); //demande au cardLayout si la fenetre est visible
+        
+        if (isInventoryOpen) {
+            cardLayout.show(centerContainer, "EMPTY"); 
+            this.eventBus.postQueued(new RequestFocus());
+            
+        } else {
+            //ces deux ligne sont pour tester que l'affichage s'adapte bien
+            this.world.getTurnManager().getTurn().getTeam().getInventory().unlock(WeaponId.GUN);
+            this.world.getTurnManager().getTurn().getTeam().getInventory().weapons.addAmmo(WeaponId.GUN, 10);
+            
+            createInventoryGrid();
+            cardLayout.show(centerContainer, "INVENTORY");
+        }
+        
+        this.revalidate();
+        this.repaint();
+    }
+
+    private void createInventoryGrid() {
+        this.inventoryGrid.removeAll();//le vide
+        Inventory currentInventory = world.getTurnManager().getTurn().getWormPlayable().getTeam().getInventory();
+
+        for (WeaponId id : WeaponId.values()) {
+            if (id == WeaponId.NONE) {
+                continue;}
+            boolean isUnlocked = currentInventory.isUnlocked(id);
+            int nbAmmo = currentInventory.weapons.getAmmo(id);
+
+            JButton itemButton = Utilitaire.createWeaponButton(id, "Ammo"+id, nbAmmo, isUnlocked);
+
+            if (isUnlocked && nbAmmo > 0) {
+                itemButton.addActionListener(e -> {
+                    eventBus.postQueued(new WeaponSelectedEvent(id));
+                    OpenCloseInventory(); // on ferme l'inventaire si on choisie une arme
+                });
+            } else if (isUnlocked && nbAmmo == 0) {
+                itemButton.setEnabled(false);
+            }
+
+            this.inventoryGrid.add(itemButton);
+        }
+    }
+
+}

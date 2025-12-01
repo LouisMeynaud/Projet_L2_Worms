@@ -1,10 +1,12 @@
 package com.lllmtb.ui.graphical;
+
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import javax.imageio.ImageIO;
 
+import javax.imageio.ImageIO;
+import com.lllmtb.model.item.weapon.WeaponId;
 import com.lllmtb.terrain.map.Tile;
 
 public class TextureManager {
@@ -12,6 +14,7 @@ public class TextureManager {
     public static final Map<Tile, BufferedImage> TILES = new HashMap<>();
     public static final Map<String, BufferedImage> ENTITIES = new HashMap<>();
     public static final Map<String, BufferedImage> UI = new HashMap<>();
+    public static final Map<String, BufferedImage> WEAPONS = new HashMap<>();
 
     public static void load() {
         try {
@@ -30,9 +33,21 @@ public class TextureManager {
             UI.put("Pause", ImageIO.read(TextureManager.class.getResource("/textures/button/Pause.png")));
             UI.put("ShootMode", ImageIO.read(TextureManager.class.getResource("/textures/button/ShootMode.png")));
 
+            //////Arme//////////
+            WEAPONS.put("GUN", ImageIO.read(TextureManager.class.getResource("/textures/weapon/weapon/Gun.png")));
+            WEAPONS.put("LockedGUN", ImageIO.read(TextureManager.class.getResource("/textures/weapon/lockedWeapon/Gun.png")));
+            WEAPONS.put("AmmoGUN", ImageIO.read(TextureManager.class.getResource("/textures/weapon/ammo/Gun.png")));
+
+            WEAPONS.put("BAZOOKA", ImageIO.read(TextureManager.class.getResource("/textures/weapon/weapon/Bazooka.png")));
+            WEAPONS.put("LockedBAZOOKA", ImageIO.read(TextureManager.class.getResource("/textures/weapon/lockedWeapon/Bazooka.png")));
+            WEAPONS.put("AmmoBAZOOKA", ImageIO.read(TextureManager.class.getResource("/textures/weapon/ammo/Bazooka.png")));
+
+
         } catch (IOException e) {
             e.printStackTrace();
             System.err.println("ERREUR : impossible de charger une texture.");
         }
     }
+
 }
+
