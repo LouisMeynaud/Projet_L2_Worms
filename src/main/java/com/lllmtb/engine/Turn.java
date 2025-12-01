@@ -6,26 +6,28 @@ import com.lllmtb.model.entity.worm.Worm;
 public class Turn {
     private final Team team;
     private boolean isEnd = false;
-    public Turn(Team team){
+
+    public Turn(Team team) {
         this.team = team;
     }
 
-    public Team getTeam(){
+    public Team getTeam() {
         return this.team;
     }
 
-    public Worm getWormPlayable(){
+    public Worm getWormPlayable() {
         return team.getCurrentWorm();
     }
 
-    public void end(){
+    public void end() {
         this.team.nextWorm();
     }
 
-    public boolean getIsEnd(){
+    public boolean getIsEnd() {
         return this.isEnd;
     }
-    public void setIsEnd(){
+
+    public void setIsEnd() {
         this.isEnd = true;
     }
 }

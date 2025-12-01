@@ -20,7 +20,7 @@ public final class TurnManager {
     private EventListener<MoveEvent> moveListener;
     private EventListener<GroundCheckCollision> groundCollisionListener = event -> {
         if (turn.getWormPlayable().uuid == event.worm.uuid) {
-            Move.JumpToMax();
+            Move.jumpToMax();
         }
     };
 
@@ -33,16 +33,18 @@ public final class TurnManager {
         this.init();
     }
 
-    public GameWorld getWorld(){
+    public GameWorld getWorld() {
         return this.world;
     }
 
-    public long getTurnDuration(){
+    public long getTurnDuration() {
         return this.turnDurationInMs;
     }
 
-    public void init(){
-        world.getBus().subscribe(TurnStopEvent.class, event -> {this.turn.setIsEnd();});
+    public void init() {
+        world.getBus().subscribe(TurnStopEvent.class, event -> {
+            this.turn.setIsEnd();
+        });
     }
 
     public void startTurn(Team team) {
@@ -67,7 +69,7 @@ public final class TurnManager {
         if (now - startTime >= turnDurationInMs) {
             endTurn();
         }
-        if(this.turn.getIsEnd()){
+        if (this.turn.getIsEnd()) {
             endTurn();
         }
     }

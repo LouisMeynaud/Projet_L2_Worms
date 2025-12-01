@@ -37,12 +37,16 @@ public class SaveMap {
                         mapString.append("W");
                         break;
                     case DIRT:
-                        mapString.append("D");break;
+                        mapString.append("D");
+                        break;
                     case CAVERN:
-                        mapString.append("C");break;
+                        mapString.append("C");
+                        break;
                     case GRASS:
-                        mapString.append("G");break;
-                    default : throw new IllegalStateException("Tile inconnue : " + t);
+                        mapString.append("G");
+                        break;
+                    default:
+                        throw new IllegalStateException("Tile inconnue : " + t);
                 }
             }
             mapString.append("\n");

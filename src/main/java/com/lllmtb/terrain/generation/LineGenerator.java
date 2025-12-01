@@ -16,7 +16,7 @@ public class LineGenerator {
                 if (random.nextInt(101) < config.getPlateauChance()) {
                     slope = 0;
                 } else {
-                    slope = random.nextInt(config.getMaxSlope() - (- config.getMaxSlope()) + 1) + (- config.getMaxSlope());
+                    slope = random.nextInt(config.getMaxSlope() - (-config.getMaxSlope()) + 1) + (-config.getMaxSlope());
                 }
                 length = random.nextInt(config.getMaxLength() + 1);
             } while (lineHeight + slope * length > config.getHeight() || lineHeight + slope * length < 0);
@@ -28,5 +28,5 @@ public class LineGenerator {
         }
         return line;
     }
-    
+
 }

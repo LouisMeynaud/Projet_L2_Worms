@@ -1,6 +1,5 @@
 package com.lllmtb.model.entity.projectile;
 
-import com.lllmtb.model.entity.CollisionType;
 import com.lllmtb.model.entity.Entity;
 import com.lllmtb.model.entity.worm.Worm;
 import com.lllmtb.model.item.weapon.FireParams;

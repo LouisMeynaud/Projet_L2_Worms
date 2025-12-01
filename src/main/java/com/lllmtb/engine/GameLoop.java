@@ -13,9 +13,8 @@ public class GameLoop implements Runnable {
 
     /**
      * Creates a new {@code GameLoop} instance.
-     *
      * @param world the game world to be updated by this game loop
-     * @throws NullPointerException if {@code world} is {@code null}
+     * @exception NullPointerException if {@code world} is {@code null}
      */
     public GameLoop(@NonNull GameWorld world) {
         this.world = Objects.requireNonNull(world);
@@ -25,9 +24,8 @@ public class GameLoop implements Runnable {
 
     /**
      * Handles game pause events to update the paused state of the game loop.
-     *
      * @param event the {@link GamePauseEvent} containing the new paused state
-     * @throws NullPointerException if {@code event} is {@code null}
+     * @exception NullPointerException if {@code event} is {@code null}
      */
     private void onPauseEvent(@NonNull GamePauseEvent event) {
         this.isPaused = Objects.requireNonNull(event).isPaused;
@@ -47,7 +45,8 @@ public class GameLoop implements Runnable {
             long elapsedMs = (now - last) / 1_000_000;
             last = now;
 
-            if (!isPaused){
+            if (!isPaused) {
+                System.out.print(""); // TODO : Replace by another line which will be always effective
                 // System.out.println("[" + String.format("%4d", acc++) + "] New tick " + elapsedMs + "ms");
                 // System.out.println("Entities in the game "
                 //         + world.getPhysics().getBodies().size() + " : "
@@ -58,7 +57,7 @@ public class GameLoop implements Runnable {
             // 1) process queued external events (eg. input)
             world.getBus().processQueued();
 
-            if (!isPaused){
+            if (!isPaused) {
                 // 2) update physics + TurnManager
                 world.update(ticktime);
 
@@ -68,7 +67,7 @@ public class GameLoop implements Runnable {
 
             // 4) sleep to maintain tick rate
             try {
-                Thread.sleep(Math.max(0, (long) ticktime - (System.nanoTime() - now)/1_000_000));
+                Thread.sleep(Math.max(0, (long) ticktime - (System.nanoTime() - now) / 1_000_000));
             } catch (InterruptedException ignored) {
                 stop();
             }

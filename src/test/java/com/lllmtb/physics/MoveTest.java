@@ -21,7 +21,7 @@ public class MoveTest {
 
     @Test
     void testJumpToMax() {
-        Move.JumpToMax();
+        Move.jumpToMax();
         assertEquals(2, Move.jump);
     }
     @Test
@@ -70,7 +70,7 @@ public class MoveTest {
     }
     @Test
     void testMoveUpWithJump() throws NoSuchFieldException, IllegalAccessException {
-        Move.JumpToMax();
+        Move.jumpToMax();
         Worm wormMock = Mockito.mock(Worm.class);
         GameCommand gameCommand =   Move.move(wormMock, Direction.Up);
         Field modifierField = AddPhysicsModifierCommand.class.getDeclaredField("modifier");
