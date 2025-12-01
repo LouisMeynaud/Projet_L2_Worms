@@ -1,14 +1,9 @@
 package com.lllmtb.terrain.map;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-
 public class SaveMap {
 //  public static boolean saveMap(Map map) {
 //     try {
-        
+
 //         Path path = Paths.get("src/main/resources/map");
 //         Path folderPath = path.resolve(map.getFilesTxt());//concataine
 //         Files.createDirectories(folderPath);
@@ -37,12 +32,16 @@ public class SaveMap {
                         mapString.append("W");
                         break;
                     case DIRT:
-                        mapString.append("D");break;
+                        mapString.append("D");
+                        break;
                     case CAVERN:
-                        mapString.append("C");break;
+                        mapString.append("C");
+                        break;
                     case GRASS:
-                        mapString.append("G");break;
-                    default : throw new IllegalStateException("Tile inconnue : " + t);
+                        mapString.append("G");
+                        break;
+                    default:
+                        throw new IllegalStateException("Tile inconnue : " + t);
                 }
             }
             mapString.append("\n");
@@ -51,7 +50,7 @@ public class SaveMap {
     }
 
     //methode demandant le fichie d'enregistrement de save quand une map est crée
-     public static String newMapSaveFile() {
+    public static String newMapSaveFile() {
         // boolean existe = false;
         // String files;
         // do {
@@ -72,7 +71,7 @@ public class SaveMap {
         //     }
         // } while (existe);
         // return files;
-         return "testMap.txt";
+        return "testMap.txt";
 
-     }
+    }
 }

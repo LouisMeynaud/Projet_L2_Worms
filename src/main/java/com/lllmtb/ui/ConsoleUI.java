@@ -37,11 +37,11 @@ import com.lllmtb.terrain.generation.LandScape;
 
 public class ConsoleUI implements UI {
     private Terminal terminal;
-    private EventBus eventBus; 
+    private EventBus eventBus;
 
-   
+
     public ConsoleUI(EventBus bus) {
-        this.eventBus = bus; 
+        this.eventBus = bus;
         try {
             this.terminal = TerminalBuilder.builder().system(true).build();
             terminal.puts(InfoCmp.Capability.clear_screen);
@@ -55,7 +55,7 @@ public class ConsoleUI implements UI {
         }
     }
 
-    
+
     public GameSettings promptSettings() {
 
         try {
@@ -74,8 +74,9 @@ public class ConsoleUI implements UI {
             LandScape landscape = LandScape.UNKNOWN;
             boolean floatingIsland = false;
 
-            if (loadMap) mapFileName = promptMapName();
-            else {
+            if (loadMap) {
+                mapFileName = promptMapName();
+            } else {
                 size = promptMapSize();
                 landscape = promptLandscape();
                 floatingIsland = promptFloatingIsland();
@@ -88,8 +89,12 @@ public class ConsoleUI implements UI {
             terminal.writer().println();
             terminal.writer().println(" RECAP: ");
             terminal.writer().println("   " + nbTeams + " teams " + Arrays.toString(teamNames) + " of " + nbWorms + " worm(s) each");
-            if (loadMap) terminal.writer().println("   Load map from: " + mapFileName);
-            else terminal.writer().println("   Generate a new " + size + "x map with " + landscape.name() + " landscape " + (floatingIsland ? "(floating island mode)" : "(normal mode)"));
+            if (loadMap) {
+                terminal.writer().println("   Load map from: " + mapFileName);
+            } else {
+                terminal.writer()
+                        .println("   Generate a new " + size + "x map with " + landscape.name() + " landscape " + (floatingIsland ? "(floating island mode)" : "(normal mode)"));
+            }
             terminal.writer().println("   Wind: " + (hasWind ? "ON" : "OFF"));
             terminal.writer().flush();
             return new GameSettings(nbTeams, teamNames, nbWorms, turnDuration, hasWind, mapFileName, floatingIsland, size, landscape);
@@ -119,11 +124,13 @@ public class ConsoleUI implements UI {
         for (int i = 0; i < nbTeams; i++) {
             builder.createInputPrompt()
                     .name("nameTeam" + i)
-                    .message("Enter the name of Team n°" + (i+1))
+                    .message("Enter the name of Team n°" + (i + 1))
                     .addPrompt();
         }
         Map<String, PromptResultItemIF> result = prompt.prompt(builder.build());
-        for (int i = 0; i < nbTeams; i++) teamNames[i] = result.get("nameTeam" + i).getResult();
+        for (int i = 0; i < nbTeams; i++) {
+            teamNames[i] = result.get("nameTeam" + i).getResult();
+        }
         return teamNames;
     }
 
@@ -179,7 +186,9 @@ public class ConsoleUI implements UI {
                 .name("mapFileName")
                 .message("  Select a map to load");
 
-        for (File d : dossiers) b.newItem(d.getName()).text(d.getName()).add();
+        for (File d : dossiers) {
+            b.newItem(d.getName()).text(d.getName()).add();
+        }
         b.addPrompt();
 
         Map<String, PromptResultItemIF> result = prompt.prompt(builder.build());
@@ -240,16 +249,16 @@ public class ConsoleUI implements UI {
         return result.get("hasWind").getResult().equals(ConfirmChoice.ConfirmationValue.YES.toString());
     }
 
-    
+
     public boolean readyToPlay() {
-        
+
         LineReader reader = LineReaderBuilder.builder().terminal(terminal).appName("WORMS Game").build();
         return reader.readLine("Press Enter to start the game...") != null;
     }
 
-    
-    @Override 
-    public void start(){
+
+    @Override
+    public void start() {
         try {
             GameSettings settings = this.promptSettings();
             boolean ready = this.readyToPlay();
@@ -263,13 +272,13 @@ public class ConsoleUI implements UI {
                     System.out.println(world.getMap());
                 });
             }
-        }catch (Exception e) {
+        } catch (Exception e) {
             System.err.println("Une erreur est survenue durant la configuration :");
             e.printStackTrace();
             close();
         }
     }
-    
+
     public void close() {
         try {
             terminal.close();

@@ -23,7 +23,10 @@ public class GameEngine {
         new Thread(() -> {
             while (world == null) {
                 eventBus.processQueued();
-                try { Thread.sleep(10); } catch (InterruptedException e) {}
+                try {
+                    Thread.sleep(10);
+                } catch (InterruptedException e) {
+                }
             }
         }, "engine-loop").start();
 
@@ -40,12 +43,11 @@ public class GameEngine {
 
     /**
      * Handles the StartGameEvent to initialize and start the game world.
-     *
      * @param event the StartGameEvent containing game settings
      */
     private static void startGame(@NonNull StartGameEvent event) {
         GameSettings settings = Objects.requireNonNull(event).getSettings();
-        world = new GameWorld(settings, eventBus); 
+        world = new GameWorld(settings, eventBus);
         eventBus.postSync(new WorldCreatedEvent(world));
         world.start();
     }

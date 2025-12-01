@@ -3,6 +3,7 @@ package com.lllmtb.physics;
 import com.lllmtb.model.item.ItemId;
 
 import org.eclipse.jdt.annotation.NonNull;
+
 import java.util.Objects;
 
 /**
@@ -33,7 +34,7 @@ public class PhysicsModifier {
     /**
      * Creates a new one-shot PhysicsModifier.
      * @param transform The transformation to apply.
-     * @param source The source item ID of the modifier.
+     * @param source    The source item ID of the modifier.
      */
     public PhysicsModifier(@NonNull Transform transform, ItemId source) {
         this.transform = Objects.requireNonNull(transform);

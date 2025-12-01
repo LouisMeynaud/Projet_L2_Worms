@@ -4,7 +4,6 @@ import com.lllmtb.events.EventBus;
 import com.lllmtb.events.move.GroundCheckCollision;
 import com.lllmtb.model.entity.worm.Worm;
 import com.lllmtb.terrain.map.Map;
-import com.lllmtb.model.entity.Entity;
 
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -40,7 +39,6 @@ public class Collision {
 
         /**
          * Constructor of Impact when there isn't any collision
-         *
          * @param pos the {@link Position} that is the final position
          */
         public Impact(Position pos) {
@@ -53,9 +51,8 @@ public class Collision {
 
         /**
          * Constructor of impact when there is a collision
-         *
          * @param ti      the {@code double} which represents the time of impact, between {@code 0.0} and {@code 1.0}.
-         * @param body     the {@link PhysicsBody} of the entity in movement.
+         * @param body    the {@link PhysicsBody} of the entity in movement.
          * @param normal  the normal {@link Vector} of the hit structure.
          * @param hitBody the {@link PhysicsBody} of the collided entity ({@code null} if it's the map).
          */
@@ -75,7 +72,7 @@ public class Collision {
      * Worms are rectangles with a ratio of height 2 / width 1 and others bodies are squares.
      * So, to test the collision with a worm, we make two circles and we test them.
      * </p>
-     * @param body the {@link PhysicsBody} in movement
+     * @param body   the {@link PhysicsBody} in movement
      * @param endPos the final {@link Position} of {@code body} without collision.
      * @return an {@link Impact} with the information about possible collisions
      */
@@ -85,8 +82,8 @@ public class Collision {
         // if the body is a worm
         if (body.getEntity() instanceof Worm) {
             // Calculation of the two circles radius
-            double radius = body.getWidth()/2;
-            Position wormHead = new Position(body.getPos().getX(),body.getPos().getY() + 1.0);
+            double radius = body.getWidth() / 2;
+            Position wormHead = new Position(body.getPos().getX(), body.getPos().getY() + 1.0);
             Position endPos2 = new Position(endPos.getX(), endPos.getY() + 1.0);
             // test collision for the two circles of the worm
             Impact mapImpact1 = this.testSweptCircleTile(body, body.getPos(), radius, endPos);
@@ -100,7 +97,7 @@ public class Collision {
             // test with other bodies on the map without other worms
             for (PhysicsBody other : this.bodies) {
                 if ((body != other) && !(other.getEntity() instanceof Worm)) {
-                    double radiusOther = other.getHeight()/2;
+                    double radiusOther = other.getHeight() / 2;
                     Position otherPos = new Position(other.getPos().getX() + 0.5, other.getPos().getY() + 0.5);
                     Impact bodyImpact = this.testSweptCircleCircle(body, body.getPos(), radius, other, otherPos, radiusOther, endPos);
                     if (bodyImpact.ti < finalImpact.ti) {
@@ -114,7 +111,7 @@ public class Collision {
             }
         } else {
             // if the body is not a worm
-            double radius = body.getHeight()/2;
+            double radius = body.getHeight() / 2;
             // Entity-Map Test: searches for the earliest impact time
             Impact mapImpact = this.testSweptCircleTile(body, body.getPos(), radius, endPos);
             if (mapImpact.collided && mapImpact.ti < finalImpact.ti) {
@@ -124,7 +121,7 @@ public class Collision {
             // Entity-Entity Test: iterates over all other bodies to find the earliest impact time
             for (PhysicsBody other : this.bodies) {
                 if (other != body) {
-                    double radiusOther = other.getWidth()/2;
+                    double radiusOther = other.getWidth() / 2;
                     Position otherPos = new Position(other.getPos().getX() + 0.5, other.getPos().getY() + 0.5);
                     Impact bodyImpact = this.testSweptCircleCircle(body, body.getPos(), radius, other, otherPos, radiusOther, endPos);
                     if (bodyImpact.ti < finalImpact.ti) {
@@ -146,10 +143,10 @@ public class Collision {
 
     /**
      * Calculates the first swept impact between the moving body and the map's solid tiles.
-     * @param body The moving {@link PhysicsBody}.
+     * @param body     The moving {@link PhysicsBody}.
      * @param startPos the {@link Position} of the body center
-     * @param radius the radius of the body hitbox circle
-     * @param endPos The target {@link Position}.
+     * @param radius   the radius of the body hitbox circle
+     * @param endPos   The target {@link Position}.
      * @return The nearest impact with a solid tile.
      */
     private Impact testSweptCircleTile(PhysicsBody body, Position startPos, double radius, Position endPos) {
@@ -195,16 +192,16 @@ public class Collision {
     /**
      * Calculates the first swept impact between two circular bodies.
      * Reduces the problem to a Swept Point vs. Static Circle of combined radius.
-     * @param body1 The moving {@link PhysicsBody}.
+     * @param body1     The moving {@link PhysicsBody}.
      * @param startPos1 the {@link Position} of the first body center
-     * @param radius1 the radius of the first body hitbox circle
-     * @param body2 The target {@link PhysicsBody} (static for this calculation).
+     * @param radius1   the radius of the first body hitbox circle
+     * @param body2     The target {@link PhysicsBody} (static for this calculation).
      * @param startPos2 the {@link Position} of the second body center
-     * @param radius2 the radius of the second body hitbox circle
-     * @param endPos The target {@link Position} of body1.
+     * @param radius2   the radius of the second body hitbox circle
+     * @param endPos    The target {@link Position} of body1.
      * @return The nearest impact with body2.
      */
-    private Impact testSweptCircleCircle(PhysicsBody body1, Position startPos1, double radius1,PhysicsBody body2, Position startPos2, double radius2, Position endPos) {
+    private Impact testSweptCircleCircle(PhysicsBody body1, Position startPos1, double radius1, PhysicsBody body2, Position startPos2, double radius2, Position endPos) {
         Position startPos = new Position(startPos1.getX() + radius1, startPos1.getY() + radius1);
         Vector displacement = new Vector(endPos.getX() - startPos1.getX(), endPos.getY() - startPos1.getY());
 
@@ -232,8 +229,8 @@ public class Collision {
      * Static collision detection (overlap) between a circle and a tile (AABB).
      * Used for the initial overlap test (ti=0.0).
      * @param circleCenter Center {@link Position} of the circle.
-     * @param radius Radius of the circle.
-     * @param tilePos Bottom-left corner of the tile (1x1 square).
+     * @param radius       Radius of the circle.
+     * @param tilePos      Bottom-left corner of the tile (1x1 square).
      * @return True if the circle overlaps the tile.
      */
     private boolean isColliding(Position circleCenter, double radius, Position tilePos) {
@@ -256,7 +253,7 @@ public class Collision {
 
     /**
      * Calculates the impact normal for a circle hitting a tile.
-     * @param hitPos Center {@link Position} of the circle at the moment of impact.
+     * @param hitPos  Center {@link Position} of the circle at the moment of impact.
      * @param tilePos The {@link Position} of the tile.
      * @return The unit normal vector.
      */
@@ -271,7 +268,9 @@ public class Collision {
 
         // Normalization
         double length = Math.sqrt(normalVec.getX() * normalVec.getX() + normalVec.getY() * normalVec.getY());
-        if (length == 0.0) return new Vector(0, 0);
+        if (length == 0.0) {
+            return new Vector(0, 0);
+        }
 
         return normalVec.scale(1.0 / length);
     }
@@ -279,10 +278,10 @@ public class Collision {
     /**
      * Calculates the Time of Impact (ti) and the normal {@link Vector} between a circle Tile (AABB).
      * This is the "Swept Point vs Enlarged AABB" algorithm.
-     * @param startPos Starting {@link Position}.
-     * @param radius Radius of the circle.
+     * @param startPos     Starting {@link Position}.
+     * @param radius       Radius of the circle.
      * @param displacement Total displacement {@link Vector}.
-     * @param tilePos Tile corner {@link Position}.
+     * @param tilePos      Tile corner {@link Position}.
      * @return double[] {ti, normalX, normalY}. ti=1.0 if no collision.
      */
     private double[] sweptCircleAABB(Position startPos, double radius, Vector displacement, Position tilePos) {
@@ -318,10 +317,14 @@ public class Collision {
 
         // Invert times if direction is negative
         if (dx < 0) {
-            double temp = txNearX; txNearX = txFarX; txFarX = temp;
+            double temp = txNearX;
+            txNearX = txFarX;
+            txFarX = temp;
         }
         if (dy < 0) {
-            double temp = tyNearY; tyNearY = tyFarY; tyFarY = temp;
+            double temp = tyNearY;
+            tyNearY = tyFarY;
+            tyFarY = temp;
         }
 
         // tiNear is the moment both X and Y conditions are met (take the max)
@@ -331,7 +334,7 @@ public class Collision {
 
         // Check impact validity
         if (tiNear >= 1.0 || tiNear < 0.0 || tiNear >= tiFar) {
-            return new double[]{1.0, 0, 0};
+            return new double[] {1.0, 0, 0};
         }
 
         // Determine the normal (main axis of impact)
@@ -345,7 +348,7 @@ public class Collision {
             normalY = (dy > 0) ? -1 : 1;
         }
 
-        return new double[]{tiNear, normalX, normalY};
+        return new double[] {tiNear, normalX, normalY};
     }
 
     /**
@@ -370,11 +373,15 @@ public class Collision {
         // C = ||p1toC2||^2 - r2^2
         double c = p1ToC2.getX() * p1ToC2.getX() + p1ToC2.getY() * p1ToC2.getY() - r2 * r2;
         // if a = 0, object1 not in movement, so no collision
-        if (a == 0.0) return 1.0;
+        if (a == 0.0) {
+            return 1.0;
+        }
         // Calculation of the discriminant
         double discriminant = b * b - 4 * a * c;
         // if discriminant < 0, so no collision
-        if (discriminant < 0.0) return 1.0;
+        if (discriminant < 0.0) {
+            return 1.0;
+        }
         // Calculation of solution, only the one with the "-" because it's the first
         double ti = (-b - Math.sqrt(discriminant)) / (2.0 * a);
         if (ti >= 0.0 && ti < 1.0) {
@@ -388,10 +395,10 @@ public class Collision {
      * Simulates the case when the {@link PhysicsBody} has to slide along the hit object/cliff
      * it annulates the vector detail in collision
      * </p>
-     * @param body the {@link PhysicsBody} which move
-     * @param impact the {@link Impact} with collision's information
+     * @param body     the {@link PhysicsBody} which move
+     * @param impact   the {@link Impact} with collision's information
      * @param ticktime the duration of a simulation tick
-     * @param bus the {@link EventBus} of the collisions
+     * @param bus      the {@link EventBus} of the collisions
      */
     public void slide(PhysicsBody body, Impact impact, double ticktime, EventBus bus) {
         // new position
@@ -411,7 +418,7 @@ public class Collision {
         Impact i = move(body, nextPos);
         body.setPos(i.collisionPos);
         if (i.collided) {
-            body.setVector(new Vector(0,0));
+            body.setVector(new Vector(0, 0));
         }
     }
 
@@ -420,8 +427,8 @@ public class Collision {
      * Simulates the case when the {@link PhysicsBody} has to bounce at it first collision
      * using the formula reflected_speed = init_speed - 2 * (init_speed * normal) * normal
      * </p>
-     * @param body the {@link PhysicsBody} which move
-     * @param impact the {@link Impact} with collision's information
+     * @param body        the {@link PhysicsBody} which move
+     * @param impact      the {@link Impact} with collision's information
      * @param restitution the coefficient of restitution (energy loss, between 0 and 1).
      */
     public void bounce(PhysicsBody body, Impact impact, double restitution) {
@@ -439,7 +446,7 @@ public class Collision {
 
     /**
      * Simulates the case when the {@link PhysicsBody} has to stay where it has it first collision
-     * @param body the {@link PhysicsBody} which move
+     * @param body   the {@link PhysicsBody} which move
      * @param impact the {@link Impact} with collision's information
      */
     public void touch(PhysicsBody body, Impact impact) {
@@ -451,7 +458,7 @@ public class Collision {
     /**
      * Simulates the case when the {@link PhysicsBody} cross map and other {@link PhysicsBody}
      * @param body the {@link PhysicsBody} which move
-     * @param pos the {@link Position} where the {@link PhysicsBody} will be after the tick
+     * @param pos  the {@link Position} where the {@link PhysicsBody} will be after the tick
      */
     public void cross(PhysicsBody body, Position pos) {
         body.setPos(pos);

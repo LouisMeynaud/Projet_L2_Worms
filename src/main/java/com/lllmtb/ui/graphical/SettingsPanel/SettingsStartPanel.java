@@ -23,51 +23,52 @@ public class SettingsStartPanel extends JPanel {
 
     public SettingsStartPanel(EventBus eventBus) {
         this.eventBus = eventBus;
-        PanelSetting();
-        
+        panelSetting();
+
 
     }
 
-    public void PanelSetting() {
+    public void panelSetting() {
 
         this.setLayout(new BorderLayout(10, 10)); // North zone, South,...
 
         // Title (image later); Northern Zone
         JLabel titre = new JLabel("START A NEW GAME");
         titre.setHorizontalAlignment(SwingConstants.CENTER);
-        titre.setFont(new Font("Arial", Font.BOLD, 24)); 
+        titre.setFont(new Font("Arial", Font.BOLD, 24));
         this.add(titre, BorderLayout.NORTH);
 
         // Launch and return button: southern zone
-        JPanel ZoneSud = new JPanel(new FlowLayout(FlowLayout.RIGHT)); // met les bouton a droite (flowLayout afficheles un apres les autre);
+        JPanel zoneSud = new JPanel(new FlowLayout(FlowLayout.RIGHT)); // met les bouton a droite (flowLayout afficheles un apres les autre);
         JButton backButton = new JButton("Back");
-        JButton StarButton = new JButton("Start the game");
+        JButton starButton = new JButton("Start the game");
 
-        ZoneSud.add(backButton);
-        ZoneSud.add(StarButton);
-        this.add(ZoneSud, BorderLayout.SOUTH);
+        zoneSud.add(backButton);
+        zoneSud.add(starButton);
+        this.add(zoneSud, BorderLayout.SOUTH);
 
 
         //center zone (two part (setting game/map))
-        JPanel PanelCentre = new JPanel(new GridLayout(1, 2, 10, 0));// 1 line, 2 columns, 10 horizontal margin
+        JPanel panelCentre = new JPanel(new GridLayout(1, 2, 10, 0)); // 1 line, 2 columns, 10 horizontal margin
         this.mapSettingPanel = new SettingMapPanel(eventBus);
         this.gameSettingsPanel = new SettingGamePanel();
 
-        PanelCentre.add(mapSettingPanel);
-        PanelCentre.add(gameSettingsPanel);
-        this.add(PanelCentre, BorderLayout.CENTER);
+        panelCentre.add(mapSettingPanel);
+        panelCentre.add(gameSettingsPanel);
+        this.add(panelCentre, BorderLayout.CENTER);
 
 
         backButton.addActionListener(e -> {
             eventBus.postQueued(new ScreenNewOrLoadEvent());
         });
 
-        StarButton.addActionListener(e -> {
+        starButton.addActionListener(e -> {
             eventBus.postQueued(new StartGameEvent(setSettings(gameSettingsPanel)));
         });
     }
+
     /**
-     * 
+     *
      * @param gameSettingsPanel retrieves the parameters chosen in the gameSetting panel
      * @returnreturns a type setting for creating the game.
      */
@@ -77,16 +78,15 @@ public class SettingsStartPanel extends JPanel {
         String[] nomsEquipes = gameSettingsPanel.getNomsEquipes();
         boolean wind = gameSettingsPanel.getWind();
         int turnDuration = gameSettingsPanel.getTurnDuration();
-        if(this.mapSettingPanel.loadMap){
+        if (this.mapSettingPanel.loadMap) {
             String mapFileName = this.mapSettingPanel.panelListeMap.getFichierSelectionne().getName();
-            return new GameSettings(nbEquipes, nomsEquipes, nbVWorms, turnDuration, wind, mapFileName, false,0,null);
-        }
-        else{
+            return new GameSettings(nbEquipes, nomsEquipes, nbVWorms, turnDuration, wind, mapFileName, false, 0, null);
+        } else {
             LandScape terrainType = this.mapSettingPanel.generateMapPanel.getReliefType();
             int widthMap = this.mapSettingPanel.generateMapPanel.getWidthMapSlider();
-            return new GameSettings(nbEquipes, nomsEquipes, nbVWorms, turnDuration, wind, null, false,widthMap,terrainType);
+            return new GameSettings(nbEquipes, nomsEquipes, nbVWorms, turnDuration, wind, null, false, widthMap, terrainType);
         }
-        
-        
+
+
     }
 }

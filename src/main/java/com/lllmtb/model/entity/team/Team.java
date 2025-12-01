@@ -28,47 +28,69 @@ import org.eclipse.jdt.annotation.NonNull;
  */
 public class Team {
 
-    /** List of worms belonging to the team. */
+    /**
+     * List of worms belonging to the team.
+     */
     private final ArrayList<Worm> worms = new ArrayList<>();
 
-    /** Inventory containing weapons and items for the team. */
+    /**
+     * Inventory containing weapons and items for the team.
+     */
     private final Inventory inventory;
 
-    /** The name of the team. */
+    /**
+     * The name of the team.
+     */
     public final String name;
 
-    /** Number of worms in the team. */
+    /**
+     * Number of worms in the team.
+     */
     private int numberOfWorms;
 
-    /** Unique ID of the team. */
+    /**
+     * Unique ID of the team.
+     */
     public final int id;
 
-    /** Static counter for assigning unique team IDs. */
+    /**
+     * Static counter for assigning unique team IDs.
+     */
     private static int ids;
 
-    /** The currently active worm of the team. */
+    /**
+     * The currently active worm of the team.
+     */
     private Worm currentWorm;
 
-    /** Index of the currently active worm. */
+    /**
+     * Index of the currently active worm.
+     */
     private int index = 0;
 
-    /** The item currently selected by the player */
+    /**
+     * The item currently selected by the player
+     */
     private ItemId selectedItem;
 
-    /** The color associated with this team. */
+    /**
+     * The color associated with this team.
+     */
     public final TeamColor teamColor;
 
-    /** Possible colors that can be assigned to a team. */
+    /**
+     * Possible colors that can be assigned to a team.
+     */
     private static final List<TeamColor> possibleTeamColors = Arrays.asList(TeamColor.values());
     private static final ArrayList<TeamColor> chosenTeamColors = new ArrayList<>();
 
 
     /**
      * Private constructor used to initialize a team with a given name, number of players, inventory, and spawn position.
-     * @param name the name of the team
+     * @param name          the name of the team
      * @param numberOfWorms number of worms in the team
-     * @param inventory the inventory assigned to the team
-     * @param spawn the spawn position where the worms will be placed
+     * @param inventory     the inventory assigned to the team
+     * @param spawn         the spawn position where the worms will be placed
      */
     private Team(@NonNull String name, int numberOfWorms, @NonNull Inventory inventory, @NonNull Position[] spawn) {
         this.inventory = Objects.requireNonNull(inventory);
@@ -83,9 +105,9 @@ public class Team {
 
     /**
      * Public constructor used to initialize a team using the private constructor.
-     * @param teamName the name of the team
+     * @param teamName      the name of the team
      * @param numberOfWorms number of worms in the team
-     * @param spawn the spawn position where the worms will be placed
+     * @param spawn         the spawn position where the worms will be placed
      */
     public Team(@NonNull String teamName, int numberOfWorms, @NonNull Position[] spawn) {
         this(teamName, numberOfWorms, new Inventory(), spawn);
@@ -132,22 +154,24 @@ public class Team {
         return this.currentWorm;
     }
 
-    public static ArrayList<TeamColor> getChosenTeamColors(){
+    public static ArrayList<TeamColor> getChosenTeamColors() {
         return chosenTeamColors;
     }
 
     /**
      * Creates and adds worms to the team based on the number of players.
      * @param numberOfPlayers number of worms to create
-     * @param spawns all spawn position for all worms
+     * @param spawns          all spawn position for all worms
      */
     private void setUpWorms(int numberOfPlayers, @NonNull Position[] spawns) {
         Objects.requireNonNull(spawns);
-        if (spawns.length != numberOfWorms) throw new IllegalArgumentException("Team spawnpoint array does not match the number of worms!");
+        if (spawns.length != numberOfWorms) {
+            throw new IllegalArgumentException("Team spawnpoint array does not match the number of worms!");
+        }
         for (int i = 1; i <= numberOfPlayers; i++) {
             new Worm(this.name + i, this);
-            Position spawn = spawns[i-1];
-            this.worms.get(i-1).spawn(spawn);
+            Position spawn = spawns[i - 1];
+            this.worms.get(i - 1).spawn(spawn);
         }
     }
 
@@ -165,7 +189,7 @@ public class Team {
      * @param indexPlayer index of the worm to remove
      */
     public void removeWorm(int indexPlayer) {
-        this.worms.remove(indexPlayer-1);
+        this.worms.remove(indexPlayer - 1);
         this.numberOfWorms = this.worms.size();
     }
 
@@ -175,9 +199,11 @@ public class Team {
      */
     public static TeamColor chooseColor() {
         Random random = new Random();
-        if(chosenTeamColors.size() == possibleTeamColors.size()){Team.chosenTeamColors.clear();}
+        if (chosenTeamColors.size() == possibleTeamColors.size()) {
+            Team.chosenTeamColors.clear();
+        }
         TeamColor teamcolor = Team.possibleTeamColors.get(random.nextInt(Team.possibleTeamColors.size()));
-        while(chosenTeamColors.contains(teamcolor)){
+        while (chosenTeamColors.contains(teamcolor)) {
             teamcolor = Team.possibleTeamColors.get(random.nextInt(Team.possibleTeamColors.size()));
         }
         chosenTeamColors.add(teamcolor);
@@ -205,12 +231,15 @@ public class Team {
     /**
      * Adds ammunition for a specific weapon in the team's inventory.
      * @param id weapon for which to add ammunition
-     * @param n number of ammo units to add
+     * @param n  number of ammo units to add
      * @throws UnknownWeaponException if the weapon type is unknown
      */
     public void addAmmo(@NonNull WeaponId id, int n) {
-        try { this.inventory.weapons.addAmmo(id, n); }
-        catch (UnknownItemException e) { throw new UnknownWeaponException((WeaponId) e.id); }
+        try {
+            this.inventory.weapons.addAmmo(id, n);
+        } catch (UnknownItemException e) {
+            throw new UnknownWeaponException((WeaponId) e.id);
+        }
     }
 
     /**
@@ -226,12 +255,15 @@ public class Team {
     /**
      * Adds ammunition for a specific tool in the team's inventory.
      * @param id tool for which to add ammunition
-     * @param n number of ammo units to add
+     * @param n  number of ammo units to add
      * @throws UnknownToolException if the tool type is unknown
      */
     public void addAmmo(@NonNull ToolId id, int n) {
-        try { this.inventory.tools.addAmmo(id, n); }
-        catch (UnknownItemException e) { throw new UnknownToolException((ToolId) e.id); }
+        try {
+            this.inventory.tools.addAmmo(id, n);
+        } catch (UnknownItemException e) {
+            throw new UnknownToolException((ToolId) e.id);
+        }
     }
 
     /**
@@ -271,9 +303,15 @@ public class Team {
      * @param id weapon to select
      */
     public void selectWeapon(WeaponId id) {
-        if (!inventory.weapons.contains(id)) throw new UnknownWeaponException(id);
-        if (!inventory.isUnlocked(id)) throw new LockedWeaponException(id, this);
-        if (!inventory.canFire(id)) throw new UnusableWeaponException(id, this);
+        if (!inventory.weapons.contains(id)) {
+            throw new UnknownWeaponException(id);
+        }
+        if (!inventory.isUnlocked(id)) {
+            throw new LockedWeaponException(id, this);
+        }
+        if (!inventory.canFire(id)) {
+            throw new UnusableWeaponException(id, this);
+        }
         selectItem(id);
     }
 
@@ -282,8 +320,12 @@ public class Team {
      * @param id tool to select
      */
     public void selectTool(ToolId id) {
-        if (!inventory.tools.contains(id)) throw new UnknownToolException(id);
-        if (!inventory.canUse(id)) throw new UnusableToolException(id, this);
+        if (!inventory.tools.contains(id)) {
+            throw new UnknownToolException(id);
+        }
+        if (!inventory.canUse(id)) {
+            throw new UnusableToolException(id, this);
+        }
         selectItem(id);
     }
 

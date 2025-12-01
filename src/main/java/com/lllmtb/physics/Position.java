@@ -14,7 +14,6 @@ public class Position {
 
     /**
      * Constructs a new {@code Position} with the specified coordinates.
-     *
      * @param x the x-coordinate
      * @param y the y-coordinate
      */
@@ -23,10 +22,13 @@ public class Position {
         this.y = y;
     }
 
-    /** Getters */
+    /**
+     * Getters
+     */
     public double getX() {
         return this.x;
     }
+
     public double getY() {
         return this.y;
     }
@@ -45,8 +47,10 @@ public class Position {
         return "[" + x + ", " + y + "]";
     }
 
-    public boolean equals(Position other){
-        if (other == null) return false;
+    public boolean equals(Position other) {
+        if (other == null) {
+            return false;
+        }
         return this.getX() == other.getX() && this.getY() == other.getY();
     }
 }
