@@ -14,6 +14,7 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 
 import com.lllmtb.engine.GameWorld;
+import com.lllmtb.engine.Logger.Logger;
 import com.lllmtb.events.EventBus;
 import com.lllmtb.events.move.MouseInputEvent;
 import com.lllmtb.events.move.MouseWheelMoveInputEvent;
@@ -263,7 +264,7 @@ public class GameWorldPanel extends JPanel {
 
         } catch (IOException e) {
             e.printStackTrace();
-            System.err.println("ERREUR: Impossible de charger les textures !");
+            Logger.logger.error("ERREUR: Impossible de charger les textures !");
         }
     }
 

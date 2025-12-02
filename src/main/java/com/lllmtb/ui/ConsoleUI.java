@@ -1,7 +1,9 @@
 package com.lllmtb.ui;
 
+import com.lllmtb.engine.GameEngine;
 import com.lllmtb.engine.GameSettings;
 import com.lllmtb.engine.GameWorld;
+import com.lllmtb.engine.Logger.Logger;
 import com.lllmtb.events.EventBus;
 import com.lllmtb.events.game.StartGameEvent;
 
@@ -51,7 +53,7 @@ public class ConsoleUI implements UI {
             terminal.writer().println();
             terminal.writer().flush();
         } catch (IOException e) {
-            System.err.println("Error while initialising JLine Terminal");
+            Logger.logger.error("Error while initialising JLine Terminal");
         }
     }
 

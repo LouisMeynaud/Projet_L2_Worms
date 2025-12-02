@@ -1,5 +1,6 @@
 package com.lllmtb.engine;
 
+import com.lllmtb.engine.Logger.Logger;
 import com.lllmtb.events.EventListener;
 import com.lllmtb.events.turn.TurnEndEvent;
 import com.lllmtb.events.turn.TurnStarEvent;
@@ -51,12 +52,11 @@ public final class TurnManager {
         startTime = System.currentTimeMillis();
         this.turn = new Turn(team);
         world.getBus().postQueued(new TurnStarEvent(team));
-        System.out.println("Start turn for the team " + team.name);
+        Logger.logger.info("Start turn for the team {}\n", team.name);
         world.getBus().postQueued(new WormPlayable(turn.getWormPlayable()));
 
         moveListener = event -> {
             world.queueCommand(move(this.turn.getWormPlayable(), event.direction));
-            System.out.println("Move");
         };
         world.getBus().subscribe(MoveEvent.class, moveListener);
 
@@ -76,7 +76,7 @@ public final class TurnManager {
 
     private void endTurn() {
         this.turn.end();
-        System.out.println("End turn - switch Team");
+        Logger.logger.info("End turn - switch Team\n");
         world.getBus().unsubscribe(MoveEvent.class, moveListener);
         world.getBus().unsubscribe(GroundCheckCollision.class, groundCollisionListener);
         world.getBus().postQueued(new TurnEndEvent());

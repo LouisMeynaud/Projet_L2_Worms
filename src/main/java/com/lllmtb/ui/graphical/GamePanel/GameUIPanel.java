@@ -6,6 +6,7 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 
+import com.lllmtb.engine.Logger.Logger;
 import com.lllmtb.events.EventBus;
 import com.lllmtb.events.game.GamePauseEvent;
 
@@ -88,6 +89,7 @@ public class GameUIPanel extends JPanel {
         this.pauseMenucontainer.setVisible(show);
 
         this.eventBus.postQueued(new GamePauseEvent(show));
+        Logger.logger.debug("Game Paused");
         if (!show) {
             SwingUtilities.getWindowAncestor(this).requestFocus();
         }

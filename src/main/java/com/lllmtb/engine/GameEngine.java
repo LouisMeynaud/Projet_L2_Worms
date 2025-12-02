@@ -15,7 +15,7 @@ public class GameEngine {
     private static GameWorld world;
 
     public static void main(String[] args) {
-        boolean graphique = true;
+        boolean graphique = false;
         eventBus = new EventBus();
         eventBus.subscribe(StartGameEvent.class, GameEngine::startGame);
 

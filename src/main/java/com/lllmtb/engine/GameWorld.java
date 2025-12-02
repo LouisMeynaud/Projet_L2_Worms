@@ -1,5 +1,6 @@
 package com.lllmtb.engine;
 
+import com.lllmtb.engine.Logger.Logger;
 import com.lllmtb.engine.commands.GameCommand;
 import com.lllmtb.events.EventBus;
 import com.lllmtb.events.game.GameStateUpdatedEvent;
@@ -63,13 +64,13 @@ public class GameWorld {
 
         // Init Teams
         this.teams = new ArrayList<>();
-        System.out.println("Creating the Teams...");
+        Logger.logger.info("Creating the Teams...");
         for (int i = 0; i < settings.nbTeams; i++) {
             try {
                 Team team = new Team(settings.teamNames[i], settings.nbWorms, tmap.getSpawnPoint()[i]);
                 teams.add(team);
                 team.getTeamWorms().forEach(this::registerEntity);
-                System.out.printf("%d | %s - %d - %s\n", i, team.name, team.id, team.teamColor);
+                Logger.logger.info("{} | {} - {} - {}\n", i, team.name, team.id, team.teamColor);
             } catch (ArrayIndexOutOfBoundsException e) {
                 break;
             }
@@ -77,7 +78,7 @@ public class GameWorld {
 
         // Init GameLoop
         this.gameLoop = new GameLoop(this);
-        System.out.println("Game initialised");
+        Logger.logger.debug("Game initialised");
 
         //Init TurnManager
         this.turnManager = new TurnManager(this, settings.turnDuration);
@@ -116,14 +117,14 @@ public class GameWorld {
         if (loopThread != null && loopThread.isAlive()) {
             return;
         }
-        System.out.println("Starting the game loop...");
+        Logger.logger.debug("Starting the game loop...");
         loopThread = new Thread(gameLoop, "gameloop");
         this.nextTeamTurn();
         loopThread.start();
     }
 
     public void stop() {
-        System.out.println("Stopping the game loop...");
+        Logger.logger.debug("Stopping the game loop...");
         gameLoop.stop();
         if (loopThread != null) {
             loopThread.interrupt();
@@ -180,7 +181,7 @@ public class GameWorld {
             try {
                 cmd.execute(this);
             } catch (Exception ex) {
-                ex.printStackTrace(); // temporary error log until we implement a proper logging system
+                Logger.logger.error("Error commands : {} ",ex.getMessage(), ex);
             }
         }
     }
