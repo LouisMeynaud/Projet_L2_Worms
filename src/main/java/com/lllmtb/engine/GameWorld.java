@@ -100,8 +100,8 @@ public class GameWorld {
         return teams;
     }
 
-    public int getIndexTeam() {
-        return indexTeam;
+    public Team getPlayingTeam() {
+        return teams.get(indexTeam);
     }
 
     public TurnManager getTurnManager() {
