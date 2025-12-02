@@ -181,7 +181,7 @@ public class GameWorld {
             try {
                 cmd.execute(this);
             } catch (Exception ex) {
-                Logger.logger.error("Error commands : {} ",ex.getMessage(), ex);
+                Logger.logger.error("Error commands : {} ", ex.getMessage(), ex);
             }
         }
     }

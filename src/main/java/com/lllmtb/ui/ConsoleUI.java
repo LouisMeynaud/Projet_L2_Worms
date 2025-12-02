@@ -1,6 +1,5 @@
 package com.lllmtb.ui;
 
-import com.lllmtb.engine.GameEngine;
 import com.lllmtb.engine.GameSettings;
 import com.lllmtb.engine.GameWorld;
 import com.lllmtb.engine.Logger.Logger;
