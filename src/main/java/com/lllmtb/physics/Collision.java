@@ -2,8 +2,10 @@ package com.lllmtb.physics;
 
 import com.lllmtb.events.EventBus;
 import com.lllmtb.events.move.GroundCheckCollision;
+import com.lllmtb.model.entity.Entity;
 import com.lllmtb.model.entity.worm.Worm;
 import com.lllmtb.terrain.map.Map;
+import com.lllmtb.terrain.map.Tile;
 
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -36,6 +38,7 @@ public class Collision {
         public final double ti; // Time of impact (0.0 if immediately, 1.0 if no collision)
         public final Vector normal; // The normal vector (perpendicular) to the hit surface
         public final boolean collided; // true if a collision is confirmed
+        public final boolean die;
 
         /**
          * Constructor of Impact when there isn't any collision
@@ -47,6 +50,7 @@ public class Collision {
             this.ti = 1.0;
             this.normal = new Vector(0, 0);
             this.collided = false;
+            this.die = false;
         }
 
         /**
@@ -56,12 +60,13 @@ public class Collision {
          * @param normal  the normal {@link Vector} of the hit structure.
          * @param hitBody the {@link PhysicsBody} of the collided entity ({@code null} if it's the map).
          */
-        public Impact(double ti, PhysicsBody body, Vector normal, PhysicsBody hitBody) {
+        public Impact(double ti, PhysicsBody body, Vector normal, PhysicsBody hitBody, boolean die) {
             this.hitBody = hitBody;
             this.collisionPos = body.getVector().newPos(body.getPos(), ti);
             this.ti = ti;
             this.normal = normal;
             this.collided = true;
+            this.die = die;
         }
     }
 
@@ -172,7 +177,11 @@ public class Collision {
                 // Immediate overlap test (ti=0.0)
                 if (isColliding(startPos2, radius, tilePos)) {
                     Vector normal = this.calculateTileNormal(startPos2, tilePos);
-                    return new Impact(0.0, body, normal, null);
+                    if ((this.map.isTileAt(new Position(tx, ty), Tile.WATER)) || !(this.map.inMap(new Position(tx, ty)))) {
+                        return new Impact(0.0, body, normal, null, true);
+                    }    else {
+                        return new Impact(0.0, body, normal, null, false);
+                    }
                 }
 
                 // Swept AABB test
@@ -181,7 +190,11 @@ public class Collision {
                 Vector normal = new Vector(result[1], result[2]);
 
                 if (ti >= 0.0 && ti < 1.0 && ti < nearestImpact.ti) {
-                    nearestImpact = new Impact(ti, body, normal, null);
+                    if ((this.map.isTileAt(new Position(tx, ty), Tile.WATER)) || !(this.map.inMap(new Position(tx, ty)))) {
+                        nearestImpact = new Impact(ti, body, normal, null, true);
+                    }    else {
+                        nearestImpact = new Impact(ti, body, normal, null, false);
+                    }
                 }
             }
         }
@@ -219,7 +232,7 @@ public class Collision {
             double length = Math.sqrt(normalVec.getX() * normalVec.getX() + normalVec.getY() * normalVec.getY());
             Vector normal = normalVec.scale(1.0 / length);
 
-            return new Impact(ti, body1, normal, body2);
+            return new Impact(ti, body1, normal, body2, false);
         }
 
         return new Impact(endPos);
