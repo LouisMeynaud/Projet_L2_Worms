@@ -17,6 +17,7 @@ import com.lllmtb.model.item.weapon.WeaponId;
 import com.lllmtb.ui.graphical.TextureManager; 
 import com.lllmtb.ui.graphical.Utilitaire;
 
+
 public class GameUIPanel extends JPanel {
 
     private EventBus eventBus;
@@ -27,10 +28,12 @@ public class GameUIPanel extends JPanel {
     private final JPanel centerContainer;
     private JPanel inventoryGrid;
 
+
     public GameUIPanel(EventBus eventBus) {
         this.eventBus = eventBus;
-        setOpaque(false); 
+        setOpaque(false);
         setLayout(new BorderLayout());
+
 
         //create contner
         this.cardLayout = new CardLayout();
@@ -60,6 +63,7 @@ public class GameUIPanel extends JPanel {
 
         
         
+
         this.add(topBar, BorderLayout.NORTH);
         this.add(lowerBar, BorderLayout.SOUTH);
 
@@ -72,45 +76,43 @@ public class GameUIPanel extends JPanel {
         topBar.add(pauseButton);
         lowerBar.add(inventoryButton);
         lowerBar.add(shootModeButton);
-
         
     }
 
     
-
    ////////////PAUSE/////////////////
+
     private void createPauseMenu() {
         this.pauseMenucontainer = new JPanel(new GridBagLayout()); // un conteneur pour pour centre le vrai pannel
         this.pauseMenucontainer.setOpaque(false);
 
-        
+
         JPanel menuPanel = new JPanel();
         menuPanel.setLayout(new BoxLayout(menuPanel, BoxLayout.Y_AXIS)); //Y_AXIS bouton les un sous les autre
         menuPanel.setBackground(Color.DARK_GRAY);
-        menuPanel.setBorder(new EmptyBorder(20, 20, 20, 20)); 
+        menuPanel.setBorder(new EmptyBorder(20, 20, 20, 20));
 
-        
+
         JButton resumeButton = new JButton("Reprendre");
         JButton saveButton = new JButton("Save");
         JButton quitButton = new JButton("Quitter");
 
-       
+
         resumeButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         saveButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         quitButton.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         resumeButton.addActionListener(e -> PauseMenu(false));
 
-        
+
         menuPanel.add(resumeButton);
-        menuPanel.add(Box.createVerticalStrut(10)); 
+        menuPanel.add(Box.createVerticalStrut(10));
         menuPanel.add(saveButton);
-        menuPanel.add(Box.createVerticalStrut(10)); 
+        menuPanel.add(Box.createVerticalStrut(10));
         menuPanel.add(quitButton);
 
-        
-        this.pauseMenucontainer.add(menuPanel);
-        
+
+        this.pauseMenucontainer.add(menuPanel);   
         this.centerContainer.add(this.pauseMenucontainer, "PAUSE");
     }
 
@@ -187,6 +189,7 @@ public class GameUIPanel extends JPanel {
             }
 
             this.inventoryGrid.add(itemButton);
+
         }
     }
 

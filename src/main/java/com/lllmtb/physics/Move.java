@@ -19,13 +19,12 @@ public class Move {
     /**
      * Resets the jump count to the maximum allowed jumps.
      */
-    public static void JumpToMax() {
+    public static void jumpToMax() {
         jump = maxjump;
     }
 
     /**
      * Creates a movement command for the specified worm in the given direction.
-     *
      * @param worm      The worm to move.
      * @param direction The direction to move the worm.
      * @return A {@link GameCommand} representing the movement, or {@code null} if no movement is possible.
@@ -52,7 +51,9 @@ public class Move {
             default:
                 yield null;
         };
-        if (t == null) return null;
+        if (t == null) {
+            return null;
+        }
 
         return new AddPhysicsModifierCommand(worm, new PhysicsModifier(t, null));
     }

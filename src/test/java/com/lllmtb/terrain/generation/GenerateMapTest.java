@@ -59,7 +59,7 @@ public class GenerateMapTest {
         int[] highLineBis = {8,5,4};
         int[] lowLineBis = {7,2,3};
         ConfigMap config = new ConfigMap(3, 0, 0, false, 0, LandScape.HILLY,0,0);
-        GenerateMap.TriHightLineLowLine(highLine,lowLine,config);
+        GenerateMap.triHightLineLowLine(highLine,lowLine,config);
         for (int i = 0; i < 3; i++) {
         assertEquals(highLine[i], highLineBis[i]);
         assertEquals(lowLine[i], lowLineBis[i]);

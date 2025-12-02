@@ -1,4 +1,5 @@
 package com.lllmtb.ui.graphical.SettingsPanel;
+
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
@@ -8,15 +9,16 @@ import com.lllmtb.events.ui.graphical.ScreenSettingsGame;
 import com.lllmtb.ui.graphical.TextureManager;
 import com.lllmtb.ui.graphical.Utilitaire;
 
-public class NewOrLoadPanel extends  JPanel {
-    
+public class NewOrLoadPanel extends JPanel {
+
     EventBus eventBus;
+
     /**
-     * 
+     *
      * @param eventBus the event bus of the game.
-     * a simple panel allowing you to choose  to load or create a new game
+     *                 a simple panel allowing you to choose  to load or create a new game
      */
-    public NewOrLoadPanel(EventBus eventBus){
+    public NewOrLoadPanel(EventBus eventBus) {
         this.eventBus = new EventBus();
 
 
@@ -28,7 +30,7 @@ public class NewOrLoadPanel extends  JPanel {
 
         JButton loadGameButton = Utilitaire.createImageButton(TextureManager.UI, "LoadGame", 128, 64, 64, 48);
         loadGameButton.addActionListener(e -> {
-        //
+            //
         });
         this.add(loadGameButton);
 

@@ -53,7 +53,7 @@ public class GameWorld {
             tmap = GenerateMap.createMap(config);
         }
         this.map = tmap;
-        this.map.setSpawnPoint(CreateSpawnPoint.createSpawnPoint(settings.nbTeams,settings.nbWorms,tmap));
+        this.map.setSpawnPoint(CreateSpawnPoint.createSpawnPoint(settings.nbTeams, settings.nbWorms, tmap));
 
         this.bus = eventBus;
         Move.setMaxjump(settings.maxjump);
@@ -103,15 +103,15 @@ public class GameWorld {
         return teams;
     }
 
-    public int getIndexTeam(){
+    public int getIndexTeam() {
         return indexTeam;
     }
 
-    public TurnManager getTurnManager(){
+    public TurnManager getTurnManager() {
         return this.turnManager;
     }
 
-    public long getTurnDuration(){
+    public long getTurnDuration() {
         return this.turnManager.getTurnDuration();
     } 
 
@@ -120,7 +120,9 @@ public class GameWorld {
     }
 
     public void start() {
-        if (loopThread != null && loopThread.isAlive()) return;
+        if (loopThread != null && loopThread.isAlive()) {
+            return;
+        }
         System.out.println("Starting the game loop...");
         loopThread = new Thread(gameLoop, "gameloop");
         this.nextTeamTurn();
@@ -144,7 +146,7 @@ public class GameWorld {
         physics.add(Objects.requireNonNull(e).getBody());
     }
 
-    public void update(double tickTime){
+    public void update(double tickTime) {
         processCommands();
         physics.next(tickTime);
         turnManager.updateTurn();
@@ -153,9 +155,11 @@ public class GameWorld {
 
 
     public void nextTeamTurn() {
-        if(!teams.isEmpty()) {
+        if (!teams.isEmpty()) {
             this.turnManager.startTurn(teams.get(indexTeam++));
-            if (indexTeam >= teams.size()) indexTeam = 0;
+            if (indexTeam >= teams.size()) {
+                indexTeam = 0;
+            }
         }
     }
 
@@ -165,7 +169,9 @@ public class GameWorld {
      * @return true if the command was successfully queued, false otherwise
      */
     public boolean queueCommand(GameCommand cmd) {
-        if (cmd == null) return false;
+        if (cmd == null) {
+            return false;
+        }
         return commandQueue.offer(cmd);
     }
 

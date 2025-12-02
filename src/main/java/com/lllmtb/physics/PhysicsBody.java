@@ -15,7 +15,6 @@ public class PhysicsBody {
 
     /**
      * Constructs a PhysicsBody with the specified parameters.
-     *
      * @param entity   The entity associated with this physics body.
      * @param position The initial position of the body.
      * @param vector   The initial velocity vector of the body.
@@ -33,7 +32,7 @@ public class PhysicsBody {
     }
 
     /* Getters */
-    public Entity getEntity(){
+    public Entity getEntity() {
         return entity;
     }
 
