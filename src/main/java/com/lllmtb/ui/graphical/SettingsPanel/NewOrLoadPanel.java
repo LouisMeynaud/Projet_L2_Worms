@@ -22,11 +22,11 @@ public class NewOrLoadPanel extends JPanel {
         this.eventBus = new EventBus();
 
 
-        JButton NewGameButton = Utilitaire.createImageButton(TextureManager.UI, "NewGame", 128, 64, 64, 48);
-        NewGameButton.addActionListener(e -> {
+        JButton newGameButton = Utilitaire.createImageButton(TextureManager.UI, "NewGame", 128, 64, 64, 48);
+        newGameButton.addActionListener(e -> {
             eventBus.postQueued(new ScreenSettingsGame());
         });
-        this.add(NewGameButton);
+        this.add(newGameButton);
 
         JButton loadGameButton = Utilitaire.createImageButton(TextureManager.UI, "LoadGame", 128, 64, 64, 48);
         loadGameButton.addActionListener(e -> {

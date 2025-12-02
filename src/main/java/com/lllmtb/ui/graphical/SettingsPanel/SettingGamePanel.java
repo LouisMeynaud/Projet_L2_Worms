@@ -18,10 +18,10 @@ import com.lllmtb.ui.graphical.Utilitaire;
 
 public class SettingGamePanel extends JPanel {
     public JTextField[] champsNomsEquipes;
-    public final int MAX_EQUIPES = 4;
-    public final int MAX_WORM = 6;
-    public final int MAX_TIME = 40;
-    public final int MAX_JUMP = 5;
+    public static final int MAX_EQUIPES = 4;
+    public static final int MAX_WORM = 6;
+    public static final int MAX_TIME = 40;
+    public static final int MAX_JUMP = 5;
     public JSlider equipesSlider;
     public JSlider wormsSlider;
     public JSlider turnDurationSlider;
@@ -29,7 +29,7 @@ public class SettingGamePanel extends JPanel {
     public JSlider maxJumpSlider;
 
 
-    
+
     /**
      * This page contains all the parameters related to the map.
      */
@@ -64,10 +64,10 @@ public class SettingGamePanel extends JPanel {
         gbc.gridwidth = 1; // take 1 column
         gbc.gridx = 0;
         gbc.gridy = row;
-        JLabel NbEquipesLabel = new JLabel("Nombre d'équipes :");
-        contentGrid.add(NbEquipesLabel, gbc);
+        JLabel nbEquipesLabel = new JLabel("Nombre d'équipes :");
+        contentGrid.add(nbEquipesLabel, gbc);
 
-        gbc.gridx = 1; // second colone 
+        gbc.gridx = 1; //second column
         this.equipesSlider = Utilitaire.createSlider(2, MAX_EQUIPES, 2, 1);
         contentGrid.add(equipesSlider, gbc);
         row++;
@@ -136,9 +136,7 @@ public class SettingGamePanel extends JPanel {
         this.maxJumpSlider = Utilitaire.createSlider(1, MAX_JUMP, 1, 1);
         contentGrid.add(maxJumpSlider, gbc);
         row++;
-
-        
-    }   
+    }
 
     /**
      * This method aims to simplify the creation of sliders without code duplication.

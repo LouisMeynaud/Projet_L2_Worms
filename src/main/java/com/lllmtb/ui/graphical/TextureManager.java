@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.imageio.ImageIO;
-import com.lllmtb.model.item.weapon.WeaponId;
 import com.lllmtb.terrain.map.Tile;
 
 public class TextureManager {

@@ -97,7 +97,7 @@ public class ConsoleUI implements UI {
             }
             terminal.writer().println("   Wind: " + (hasWind ? "ON" : "OFF"));
             terminal.writer().flush();
-            return new GameSettings(nbTeams, teamNames, nbWorms, turnDuration, hasWind, mapFileName, floatingIsland, size, landscape,2);
+            return new GameSettings(nbTeams, teamNames, nbWorms, turnDuration, hasWind, mapFileName, floatingIsland, size, landscape, 2);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

@@ -180,10 +180,10 @@ public class GameWorldTest {
     }
 
     @Test
-    void startLoop_whenAlreadyRunning() throws Exception {
+    void startLoopWhenAlreadyRunning() throws Exception {
         GameSettings settings = new GameSettings(0, new String[]{}, 0, 10, false, null, false,370,LandScape.HILLY,2);
         EventBus eventBus = new EventBus();
-        GameWorld gw = new GameWorld(settings,eventBus);
+        GameWorld gw = new GameWorld(settings, eventBus);
 
         gw.start();
         Thread first = gw.loopThread;
@@ -205,9 +205,10 @@ public class GameWorldTest {
         gw.stop();
     }
 
+
     @Test
-    void getTurnManage(){
-        GameSettings settings = new GameSettings(0, new String[]{}, 0, 10, false, null, false,370,LandScape.HILLY,2);
+    void getTurnManage() {
+        GameSettings settings = new GameSettings(0, new String[]{}, 0, 10, false, null, false, 370, LandScape.HILLY, 2);
         EventBus eventBus = new EventBus();
         GameWorld gw = new GameWorld(settings, eventBus);
 

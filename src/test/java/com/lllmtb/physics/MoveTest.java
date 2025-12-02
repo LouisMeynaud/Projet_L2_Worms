@@ -32,15 +32,15 @@ public class MoveTest {
         Field modifierField = AddPhysicsModifierCommand.class.getDeclaredField("modifier");
         modifierField.setAccessible(true);
         PhysicsModifier m = (PhysicsModifier) modifierField.get(gameCommand);
-        Transform t =m.transform;
-        Vector v = new Vector(0,0);
+        Transform t = m.transform;
+        Vector v = new Vector(0, 0);
         Vector vector = t.apply(v);
 
 
         assertNotNull(gameCommand, "La commande ne doit pas être null");
         assertInstanceOf(AddPhysicsModifierCommand.class, gameCommand, "La commande doit être de type AddPhysicsModifierCommand");
         assertTrue(m.oneShot);
-        assertEquals(-5.0, vector.getX());
+        assertEquals(-8.0, vector.getX());
         assertEquals(v.getY(), vector.getY());
     }
 
@@ -51,15 +51,15 @@ public class MoveTest {
         Field modifierField = AddPhysicsModifierCommand.class.getDeclaredField("modifier");
         modifierField.setAccessible(true);
         PhysicsModifier m = (PhysicsModifier) modifierField.get(gameCommand);
-        Transform t =m.transform;
-        Vector v = new Vector(0,0);
+        Transform t = m.transform;
+        Vector v = new Vector(0, 0);
         Vector vector = t.apply(v);
 
 
         assertNotNull(gameCommand, "La commande ne doit pas être null");
         assertInstanceOf(AddPhysicsModifierCommand.class, gameCommand, "La commande doit être de type AddPhysicsModifierCommand");
         assertTrue(m.oneShot);
-        assertEquals(5.0, vector.getX());
+        assertEquals(8.0, vector.getX());
         assertEquals(v.getY(), vector.getY());
     }
 
@@ -78,8 +78,8 @@ public class MoveTest {
         Field modifierField = AddPhysicsModifierCommand.class.getDeclaredField("modifier");
         modifierField.setAccessible(true);
         PhysicsModifier m = (PhysicsModifier) modifierField.get(gameCommand);
-        Transform t =m.transform;
-        Vector v = new Vector(0,0);
+        Transform t = m.transform;
+        Vector v = new Vector(0, 0);
         Vector vector = t.apply(v);
 
 

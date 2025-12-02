@@ -6,13 +6,12 @@ import java.awt.*;
 import java.awt.event.*;
 
 import com.lllmtb.events.EventBus;
-import com.lllmtb.ui.graphical.TextureManager;
 
 public class GameScreen extends JLayeredPane {
 
     private GameWorldPanel gameWorldPanel;
     private GameUIPanel gameUIPanel;
-    
+
 
     /**
      * This page will contain the overlay of the different page layers of the game.
