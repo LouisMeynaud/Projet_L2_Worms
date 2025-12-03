@@ -1,5 +1,7 @@
-package com.lllmtb.engine;
+package com.lllmtb.engine.turn;
 
+import com.lllmtb.engine.GameSettings;
+import com.lllmtb.engine.GameWorld;
 import com.lllmtb.events.EventBus;
 import com.lllmtb.events.turn.TurnEndEvent;
 import com.lllmtb.events.turn.TurnStarEvent;

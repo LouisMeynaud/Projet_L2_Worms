@@ -2,6 +2,7 @@ package com.lllmtb.engine;
 
 import com.lllmtb.engine.logger.Logger;
 import com.lllmtb.engine.commands.GameCommand;
+import com.lllmtb.engine.turn.TurnManager;
 import com.lllmtb.events.EventBus;
 import com.lllmtb.events.game.GameStateUpdatedEvent;
 import com.lllmtb.model.entity.Entity;

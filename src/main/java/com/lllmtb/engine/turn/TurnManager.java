@@ -1,5 +1,6 @@
-package com.lllmtb.engine;
+package com.lllmtb.engine.turn;
 
+import com.lllmtb.engine.GameWorld;
 import com.lllmtb.engine.logger.Logger;
 import com.lllmtb.events.EventListener;
 import com.lllmtb.events.turn.TurnEndEvent;
