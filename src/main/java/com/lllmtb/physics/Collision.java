@@ -2,7 +2,6 @@ package com.lllmtb.physics;
 
 import com.lllmtb.events.EventBus;
 import com.lllmtb.events.move.GroundCheckCollision;
-import com.lllmtb.model.entity.Entity;
 import com.lllmtb.model.entity.worm.Worm;
 import com.lllmtb.terrain.map.Map;
 import com.lllmtb.terrain.map.Tile;
@@ -11,8 +10,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * The {@code Collision} class is the central collision engine for the game, inspired by JBump principles (swept collision detection).
- * Handles collision detection for {@link Entity} and {@link Map} (Circle-AABB) and
- * between {@link Entity} (Circle-Circle).
+ * Handles collision detection for Entity and {@link Map} (Circle-AABB) and
+ * between Entities (Circle-Circle).
  */
 public class Collision {
 
@@ -22,7 +21,7 @@ public class Collision {
     /**
      * Constructor of Collision, with the map and the entities to check
      * @param m the {@link Map} of the game
-     * @param b the {@link CopyOnWriteArrayList} containing active {@link Entity}'s {@link PhysicsBody}.
+     * @param b the {@link CopyOnWriteArrayList} containing active Entity's {@link PhysicsBody}.
      */
     public Collision(Map m, CopyOnWriteArrayList<PhysicsBody> b) {
         this.map = m;
@@ -366,7 +365,7 @@ public class Collision {
 
     /**
      * <p>
-     * Calculate the time of impact between two {@link Entity} by using the {@link Position}
+     * Calculate the time of impact between two Entities by using the {@link Position}
      * of the two and the quadratic formula resolution. This quadratic resolution is looking
      * when distance between centers at time t = combined radius
      * </p>
