@@ -106,6 +106,18 @@ class PhysicsEngineTest {
     }
 
     @Test
+    void testNextStep_WhenNoCollisions() {
+        double dt = 0;
+        PhysicsEngine tpE = new PhysicsEngine(map, bus, false);
+        tpE.add(pBBP);
+        pBBP.setPos(new Position(0, 5));
+        pBBP.setVector(new Vector(0, 0));
+        tpE.nextStep(dt);
+        assertEquals(5, pBBP.getPos().getY());
+        assertEquals(0, pBBP.getPos().getX());
+    }
+
+    @Test
     void testNextStep() {
         double dt = 0.0167;
         Vector initialVector = pBWorm.getVector();
