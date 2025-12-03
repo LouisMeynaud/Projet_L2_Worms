@@ -1,6 +1,6 @@
 package com.lllmtb.physics;
 
-import com.lllmtb.engine.Logger.Logger;
+import com.lllmtb.engine.logger.Logger;
 import com.lllmtb.engine.commands.AddPhysicsModifierCommand;
 import com.lllmtb.engine.commands.GameCommand;
 import com.lllmtb.model.entity.worm.Worm;

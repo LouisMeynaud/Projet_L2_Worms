@@ -1,6 +1,6 @@
 package com.lllmtb.events;
 
-import com.lllmtb.engine.Logger.Logger;
+import com.lllmtb.engine.logger.Logger;
 import org.eclipse.jdt.annotation.NonNull;
 
 import java.util.ArrayList;

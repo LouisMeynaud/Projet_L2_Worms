@@ -2,7 +2,7 @@ package com.lllmtb.ui;
 
 import com.lllmtb.engine.GameSettings;
 import com.lllmtb.engine.GameWorld;
-import com.lllmtb.engine.Logger.Logger;
+import com.lllmtb.engine.logger.Logger;
 import com.lllmtb.events.EventBus;
 import com.lllmtb.events.game.StartGameEvent;
 

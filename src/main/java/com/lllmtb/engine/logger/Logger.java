@@ -1,4 +1,4 @@
-package com.lllmtb.engine.Logger;
+package com.lllmtb.engine.logger;
 
 import org.slf4j.LoggerFactory;
 

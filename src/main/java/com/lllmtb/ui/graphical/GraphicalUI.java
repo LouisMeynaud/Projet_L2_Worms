@@ -1,6 +1,6 @@
 package com.lllmtb.ui.graphical;
 
-import com.lllmtb.engine.Logger.Logger;
+import com.lllmtb.engine.logger.Logger;
 import com.lllmtb.events.EventBus;
 
 import java.awt.*;
