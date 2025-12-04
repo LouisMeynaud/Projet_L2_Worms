@@ -36,7 +36,7 @@ public class GameWorld {
 
 
     public GameWorld(GameSettings settings, EventBus eventBus) {
-        gameName = "TestNameGame";
+        gameName = settings.mapFileName;
         Map tmap = null;
 
         // Init Map (we'll have to handle this better once MapLoader throws catchable exceptions)

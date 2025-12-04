@@ -1,5 +1,6 @@
-package com.lllmtb.engine;
+package com.lllmtb.engine.Save;
 
+import com.lllmtb.engine.GameWorld;
 import com.lllmtb.terrain.map.Map;
 
 import java.io.IOException;
@@ -14,7 +15,7 @@ import com.lllmtb.terrain.map.SaveMap;
 public class Save {
     protected static GameWorld gameWorld;
 
-    protected static void setGameWorld(GameWorld gWorld) {
+    public static void setGameWorld(GameWorld gWorld) {
         gameWorld = gWorld;
     }
 
@@ -37,7 +38,7 @@ public class Save {
         }
     }
 
-    private static  boolean saveHightline(Map map, String stringPath) throws IOException {
+    public static boolean saveHightline(Map map, String stringPath) throws IOException {
         try {
             Path path = Paths.get(stringPath); //concataine
             Files.createDirectories(path);
@@ -53,7 +54,7 @@ public class Save {
         }
     }
 
-    private static  boolean saveMap(Map map, String stringPath) throws IOException {
+    public static  boolean saveMap(Map map, String stringPath) throws IOException {
         try {
             Path path = Paths.get(stringPath);
             Files.createDirectories(path);
