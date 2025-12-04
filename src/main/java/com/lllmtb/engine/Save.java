@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -19,30 +18,31 @@ public class Save {
         gameWorld = gWorld;
     }
 
-    public static void SaveGameWorld(GameWorld gameWorld, String stringPath) throws IOException {
+    public static void saveGameWorld(GameWorld gameWorld, String stringPath) throws IOException {
         Gson gson = new GsonBuilder()
                 .setPrettyPrinting()
                 .create();
         GameSave gameSave = new GameSave(gameWorld);
         String json =  gson.toJson(gameSave);
         Path path = Paths.get(stringPath);
-        Files.createDirectories(path);
-        Path folderPath = path.resolve("test.json");
         try {
+            Files.createDirectories(path);
+            Path folderPath = path.resolve("test.json");
             System.out.println("Game World sauvegardé dans: " + stringPath);
             Files.write(folderPath, json.getBytes());
-
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-       catch (IOException e) {e.printStackTrace();} catch (Exception e) {e.printStackTrace();}
-
     }
 
-    private static  boolean SaveHightline(Map map, String stringPath) throws IOException {
+    private static  boolean saveHightline(Map map, String stringPath) throws IOException {
         try {
-            Path path = Paths.get(stringPath);//concataine
+            Path path = Paths.get(stringPath); //concataine
             Files.createDirectories(path);
             Path filePath = path.resolve("hightline.txt");
-            Files.writeString(filePath, map.HightLineToString());
+            Files.writeString(filePath, map.hightLineToString());
 
             System.out.println("Succès : Hightline sauvegardée dans " + filePath);
             return true;
@@ -53,7 +53,7 @@ public class Save {
         }
     }
 
-    private static  boolean SaveMap(Map map, String stringPath) throws IOException {
+    private static  boolean saveMap(Map map, String stringPath) throws IOException {
         try {
             Path path = Paths.get(stringPath);
             Files.createDirectories(path);
@@ -69,11 +69,11 @@ public class Save {
         }
     }
 
-    public static void SaveAll() throws IOException {
+    @SuppressWarnings("unused")
+    public static void saveAll() throws IOException {
         String stringPath = "src/test/resources/SaveTest/" + gameWorld.getGameName();
-        SaveHightline(gameWorld.getMap(),stringPath );
-        SaveMap(gameWorld.getMap(), stringPath);
-        SaveGameWorld(gameWorld, stringPath);
-
+        saveHightline(gameWorld.getMap(), stringPath);
+        saveMap(gameWorld.getMap(), stringPath);
+        saveGameWorld(gameWorld, stringPath);
     }
 }

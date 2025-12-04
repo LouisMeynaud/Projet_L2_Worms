@@ -21,12 +21,15 @@ public class GameSave {
     private ConcurrentHashMap<PhysicsBody, ArrayList<PhysicsModifier>> modifiers;
 
 
-
     public GameSave(GameWorld gameWorld) {
         this.teams = gameWorld.getTeams();
         this.indexTeam = gameWorld.getIndexTeam();
         this.turnDuration = gameWorld.getTurnDuration();
-        if (gameWorld.getBus() == null) {this.bus = new EventBus();} else {this.bus = gameWorld.getBus();}
+        if (gameWorld.getBus() == null) {
+            this.bus = new EventBus();
+        } else {
+            this.bus = gameWorld.getBus();
+        }
         this.modifiers = gameWorld.getPhysics().getModifiers();
         this.hasWind = gameWorld.getPhysics().hasWind();
         this.wind = gameWorld.getPhysics().getWind();
@@ -34,10 +37,8 @@ public class GameSave {
     }
 
 
-    public GameSave() {}
+    public GameSave() {
 
-
-
-
+    }
 
 }

@@ -51,7 +51,13 @@ public class GameEngine {
         GameSettings settings = Objects.requireNonNull(event).getSettings();
         world = new GameWorld(settings, eventBus);
         eventBus.postSync(new WorldCreatedEvent(world));
-        eventBus.subscribe(SaveEvent.class, e -> {try {Save.SaveAll();} catch (IOException ex) {throw new RuntimeException(ex);}});
+        eventBus.subscribe(SaveEvent.class, e -> {
+            try {
+                Save.saveAll();
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
         world.start();
     }
 }

@@ -114,9 +114,13 @@ public class GameWorld {
         return this.turnManager.getTurnDuration();
     }
 
-    public int getIndexTeam() {return indexTeam;}
+    public int getIndexTeam() {
+        return indexTeam;
+    }
 
-    public String getGameName() {return gameName;}
+    public String getGameName() {
+        return gameName;
+    }
 
     public void start() {
         if (loopThread != null && loopThread.isAlive()) {
