@@ -116,7 +116,7 @@ public class PhysicsEngine {
     }
 
 
-    public ConcurrentHashMap<PhysicsBody, ArrayList<PhysicsModifier>> getModifiers(){
+    public ConcurrentHashMap<PhysicsBody, ArrayList<PhysicsModifier>> getModifiers() {
         return modifiers;
     }
     /**
