@@ -1,6 +1,7 @@
 package com.lllmtb.engine;
 
 import com.lllmtb.events.EventBus;
+import com.lllmtb.events.game.SaveEvent;
 import com.lllmtb.events.game.StartGameEvent;
 import com.lllmtb.events.game.WorldCreatedEvent;
 import com.lllmtb.ui.ConsoleUI;
@@ -8,6 +9,7 @@ import com.lllmtb.ui.UI;
 import com.lllmtb.ui.graphical.GraphicalUI;
 import org.eclipse.jdt.annotation.NonNull;
 
+import java.io.IOException;
 import java.util.Objects;
 
 public class GameEngine {
@@ -49,6 +51,7 @@ public class GameEngine {
         GameSettings settings = Objects.requireNonNull(event).getSettings();
         world = new GameWorld(settings, eventBus);
         eventBus.postSync(new WorldCreatedEvent(world));
+        eventBus.subscribe(SaveEvent.class, e -> {try {Save.SaveAll();} catch (IOException ex) {throw new RuntimeException(ex);}});
         world.start();
     }
 }

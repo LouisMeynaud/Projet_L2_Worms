@@ -8,6 +8,7 @@ import javax.swing.border.EmptyBorder;
 
 import com.lllmtb.events.EventBus;
 import com.lllmtb.events.game.GamePauseEvent;
+import com.lllmtb.events.game.SaveEvent;
 
 public class GameUIPanel extends JPanel {
 
@@ -69,7 +70,8 @@ public class GameUIPanel extends JPanel {
         quitButton.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         resumeButton.addActionListener(e -> pauseMenu(false));
-
+        saveButton.addActionListener(e -> eventBus.postQueued(new SaveEvent()));
+        quitButton.addActionListener(e -> System.exit(0));
 
         menuPanel.add(resumeButton);
         menuPanel.add(Box.createVerticalStrut(10));

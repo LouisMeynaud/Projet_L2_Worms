@@ -19,7 +19,7 @@ public class SaveMap {
 //     }
 // }
 
-    protected static String mapToString(Map m) {
+    public static String mapToString(Map m) {
         Tile[][] mMapMatrix = m.getMapMatrix();
         StringBuilder mapString = new StringBuilder();
         for (Tile[] mapRow : mMapMatrix) {

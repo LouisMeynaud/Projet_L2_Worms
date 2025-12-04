@@ -50,6 +50,7 @@ public final class TurnManager {
     public void startTurn(Team team) {
         startTime = System.currentTimeMillis();
         this.turn = new Turn(team);
+        Save.setGameWorld(world);
         world.getBus().postQueued(new TurnStarEvent(team));
         System.out.println("Start turn for the team " + team.name);
         world.getBus().postQueued(new WormPlayable(turn.getWormPlayable()));

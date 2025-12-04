@@ -167,4 +167,14 @@ public class Map {
         return heightWater;
     }
 
+    public String HightLineToString() {
+        String string = "";
+        for (int i = 0; i < this.hightLine.length; i++) {
+            string += (this.hightLine[i]);
+            string += (",");
+        }
+        string = string.substring(0, string.length() - 1);
+        return string;
+    }
+
 }

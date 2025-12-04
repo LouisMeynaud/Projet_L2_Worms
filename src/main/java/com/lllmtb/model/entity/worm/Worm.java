@@ -24,7 +24,7 @@ public class Worm extends Entity {
     /**
      * The team this worm belongs to.
      */
-    private Team team;
+    private transient Team team;
 
     /**
      * The name of the worm.

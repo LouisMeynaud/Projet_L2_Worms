@@ -33,16 +33,13 @@ public class Move {
         Objects.requireNonNull(worm);
         Transform t = switch (Objects.requireNonNull(direction)) {
             case Left:
-                System.out.println("Left move");
                 yield v -> new Vector(Math.max(v.getX() - 5, -8), v.getY());
 
             case Right:
-                System.out.println("Right move");
                 yield v -> new Vector(Math.min(v.getX() + 5, 8), v.getY());
 
             case Up:
                 if (jump > 0) {
-                    System.out.println("Up move");
                     jump--;
                     yield v -> v.add(new Vector(0, 20));
                 }

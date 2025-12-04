@@ -21,6 +21,7 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class GameWorld {
+    private final String gameName;
     private final Map map;
     private final EventBus bus;
     private final PhysicsEngine physics;
@@ -35,6 +36,7 @@ public class GameWorld {
 
 
     public GameWorld(GameSettings settings, EventBus eventBus) {
+        gameName = "TestNameGame";
         Map tmap = null;
 
         // Init Map (we'll have to handle this better once MapLoader throws catchable exceptions)
@@ -111,6 +113,10 @@ public class GameWorld {
     public long getTurnDuration() {
         return this.turnManager.getTurnDuration();
     }
+
+    public int getIndexTeam() {return indexTeam;}
+
+    public String getGameName() {return gameName;}
 
     public void start() {
         if (loopThread != null && loopThread.isAlive()) {
