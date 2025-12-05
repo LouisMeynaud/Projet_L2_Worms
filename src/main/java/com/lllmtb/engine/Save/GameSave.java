@@ -26,11 +26,7 @@ public class GameSave {
         this.teams = gameWorld.getTeams();
         this.indexTeam = gameWorld.getIndexTeam();
         this.turnDuration = gameWorld.getTurnDuration();
-        if (gameWorld.getBus() == null) {
-            this.bus = new EventBus();
-        } else {
-            this.bus = gameWorld.getBus();
-        }
+        this.bus = gameWorld.getBus();
         this.modifiers = gameWorld.getPhysics().getModifiers();
         this.hasWind = gameWorld.getPhysics().hasWind();
         this.wind = gameWorld.getPhysics().getWind();
