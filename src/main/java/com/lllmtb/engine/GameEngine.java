@@ -33,7 +33,7 @@ public class GameEngine {
         // Start the chosen UI manager
         UI ui;
         if (graphique) {
-            TextureManager.load(); // charge les texture
+            TextureManager.load(); // charge les textures
             ui = new GraphicalUI(eventBus);
         } else {
             ui = new ConsoleUI(eventBus);

@@ -71,7 +71,7 @@ public class SettingsStartPanel extends JPanel {
     /**
      * 
      * @param gameSettingsPanel retrieves the parameters chosen in the gameSetting panel
-     * @returnreturns a type setting for creating the game.
+     * @return a type setting for creating the game.
      */
     public GameSettings setSettings(SettingGamePanel gameSettingsPanel) {
         int nbEquipes = gameSettingsPanel.getNbEquipes();

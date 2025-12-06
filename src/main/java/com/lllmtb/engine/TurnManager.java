@@ -1,6 +1,7 @@
 package com.lllmtb.engine;
 
 import com.lllmtb.events.EventListener;
+import com.lllmtb.events.game.WeaponSelectedEvent;
 import com.lllmtb.events.turn.TurnEndEvent;
 import com.lllmtb.events.turn.TurnStarEvent;
 import com.lllmtb.events.turn.TurnStopEvent;
@@ -16,8 +17,8 @@ public final class TurnManager {
 
     private Turn turn;
     private final GameWorld world;
-
     private EventListener<MoveEvent> moveListener;
+    private EventListener<WeaponSelectedEvent> weaponSelectedEventEventListener;
     private EventListener<GroundCheckCollision> groundCollisionListener = event -> {
         if (turn.getWormPlayable().uuid == event.worm.uuid) {
             Move.JumpToMax();
@@ -52,13 +53,7 @@ public final class TurnManager {
         System.out.println("Start turn for the team " + team.name);
         world.getBus().postQueued(new WormPlayable(turn.getWormPlayable()));
 
-        moveListener = event -> {
-            world.queueCommand(move(this.turn.getWormPlayable(), event.direction));
-            System.out.println("Move");
-        };
-        world.getBus().subscribe(MoveEvent.class, moveListener);
-
-        world.getBus().subscribe(GroundCheckCollision.class, groundCollisionListener);
+        setupEvent();
     }
 
     public void updateTurn() {
@@ -86,5 +81,23 @@ public final class TurnManager {
         return turn;
     }
 
-    
+    private void setupEvent(){
+
+        moveListener = event -> {
+            world.queueCommand(move(this.turn.getWormPlayable(), event.direction));
+            System.out.println("Move");
+        };
+
+        weaponSelectedEventEventListener = event -> {
+            turn.getTeam().selectWeapon(event.weaponId);
+
+        };
+
+        world.getBus().subscribe(MoveEvent.class, moveListener);
+
+        world.getBus().subscribe(GroundCheckCollision.class, groundCollisionListener);
+        world.getBus().subscribe(WeaponSelectedEvent.class, weaponSelectedEventEventListener );
+
+
+    }
 }
