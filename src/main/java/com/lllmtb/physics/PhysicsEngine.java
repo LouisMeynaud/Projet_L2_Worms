@@ -2,6 +2,7 @@ package com.lllmtb.physics;
 
 import com.lllmtb.events.EventBus;
 import com.lllmtb.events.physics.PhysicsCollisionDetectedEvent;
+import com.lllmtb.events.physics.PhysicsCollisionWithWatterOrExitMap;
 import com.lllmtb.events.physics.PhysicsModifierAddedEvent;
 import com.lllmtb.events.physics.PhysicsModifierRemovedEvent;
 import com.lllmtb.model.entity.projectile.Projectile;
@@ -329,7 +330,11 @@ public class PhysicsEngine {
                     case CROSS -> collision.cross(body, nextPos);
                     default -> System.out.print(""); // TODO : Replace by another default case
                 }
-                bus.postQueued(new PhysicsCollisionDetectedEvent(body.getEntity()));
+                if (impact.die) {
+                    bus.postQueued(new PhysicsCollisionWithWatterOrExitMap(body.getEntity()));
+                } else {
+                    bus.postQueued(new PhysicsCollisionDetectedEvent(body.getEntity()));
+                }
             } else {
                 body.setPos(nextPos);
             }

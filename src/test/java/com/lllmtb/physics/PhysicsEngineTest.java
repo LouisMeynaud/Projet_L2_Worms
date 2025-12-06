@@ -1,6 +1,8 @@
 package com.lllmtb.physics;
 
 import com.lllmtb.events.EventBus;
+import com.lllmtb.events.EventListener;
+import com.lllmtb.events.physics.PhysicsCollisionWithWatterOrExitMap;
 import com.lllmtb.events.physics.PhysicsModifierAddedEvent;
 import com.lllmtb.events.physics.PhysicsModifierRemovedEvent;
 import com.lllmtb.model.entity.projectile.BulletProjectile;
@@ -115,6 +117,22 @@ class PhysicsEngineTest {
         tpE.nextStep(dt);
         assertEquals(5, pBBP.getPos().getY());
         assertEquals(0, pBBP.getPos().getX());
+    }
+
+    @Test
+    void testNextStep_WhenDie() {
+        EventListener<PhysicsCollisionWithWatterOrExitMap> listener = event -> {
+            return true;
+        };
+        double dt = 0.0167;
+        PhysicsEngine tpE = new PhysicsEngine(map, bus, false);
+        tpE.add(pBBP);
+        pBBP.setPos(new Position(0, 5));
+        pBBP.setVector(new Vector(-10, 0));
+        tpE.nextStep(dt);
+        assertEquals(5, pBBP.getPos().getY());
+        assertEquals(0, pBBP.getPos().getX());
+        assertTrue(bus.subscribe(PhysicsCollisionWithWatterOrExitMap.class, true););
     }
 
     @Test
