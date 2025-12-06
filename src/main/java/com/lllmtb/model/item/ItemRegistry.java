@@ -37,7 +37,6 @@ public abstract class ItemRegistry<T extends Enum<T> & ItemId, I extends Item> {
      * and initializes its ammo count to zero.
      * This method is intended for use during registry setup only,
      * because it overwrites any existing entry for the same {@link T}.
-     *
      * @param id   the item identifier
      * @param item the item instance to register
      * @throws NullPointerException if {@code id} or {@code item} is {@code null}
@@ -51,7 +50,6 @@ public abstract class ItemRegistry<T extends Enum<T> & ItemId, I extends Item> {
 
     /**
      * Retrieves the {@link I} associated with the given {@link T}.
-     *
      * @param id the item identifier to look up
      * @return the corresponding {@link I} instance, or {@code null} if not found
      */
@@ -61,7 +59,6 @@ public abstract class ItemRegistry<T extends Enum<T> & ItemId, I extends Item> {
 
     /**
      * Checks whether the registry contains an item for the given {@link T}.
-     *
      * @param id the item identifier to check
      * @return {@code true} if the registry contains the item, {@code false} otherwise
      */
@@ -71,7 +68,6 @@ public abstract class ItemRegistry<T extends Enum<T> & ItemId, I extends Item> {
 
     /**
      * Returns an unmodifiable snapshot of the current ammo counts.
-     *
      * @return an unmodifiable {@link Map} mapping each {@link T} to its ammo count
      */
     public Map<T, Integer> ammoSnapshot() {
@@ -80,7 +76,6 @@ public abstract class ItemRegistry<T extends Enum<T> & ItemId, I extends Item> {
 
     /**
      * Returns the current ammo count for the specified item.
-     *
      * @param id the item identifier
      * @return the number of remaining ammo units, or {@code 0} if none
      */
@@ -90,15 +85,18 @@ public abstract class ItemRegistry<T extends Enum<T> & ItemId, I extends Item> {
 
     /**
      * Adds a specified amount of ammo for an item.
-     *
      * @param id     the item identifier
      * @param amount the amount of ammo to add (can be negative to reduce ammo)
-     * @throws IllegalArgumentException if the item type is unknown
+     * @throws  IllegalArgumentException if the item type is unknown
      */
     public void addAmmo(@NonNull T id, int amount) {
         Objects.requireNonNull(id);
-        if (!contains(id)) throw new UnknownItemException(id);
-        if (amount == 0) return;
+        if (!contains(id)) {
+            throw new UnknownItemException(id);
+        }
+        if (amount == 0) {
+            return;
+        }
         this.ammo.merge(id, amount, Integer::sum);
     }
 }

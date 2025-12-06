@@ -38,24 +38,25 @@ public class GameWorldPanel extends JPanel {
     private boolean shootMode;
     private final Set<Integer> pressedKeys = new HashSet<>();
 
-   
+
     private BufferedImage mapCache = null;
-    
+
     private boolean isCameraMode = false;
     private boolean hasDraggedCamera = false;
-    private boolean initialFitDone = false; 
-    private double currentZoom = 1.0;     
+    private boolean initialFitDone = false;
+    private double currentZoom = 1.0;
     private double zoomSpeed = 0.2;
-    
+
     private double cameraOffsetX = 0;
     private double cameraOffsetY = 0;
-    private int lastMouseX = 0; 
+    private int lastMouseX = 0;
     private int lastMouseY = 0;
     private int currentMouseX = 0;
     private int currentMouseY = 0;
     private double mouseWorldX =0;
     private double mouseWorldY =0;
     
+
 
     public GameWorldPanel(EventBus eventBus) {
         this.eventBus = eventBus;
@@ -112,21 +113,25 @@ public class GameWorldPanel extends JPanel {
 
             @Override
             public void mouseReleased(MouseEvent e) {
-                int type = e.getButton() ;
+                int type = e.getButton();
                 long duration = System.currentTimeMillis() - pressStartTime;
                 double worldX = (e.getX() - cameraOffsetX) / currentZoom;
                 double worldY = (e.getY() - cameraOffsetY) / currentZoom;
 
 
+
                 if (type == MouseEvent.BUTTON1 && shootMode) {
                    Position worldPos = screenToWorld(e.getX(), e.getY());
                     eventBus.postQueued(new MouseInputEvent(worldPos, duration, Direction.Left));
+
                 }
-                
+
                 if (type == MouseEvent.BUTTON3) {
                     isCameraMode = false;
                     if (!hasDraggedCamera) {
+
                         //eventBus.postQueued(new MouseInputEvent(new Position(worldX, worldY),duration, Direction.Right));
+
                     }
                 }
             }
@@ -155,7 +160,7 @@ public class GameWorldPanel extends JPanel {
 
             @Override
             public void mouseWheelMoved(MouseWheelEvent e) {
-                int rotation = e.getWheelRotation(); 
+                int rotation = e.getWheelRotation();
 
                 if (isCameraMode) {
                     double centerX = getWidth() / 2.0;
@@ -164,20 +169,28 @@ public class GameWorldPanel extends JPanel {
                     double mapPointX = (centerX - cameraOffsetX) / currentZoom;
                     double mapPointY = (centerY - cameraOffsetY) / currentZoom;
 
-                    if (rotation < 0) currentZoom += zoomSpeed; 
-                    else currentZoom -= zoomSpeed; 
-                    
-                    double minZoom = Math.max(getWidth() / mapWidth(),getHeight() / mapHeight());
-                    if (currentZoom < minZoom) currentZoom = minZoom;
-                    if (currentZoom > 8.0) currentZoom = 8.0;
+                    if (rotation < 0) {
+                        currentZoom += zoomSpeed;
+                    } else {
+                        currentZoom -= zoomSpeed;
+                    }
+
+                    double minZoom = Math.max(getWidth() / mapWidth(), getHeight() / mapHeight());
+                    if (currentZoom < minZoom) {
+                        currentZoom = minZoom;
+                    }
+                    if (currentZoom > 8.0) {
+                        currentZoom = 8.0;
+                    }
 
                     cameraOffsetX = centerX - (mapPointX * currentZoom);
                     cameraOffsetY = centerY - (mapPointY * currentZoom);
 
-                    checkCameraBounds(); 
-                    repaint(); 
+                    checkCameraBounds();
+                    repaint();
                 } else {
                     if (rotation < 0) {
+
                     eventBus.postQueued(new MouseWheelMoveInputEvent(Direction.Down));
                 }
                 if (rotation > 0) {
@@ -194,13 +207,15 @@ public class GameWorldPanel extends JPanel {
                 mouseWorldX = (currentMouseX - cameraOffsetX) / currentZoom;
                 mouseWorldY = (currentMouseY - cameraOffsetY) / currentZoom;
                 repaint(); 
+
             }
         };
 
         addMouseListener(mouseHandler);
         addMouseWheelListener(mouseHandler);
-        addMouseMotionListener(mouseHandler); 
+        addMouseMotionListener(mouseHandler);
     }
+
 
     //////////////////utilitaire//////////////////:
        
@@ -259,56 +274,69 @@ public class GameWorldPanel extends JPanel {
 
 
     /////////////map/////////////////:
+
     private void fitMapToScreen() {
 
         double screenWidth = getWidth();
         double screenHeight = getHeight();
-        double mapW = mapWidth(); 
+        double mapW = mapWidth();
         double mapH = mapHeight();
 
-        
+
         this.currentZoom = screenWidth / mapW;
-        
+
         double zoomedH = mapH * currentZoom;
         this.cameraOffsetX = 0;
-        
+
         if (zoomedH > screenHeight) {
             this.cameraOffsetY = screenHeight - zoomedH;
         } else {
             this.cameraOffsetY = 0;
         }
-        
-        this.initialFitDone = true; 
+
+        this.initialFitDone = true;
     }
 
     private void checkCameraBounds() {
-        if (mapCache == null) return;
+        if (mapCache == null) {
+            return;
+        }
 
         double screenWidth = getWidth();
         double screenHeight = getHeight();
-        
+
         double mapRealWidth = mapWidth();
         double mapRealHeight = mapHeight();
 
-        double minZoom = Math.max(screenWidth / mapRealWidth, screenHeight / mapRealHeight); 
-        if (currentZoom < minZoom) 
-            {currentZoom = minZoom;}
-        if (currentZoom > 8.0) 
-            {currentZoom = 8.0;}
+        double minZoom = Math.max(screenWidth / mapRealWidth, screenHeight / mapRealHeight);
+        if (currentZoom < minZoom) {
+            currentZoom = minZoom;
+        }
+        if (currentZoom > 8.0) {
+            currentZoom = 8.0;
+        }
 
         double zoomedWidth = mapRealWidth * currentZoom;
-        double zoomedHeigth = mapRealHeight* currentZoom;
+        double zoomedHeigth = mapRealHeight * currentZoom;
 
         double minX = screenWidth - zoomedWidth;
-        if (cameraOffsetX > 0) cameraOffsetX = 0;
-        if (cameraOffsetX < minX) cameraOffsetX = minX;
+        if (cameraOffsetX > 0) {
+            cameraOffsetX = 0;
+        }
+        if (cameraOffsetX < minX) {
+            cameraOffsetX = minX;
+        }
 
-        double minY = screenHeight- zoomedHeigth;
-        if (cameraOffsetY > 0) cameraOffsetY = 0;
-        if (cameraOffsetY < minY) cameraOffsetY = minY;
+        double minY = screenHeight - zoomedHeigth;
+        if (cameraOffsetY > 0) {
+            cameraOffsetY = 0;
+        }
+        if (cameraOffsetY < minY) {
+            cameraOffsetY = minY;
+        }
     }
 
-   
+
     private void updateMapCache() {
         int width = mapWidth();
         int height = mapHeight();
@@ -316,14 +344,16 @@ public class GameWorldPanel extends JPanel {
         mapCache = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g2d = mapCache.createGraphics(); //cree un crayon dans mapCache
 
-        g2d.setColor(new Color(135, 206, 235)); 
+        g2d.setColor(new Color(135, 206, 235));
         g2d.fillRect(0, 0, width, height);
 
         for (int y = 0; y < mapMatrix.length; y++) {
             for (int x = 0; x < mapMatrix[y].length; x++) {
                 Tile tileType = mapMatrix[y][x];
+
                 
                 BufferedImage texture = TextureManager.TILES.get(tileType);
+
                 if (texture != null) {
                     int screenX = x * tileSize;
                     int screenY = y * tileSize;
@@ -332,7 +362,7 @@ public class GameWorldPanel extends JPanel {
             }
         }
         g2d.dispose();
-        
+
         if (!initialFitDone && getWidth() > 0) {
             fitMapToScreen();
         }
@@ -531,15 +561,20 @@ public class GameWorldPanel extends JPanel {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g); //efface l'ecran
 
-        if (this.world == null) { return; }
+        if (this.world == null) {
+            return;
+        }
 
 
         Graphics2D g2d = (Graphics2D) g; // pinceau plus puissant avec les translate et les zoom
+
         g2d.translate(cameraOffsetX, cameraOffsetY);//decalle le pinceau en fonction de la position camera (si negatif le dessin est deplacer vers la gauche)
+
         g2d.scale(currentZoom, currentZoom);
 
 
         paintMap(g2d);
         paintEntity(g2d);
+
     }
 }

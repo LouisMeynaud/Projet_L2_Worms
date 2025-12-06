@@ -1,6 +1,5 @@
 package com.lllmtb.model.entity.projectile;
 
-import com.lllmtb.model.entity.CollisionType;
 import com.lllmtb.model.entity.Entity;
 import com.lllmtb.model.entity.worm.Worm;
 import com.lllmtb.model.item.weapon.FireParams;
@@ -13,10 +12,6 @@ import java.util.Objects;
 public abstract class Projectile extends Entity {
     private final PhysicsBody body;
     private final Worm owner;
-    private double force;
-    private double mass;
-    private double height;
-    private double width;
 
     /**
      * Create a new Projectile
@@ -26,6 +21,7 @@ public abstract class Projectile extends Entity {
         Objects.requireNonNull(params);
         Vector velocity = new Vector(Math.cos(params.angleRadians), Math.sin(params.angleRadians));
         velocity = velocity.scale(force);
+
         this.body = new PhysicsBody(this, params.spawnPos, velocity, mass, height, width);
         this.owner = params.owner;
     }

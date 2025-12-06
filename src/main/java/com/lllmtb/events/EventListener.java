@@ -18,14 +18,12 @@ package com.lllmtb.events;
  * <pre>{@code
  * EventListener<MyEvent> l = e -> System.out.println("received " + e);
  * }</pre>
- *
  * @param <T> concrete {@link Event} subtype handled by this listener
  */
 @FunctionalInterface
 public interface EventListener<T extends Event> {
     /**
      * Handle an event.
-     *
      * @param event the event instance (type {@code T})
      */
     void handle(T event);

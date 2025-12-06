@@ -1,6 +1,7 @@
 package com.lllmtb.events.ui.graphical;
+
 import com.lllmtb.events.*;
 
-public class ScreenHomeEvent implements Event{
-    
+public class ScreenHomeEvent implements Event {
+
 }

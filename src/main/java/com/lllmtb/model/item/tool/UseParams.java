@@ -10,9 +10,8 @@ public class UseParams {
 
     /**
      * Creates a new {@code FireParams} instance.
-     *
-     * @param owner        the worm that initiated the firing action (must not be {@code null})
-     * @throws NullPointerException if {@code spawnPos} or {@code owner} is {@code null}
+     * @param owner the worm that initiated the firing action (must not be {@code null})
+     * @exception NullPointerException if {@code spawnPos} or {@code owner} is {@code null}
      */
     public UseParams(@NonNull Worm owner) {
         this.owner = Objects.requireNonNull(owner);

@@ -2,7 +2,7 @@ package com.lllmtb.terrain.generation;
 
 public class ConfigMap {
 
- 
+
     private int width;              //the length of map
     private int height;             //the height of the map (prevents the ground from exceeding this height)
     private int maxSlope;           //the maximum height difference between two consecutive x-coordinates
@@ -15,9 +15,9 @@ public class ConfigMap {
     public static final double RATIOWIDTHHEIGHT = 0.5625; //for a rectangular world (0.5625 is the ratio between the width and heigth of a commun screen)
     private int nbTeam;
     private int nbWarms;
-    
+
     public ConfigMap(int width, int waterHeight, int thicknessMin,
-            boolean flyingIsland,int heightStart,LandScape terrainType,int nbTeam,int nbWarms) {
+                     boolean flyingIsland, int heightStart, LandScape terrainType, int nbTeam, int nbWarms) {
         this.width = width;
         this.height = (int) (width * RATIOWIDTHHEIGHT); //for a rectangular world (0.5625 is the ratio between the width and heigth of a commun screen)
         this.waterHeight = waterHeight;
@@ -27,40 +27,40 @@ public class ConfigMap {
         this.maxSlope = 1;
         this.maxLength = 10;
         this.plateauChance = 20;
-        this.nbWarms= nbWarms;
-        this.nbTeam= nbTeam;
-        
+        this.nbWarms = nbWarms;
+        this.nbTeam = nbTeam;
+
         switch (terrainType) {
-            
-            case FLAT: 
+
+            case FLAT:
                 this.maxSlope = 1;
                 this.maxLength = 10;
                 this.plateauChance = 80;
                 break;
-            
-            case HILLY: 
+
+            case HILLY:
                 this.maxSlope = 2;
                 this.maxLength = 3;
                 this.plateauChance = 30;
                 break;
-            
-            case JAGGED: 
+
+            case JAGGED:
                 this.maxSlope = 3;
                 this.maxLength = 5;
                 this.plateauChance = 10;
                 break;
-            
-            case CHAOTIC: this.maxSlope = 4;
+
+            case CHAOTIC:
+                this.maxSlope = 4;
                 this.maxLength = 2;
                 this.plateauChance = 0;
                 break;
-            
+
             default:
                 System.out.println("attention type inconnu");
                 this.maxSlope = 2;
                 this.maxLength = 3;
-                this.plateauChance =30;
-                ;
+                this.plateauChance = 30;
         }
 
     }
@@ -117,14 +117,5 @@ public class ConfigMap {
         this.nbWarms = nbWarms;
     }
 
-   
 
-    
-
-    
-
-
-    
-
-    
 }

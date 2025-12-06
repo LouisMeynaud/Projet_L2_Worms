@@ -6,35 +6,35 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 public class MapLoader {
-     
+
     public static Map loadMatrix(String mapName) {
         String path;
-        if(mapName.contains("Test")){
+        if (mapName.contains("Test")) {
             path = "src/test/resources/map/";
-        }
-        else{path = "src/main/resources/map/";
+        } else {
+            path = "src/main/resources/map/";
         }
 
         try {
-            String mapPath = path+mapName+"/map.txt";
+            String mapPath = path + mapName + "/map.txt";
             System.out.println("TEST " + mapPath);
             String contentMap = Files.readString(Path.of(mapPath));
             String[] row = contentMap.split("\n");
 
-            String hightLinePath = path+mapName+"/hightLine.txt";
+            String hightLinePath = path + mapName + "/hightLine.txt";
             String contentHightLine = Files.readString(Path.of(hightLinePath));
             String[] stringtabHightLine = contentHightLine.split(",");
             int[] intTabHightLine = new int[stringtabHightLine.length];
-            for(int i = 0;i<stringtabHightLine.length;i++){
+            for (int i = 0; i < stringtabHightLine.length; i++) {
                 intTabHightLine[i] = Integer.valueOf(stringtabHightLine[i]);
             }
-            Map tileMatrix = new Map(row.length, row[0].length(), mapName+".txt");
+            Map tileMatrix = new Map(row.length, row[0].length(), mapName + ".txt");
             tileMatrix.setHightLine(intTabHightLine);
 
             for (int i = 0; i < row.length; i++) {
                 for (int j = 0; j < row[0].length(); j++) {
                     switch (row[i].charAt(j)) { // perhaps create another `Map.setTile(x, y)` that could be used
-                                                // here
+                        // here
                         case 'D':
                             tileMatrix.getMapMatrix()[i][j] = Tile.DIRT;
                             break;
@@ -56,7 +56,7 @@ public class MapLoader {
                     }
 
                 }
-            //tileMatrix.setHightLine(hightLine);
+                //tileMatrix.setHightLine(hightLine);
             }
             return tileMatrix;
 
@@ -68,7 +68,7 @@ public class MapLoader {
         }
     }
 
-    
+
     public static File[] getListeDossiersMaps() {
         String cheminDossierMaps = "src/main/resources/map";
         return getListeDossiers(new File(cheminDossierMaps));
@@ -80,12 +80,13 @@ public class MapLoader {
             return new File[0];
         }
         File[] sousDossiers = dossierRacine.listFiles(f -> MapLoader.predicatEstUnDossier(f));
-        
+
         if (sousDossiers == null) {
             return new File[0];
         }
         return sousDossiers;
     }
+
     private static boolean predicatEstUnDossier(File fichier) {
         return fichier.isDirectory();
     }

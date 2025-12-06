@@ -16,29 +16,41 @@ import java.util.Objects;
  */
 public class Worm extends Entity {
 
-    /** The physical body of the worm used for physics simulation and position tracking. */
+    /**
+     * The physical body of the worm used for physics simulation and position tracking.
+     */
     private final PhysicsBody body;
 
-    /** The team this worm belongs to. */
+    /**
+     * The team this worm belongs to.
+     */
     private Team team;
 
-    /** The name of the worm. */
+    /**
+     * The name of the worm.
+     */
     public final String name;
 
-    /** The statistics of the worm (ex health, speed, strength). */
+    /**
+     * The statistics of the worm (ex health, speed, strength).
+     */
     private final Statistics stats;
 
-    /** Indicates if worm is alive. */
+    /**
+     * Indicates if worm is alive.
+     */
     private boolean alive = true;
 
-    /** Worms have to slide when they have a collision with a wall. */
+    /**
+     * Worms have to slide when they have a collision with a wall.
+     */
     private final CollisionType collisionType = CollisionType.SLIDE;
 
     /**
      * Private constructor to initialize a worm with statistics, a team and a spawn point.
-     * @param name the name of the worm
+     * @param name  the name of the worm
      * @param stats the {@link Statistics} associated with the worm
-     * @param team the {@link Team} the worm belongs to
+     * @param team  the {@link Team} the worm belongs to
      */
     private Worm(@NonNull String name, @NonNull Statistics stats, @NonNull Team team) {
         super();

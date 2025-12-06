@@ -5,13 +5,13 @@ import com.lllmtb.model.item.weapon.FireParams;
 import org.eclipse.jdt.annotation.NonNull;
 
 public final class BulletProjectile extends Projectile {
-    private final double force  = 60;
-    private final double mass   = 0.004;
-    private final double width  = 1;
-    private final double height = 1;
+    private static final double force  = 60.0;
+    private static final double mass   = 0.004;
+    private static final double height = 1;
+    private static final double width  = 1;
 
     public BulletProjectile(@NonNull FireParams params) {
-        super(params, 100.0, 0.004, 1, 1);
+        super(params, force, mass, height, width);
     }
 
     @Override
