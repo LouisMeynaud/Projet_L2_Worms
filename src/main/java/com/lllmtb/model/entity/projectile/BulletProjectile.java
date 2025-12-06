@@ -6,12 +6,12 @@ import org.eclipse.jdt.annotation.NonNull;
 
 public final class BulletProjectile extends Projectile {
     private final double force  = 60;
-    private final double mass   = 0.001;
+    private final double mass   = 0.004;
     private final double width  = 1;
     private final double height = 1;
 
     public BulletProjectile(@NonNull FireParams params) {
-        super(params, 100.0, 0.001, 1, 1);
+        super(params, 100.0, 0.004, 1, 1);
     }
 
     @Override
