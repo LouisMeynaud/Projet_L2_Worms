@@ -23,7 +23,7 @@ public class GameLoop implements Runnable {
         this.world.getBus().subscribe(GamePauseEvent.class, this::onPauseEvent);
     }
 
-    
+
 
     /**
      * Handles game pause events to update the paused state of the game loop.

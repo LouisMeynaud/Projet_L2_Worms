@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.imageio.ImageIO;
-import com.lllmtb.model.item.weapon.WeaponId;
 import com.lllmtb.terrain.map.Tile;
 
 public class TextureManager {
@@ -45,11 +44,11 @@ public class TextureManager {
 
             WEAPONS.put("HandGUN", ImageIO.read(TextureManager.class.getResource("/sprites/weapon/GunRight.png")));
             WEAPONS.put("HandBAZOOKA", ImageIO.read(TextureManager.class.getResource("/sprites/weapon/BazookaRight.png")));
-            
+
             ///////////projectile//////////
             PROJECTILES.put("BulletProjectile", ImageIO.read(TextureManager.class.getResource("/sprites/weapon/BulletGun.png")));
             PROJECTILES.put("RocketProjectile", ImageIO.read(TextureManager.class.getResource("/sprites/weapon/BulletGun.png")));
-            
+
 
 
         } catch (IOException e) {

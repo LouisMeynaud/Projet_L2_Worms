@@ -44,11 +44,11 @@ public class SettingsStartPanel extends JPanel {
 
         JPanel zoneSud = new JPanel(new FlowLayout(FlowLayout.RIGHT)); // met les bouton a droite (flowLayout afficheles un apres les autre);
         JButton backButton = Utilitaire.createImageButton(TextureManager.UI, "Back", 128, 64, 64, 48);
-        JButton StarButton = Utilitaire.createImageButton(TextureManager.UI, "Start", 128, 64, 64, 48);
+        JButton starButton = Utilitaire.createImageButton(TextureManager.UI, "Start", 128, 64, 64, 48);
 
 
         zoneSud.add(backButton);
-        zoneSud.add(StarButton);
+        zoneSud.add(starButton);
         this.add(zoneSud, BorderLayout.SOUTH);
 
 
@@ -66,7 +66,7 @@ public class SettingsStartPanel extends JPanel {
             eventBus.postQueued(new ScreenNewOrLoadEvent());
         });
 
-        StarButton.addActionListener(e -> {
+        starButton.addActionListener(e -> {
             eventBus.postQueued(new StartGameEvent(setSettings(gameSettingsPanel)));
         });
     }
@@ -83,15 +83,15 @@ public class SettingsStartPanel extends JPanel {
         boolean wind = gameSettingsPanel.getWind();
         int turnDuration = gameSettingsPanel.getTurnDuration();
         int maxJump = gameSettingsPanel.getMaxJumps();
-        if(this.mapSettingPanel.loadMap){
+        if (this.mapSettingPanel.loadMap) {
             String mapFileName = this.mapSettingPanel.panelListeMap.getFichierSelectionne().getName();
-            return new GameSettings(nbEquipes, nomsEquipes, nbVWorms, turnDuration, wind, mapFileName, false,0,null,maxJump);
-        }
-        else{
+            return new GameSettings(nbEquipes, nomsEquipes, nbVWorms, turnDuration, wind, mapFileName, false, 0, null, maxJump);
+
+        } else {
             LandScape terrainType = this.mapSettingPanel.generateMapPanel.getReliefType();
             int widthMap = this.mapSettingPanel.generateMapPanel.getWidthMapSlider();
             boolean flightIsland = this.mapSettingPanel.generateMapPanel.getflightIsland();
-            return new GameSettings(nbEquipes, nomsEquipes, nbVWorms, turnDuration, wind, null, flightIsland,widthMap,terrainType,maxJump);
+            return new GameSettings(nbEquipes, nomsEquipes, nbVWorms, turnDuration, wind, null, flightIsland, widthMap, terrainType, maxJump);
 
         }
 

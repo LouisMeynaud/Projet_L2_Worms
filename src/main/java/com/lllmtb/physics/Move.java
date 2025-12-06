@@ -34,11 +34,11 @@ public class Move {
         Transform t = switch (Objects.requireNonNull(direction)) {
             case Left:
                 System.out.println("Left move");
-                yield v -> new Vector( -8, v.getY());
+                yield v -> new Vector(-8, v.getY());
 
             case Right:
                 System.out.println("Right move");
-                yield v -> new Vector( 8, v.getY());
+                yield v -> new Vector(8, v.getY());
 
 
             case Up:
@@ -63,5 +63,5 @@ public class Move {
         Move.maxjump = maxjump;
     }
 
-    
+
 }

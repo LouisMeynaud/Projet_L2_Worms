@@ -26,7 +26,8 @@ public final class GameSettings {
      * @param terrainType    Type of terrain to generate
      */
 
-    public GameSettings(int nbTeams, String[] teamNames, int nbWorms, long turnDuration, boolean hasWind, String mapFileName, boolean floatingIsland, int widthMap, LandScape terrainType,int maxjump) {
+    public GameSettings(int nbTeams, String[] teamNames, int nbWorms, long turnDuration, boolean hasWind, String mapFileName, boolean floatingIsland, int widthMap,
+        LandScape terrainType, int maxjump) {
 
         this.nbTeams = nbTeams;
         this.teamNames = teamNames;

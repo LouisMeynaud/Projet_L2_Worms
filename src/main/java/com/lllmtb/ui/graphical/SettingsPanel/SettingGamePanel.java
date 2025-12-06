@@ -68,7 +68,7 @@ public class SettingGamePanel extends JPanel {
         contentGrid.add(nbEquipesLabel, gbc);
 
 
-        gbc.gridx = 1; // second colone 
+        gbc.gridx = 1; //second colone
         this.equipesSlider = Utilitaire.createSlider(2, MAX_EQUIPES, 2, 1);
 
         contentGrid.add(equipesSlider, gbc);
@@ -143,8 +143,8 @@ public class SettingGamePanel extends JPanel {
         contentGrid.add(maxJumpSlider, gbc);
         row++;
 
-        
-    }   
+
+    }
 
 
     /**

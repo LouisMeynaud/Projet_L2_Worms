@@ -24,12 +24,11 @@ import com.lllmtb.model.item.weapon.WeaponId;
 
 
 public class Utilitaire {
-    
 
 
     public static <T> JButton createImageButton(Map<T, BufferedImage> textureMap, T name, int buttonWidth, int buttonHeight, int iconWidth, int iconHeight) {
         JButton button = new JButton();
-        
+
         try {
             BufferedImage imgRaw = textureMap.get(name);
             if (imgRaw == null) {
@@ -52,13 +51,13 @@ public class Utilitaire {
     }
 
     public static JSlider createSlider(int min, int max, int value, int spacing) {
-        JSlider slider = new JSlider(JSlider.HORIZONTAL, min, max, value);  
-        
-        slider.setMajorTickSpacing(spacing); 
-        slider.setSnapToTicks(true); 
+        JSlider slider = new JSlider(JSlider.HORIZONTAL, min, max, value);
+
+        slider.setMajorTickSpacing(spacing);
+        slider.setSnapToTicks(true);
         slider.setPaintTicks(true);
         slider.setPaintLabels(true);
-        
+
         return slider;
     }
 
@@ -67,36 +66,35 @@ public class Utilitaire {
     public static JButton createWeaponButton(WeaponId weaponkey, String ammoKey, int ammoCount, boolean isUnlocked) {
         Map<String, BufferedImage> texture = TextureManager.WEAPONS;
         JButton button = new JButton();
-        button.setLayout(new BorderLayout()); 
+        button.setLayout(new BorderLayout());
         button.setPreferredSize(new Dimension(160, 160));
-        
+
         JLabel caseLabel = new JLabel("", SwingConstants.CENTER); // Label vide par défaut // place se qu'il contient au milieu
         String searchKey;
         //l'image a chercher (lock ou non)
-        if(isUnlocked){
+        if (isUnlocked) {
             searchKey = weaponkey.toString();
-        }else{
+        } else {
             searchKey =  "Locked" + weaponkey.toString();
 
         }
         //on cherche
         try {
             BufferedImage img = texture.get(searchKey);
-            
+
             if (img != null) {
-                Image scaled = img.getScaledInstance(96, 96, Image.SCALE_REPLICATE);//replicate: resize sans floutage des pixel
+                Image scaled = img.getScaledInstance(96, 96, Image.SCALE_REPLICATE); //replicate: resize sans floutage des pixel
                 caseLabel.setIcon(new ImageIcon(scaled));
             }
-        } catch (Exception e) { 
+        } catch (Exception e) {
             System.err.println("erreur image " + searchKey + " : " + e.getMessage());
              }
 
         button.add(caseLabel, BorderLayout.CENTER);
-        
-        
+
         if (isUnlocked) {
             JPanel ammoPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 5, 0));
-            ammoPanel.setOpaque(false); 
+            ammoPanel.setOpaque(false);
 
             try {
                 BufferedImage ammoImg = texture.get(ammoKey);
@@ -104,7 +102,7 @@ public class Utilitaire {
                     Image scaledAmmo = ammoImg.getScaledInstance(32, 32, Image.SCALE_REPLICATE);
                     ammoPanel.add(new JLabel(new ImageIcon(scaledAmmo)));
                 }
-            } catch (Exception e) { 
+            } catch (Exception e) {
                 System.err.println("erreur image " + ammoKey + " : " + e.getMessage());
             }
 
@@ -119,6 +117,6 @@ public class Utilitaire {
         return button;
     }
 
-    
+
 
 }

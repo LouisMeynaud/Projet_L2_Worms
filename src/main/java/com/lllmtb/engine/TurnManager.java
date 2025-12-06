@@ -92,7 +92,7 @@ public final class TurnManager {
         return turn;
     }
 
-    private void setupEvent(){
+    private void setupEvent() {
 
         moveListener = event -> {
             world.queueCommand(move(this.turn.getWormPlayable(), event.direction));
@@ -106,7 +106,7 @@ public final class TurnManager {
 
         mouseInputEventListener = event -> {
     PhysicsBody wormBody = turn.getWormPlayable().getBody();
-    
+
     double mouseX = event.getPos().getX();
     double mouseY = event.getPos().getY();
     double wormX = wormBody.getPos().getX();
@@ -115,30 +115,30 @@ public final class TurnManager {
     double centerX = wormX + (wormBody.getWidth() / 2.0);
     double centerY = wormY + (wormBody.getHeight() / 2.0);
     double deltaX = mouseX - centerX;
-    
-    
-    double deltaY = (mouseY - centerY); 
+
+
+    double deltaY = (mouseY - centerY);
 
 
     double angle = Math.atan2(deltaY, deltaX);
 
-    
-    double dist = 1.5; 
+
+    double dist = 1.5;
     double spawnX = centerX + (Math.cos(angle) * dist);
-    double spawnY = centerY + (Math.sin(angle) * dist); 
+    double spawnY = centerY + (Math.sin(angle) * dist);
 
     Position spawBullet = new Position(spawnX, spawnY);
     FireParams params = new FireParams(angle, spawBullet, Objects.requireNonNull(turn.getWormPlayable()));
-    
+
     List<GameCommand> cmds = turn.getTeam().fire(params);
-    for (GameCommand c : cmds){
-            world.queueCommand(c);}
+    for (GameCommand c : cmds) {
+            world.queueCommand(c); }
 };
 
         world.getBus().subscribe(MoveEvent.class, moveListener);
 
         world.getBus().subscribe(GroundCheckCollision.class, groundCollisionListener);
-        world.getBus().subscribe(WeaponSelectedEvent.class, weaponSelectedEventEventListener );
+        world.getBus().subscribe(WeaponSelectedEvent.class, weaponSelectedEventEventListener);
         world.getBus().subscribe(MouseInputEvent.class, mouseInputEventListener);
 
 

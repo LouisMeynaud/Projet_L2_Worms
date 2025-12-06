@@ -5,8 +5,8 @@ import com.lllmtb.model.item.weapon.FireParams;
 import org.eclipse.jdt.annotation.NonNull;
 
 public final class BulletProjectile extends Projectile {
-    private static final double force  = 60.0;
-    private static final double mass   = 0.004;
+    private static final double force  = 100.0;
+    private static final double mass   = 0.003;
     private static final double height = 1;
     private static final double width  = 1;
 

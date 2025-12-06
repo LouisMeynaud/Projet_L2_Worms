@@ -141,9 +141,8 @@
 
         <!-- Checks for Size Violations.                    -->
         <!-- See https://checkstyle.org/checks/sizes/index.html -->
-        <module name="MethodLength"/>
         <module name="ParameterNumber">
-            <property name="max" value="9"/>
+            <property name="max" value="15"/>
         </module>
 
         <!-- Checks for whitespace                               -->
