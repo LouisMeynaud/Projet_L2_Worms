@@ -42,8 +42,54 @@
             <version>2.4.0</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-api</artifactId>
+            <version>2.25.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
+            <version>2.25.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-slf4j2-impl</artifactId>
+            <version>2.25.2</version>
+        </dependency>
     </dependencies>
 
+    <profiles>
+        <profile>
+            <id>checkstyle</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-checkstyle-plugin</artifactId>
+                        <version>3.6.0</version>
+                        <configuration>
+                            <configLocation>src/main/resources/checkstyle.xml</configLocation>
+                            <failsOnError>true</failsOnError>
+                            <consoleOutput>true</consoleOutput>
+                            <linkXRef>false</linkXRef>
+                            <outputFileFormat>xml</outputFileFormat>
+                            <outputFile>target/site/checkstyle/checkstyle-result.xml</outputFile>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>checkstyle-validate</id>
+                                <phase>validate</phase>
+                                <goals>
+                                    <goal>checkstyle</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
     <build>
         <plugins>
             <plugin>
@@ -55,28 +101,6 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>3.1.2</version>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-checkstyle-plugin</artifactId>
-                <version>3.6.0</version>
-                <configuration>
-                    <configLocation>src/main/resources/checkstyle.xml</configLocation>
-                    <failsOnError>true</failsOnError>
-                    <consoleOutput>true</consoleOutput>
-                    <linkXRef>false</linkXRef>
-                    <outputFileFormat>xml</outputFileFormat>
-                    <outputFile>target/site/checkstyle/checkstyle-result.xml</outputFile>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>checkstyle-validate</id>
-                        <phase>validate</phase>
-                        <goals>
-                            <goal>checkstyle</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
             <plugin>
                 <groupId>com.rudikershaw.gitbuildhook</groupId>
@@ -157,6 +181,7 @@
                     <excludes>
                         <exclude>com/lllmtb/engine/GameEngine.class</exclude>
                         <exclude>com/lllmtb/engine/GameLoop.class</exclude>
+                        <exclude>com/lllmtb/engine/logger/*</exclude>
                         <exclude>com/lllmtb/ui/ConsoleUI.class</exclude>
                         <exclude>com/lllmtb/ui/graphical/**/*</exclude>
                     </excludes>
@@ -189,4 +214,5 @@
             </plugin>
         </plugins>
     </build>
+
 </project>
