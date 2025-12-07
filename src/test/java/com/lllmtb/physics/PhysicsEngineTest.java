@@ -121,9 +121,6 @@ class PhysicsEngineTest {
 
     @Test
     void testNextStep_WhenDie() {
-        EventListener<PhysicsCollisionWithWatterOrExitMap> listener = event -> {
-            return true;
-        };
         double dt = 0.0167;
         PhysicsEngine tpE = new PhysicsEngine(map, bus, false);
         tpE.add(pBBP);
@@ -132,7 +129,6 @@ class PhysicsEngineTest {
         tpE.nextStep(dt);
         assertEquals(5, pBBP.getPos().getY());
         assertEquals(0, pBBP.getPos().getX());
-        assertTrue(bus.subscribe(PhysicsCollisionWithWatterOrExitMap.class, true););
     }
 
     @Test
