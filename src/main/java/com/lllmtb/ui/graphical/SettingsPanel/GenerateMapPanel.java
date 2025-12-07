@@ -25,7 +25,7 @@ public class GenerateMapPanel extends JPanel {
     public JCheckBox flightIslandCheckBox;
 
     /**
-     * displays the map settings
+     * Constructor of the settings panel of map
      */
     public GenerateMapPanel() {
         this.setLayout(new BorderLayout());
@@ -113,7 +113,10 @@ public class GenerateMapPanel extends JPanel {
     }
 
 
-    // getter
+    /**
+     * Gets the selected relief type from the slider.
+     * @return the selected LandScape type.
+     */
     public LandScape getReliefType() {
         int val = this.reliefSlider.getValue();
         switch (val) {
@@ -129,11 +132,17 @@ public class GenerateMapPanel extends JPanel {
                 return LandScape.HILLY;
         }
     }
-
+    /**
+     * Gets the width of the map from the slider.
+     * @return the width of the map.
+     */
     public int getWidthMapSlider() {
         return this.widthMapSlider.getValue();
     }
-
+    /**
+     * Gets if the flight island option is selected.
+     * @return true if flight island is selected, false otherwise.
+     */
     public boolean getflightIsland() {
         return this.flightIslandCheckBox.isSelected();
     }

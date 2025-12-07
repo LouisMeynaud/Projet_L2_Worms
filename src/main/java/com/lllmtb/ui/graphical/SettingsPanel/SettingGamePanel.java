@@ -147,31 +147,44 @@ public class SettingGamePanel extends JPanel {
     }
 
 
-    /**
-     * This method aims to simplify the creation of sliders without code duplication.
-     * @param min     the minimun value
-     * @param max     the maximum value
-     * @param value   the default value
-     * @param spacing the spacing between two value
-     * @return a Slider with desired parameter
-     */
+    ////////////GETTERS/////////////////
 
+    /**
+     * Gets the number of teams from the slider.
+     * @return the number of teams.
+     */
     public int getNbEquipes() {
         return this.equipesSlider.getValue();
     }
 
+    /**
+     * Gets the number of worms per team from the slider.
+     * @return the number of worms per team.
+     */
     public int getNbWorms() {
         return this.wormsSlider.getValue();
     }
 
+    /**
+     * Gets the maximum number of jumps from the slider.
+     * @return the maximum number of jumps.
+     */
     public int getMaxJumps() {
         return this.maxJumpSlider.getValue();
     }
 
+    /**
+     * Gets the turn duration from the slider.
+     * @return the turn duration in seconds.
+     */
     public int getTurnDuration() {
         return this.turnDurationSlider.getValue();
     }
 
+    /**
+     * Gets the names of the teams from the text fields.
+     * @return an array of team names.
+     */
     public String[] getNomsEquipes() {
         int nbEquipes = getNbEquipes();
         String[] noms = new String[nbEquipes];
@@ -181,6 +194,10 @@ public class SettingGamePanel extends JPanel {
         return noms;
     }
 
+    /**
+     * Gets if the wind option is selected.
+     * @return true if wind is selected, false otherwise.
+     */
     public boolean getWind() {
         return this.windCheckBox.isSelected();
     }
