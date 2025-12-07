@@ -13,7 +13,6 @@ import java.util.Set;
 import javax.swing.*;
 
 import com.lllmtb.engine.GameWorld;
-import com.lllmtb.engine.logger.Logger;
 import com.lllmtb.events.EventBus;
 import com.lllmtb.events.move.MouseInputEvent;
 import com.lllmtb.events.move.MouseWheelMoveInputEvent;
@@ -335,55 +334,6 @@ public class GameWorldPanel extends JPanel {
             cameraOffsetY = minY;
         }
     }
-
-
-    private void loadTextures() {
-        textureMatrixMap = new HashMap<>();
-        textureEntityMap = new HashMap<>();
-        try {
-
-            textureMatrixMap.put(Tile.DIRT, ImageIO.read(GameWorldPanel.class.getResource("/textures/block/Dirt.png"))); // le / designe le dossier ressource
-            textureMatrixMap.put(Tile.WATER, ImageIO.read(GameWorldPanel.class.getResource("/textures/block/Water.png")));
-            textureMatrixMap.put(Tile.AIR, ImageIO.read(GameWorldPanel.class.getResource("/textures/block/Air.png")));
-            textureMatrixMap.put(Tile.CAVERN, ImageIO.read(GameWorldPanel.class.getResource("/textures/block/Cavern.png")));
-            textureMatrixMap.put(Tile.GRASS, ImageIO.read(GameWorldPanel.class.getResource("/textures/block/Grass.png")));
-
-
-            textureEntityMap.put("worm1", ImageIO.read(GameWorldPanel.class.getResource("/textures/worm.png")));
-
-        } catch (IOException e) {
-            e.printStackTrace();
-            System.err.println("ERREUR: Impossible de charger les textures !");
-        }
-    }
-
-    public void subscribeToGameEvents() {
-
-        eventBus.subscribe(WorldCreatedEvent.class, event -> {
-            this.world = event.getWorld();
-            this.mapMatrix = this.world.getMap().getMapMatrix();
-            this.mapCache = null; //on efface l'encienne image
-            this.initialFitDone = false;
-            repaint();
-        });
-        eventBus.subscribe(MapUpdateEvent.class, event -> {
-            this.mapMatrix = this.world.getMap().getMapMatrix();
-            this.mapCache = null;
-            repaint();
-        });
-        eventBus.subscribe(GameStateUpdatedEvent.class, event -> {
-            repaint();
-        });
-    }
-
-    private int mapWidth() {
-        return world.getMap().getWidth() * tileSize;
-    }
-
-    private int mapHeight() {
-        return world.getMap().getHeight() * tileSize;
-    }
-
     private void updateMapCache() {
         int width = mapWidth();
         int height = mapHeight();

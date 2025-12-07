@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.imageio.ImageIO;
+
+import com.lllmtb.engine.logger.Logger;
 import com.lllmtb.terrain.map.Tile;
 
 public class TextureManager {
@@ -57,8 +59,7 @@ public class TextureManager {
 
 
         } catch (IOException e) {
-            e.printStackTrace();
-            System.err.println("ERREUR : impossible de charger une texture.");
+            Logger.logger.error("Error to load a texture : ", e);
         }
     }
 

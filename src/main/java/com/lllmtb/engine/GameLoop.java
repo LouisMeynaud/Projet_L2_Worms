@@ -1,6 +1,5 @@
 package com.lllmtb.engine;
 
-import com.lllmtb.engine.logger.Logger;
 import com.lllmtb.events.game.GamePauseEvent;
 import org.eclipse.jdt.annotation.NonNull;
 

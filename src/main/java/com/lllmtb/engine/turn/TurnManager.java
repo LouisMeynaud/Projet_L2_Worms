@@ -106,7 +106,6 @@ public final class TurnManager {
 
         moveListener = event -> {
             world.queueCommand(move(this.turn.getWormPlayable(), event.direction));
-            System.out.println("Move");
         };
 
         weaponSelectedEventEventListener = event -> {
