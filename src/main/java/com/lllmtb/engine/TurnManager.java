@@ -100,7 +100,7 @@ public final class TurnManager {
         };
 
         weaponSelectedEventEventListener = event -> {
-            turn.getTeam().selectWeapon(event.weaponId);
+            turn.getTeam().selectWeapon(event.getWeaponId());
 
         };
 

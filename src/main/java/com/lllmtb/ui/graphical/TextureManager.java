@@ -14,6 +14,7 @@ public class TextureManager {
     public static final Map<String, BufferedImage> ENTITIES = new HashMap<>();
     public static final Map<String, BufferedImage> UI = new HashMap<>();
     public static final Map<String, BufferedImage> WEAPONS = new HashMap<>();
+    public static final Map<String, BufferedImage> TOOLS = new HashMap<>();
     public static final Map<String, BufferedImage> PROJECTILES = new HashMap<>();
 
     public static void load() {

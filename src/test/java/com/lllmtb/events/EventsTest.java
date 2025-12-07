@@ -91,7 +91,7 @@ public class EventsTest {
         WeaponId mockWeaponId = mock(WeaponId.class);
         WeaponSelectedEvent event = new WeaponSelectedEvent(mockWeaponId);
         assertNotNull(event, "L'evenement ne doit pas etre null");
-        assertSame(mockWeaponId, event.weaponId, "L'ID de l'arme La direction stockée doit être celle donnée");
+        assertSame(mockWeaponId, event.getWeaponId(), "L'ID de l'arme La direction stockée doit être celle donnée");
     }
 
     @Test

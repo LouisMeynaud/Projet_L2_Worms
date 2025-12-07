@@ -4,6 +4,7 @@ import java.awt.*;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import javax.swing.border.TitledBorder;
 
 import com.lllmtb.engine.GameWorld;
 import com.lllmtb.events.EventBus;
@@ -11,6 +12,7 @@ import com.lllmtb.events.game.*;
 import com.lllmtb.events.ui.ShootMode;
 import com.lllmtb.events.ui.graphical.RequestFocus;
 import com.lllmtb.model.item.inventory.Inventory;
+import com.lllmtb.model.item.tool.ToolId;
 import com.lllmtb.model.item.weapon.WeaponId;
 import com.lllmtb.ui.graphical.TextureManager;
 import com.lllmtb.ui.graphical.Utilitaire;
@@ -25,8 +27,8 @@ public class GameUIPanel extends JPanel {
     private GameWorld world;
     private final CardLayout cardLayout;
     private final JPanel centerContainer;
-    private JPanel inventoryGrid;
-
+    private JPanel weaponGrid;
+    private JPanel toolGrid;
 
     public GameUIPanel(EventBus eventBus) {
         this.eventBus = eventBus;
@@ -139,17 +141,41 @@ public class GameUIPanel extends JPanel {
 
     ///////////////INVENTAIRE/////////////
     private void createInventoryContainer() {
-        this.inventoryContainer = new JPanel(new GridBagLayout());
+        this.inventoryContainer = new JPanel();
         this.inventoryContainer.setOpaque(false);
+        this.inventoryContainer.setLayout(new BoxLayout(this.inventoryContainer, BoxLayout.X_AXIS));
 
+        this.weaponGrid = new JPanel(new GridLayout(0, 6, 10, 10)); 
+        this.toolGrid = new JPanel(new GridLayout(0, 6, 10, 10)); 
+        
+        this.weaponGrid.setOpaque(false);
+        this.toolGrid.setOpaque(false);
 
-        this.inventoryGrid = new JPanel();
+        
+        JPanel weaponContainer = createSectionPanel("Weapons", this.weaponGrid);
+        JPanel toolContainer = createSectionPanel("Tools", this.toolGrid);
 
-        this.inventoryGrid.setBackground(new Color(0, 0, 0, 200));
-        this.inventoryGrid.setBorder(new EmptyBorder(15, 15, 15, 15));
-        this.inventoryGrid.setLayout(new GridLayout(0, 6, 10, 10));
-        this.inventoryContainer.add(this.inventoryGrid);
+       
+        weaponContainer.setAlignmentY(Component.TOP_ALIGNMENT);
+        toolContainer.setAlignmentY(Component.TOP_ALIGNMENT);
+
+        this.inventoryContainer.add(weaponContainer);
+        this.inventoryContainer.add(Box.createHorizontalStrut(20)); 
+        this.inventoryContainer.add(toolContainer);
         this.centerContainer.add(this.inventoryContainer, "INVENTORY");
+    }
+
+   
+    private JPanel createSectionPanel(String title, JPanel Grid) {
+        JPanel Container = new JPanel(new BorderLayout());
+        Container.setBackground(new Color(0, 0, 0, 200));
+        
+        TitledBorder border = BorderFactory.createTitledBorder(new EmptyBorder(10, 10, 10, 10), title);
+        border.setTitleColor(Color.WHITE);
+        Container.setBorder(border);
+        
+        Container.add(Grid, BorderLayout.NORTH); 
+        return Container;
     }
 
     private void openCloseInventory() {
@@ -163,6 +189,7 @@ public class GameUIPanel extends JPanel {
             //ces deux ligne sont pour tester que l'affichage s'adapte bien
             this.world.getTurnManager().getTurn().getTeam().getInventory().unlock(WeaponId.GUN);
             this.world.getTurnManager().getTurn().getTeam().getInventory().weapons.addAmmo(WeaponId.GUN, 10);
+            this.world.getTurnManager().getTurn().getTeam().getInventory().tools.addAmmo(ToolId.PARACHUTE, 2);
 
             createInventoryGrid();
             cardLayout.show(centerContainer, "INVENTORY");
@@ -173,7 +200,7 @@ public class GameUIPanel extends JPanel {
     }
 
     private void createInventoryGrid() {
-        this.inventoryGrid.removeAll(); //le vide
+        this.weaponGrid.removeAll(); //le vide
         Inventory currentInventory = world.getTurnManager().getTurn().getWormPlayable().getTeam().getInventory();
 
         for (WeaponId id : WeaponId.values()) {
@@ -183,7 +210,7 @@ public class GameUIPanel extends JPanel {
             boolean isUnlocked = currentInventory.isUnlocked(id);
             int nbAmmo = currentInventory.weapons.getAmmo(id);
 
-            JButton itemButton = Utilitaire.createWeaponButton(id, "Ammo" + id, nbAmmo, isUnlocked);
+            JButton itemButton = Utilitaire.createWeaponButton(id, nbAmmo, isUnlocked);
 
             if (isUnlocked && nbAmmo > 0) {
                 itemButton.addActionListener(e -> {
@@ -193,10 +220,29 @@ public class GameUIPanel extends JPanel {
             } else if (isUnlocked && nbAmmo == 0) {
                 itemButton.setEnabled(false);
             }
+            this.weaponGrid.add(itemButton);
+        }
 
-            this.inventoryGrid.add(itemButton);
+        this.toolGrid.removeAll();
+        for (ToolId id : ToolId.values()) {
+            if (id == ToolId.NONE) {
+                continue;
+            }
+            
+            int nbAmmo = currentInventory.tools.getAmmo(id);
+            boolean isAvailable = nbAmmo > 0; 
 
+            JButton itemButton = Utilitaire.createToolButton(id, nbAmmo, true);
+
+            if (isAvailable) {
+                itemButton.addActionListener(e -> {
+                    eventBus.postQueued(new ToolSelectedEvent(id));
+                    openCloseInventory();
+                });
+            } else {
+                itemButton.setEnabled(false);
+            }
+            this.toolGrid.add(itemButton);
         }
     }
-
 }
