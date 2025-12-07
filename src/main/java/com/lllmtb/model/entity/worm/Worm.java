@@ -24,12 +24,12 @@ public class Worm extends Entity {
                                                     SpriteWorm.getSprite(1, 0),
                                                     SpriteWorm.getSprite(0, 1),
                                                     SpriteWorm.getSprite(1, 1),
-                                                    SpriteWorm.getSprite(0,2),
+                                                    SpriteWorm.getSprite(0, 2),
                                                     SpriteWorm.getSprite(0, 2),
                                                     SpriteWorm.getSprite(1, 1),
                                                     SpriteWorm.getSprite(0, 1),
                                                     SpriteWorm.getSprite(1, 0)};
-                                                    
+
     /**
      * The physical body of the worm used for physics simulation and position tracking.
      */
@@ -64,7 +64,7 @@ public class Worm extends Entity {
      * The current animation.
      */
     private Animation animation;
-    
+
     /**
      * Direction the worm is facing: 1 for right, -1 for left.
      */
@@ -137,7 +137,7 @@ public class Worm extends Entity {
     public Animation getAnimation() {
         return this.animation;
     }
-    
+
     /**
      * Gets the direction the worm is facing.
      * @return 1 for right, -1 for left
@@ -145,7 +145,7 @@ public class Worm extends Entity {
     public int getFacingDirection() {
         return this.facingDirection;
     }
-    
+
     /**
      * Sets the direction the worm is facing.
      * @param direction 1 for right, -1 for left
@@ -155,7 +155,7 @@ public class Worm extends Entity {
             this.facingDirection = direction;
         }
     }
-    
+
     /**
      * Updates the facing direction based on the worm's velocity.
      * If velocity x is negative, face left; if positive, face right.

@@ -325,7 +325,7 @@ public class GameWorldPanel extends JPanel {
         }
         checkCameraBounds();
     }
-    
+
     /**
      * Update all worm animations.
      */
@@ -333,7 +333,7 @@ public class GameWorldPanel extends JPanel {
         if (this.world == null || this.world.getPhysics() == null || this.world.getPhysics().getBodies() == null) {
             return;
         }
-        
+
         for (PhysicsBody body : this.world.getPhysics().getBodies()) {
             Object entity = body.getEntity();
             if (entity instanceof Worm) {
@@ -363,7 +363,7 @@ public class GameWorldPanel extends JPanel {
         if (mapCache == null) {
             updateMapCache();
         }
-        
+
         // Update all worm animations before rendering
         updateAnimations();
 
@@ -403,7 +403,7 @@ public class GameWorldPanel extends JPanel {
                 double echelleX = 1.875 * largeurVerPx / textureWorm.getWidth();
                 double echelleY = 1.5 * hauteurVerPx / textureWorm.getHeight();
                 tx.scale(echelleX, echelleY);
-                
+
                 // Flip l'image si le ver fait face a gauche
                 int facingDir = wormEntity.getFacingDirection();
                 if (facingDir == -1) {

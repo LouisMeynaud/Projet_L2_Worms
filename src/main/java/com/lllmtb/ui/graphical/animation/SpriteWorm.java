@@ -21,7 +21,7 @@ public class SpriteWorm {
             System.err.println("Erreur: Fichier sprite non trouvé: /sprites/worm/WormRight.png");
             e.printStackTrace();
         }
-        
+
         return sprite;
     }
 
