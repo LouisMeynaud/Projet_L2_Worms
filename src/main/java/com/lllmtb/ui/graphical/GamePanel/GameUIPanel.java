@@ -116,7 +116,11 @@ public class GameUIPanel extends JPanel {
 
         String teamName = this.world.getPlayingTeam().name;
         long timeLeft = this.world.getTurnManager().getRemainingTime() / 1000;
-
+        if (timeLeft < 5) {
+            this.timerLabel.setForeground(Color.RED);
+        } else {
+            this.timerLabel.setForeground(Color.WHITE);
+        }
 
         String timeString = String.format("%02d:%02d", timeLeft / 60, timeLeft % 60);
         this.timerLabel.setText(teamName + " : " + timeString);
