@@ -19,7 +19,9 @@ public abstract class Projectile extends Entity {
      */
     public Projectile(@NonNull FireParams params, double force, double mass, double height, double width) {
         Objects.requireNonNull(params);
-        Vector velocity = new Vector(Math.cos(params.angleRadians), Math.sin(params.angleRadians)).scale(force);
+        Vector velocity = new Vector(Math.cos(params.angleRadians), Math.sin(params.angleRadians));
+        velocity = velocity.scale(force);
+
         this.body = new PhysicsBody(this, params.spawnPos, velocity, mass, height, width);
         this.owner = params.owner;
     }

@@ -22,6 +22,8 @@ import java.util.Objects;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import com.lllmtb.physics.Move;
+
 public class GameWorld {
     private final Map map;
     private final EventBus bus;
@@ -56,6 +58,7 @@ public class GameWorld {
         this.map.setSpawnPoint(CreateSpawnPoint.createSpawnPoint(settings.nbTeams, settings.nbWorms, tmap));
 
         this.bus = eventBus;
+        Move.setMaxjump(settings.maxjump);
 
         // Init GameCommand queue
         this.commandQueue = new LinkedBlockingQueue<>();
@@ -112,6 +115,10 @@ public class GameWorld {
 
     public long getTurnDuration() {
         return this.turnManager.getTurnDuration();
+    }
+
+    public GameLoop getGameLoop() {
+        return gameLoop;
     }
 
     public void start() {

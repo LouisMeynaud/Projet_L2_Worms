@@ -294,10 +294,9 @@ public class PhysicsEngine {
         for (PhysicsBody body : bodies) {
             Vector deltaV = body.getVector().scale(-0.2).add(this.gravity); // Simple air resistance + gravity effects
             // only apply wind effects to Projectiles
-            if (body.getEntity() instanceof Projectile) {
-                deltaV = deltaV.add(this.wind);
-            }
-            deltaV = deltaV.scale(dt / body.getMass());
+            if (body.getEntity() instanceof Projectile) deltaV = deltaV.add(this.wind);
+            deltaV = deltaV.scale(dt * body.getMass());
+
 
             Vector newVector = body.getVector().add(deltaV);
 

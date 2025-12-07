@@ -12,9 +12,13 @@ public class GameScreen extends JLayeredPane {
     private GameWorldPanel gameWorldPanel;
     private GameUIPanel gameUIPanel;
 
+
     /**
-     * This page will contain the overlay of the different page layers of the game.
-     * @param bus
+     * The GameScreen is composed of two layers : the game world layer and the UI layer.
+     * The game world layer is at the bottom and contains the game world rendering
+     * The UI layer is at the top and contains the UI elements (buttons, timer, etc)
+     *
+     * @param eventBus the eventbus.
      */
     public GameScreen(EventBus eventBus) {
         gameWorldPanel = new GameWorldPanel(eventBus);

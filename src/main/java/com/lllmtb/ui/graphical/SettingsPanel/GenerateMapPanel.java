@@ -14,17 +14,18 @@ import javax.swing.JSlider;
 import javax.swing.JTextField;
 
 import com.lllmtb.terrain.generation.LandScape;
+import com.lllmtb.ui.graphical.Utilitaire;
 
 public class GenerateMapPanel extends JPanel {
 
     public JTextField[] champsNomsEquipes;
-    public final int maxWidth = 400;
+    public static final int MAX_WIDTH = 400;
     public JSlider widthMapSlider;
     public JSlider reliefSlider;
     public JCheckBox flightIslandCheckBox;
 
     /**
-     * displays the map settings
+     * Constructor of the settings panel of map
      */
     public GenerateMapPanel() {
         this.setLayout(new BorderLayout());
@@ -60,8 +61,10 @@ public class GenerateMapPanel extends JPanel {
         contentGrid.add(mapWidthLabel, gbc);
 
         gbc.gridx = 1; // second columns
-        this.widthMapSlider = CreateSlider.createSlider(150, maxWidth, 200, 50);
+
+        this.widthMapSlider = Utilitaire.createSlider(150, MAX_WIDTH, 200, 50);
         contentGrid.add(widthMapSlider, gbc);
+
         row++;
 
         gbc.gridx = 0;
@@ -110,7 +113,10 @@ public class GenerateMapPanel extends JPanel {
     }
 
 
-    // getter
+    /**
+     * Gets the selected relief type from the slider.
+     * @return the selected LandScape type.
+     */
     public LandScape getReliefType() {
         int val = this.reliefSlider.getValue();
         switch (val) {
@@ -126,11 +132,17 @@ public class GenerateMapPanel extends JPanel {
                 return LandScape.HILLY;
         }
     }
-
+    /**
+     * Gets the width of the map from the slider.
+     * @return the width of the map.
+     */
     public int getWidthMapSlider() {
         return this.widthMapSlider.getValue();
     }
-
+    /**
+     * Gets if the flight island option is selected.
+     * @return true if flight island is selected, false otherwise.
+     */
     public boolean getflightIsland() {
         return this.flightIslandCheckBox.isSelected();
     }
