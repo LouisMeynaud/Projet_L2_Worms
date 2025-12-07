@@ -14,9 +14,8 @@ public class NewOrLoadPanel extends JPanel {
     EventBus eventBus;
 
     /**
-     *
-     * @param eventBus the event bus of the game.
-     *                 a simple panel allowing you to choose  to load or create a new game
+     * Constructor of a panel that allows to choose between creating a new game or loading an existing one.
+     * @param eventBus
      */
     public NewOrLoadPanel(EventBus eventBus) {
         this.eventBus = new EventBus();

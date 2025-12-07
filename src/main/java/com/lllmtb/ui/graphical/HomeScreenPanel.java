@@ -11,19 +11,12 @@ import com.lllmtb.events.EventBus;
 import com.lllmtb.events.ui.graphical.ScreenNewOrLoadEvent;
 
 public class HomeScreenPanel extends JPanel {
-    EventBus eventBus;
-
 
     /**
-     *
+     * The main page is used to open the settings, launch a game, or quit the game.
      * @param eventBus the eventBus of the game.
-     *
-     *                 The main page is used to open the settings, launch a game, or quit the game.
-     *
-     *
      */
     public HomeScreenPanel(EventBus eventBus) {
-        this.eventBus = eventBus;
         this.setLayout(new GridBagLayout());
 
         GridBagConstraints gbc = new GridBagConstraints();
@@ -34,11 +27,6 @@ public class HomeScreenPanel extends JPanel {
         JButton playButton = Utilitaire.createImageButton(TextureManager.UI, "Start", 128, 64, 64, 48);
         JButton settingButton = Utilitaire.createImageButton(TextureManager.UI, "GameSetting", 128, 64, 64, 48);
         JButton closeButton = Utilitaire.createImageButton(TextureManager.UI, "Close", 128, 64, 64, 48);
-
-
-
-
-
 
         playButton.addActionListener(e -> {
             eventBus.postQueued(new ScreenNewOrLoadEvent());
