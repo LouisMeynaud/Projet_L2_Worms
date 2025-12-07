@@ -419,7 +419,7 @@ public class Collision {
         if (impact.normal.getY() == 0) {
             body.setVector(new Vector(0, body.getVector().getY()));
         } else {
-            body.setVector(new Vector(body.getVector().getX(), 0));
+            body.setVector(new Vector(body.getVector().getX() * 0.8, 0));
             // if the worm touch the ground, it can jump again
             if (impact.normal.getY() == 1) {
                 bus.postQueued(new GroundCheckCollision(body.getEntity()));

@@ -139,7 +139,7 @@ class PhysicsEngineTest {
         pE.nextStep(dt);
         Position newPos = pBWorm.getPos();
         Vector newVector = pBWorm.getVector();
-        assertEquals(3.9165027889, newPos.getX());
+        assertEquals(3.93320223112, newPos.getX());
         assertEquals(initialPos.getY(), newPos.getY());
         assertNotEquals(initialVector.getX(), newVector.getX());
         assertNotEquals(initialVector.getY(), newVector.getY());
