@@ -159,6 +159,7 @@
                         <exclude>com/lllmtb/engine/GameLoop.class</exclude>
                         <exclude>com/lllmtb/ui/ConsoleUI.class</exclude>
                         <exclude>com/lllmtb/ui/graphical/**/*</exclude>
+                        <exclude>com/lllmtb/engine/TurnManager.class</exclude>
                     </excludes>
                 </configuration>
             </plugin>

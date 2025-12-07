@@ -13,7 +13,7 @@ import java.util.Objects;
  * It manages the jump capability and creates movement commands based on the specified direction.
  */
 public class Move {
-    protected static int maxjump = 2;
+    protected static int maxjump;
     protected static int jump = 0;
 
     /**
@@ -34,17 +34,18 @@ public class Move {
         Transform t = switch (Objects.requireNonNull(direction)) {
             case Left:
                 System.out.println("Left move");
-                yield v -> new Vector(Math.max(v.getX() - 5, -8), v.getY());
+                yield v -> new Vector(-8, v.getY());
 
             case Right:
                 System.out.println("Right move");
-                yield v -> new Vector(Math.min(v.getX() + 5, 8), v.getY());
+                yield v -> new Vector(8, v.getY());
+
 
             case Up:
                 if (jump > 0) {
                     System.out.println("Up move");
                     jump--;
-                    yield v -> v.add(new Vector(0, 20));
+                    yield v -> new Vector(v.getX(), 20);
                 }
                 yield null;
 
@@ -57,4 +58,10 @@ public class Move {
 
         return new AddPhysicsModifierCommand(worm, new PhysicsModifier(t, null));
     }
+
+    public static void setMaxjump(int maxjump) {
+        Move.maxjump = maxjump;
+    }
+
+
 }

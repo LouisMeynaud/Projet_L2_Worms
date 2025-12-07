@@ -70,13 +70,12 @@ public class GraphicalUI implements UI {
         windows.add(mainPanel); // the page containing the others, (the card layout).
 
 
-        /**
-         *Method allowing all subscribers to be grouped in the same place.
-         */
         subscribeToNavigationEvents();
     }
 
-
+    /**
+     * Subscribes to navigation events to switch between different screens.
+     */
     private void subscribeToNavigationEvents() {
         eventBus.subscribe(ScreenNewOrLoadEvent.class, event -> {
             cardLayout.show(mainPanel, "newOrLoadPanel");
@@ -96,19 +95,16 @@ public class GraphicalUI implements UI {
         });
     }
 
-
-    @Override
     /**
-     * makes the page visible
+     * makes the page visible.
      */
+    @Override
     public void start() {
         windows.setVisible(true);
     }
 
+    @Override
     public void close() {
     }
 
-    public EventBus getBus() {
-        return this.eventBus;
-    }
 }

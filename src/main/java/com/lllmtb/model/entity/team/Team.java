@@ -296,6 +296,7 @@ public class Team {
      */
     private void selectItem(@NonNull ItemId id) {
         this.selectedItem = Objects.requireNonNull(id);
+
     }
 
     /**

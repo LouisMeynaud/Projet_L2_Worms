@@ -8,8 +8,9 @@ import java.util.Objects;
 public class GameLoop implements Runnable {
     private final GameWorld world;
     private volatile boolean running = true;
-    private final double ticktime = 16; // ~60Hz
+    private final double ticktime = 8; // ~60Hz
     private boolean isPaused = false;
+    private long totalTicks = 0;
 
     /**
      * Creates a new {@code GameLoop} instance.
@@ -21,6 +22,8 @@ public class GameLoop implements Runnable {
 
         this.world.getBus().subscribe(GamePauseEvent.class, this::onPauseEvent);
     }
+
+
 
     /**
      * Handles game pause events to update the paused state of the game loop.
@@ -63,9 +66,12 @@ public class GameLoop implements Runnable {
 
                 // 3) process events generated during physics (collisions, explosions...)
                 world.getBus().processQueued();
+
+                //6) increace totalTicks
+                this.totalTicks++;
             }
 
-            // 4) sleep to maintain tick rate
+            // 5) sleep to maintain tick rate
             try {
                 Thread.sleep(Math.max(0, (long) ticktime - (System.nanoTime() - now) / 1_000_000));
             } catch (InterruptedException ignored) {
@@ -81,5 +87,9 @@ public class GameLoop implements Runnable {
         running = false;
         world.getBus().clear();
         world.getPhysics().clear();
+    }
+
+    public long getTicks() {
+        return this.totalTicks;
     }
 }
