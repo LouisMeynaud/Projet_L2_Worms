@@ -19,12 +19,12 @@ import java.awt.Image;
 
 import javax.swing.JSlider;
 import javax.swing.border.BevelBorder;
+import com.lllmtb.model.item.tool.ToolId;
 import com.lllmtb.model.item.weapon.WeaponId;
 
 
 
 public class Utilitaire {
-
 
 
     public static <T> JButton createImageButton(Map<T, BufferedImage> textureMap, T name, int buttonWidth, int buttonHeight, int iconWidth, int iconHeight) {
@@ -64,13 +64,7 @@ public class Utilitaire {
 
 
 
-    public static JButton createWeaponButton(WeaponId weaponkey, String ammoKey, int ammoCount, boolean isUnlocked) {
-        Map<String, BufferedImage> texture = TextureManager.WEAPONS;
-        JButton button = new JButton();
-        button.setLayout(new BorderLayout());
-        button.setPreferredSize(new Dimension(160, 160));
-
-        JLabel caseLabel = new JLabel("", SwingConstants.CENTER); // Label vide par défaut // place se qu'il contient au milieu
+    public static JButton createWeaponButton(WeaponId weaponkey, int ammoCount, boolean isUnlocked) {
         String searchKey;
         //l'image a chercher (lock ou non)
         if (isUnlocked) {
@@ -79,7 +73,26 @@ public class Utilitaire {
             searchKey =  "Locked" + weaponkey.toString();
 
         }
-        //on cherche
+        String ammoKey = "Ammo" + weaponkey.toString();
+        return createBaseItemButton(searchKey, ammoKey, ammoCount, isUnlocked, TextureManager.WEAPONS);
+    }
+
+
+    public static JButton createToolButton(ToolId id, int ammoCount, boolean isUnlocked) {
+        String searchKey = id.toString();
+        String ammoKey = "Ammo" + id.toString();
+
+
+        return createBaseItemButton(searchKey, ammoKey, ammoCount, isUnlocked, TextureManager.TOOLS);
+    }
+
+
+    private static JButton createBaseItemButton(String searchKey, String ammoKey, int ammoCount, boolean isUnlocked, Map<String, BufferedImage> texture) {
+        JButton button = new JButton();
+        button.setLayout(new BorderLayout());
+        button.setPreferredSize(new Dimension(160, 160));
+
+        JLabel caseLabel = new JLabel("", SwingConstants.CENTER); // Label vide par défaut // place se qu'il contient au milieu
         try {
             BufferedImage img = texture.get(searchKey);
 
@@ -92,8 +105,6 @@ public class Utilitaire {
              }
 
         button.add(caseLabel, BorderLayout.CENTER);
-
-
 
         if (isUnlocked) {
             JPanel ammoPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 5, 0));

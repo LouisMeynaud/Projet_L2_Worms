@@ -23,6 +23,7 @@ public class MoveTest {
     void testJumpToMax() {
         Move.setMaxjump(2);
         Move.jumpToMax();
+
         assertEquals(2, Move.jump);
     }
     @Test
@@ -32,8 +33,8 @@ public class MoveTest {
         Field modifierField = AddPhysicsModifierCommand.class.getDeclaredField("modifier");
         modifierField.setAccessible(true);
         PhysicsModifier m = (PhysicsModifier) modifierField.get(gameCommand);
-        Transform t = m.transform;
-        Vector v = new Vector(0, 0);
+        Transform t =m.transform;
+        Vector v = new Vector(0,0);
         Vector vector = t.apply(v);
 
 
@@ -51,8 +52,8 @@ public class MoveTest {
         Field modifierField = AddPhysicsModifierCommand.class.getDeclaredField("modifier");
         modifierField.setAccessible(true);
         PhysicsModifier m = (PhysicsModifier) modifierField.get(gameCommand);
-        Transform t = m.transform;
-        Vector v = new Vector(0, 0);
+        Transform t =m.transform;
+        Vector v = new Vector(0,0);
         Vector vector = t.apply(v);
 
 
@@ -73,13 +74,14 @@ public class MoveTest {
     void testMoveUpWithJump() throws NoSuchFieldException, IllegalAccessException {
         Move.setMaxjump(2);
         Move.jumpToMax();
+
         Worm wormMock = Mockito.mock(Worm.class);
         GameCommand gameCommand =   Move.move(wormMock, Direction.Up);
         Field modifierField = AddPhysicsModifierCommand.class.getDeclaredField("modifier");
         modifierField.setAccessible(true);
         PhysicsModifier m = (PhysicsModifier) modifierField.get(gameCommand);
-        Transform t = m.transform;
-        Vector v = new Vector(0, 0);
+        Transform t =m.transform;
+        Vector v = new Vector(0,0);
         Vector vector = t.apply(v);
 
 

@@ -40,6 +40,7 @@ public class Move {
                 System.out.println("Right move");
                 yield v -> new Vector(8, v.getY());
 
+
             case Up:
                 if (jump > 0) {
                     System.out.println("Up move");
@@ -61,4 +62,6 @@ public class Move {
     public static void setMaxjump(int maxjump) {
         Move.maxjump = maxjump;
     }
+
+
 }

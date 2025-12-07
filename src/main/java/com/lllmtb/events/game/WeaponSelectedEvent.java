@@ -6,10 +6,13 @@ import com.lllmtb.model.item.weapon.WeaponId;
 
 public class WeaponSelectedEvent implements Event {
 
-    public final WeaponId weaponId;
+
+    private final WeaponId weaponId;
 
     public WeaponSelectedEvent(WeaponId weaponId) {
         this.weaponId = weaponId;
-        System.out.println(weaponId + "choisis");
+    }
+    public WeaponId getWeaponId() {
+        return weaponId;
     }
 }

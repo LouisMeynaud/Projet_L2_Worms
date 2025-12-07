@@ -99,6 +99,26 @@
 
     <module name="TreeWalker">
 
+        <!-- Checks for Javadoc comments.                     -->
+        <!-- See https://checkstyle.org/checks/javadoc/index.html -->
+        <module name="InvalidJavadocPosition">
+            <property name="severity" value="warning"/>
+        </module>
+        <module name="JavadocMethod">
+            <property name="severity" value="warning"/>
+        </module>
+        <module name="JavadocType">
+            <property name="severity" value="warning"/>
+        </module>
+        <module name="JavadocVariable">
+            <property name="severity" value="warning"/>
+        </module>
+        <module name="JavadocStyle">
+            <property name="severity" value="warning"/>
+        </module>
+        <module name="MissingJavadocMethod">
+            <property name="severity" value="warning"/>
+        </module>
 
         <!-- Checks for Naming Conventions.                  -->
         <!-- See https://checkstyle.org/checks/naming/index.html -->
@@ -121,9 +141,8 @@
 
         <!-- Checks for Size Violations.                    -->
         <!-- See https://checkstyle.org/checks/sizes/index.html -->
-        <module name="MethodLength"/>
         <module name="ParameterNumber">
-            <property name="max" value="10"/>
+            <property name="max" value="15"/>
         </module>
 
         <!-- Checks for whitespace                               -->

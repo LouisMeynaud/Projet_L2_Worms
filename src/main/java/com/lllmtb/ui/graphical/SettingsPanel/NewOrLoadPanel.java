@@ -22,8 +22,10 @@ public class NewOrLoadPanel extends JPanel {
         this.eventBus = new EventBus();
 
 
+
         JButton newGameButton = Utilitaire.createImageButton(TextureManager.UI, "NewGame", 128, 64, 64, 48);
         newGameButton.addActionListener(e -> {
+
             eventBus.postQueued(new ScreenSettingsGame());
         });
         this.add(newGameButton);
@@ -35,8 +37,10 @@ public class NewOrLoadPanel extends JPanel {
         this.add(loadGameButton);
 
 
+
         JButton backButton = Utilitaire.createImageButton(TextureManager.UI, "Back", 128, 64, 64, 48);
     backButton.addActionListener(e -> {
+
             eventBus.postQueued(new ScreenHomeEvent());
         });
         this.add(backButton);

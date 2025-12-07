@@ -19,7 +19,7 @@ import com.lllmtb.ui.graphical.Utilitaire;
 public class GenerateMapPanel extends JPanel {
 
     public JTextField[] champsNomsEquipes;
-    public final int maxWidth = 400;
+    public static final int MAX_WIDTH = 400;
     public JSlider widthMapSlider;
     public JSlider reliefSlider;
     public JCheckBox flightIslandCheckBox;
@@ -62,7 +62,7 @@ public class GenerateMapPanel extends JPanel {
 
         gbc.gridx = 1; // second columns
 
-        this.widthMapSlider = Utilitaire.createSlider(150, maxWidth, 200, 50);
+        this.widthMapSlider = Utilitaire.createSlider(150, MAX_WIDTH, 200, 50);
         contentGrid.add(widthMapSlider, gbc);
 
         row++;

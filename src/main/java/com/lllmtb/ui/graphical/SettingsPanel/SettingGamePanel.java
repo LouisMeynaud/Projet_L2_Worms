@@ -22,12 +22,12 @@ public class SettingGamePanel extends JPanel {
     public static final int MAX_WORM = 6;
     public static final int MAX_TIME = 40;
     public static final int MAX_JUMP = 5;
+
     public JSlider equipesSlider;
     public JSlider wormsSlider;
     public JSlider turnDurationSlider;
     public JCheckBox windCheckBox;
     public JSlider maxJumpSlider;
-
 
 
     /**
@@ -67,8 +67,10 @@ public class SettingGamePanel extends JPanel {
         JLabel nbEquipesLabel = new JLabel("Nombre d'équipes :");
         contentGrid.add(nbEquipesLabel, gbc);
 
-        gbc.gridx = 1; //second column
+
+        gbc.gridx = 1; //second colone
         this.equipesSlider = Utilitaire.createSlider(2, MAX_EQUIPES, 2, 1);
+
         contentGrid.add(equipesSlider, gbc);
         row++;
 
@@ -95,6 +97,7 @@ public class SettingGamePanel extends JPanel {
 
         gbc.gridx = 1;
         this.wormsSlider = Utilitaire.createSlider(1, MAX_WORM, 3, 1);
+
         contentGrid.add(wormsSlider, gbc);
         row++;
 
@@ -105,7 +108,9 @@ public class SettingGamePanel extends JPanel {
         contentGrid.add(turnDurationLabel, gbc);
 
         gbc.gridx = 1;
+
         this.turnDurationSlider = Utilitaire.createSlider(10, MAX_TIME, 30, 10);
+
         contentGrid.add(turnDurationSlider, gbc);
         row++;
 
@@ -126,6 +131,7 @@ public class SettingGamePanel extends JPanel {
         row++;
 
 
+
         //turn duration
         gbc.gridx = 0;
         gbc.gridy = row;
@@ -136,7 +142,10 @@ public class SettingGamePanel extends JPanel {
         this.maxJumpSlider = Utilitaire.createSlider(1, MAX_JUMP, 1, 1);
         contentGrid.add(maxJumpSlider, gbc);
         row++;
+
+
     }
+
 
     /**
      * This method aims to simplify the creation of sliders without code duplication.

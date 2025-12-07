@@ -41,9 +41,11 @@ public class SettingsStartPanel extends JPanel {
         this.add(titre, BorderLayout.NORTH);
 
         // Launch and return button: southern zone
+
         JPanel zoneSud = new JPanel(new FlowLayout(FlowLayout.RIGHT)); // met les bouton a droite (flowLayout afficheles un apres les autre);
         JButton backButton = Utilitaire.createImageButton(TextureManager.UI, "Back", 128, 64, 64, 48);
         JButton starButton = Utilitaire.createImageButton(TextureManager.UI, "Start", 128, 64, 64, 48);
+
 
         zoneSud.add(backButton);
         zoneSud.add(starButton);
@@ -72,7 +74,7 @@ public class SettingsStartPanel extends JPanel {
     /**
      *
      * @param gameSettingsPanel retrieves the parameters chosen in the gameSetting panel
-     * @returnreturns a type setting for creating the game.
+     * @return a type setting for creating the game.
      */
     public GameSettings setSettings(SettingGamePanel gameSettingsPanel) {
         int nbEquipes = gameSettingsPanel.getNbEquipes();
@@ -81,7 +83,6 @@ public class SettingsStartPanel extends JPanel {
         boolean wind = gameSettingsPanel.getWind();
         int turnDuration = gameSettingsPanel.getTurnDuration();
         int maxJump = gameSettingsPanel.getMaxJumps();
-
         if (this.mapSettingPanel.loadMap) {
             String mapFileName = this.mapSettingPanel.panelListeMap.getFichierSelectionne().getName();
             return new GameSettings(nbEquipes, nomsEquipes, nbVWorms, turnDuration, wind, mapFileName, false, 0, null, maxJump);
@@ -91,6 +92,7 @@ public class SettingsStartPanel extends JPanel {
             int widthMap = this.mapSettingPanel.generateMapPanel.getWidthMapSlider();
             boolean flightIsland = this.mapSettingPanel.generateMapPanel.getflightIsland();
             return new GameSettings(nbEquipes, nomsEquipes, nbVWorms, turnDuration, wind, null, flightIsland, widthMap, terrainType, maxJump);
+
         }
 
 
