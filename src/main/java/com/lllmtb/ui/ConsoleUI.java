@@ -265,7 +265,7 @@ public class ConsoleUI implements UI {
             boolean ready = this.readyToPlay();
 
             if (ready) {
-                terminal.writer().println("Lancement du jeu...");
+                terminal.writer().println("Starting the game...");
                 terminal.writer().flush();
                 this.eventBus.postQueued(new StartGameEvent(settings));
                 eventBus.subscribe(WorldCreatedEvent.class, e -> {
@@ -274,8 +274,8 @@ public class ConsoleUI implements UI {
                 });
             }
         } catch (Exception e) {
-            System.err.println("Une erreur est survenue durant la configuration :");
-            e.printStackTrace();
+            Logger.logger.error("An error occurred during configuration :");
+            Logger.logger.error("", e);
             close();
         }
     }

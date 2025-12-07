@@ -1,5 +1,6 @@
 package com.lllmtb.engine;
 
+import com.lllmtb.engine.logger.Logger;
 import com.lllmtb.events.game.GamePauseEvent;
 import org.eclipse.jdt.annotation.NonNull;
 
@@ -29,6 +30,11 @@ public class GameLoop implements Runnable {
      */
     private void onPauseEvent(@NonNull GamePauseEvent event) {
         this.isPaused = Objects.requireNonNull(event).isPaused;
+        if (isPaused) {
+            Logger.logger.debug("Game paused");
+        } else {
+            Logger.logger.debug("Game unpaused");
+        }
     }
 
 
