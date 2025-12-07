@@ -3,6 +3,7 @@ package com.lllmtb.model.item.tool;
 import com.lllmtb.engine.commands.AddPhysicsModifierCommand;
 import com.lllmtb.engine.commands.GameCommand;
 import com.lllmtb.model.entity.worm.Worm;
+import com.lllmtb.model.item.UseParams;
 import com.lllmtb.physics.PhysicsModifier;
 import com.lllmtb.physics.Vector;
 import org.junit.jupiter.api.Test;

@@ -7,8 +7,8 @@ import com.lllmtb.model.entity.projectile.BulletProjectile;
 import com.lllmtb.model.entity.team.Team;
 import com.lllmtb.model.entity.worm.Worm;
 import com.lllmtb.model.item.ItemId;
+import com.lllmtb.model.item.UseParams;
 import com.lllmtb.model.item.tool.ToolId;
-import com.lllmtb.model.item.weapon.FireParams;
 import com.lllmtb.model.item.weapon.WeaponId;
 import com.lllmtb.terrain.map.Map;
 import com.lllmtb.terrain.map.MapLoader;
@@ -40,7 +40,7 @@ class PhysicsEngineTest {
         Worm w = new Worm("José", new Team("Team", 1, new Position[]{pw}));
         assertTrue(map.inMap(pw));
         Position pBP = new Position(0, 5);
-        BulletProjectile bP = new BulletProjectile(new FireParams(0, pBP, w));
+        BulletProjectile bP = new BulletProjectile(new UseParams(0, pBP, w));
         assertTrue(map.inMap(pw));
         pBWorm = w.getBody();
         pBBP = bP.getBody();

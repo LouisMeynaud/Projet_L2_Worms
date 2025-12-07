@@ -4,6 +4,7 @@ import com.lllmtb.engine.commands.GameCommand;
 import com.lllmtb.engine.commands.RegisterProjectileCommand;
 import com.lllmtb.model.entity.projectile.RocketProjectile;
 import com.lllmtb.model.entity.worm.Worm;
+import com.lllmtb.model.item.UseParams;
 import com.lllmtb.physics.Position;
 import org.junit.jupiter.api.Test;
 
@@ -26,7 +27,7 @@ public class BazookaWeaponTest {
     public void fire() throws Exception {
         Position p = new Position(0, 0);
         Worm w = mock(Worm.class);
-        FireParams fp = new FireParams(0, p, w);
+        UseParams fp = new UseParams(0, p, w);
 
         // Check that the fire method returns the correct command
         List<GameCommand> cmds = b.fire(fp);

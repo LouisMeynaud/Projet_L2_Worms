@@ -12,11 +12,6 @@ import com.lllmtb.physics.Position;
 
 import org.eclipse.jdt.annotation.NonNull;
 
-// TODO - Decide how to handle item use:
-//  #fire for weapons and #use for tools but this.selectedItem is an ItemId
-//  both methods use different xParams, impossible to surcharge
-//  -> how to decide which one to use? instanceof? item type boolean?
-
 /**
  * Represents a team of {@link Worm} entities in the game.
  * Each team has a name, color, inventory, and a collection of worms.
@@ -243,16 +238,6 @@ public class Team {
     }
 
     /**
-     * Fires a projectile using the current worm's selected weapon.
-     * @param fireParams parameters for the firing action
-     * @return the created commands to execute
-     * @throws NullPointerException if the firing parameters are invalid
-     */
-    public List<GameCommand> fire(@NonNull FireParams fireParams) {
-        return this.inventory.fire((WeaponId) this.selectedItem, fireParams);
-    }
-
-    /**
      * Adds ammunition for a specific tool in the team's inventory.
      * @param id tool for which to add ammunition
      * @param n  number of ammo units to add
@@ -267,13 +252,20 @@ public class Team {
     }
 
     /**
-     * Uses the current worm's selected tool.
+     * Uses the currently selected item (weapon or tool).
+     * Dispatches to the appropriate Inventory.use method based on the runtime type of the selected item.
+     *
      * @param useParams parameters for the use action
-     * @return the created commands to execute
-     * @throws NullPointerException if the use parameters are invalid
+     * @return {@code null} if no item is selected, else the created commands to execute
+     * @throws NullPointerException if useParams is null
+     * @throws UnknownItemException if the selected item is not a ToolId or WeaponId
      */
     public List<GameCommand> use(@NonNull UseParams useParams) {
-        return this.inventory.use((ToolId) this.selectedItem, Objects.requireNonNull(useParams));
+        Objects.requireNonNull(useParams);
+        if (this.selectedItem == null) return null;
+        if (this.selectedItem instanceof WeaponId) return this.inventory.fire((WeaponId) this.selectedItem, useParams);
+        if (this.selectedItem instanceof ToolId) return this.inventory.use((ToolId) this.selectedItem, useParams);
+        throw new UnknownItemException(this.selectedItem);
     }
 
     /**
