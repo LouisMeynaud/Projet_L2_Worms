@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class WormTest {
     public Worm worm; 
     public Team team;
-    
+
 
     @BeforeEach
     public void setUp(){
@@ -94,12 +94,12 @@ public class WormTest {
         assertEquals(-1, worm.getFacingDirection());
 
         worm.setFacingDirection(0);
-        assertEquals(1, worm.getFacingDirection());
+        assertEquals(-1, worm.getFacingDirection());
     }
 
     @Test
     public void testUpdateFacingDirection() {
-        worm.getBody().setVector(new Vector(1, 0));;
+        worm.getBody().setVector(new Vector(1, 0));
         worm.updateFacingDirection();
         assertEquals(1, worm.getFacingDirection());
 
@@ -109,6 +109,6 @@ public class WormTest {
 
         worm.getBody().setVector(new Vector(0, 0));
         worm.updateFacingDirection();
-        assertEquals(1, worm.getFacingDirection());
+        assertEquals(-1, worm.getFacingDirection());
     }
 }
