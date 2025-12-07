@@ -6,6 +6,8 @@ import com.lllmtb.events.game.WorldCreatedEvent;
 import com.lllmtb.ui.ConsoleUI;
 import com.lllmtb.ui.UI;
 import com.lllmtb.ui.graphical.GraphicalUI;
+import com.lllmtb.ui.graphical.TextureManager;
+
 import org.eclipse.jdt.annotation.NonNull;
 
 import java.util.Objects;
@@ -34,6 +36,7 @@ public class GameEngine {
         // Start the chosen UI manager
         UI ui;
         if (graphique) {
+            TextureManager.load(); // charge les texture
             ui = new GraphicalUI(eventBus);
         } else {
             ui = new ConsoleUI(eventBus);

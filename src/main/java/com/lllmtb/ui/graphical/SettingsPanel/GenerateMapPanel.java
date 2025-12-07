@@ -14,6 +14,7 @@ import javax.swing.JSlider;
 import javax.swing.JTextField;
 
 import com.lllmtb.terrain.generation.LandScape;
+import com.lllmtb.ui.graphical.Utilitaire;
 
 public class GenerateMapPanel extends JPanel {
 
@@ -60,8 +61,10 @@ public class GenerateMapPanel extends JPanel {
         contentGrid.add(mapWidthLabel, gbc);
 
         gbc.gridx = 1; // second columns
-        this.widthMapSlider = CreateSlider.createSlider(150, maxWidth, 200, 50);
+
+        this.widthMapSlider = Utilitaire.createSlider(150, maxWidth, 200, 50);
         contentGrid.add(widthMapSlider, gbc);
+
         row++;
 
         gbc.gridx = 0;

@@ -5,6 +5,7 @@ import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+
 import javax.swing.BorderFactory;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
@@ -12,16 +13,21 @@ import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
 
+import com.lllmtb.ui.graphical.Utilitaire;
+
 
 public class SettingGamePanel extends JPanel {
     public JTextField[] champsNomsEquipes;
-    public final int maxTeams = 4;
-    public final int maxWorms = 6;
-    public final int maxTime = 40;
+    public static final int MAX_EQUIPES = 4;
+    public static final int MAX_WORM = 6;
+    public static final int MAX_TIME = 40;
+    public static final int MAX_JUMP = 5;
     public JSlider equipesSlider;
     public JSlider wormsSlider;
     public JSlider turnDurationSlider;
     public JCheckBox windCheckBox;
+    public JSlider maxJumpSlider;
+
 
 
     /**
@@ -61,14 +67,14 @@ public class SettingGamePanel extends JPanel {
         JLabel nbEquipesLabel = new JLabel("Nombre d'équipes :");
         contentGrid.add(nbEquipesLabel, gbc);
 
-        gbc.gridx = 1; // second column
-        this.equipesSlider = CreateSlider.createSlider(2, maxTeams, 2, 1);
+        gbc.gridx = 1; //second column
+        this.equipesSlider = Utilitaire.createSlider(2, MAX_EQUIPES, 2, 1);
         contentGrid.add(equipesSlider, gbc);
         row++;
 
         //teams names
-        champsNomsEquipes = new JTextField[maxTeams];
-        for (int i = 0; i < maxTeams; i++) {
+        champsNomsEquipes = new JTextField[MAX_EQUIPES];
+        for (int i = 0; i < MAX_EQUIPES; i++) {
             gbc.gridx = 0;
             gbc.gridy = row;
 
@@ -88,7 +94,7 @@ public class SettingGamePanel extends JPanel {
         contentGrid.add(nbWormsLabel, gbc);
 
         gbc.gridx = 1;
-        this.wormsSlider = CreateSlider.createSlider(1, maxWorms, 3, 1);
+        this.wormsSlider = Utilitaire.createSlider(1, MAX_WORM, 3, 1);
         contentGrid.add(wormsSlider, gbc);
         row++;
 
@@ -99,7 +105,7 @@ public class SettingGamePanel extends JPanel {
         contentGrid.add(turnDurationLabel, gbc);
 
         gbc.gridx = 1;
-        this.turnDurationSlider = CreateSlider.createSlider(10, maxTime, 30, 10);
+        this.turnDurationSlider = Utilitaire.createSlider(10, MAX_TIME, 30, 10);
         contentGrid.add(turnDurationSlider, gbc);
         row++;
 
@@ -118,6 +124,18 @@ public class SettingGamePanel extends JPanel {
         this.windCheckBox = new JCheckBox("Vent activé ?");
         contentGrid.add(this.windCheckBox, gbc);
         row++;
+
+
+        //turn duration
+        gbc.gridx = 0;
+        gbc.gridy = row;
+        JLabel maxJumpLabel = new JLabel("Maximum de saut:");
+        contentGrid.add(maxJumpLabel, gbc);
+
+        gbc.gridx = 1;
+        this.maxJumpSlider = Utilitaire.createSlider(1, MAX_JUMP, 1, 1);
+        contentGrid.add(maxJumpSlider, gbc);
+        row++;
     }
 
     /**
@@ -135,6 +153,10 @@ public class SettingGamePanel extends JPanel {
 
     public int getNbWorms() {
         return this.wormsSlider.getValue();
+    }
+
+    public int getMaxJumps() {
+        return this.maxJumpSlider.getValue();
     }
 
     public int getTurnDuration() {
