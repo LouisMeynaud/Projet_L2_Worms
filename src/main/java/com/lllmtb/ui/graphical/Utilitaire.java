@@ -77,16 +77,16 @@ public class Utilitaire {
         return createBaseItemButton(searchKey, ammoKey, ammoCount, isUnlocked, TextureManager.WEAPONS);
     }
 
-    
+
     public static JButton createToolButton(ToolId id, int ammoCount, boolean isUnlocked) {
         String searchKey = id.toString();
-        String ammoKey = "Ammo" + id.toString(); 
+        String ammoKey = "Ammo" + id.toString();
 
-      
+
         return createBaseItemButton(searchKey, ammoKey, ammoCount, isUnlocked, TextureManager.TOOLS);
     }
-    
-    
+
+
     private static JButton createBaseItemButton(String searchKey, String ammoKey, int ammoCount, boolean isUnlocked, Map<String, BufferedImage> texture) {
         JButton button = new JButton();
         button.setLayout(new BorderLayout());

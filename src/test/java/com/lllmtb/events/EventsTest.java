@@ -23,8 +23,11 @@ import com.lllmtb.events.game.GamePauseEvent;
 import com.lllmtb.events.game.GameStateUpdatedEvent;
 import com.lllmtb.events.game.MapUpdateEvent;
 import com.lllmtb.events.game.StartGameEvent;
+import com.lllmtb.events.game.ToolSelectedEvent;
 import com.lllmtb.events.game.WeaponSelectedEvent;
 import com.lllmtb.events.game.WorldCreatedEvent;
+import com.lllmtb.model.item.tool.Tool;
+import com.lllmtb.model.item.tool.ToolId;
 import com.lllmtb.physics.Position;
 
 
@@ -87,11 +90,19 @@ public class EventsTest {
     }
 
     @Test
-    public void WeaponSelectedEventTest() {
+    public void weaponSelectedEventTest() {
         WeaponId mockWeaponId = mock(WeaponId.class);
         WeaponSelectedEvent event = new WeaponSelectedEvent(mockWeaponId);
         assertNotNull(event, "L'evenement ne doit pas etre null");
-        assertSame(mockWeaponId, event.getWeaponId(), "L'ID de l'arme La direction stockée doit être celle donnée");
+        assertSame(mockWeaponId, event.getWeaponId(), "L'ID de l'arme ");
+    }
+
+    @Test
+    public void woolSelectedEventTest() {
+        ToolId mockToolId = mock(ToolId.class);
+        ToolSelectedEvent event = new ToolSelectedEvent(mockToolId);
+        assertNotNull(event, "L'evenement ne doit pas etre null");
+        assertSame(mockToolId, event.getToolId(), "L'ID de l'arme");
     }
 
     @Test

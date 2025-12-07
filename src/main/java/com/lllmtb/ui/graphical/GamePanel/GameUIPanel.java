@@ -145,37 +145,37 @@ public class GameUIPanel extends JPanel {
         this.inventoryContainer.setOpaque(false);
         this.inventoryContainer.setLayout(new BoxLayout(this.inventoryContainer, BoxLayout.X_AXIS));
 
-        this.weaponGrid = new JPanel(new GridLayout(0, 6, 10, 10)); 
-        this.toolGrid = new JPanel(new GridLayout(0, 6, 10, 10)); 
-        
+        this.weaponGrid = new JPanel(new GridLayout(0, 6, 10, 10));
+        this.toolGrid = new JPanel(new GridLayout(0, 6, 10, 10));
+
         this.weaponGrid.setOpaque(false);
         this.toolGrid.setOpaque(false);
 
-        
+
         JPanel weaponContainer = createSectionPanel("Weapons", this.weaponGrid);
         JPanel toolContainer = createSectionPanel("Tools", this.toolGrid);
 
-       
+
         weaponContainer.setAlignmentY(Component.TOP_ALIGNMENT);
         toolContainer.setAlignmentY(Component.TOP_ALIGNMENT);
 
         this.inventoryContainer.add(weaponContainer);
-        this.inventoryContainer.add(Box.createHorizontalStrut(20)); 
+        this.inventoryContainer.add(Box.createHorizontalStrut(20));
         this.inventoryContainer.add(toolContainer);
         this.centerContainer.add(this.inventoryContainer, "INVENTORY");
     }
 
-   
-    private JPanel createSectionPanel(String title, JPanel Grid) {
-        JPanel Container = new JPanel(new BorderLayout());
-        Container.setBackground(new Color(0, 0, 0, 200));
-        
+
+    private JPanel createSectionPanel(String title, JPanel grid) {
+        JPanel container = new JPanel(new BorderLayout());
+        container.setBackground(new Color(0, 0, 0, 200));
+
         TitledBorder border = BorderFactory.createTitledBorder(new EmptyBorder(10, 10, 10, 10), title);
         border.setTitleColor(Color.WHITE);
-        Container.setBorder(border);
-        
-        Container.add(Grid, BorderLayout.NORTH); 
-        return Container;
+        container.setBorder(border);
+
+        container.add(grid, BorderLayout.NORTH);
+        return container;
     }
 
     private void openCloseInventory() {
@@ -228,9 +228,9 @@ public class GameUIPanel extends JPanel {
             if (id == ToolId.NONE) {
                 continue;
             }
-            
+
             int nbAmmo = currentInventory.tools.getAmmo(id);
-            boolean isAvailable = nbAmmo > 0; 
+            boolean isAvailable = nbAmmo > 0;
 
             JButton itemButton = Utilitaire.createToolButton(id, nbAmmo, true);
 
