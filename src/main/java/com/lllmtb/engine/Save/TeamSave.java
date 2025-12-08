@@ -4,8 +4,6 @@ import com.lllmtb.model.entity.team.Team;
 import com.lllmtb.model.entity.team.TeamColor;
 import com.lllmtb.model.entity.worm.Worm;
 import com.lllmtb.model.item.ItemId;
-import com.lllmtb.model.item.inventory.Inventory;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -65,7 +63,9 @@ public class TeamSave {
     private static final ArrayList<TeamColor> chosenTeamColors = new ArrayList<>();
 
 
-    public  TeamSave() {}
+    public  TeamSave() {
+
+    }
     public TeamSave(Team team) {
         this.teamColor = team.teamColor;
         this.name = team.name;

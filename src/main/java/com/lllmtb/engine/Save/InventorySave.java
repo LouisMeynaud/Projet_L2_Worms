@@ -1,12 +1,7 @@
 package com.lllmtb.engine.Save;
 import com.lllmtb.model.item.inventory.Inventory;
-import com.lllmtb.model.item.tool.Tool;
 import com.lllmtb.model.item.tool.ToolId;
-import com.lllmtb.model.item.weapon.Weapon;
 import com.lllmtb.model.item.weapon.WeaponId;
-
-import java.util.EnumMap;
-import java.util.EnumSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -22,5 +17,7 @@ public class InventorySave {
         this.unlockedWeapons = inventory.unlockedWeapons();
     }
 
-    public InventorySave() {}
+    public InventorySave() {
+
+    }
 }

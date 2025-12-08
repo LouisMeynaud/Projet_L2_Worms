@@ -2,7 +2,6 @@ package com.lllmtb.engine.Save;
 
 import com.lllmtb.engine.GameWorld;
 import com.lllmtb.events.EventBus;
-import com.lllmtb.model.entity.Entity;
 import com.lllmtb.model.entity.team.Team;
 import com.lllmtb.physics.PhysicsBody;
 import com.lllmtb.physics.PhysicsModifier;
