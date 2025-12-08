@@ -13,19 +13,14 @@ import java.io.FileReader;
 import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.ListCellRenderer;
-import javax.swing.SwingConstants;
+import javax.swing.*;
+
 
 public class PanelListeMap extends JPanel {
 
     private static final String NOM_FICHIER_INFO = "info.txt";
     private static final String NOM_FICHIER_IMAGE = "image.png";
-    private JList<InfoLigne> maListe;
+    private final JList<InfoLigne> maListe;
 
     private static class InfoLigne {
         String titre;
@@ -47,6 +42,10 @@ public class PanelListeMap extends JPanel {
 
     }
 
+    /**
+     * Constructor of the panel that displays the list of maps available in the maps folder.
+     * @param tableauDeDossiers an array of files representing the map directories.
+     */
     public PanelListeMap(File[] tableauDeDossiers) {
         setBackground(Color.DARK_GRAY);
         this.setLayout(new BorderLayout());
@@ -78,7 +77,10 @@ public class PanelListeMap extends JPanel {
 
     }
 
-
+    /**
+     * Gets the selected map file.
+     * @return the selected map file, or null if none is selected.
+     */
     public File getFichierSelectionne() {
         InfoLigne selection = maListe.getSelectedValue();
         if (selection != null) {
@@ -112,7 +114,7 @@ public class PanelListeMap extends JPanel {
                 titre = dossier.getName();
                 description = "Pas de fichier info";
             }
-            File fichierImage = new File(dossier, NOM_FICHIER_IMAGE); //fait le cehmin vers le fichier
+            File fichierImage = new File(dossier, NOM_FICHIER_IMAGE); //fait le chemin vers le fichier
             if (fichierImage.exists()) {
                 Image imgOriginale = ImageIO.read(fichierImage); //charge l'image
                 Image imgRedimensionnee = imgOriginale.getScaledInstance(100, 100, Image.SCALE_FAST);

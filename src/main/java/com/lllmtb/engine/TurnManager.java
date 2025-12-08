@@ -36,6 +36,7 @@ public final class TurnManager {
 
     private long startTime;
     private final long turnDurationInMs;
+    private long remainingTime;
 
     public TurnManager(GameWorld world, long turnDuration) {
         this.world = world;
@@ -51,6 +52,10 @@ public final class TurnManager {
         return this.turnDurationInMs;
     }
 
+    public long getRemainingTime() {
+        return this.remainingTime;
+    }
+
     public void init() {
         world.getBus().subscribe(TurnStopEvent.class, event -> {
             this.turn.setIsEnd();
@@ -58,6 +63,7 @@ public final class TurnManager {
     }
 
     public void startTurn(Team team) {
+        this.remainingTime = turnDurationInMs;
         startTime = System.currentTimeMillis();
         this.turn = new Turn(team);
         world.getBus().postQueued(new TurnStarEvent(team));
@@ -69,6 +75,8 @@ public final class TurnManager {
 
     public void updateTurn() {
         long now = System.currentTimeMillis();
+        long timeElapsed = now - startTime;
+        this.remainingTime = turnDurationInMs - timeElapsed;
         // Timer
         if (now - startTime >= turnDurationInMs) {
             endTurn();

@@ -563,6 +563,7 @@ public class GameWorldPanel extends JPanel {
 
 
 
+
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g); //efface l'ecran
@@ -581,6 +582,5 @@ public class GameWorldPanel extends JPanel {
 
         paintMap(g2d);
         paintEntity(g2d);
-
     }
 }

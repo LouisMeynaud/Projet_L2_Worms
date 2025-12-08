@@ -23,10 +23,10 @@ public class SettingMapPanel extends JPanel {
     /**
      *
      * @param eventBus the event bus of the game
-     *                 This page contains  2 panel and 2 button for choose the panel
+     * This page contains  2 panel and 2 button for choose the panel
      *
-     *                 1: panelListeMap for choose a map
-     *                 2: generateMapPanel for create a map
+     * 1: panelListeMap for choose a map
+     * 2: generateMapPanel for create a map
      *
      */
     public SettingMapPanel(EventBus eventBus) {
@@ -79,6 +79,10 @@ public class SettingMapPanel extends JPanel {
 
     }
 
+    /**
+     * Gets the generate map panel.
+     * @return the generate map panel.
+     */
     public GenerateMapPanel getGenerateMapPanel() {
         return this.generateMapPanel;
     }

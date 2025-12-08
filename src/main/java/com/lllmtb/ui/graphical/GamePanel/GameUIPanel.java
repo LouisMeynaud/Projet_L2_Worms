@@ -29,6 +29,8 @@ public class GameUIPanel extends JPanel {
     private final JPanel centerContainer;
     private JPanel weaponGrid;
     private JPanel toolGrid;
+    private JLabel timerLabel;
+    private Timer uiUpdateTimer;
 
     public GameUIPanel(EventBus eventBus) {
         this.eventBus = eventBus;
@@ -55,19 +57,17 @@ public class GameUIPanel extends JPanel {
 
 
 
-        JPanel topBar = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        JPanel topBar = new JPanel(new BorderLayout());
         topBar.setOpaque(false);
+        topBar.setBorder(new EmptyBorder(10, 10, 0, 10));
 
         JPanel lowerBar = new JPanel(new FlowLayout(FlowLayout.LEFT));
         lowerBar.setOpaque(false);
 
 
-
-
-
-
         this.add(topBar, BorderLayout.NORTH);
         this.add(lowerBar, BorderLayout.SOUTH);
+
 
         JButton pauseButton = Utilitaire.createImageButton(TextureManager.UI, "Pause", 64, 64, 48, 48);
         JButton inventoryButton = Utilitaire.createImageButton(TextureManager.UI, "InventoryButton", 64, 64, 48, 48);
@@ -75,12 +75,62 @@ public class GameUIPanel extends JPanel {
         pauseButton.addActionListener(e -> pauseMenu(true));
         shootModeButton.addActionListener(e -> this.eventBus.postQueued(new ShootMode()));
         inventoryButton.addActionListener(e -> openCloseInventory());
-        topBar.add(pauseButton);
+
+
+        JPanel buttonsPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
+        buttonsPanel.setOpaque(false);
+        buttonsPanel.add(pauseButton);
+
         lowerBar.add(inventoryButton);
         lowerBar.add(shootModeButton);
 
 
+        this.timerLabel = createTimerLabel();
 
+        JPanel timerContner = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        timerContner.setOpaque(false);
+        timerContner.add(this.timerLabel);
+
+
+        topBar.add(timerContner, BorderLayout.CENTER);
+        topBar.add(buttonsPanel, BorderLayout.WEST);
+
+
+        startUITimer();
+
+    }
+
+    ////////////Timer/////////////////
+
+    private void startUITimer() {
+        this.uiUpdateTimer = new Timer(100, e -> {
+            updateTimerDisplay();
+        });
+        this.uiUpdateTimer.start();
+    }
+
+    private void updateTimerDisplay() {
+        if (this.world == null || this.world.getPlayingTeam() == null) {
+            return;
+        }
+
+        String teamName = this.world.getPlayingTeam().name;
+        long timeLeft = this.world.getTurnManager().getRemainingTime() / 1000;
+        if (timeLeft < 5) {
+            this.timerLabel.setForeground(Color.RED);
+        } else {
+            this.timerLabel.setForeground(Color.WHITE);
+        }
+
+        String timeString = String.format("%02d:%02d", timeLeft / 60, timeLeft % 60);
+        this.timerLabel.setText(teamName + " : " + timeString);
+    }
+
+    private JLabel createTimerLabel() {
+        JLabel label = new JLabel();
+        label.setFont(new Font("Arial", Font.BOLD, 20));
+        label.setOpaque(false);
+        return label;
     }
 
 
@@ -245,4 +295,6 @@ public class GameUIPanel extends JPanel {
             this.toolGrid.add(itemButton);
         }
     }
+
+
 }
