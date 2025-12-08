@@ -19,6 +19,8 @@ import java.awt.Image;
 
 import javax.swing.JSlider;
 import javax.swing.border.BevelBorder;
+
+import com.lllmtb.engine.logger.Logger;
 import com.lllmtb.model.item.tool.ToolId;
 import com.lllmtb.model.item.weapon.WeaponId;
 
@@ -40,7 +42,7 @@ public class Utilitaire {
             button.setIcon(new ImageIcon(scaledImage));
 
         } catch (Exception e) {
-            System.err.println("erreur image " + name + " : " + e.getMessage());
+            Logger.logger.error("Error image " + name + " : " + e.getMessage());
             button.setText(name.toString());
         }
         button.setFocusable(false);
@@ -101,7 +103,7 @@ public class Utilitaire {
                 caseLabel.setIcon(new ImageIcon(scaled));
             }
         } catch (Exception e) {
-            System.err.println("erreur image " + searchKey + " : " + e.getMessage());
+            Logger.logger.error("Error image " + searchKey + " : " + e.getMessage());
              }
 
         button.add(caseLabel, BorderLayout.CENTER);
@@ -117,7 +119,7 @@ public class Utilitaire {
                     ammoPanel.add(new JLabel(new ImageIcon(scaledAmmo)));
                 }
             } catch (Exception e) {
-                System.err.println("erreur image " + ammoKey + " : " + e.getMessage());
+                Logger.logger.error("Error image " + ammoKey + " : " + e.getMessage());
             }
 
             //nombre

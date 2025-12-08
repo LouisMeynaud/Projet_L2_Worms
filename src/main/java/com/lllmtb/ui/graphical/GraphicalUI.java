@@ -1,5 +1,6 @@
 package com.lllmtb.ui.graphical;
 
+import com.lllmtb.engine.logger.Logger;
 import com.lllmtb.events.EventBus;
 
 import java.awt.*;
@@ -79,19 +80,23 @@ public class GraphicalUI implements UI {
     private void subscribeToNavigationEvents() {
         eventBus.subscribe(ScreenNewOrLoadEvent.class, event -> {
             cardLayout.show(mainPanel, "newOrLoadPanel");
+            Logger.logger.debug("Show ScreenNewOrLoad");
 
         });
 
         eventBus.subscribe(ScreenHomeEvent.class, event -> {
             cardLayout.show(mainPanel, "homeScreen");
+            Logger.logger.debug("Show HomeScreen");
         });
 
         eventBus.subscribe(StartGameEvent.class, event -> {
             cardLayout.show(mainPanel, "gamePanel");
+            Logger.logger.debug("Show GameScreen");
         });
 
         eventBus.subscribe(ScreenSettingsGame.class, event -> {
             cardLayout.show(mainPanel, "startSettingScreen");
+            Logger.logger.debug("Show SettingScreen");
         });
     }
 

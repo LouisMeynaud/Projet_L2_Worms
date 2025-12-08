@@ -334,8 +334,6 @@ public class GameWorldPanel extends JPanel {
             cameraOffsetY = minY;
         }
     }
-
-
     private void updateMapCache() {
         int width = mapWidth();
         int height = mapHeight();

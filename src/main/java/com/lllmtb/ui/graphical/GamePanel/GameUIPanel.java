@@ -7,6 +7,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 
 import com.lllmtb.engine.GameWorld;
+import com.lllmtb.engine.logger.Logger;
 import com.lllmtb.events.EventBus;
 import com.lllmtb.events.game.*;
 import com.lllmtb.events.ui.ShootMode;
@@ -184,8 +185,10 @@ public class GameUIPanel extends JPanel {
     this.revalidate();
     this.repaint();
     this.eventBus.postQueued(new GamePauseEvent(show));
+    Logger.logger.debug("Game Paused");
     if (!show) {
         this.eventBus.postQueued(new RequestFocus());
+        Logger.logger.debug("Game Unpaused");
     }
     }
 

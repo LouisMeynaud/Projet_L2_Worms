@@ -42,6 +42,21 @@
             <version>2.4.0</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-api</artifactId>
+            <version>2.25.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
+            <version>2.25.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-slf4j2-impl</artifactId>
+            <version>2.25.2</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -157,9 +172,10 @@
                     <excludes>
                         <exclude>com/lllmtb/engine/GameEngine.class</exclude>
                         <exclude>com/lllmtb/engine/GameLoop.class</exclude>
+                        <exclude>com/lllmtb/engine/logger/*</exclude>
                         <exclude>com/lllmtb/ui/ConsoleUI.class</exclude>
                         <exclude>com/lllmtb/ui/graphical/**/*</exclude>
-                        <exclude>com/lllmtb/engine/TurnManager.class</exclude>
+                        <exclude>com/lllmtb/engine/turn/TurnManager.class</exclude>
                     </excludes>
                 </configuration>
             </plugin>
