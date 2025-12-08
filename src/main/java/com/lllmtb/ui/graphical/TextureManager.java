@@ -59,7 +59,7 @@ public class TextureManager {
 
 
         } catch (IOException e) {
-            Logger.logger.error("Error to load a texture : ", e);
+            Logger.logger.error("Error while loading textures : ", e);
         }
     }
 
