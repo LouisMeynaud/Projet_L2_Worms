@@ -23,7 +23,7 @@ public class Load {
                 .registerTypeAdapterFactory(weaponAdapter)
                 .create();
 
-        try (FileReader reader = new FileReader(Stringpath)) {
+        try (FileReader reader = new FileReader(stringpath)) {
             GameSave save = gson.fromJson(reader, GameSave.class);
             System.out.println(save);
             return save;
