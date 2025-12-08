@@ -13,6 +13,7 @@ import java.nio.file.Path;
 import java.io.IOException;
 import java.nio.file.Paths;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class SaveTest {
@@ -60,5 +61,8 @@ public class SaveTest {
         assertTrue(Files.exists(path));
         assertTrue(Files.exists(path.resolve("hightline.txt")));
     }
+
+    @Test
+    void saveGameWorldExeption() throws IOException {}
 
 }

@@ -47,6 +47,11 @@
             <artifactId>gson</artifactId>
             <version>2.13.2</version>
         </dependency>
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson-extras</artifactId>
+            <version>2.13.2-rc1</version>
+        </dependency>
     </dependencies>
 
     <build>
