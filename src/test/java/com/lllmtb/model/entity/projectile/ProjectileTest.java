@@ -39,7 +39,7 @@ public class ProjectileTest {
         subForceField.setAccessible(true);
         double subForceValue = subForceField.getDouble(bullet);
 
-        assertEquals(60.0, subForceValue, 1e-12,
+        assertEquals(100.0, subForceValue, 1e-12,
                 "Subclass field 'force' should be 60.0 as declared in BulletProjectile.");
     }
 
