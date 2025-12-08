@@ -1,6 +1,7 @@
 package com.lllmtb.engine;
 
 import com.lllmtb.events.EventBus;
+import com.lllmtb.events.game.GamePauseEvent;
 import com.lllmtb.events.game.StartGameEvent;
 import com.lllmtb.events.game.WorldCreatedEvent;
 import com.lllmtb.ui.ConsoleUI;
@@ -13,22 +14,20 @@ import org.eclipse.jdt.annotation.NonNull;
 import java.util.Objects;
 
 public class GameEngine {
-    private static EventBus eventBus;
+    private static EventBus systemBus;
     private static GameWorld world;
 
     public static void main(String[] args) {
         boolean graphique = true;
-        eventBus = new EventBus();
-        eventBus.subscribe(StartGameEvent.class, GameEngine::startGame);
+        systemBus = new EventBus();
+        systemBus.subscribe(StartGameEvent.class, GameEngine::startGame);
 
-        // Engine loop thread - processes events until the world is created and the GameLoop takes over
+        // Engine loop thread - processes engine-level events (start, pause, quit...)
         new Thread(() -> {
-            while (world == null) {
-                eventBus.processQueued();
-                try {
-                    Thread.sleep(10);
-                } catch (InterruptedException e) {
-                }
+            systemBus.processQueued();
+            try {
+                Thread.sleep(10);
+            } catch (InterruptedException e) {
             }
         }, "engine-loop").start();
 
@@ -37,9 +36,9 @@ public class GameEngine {
         UI ui;
         if (graphique) {
             TextureManager.load(); // charge les textures
-            ui = new GraphicalUI(eventBus);
+            ui = new GraphicalUI(systemBus);
         } else {
-            ui = new ConsoleUI(eventBus);
+            ui = new ConsoleUI(systemBus);
         }
         ui.start();
     }
@@ -50,8 +49,9 @@ public class GameEngine {
      */
     private static void startGame(@NonNull StartGameEvent event) {
         GameSettings settings = Objects.requireNonNull(event).getSettings();
-        world = new GameWorld(settings, eventBus);
-        eventBus.postSync(new WorldCreatedEvent(world));
+        EventBus worldBus = new EventBus();
+        world = new GameWorld(settings, worldBus);
+        systemBus.postSync(new WorldCreatedEvent(world));
         world.start();
     }
 }
