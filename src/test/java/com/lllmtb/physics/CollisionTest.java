@@ -4,7 +4,7 @@ import com.lllmtb.events.EventBus;
 import com.lllmtb.model.entity.projectile.BulletProjectile;
 import com.lllmtb.model.entity.worm.Worm;
 import com.lllmtb.model.entity.team.Team;
-import com.lllmtb.model.item.weapon.FireParams;
+import com.lllmtb.model.item.UseParams;
 import com.lllmtb.terrain.map.Map;
 import com.lllmtb.terrain.map.MapLoader;
 
@@ -22,10 +22,10 @@ public class CollisionTest {
     PhysicsBody pBWorm1;
     Worm worm2;
     PhysicsBody pBWorm2;
-    FireParams fP1;
+    UseParams fP1;
     BulletProjectile bP1;
     PhysicsBody pBBP1;
-    FireParams fP2;
+    UseParams fP2;
     BulletProjectile bP2;
     PhysicsBody pBBP2;
     CopyOnWriteArrayList<PhysicsBody> bodies;
@@ -45,11 +45,11 @@ public class CollisionTest {
         pBWorm1 = new PhysicsBody(worm1, posW1, new Vector(5, 0), 1, 2, 1);
         pBWorm2 = new PhysicsBody(worm2, posW2, new Vector(5, 0), 1, 2, 1);
         Position posBP1 = new Position(14, 18);
-        fP1 = new FireParams(0, posBP1, worm1);
+        fP1 = new UseParams(0, posBP1, worm1);
         bP1 = new BulletProjectile(fP1);
         pBBP1 = new PhysicsBody(bP1, posBP1, new Vector(0,0), 1, 1, 1);
         Position posBP2 = new Position(4, 6);
-        fP2 = new FireParams(0, posBP2, worm2);
+        fP2 = new UseParams(0, posBP2, worm2);
         bP2 = new BulletProjectile(fP2);
         pBBP2 = new PhysicsBody(bP2, posBP2, new Vector(1, 0), 1, 1, 1);
         bodies = new CopyOnWriteArrayList<>();
