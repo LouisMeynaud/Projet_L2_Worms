@@ -142,8 +142,9 @@ public final class TurnManager {
         };
 
         turnskipEventListener = event -> {
-            if(remainingTimeInMs < turnDurationInMs - 3000){
-            endTurn();}
+            if (remainingTimeInMs < turnDurationInMs - 3000) {
+            endTurn();
+        }
         };
 
         world.getBus().subscribe(MoveEvent.class, moveListener);
