@@ -1,6 +1,6 @@
 package com.lllmtb.engine;
-
 import com.lllmtb.events.EventBus;
+import com.lllmtb.events.turn.TurnStarEvent;
 import com.lllmtb.events.turn.TurnEndEvent;
 import com.lllmtb.events.turn.TurnStarEvent;
 import com.lllmtb.events.turn.TurnStopEvent;
@@ -21,7 +21,7 @@ public class TurnManagerTest {
 
     @BeforeEach
     public void setUp(){
-        GameSettings settings = new GameSettings(2, new String[]{"TeamTest1", "TeamTest2"}, 1,1, false, null, false,370, LandScape.HILLY);
+        GameSettings settings = new GameSettings(2, new String[]{"TeamTest1", "TeamTest2"}, 1,1, false, null, false,370, LandScape.HILLY,2);
         EventBus eventBus = new EventBus();
         this.gw = new GameWorld(settings, eventBus);
         gw.start();
@@ -88,4 +88,6 @@ public class TurnManagerTest {
         assertTrue(eventEnd.get());
 
     }
+
+    
 }
