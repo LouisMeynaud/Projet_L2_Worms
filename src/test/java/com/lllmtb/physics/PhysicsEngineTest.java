@@ -1,8 +1,6 @@
 package com.lllmtb.physics;
 
 import com.lllmtb.events.EventBus;
-import com.lllmtb.events.EventListener;
-import com.lllmtb.events.physics.PhysicsCollisionWithWatterOrExitMap;
 import com.lllmtb.events.physics.PhysicsModifierAddedEvent;
 import com.lllmtb.events.physics.PhysicsModifierRemovedEvent;
 import com.lllmtb.model.entity.projectile.BulletProjectile;
