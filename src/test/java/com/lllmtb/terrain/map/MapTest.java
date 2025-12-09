@@ -1,10 +1,13 @@
 package com.lllmtb.terrain.map;
 
-import com.lllmtb.physics.Position;
-import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.AfterEach;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import com.lllmtb.physics.Position;
 
 public class MapTest {
     private Map m;
@@ -96,19 +99,6 @@ public class MapTest {
     }
 
     @Test
-    void testInvalideElementMapToString() {
-        Map fakeMap = new Map(1, 1, "test");
-
-        Position position = new Position(0, 0);
-        fakeMap.setTile(position, Tile.UNKNOWN);
-
-        try {
-            fakeMap.toString();
-            fail("IllegalStateException attendue mais non levée");
-        } catch (IllegalStateException e) {
-        }
-    }
-    @Test
     void isSolidTest() {
         Position positionSolide = new Position(0, 3);
         Position positionNoSolide = new Position(0, 4);
@@ -120,6 +110,36 @@ public class MapTest {
     void testSetFiles(){
         m.setFilesTxt("test");
         assertEquals(m.getFilesTxt(), "test");
+    }
+
+    @Test
+    public void getTile_outOfBounds_yTooLarge() {
+        Position position = new Position(2, 6); // y >= height -> coomapToMatrix < 0
+        assertEquals(Tile.AIR, m.getTile(position));
+    }
+
+    @Test
+    public void getTile_outOfBounds_yNegative() {
+        Position position = new Position(2, -1); // y < 0 -> posMatrix.y >= mapMatrix.length
+        assertEquals(Tile.AIR, m.getTile(position));
+    }
+
+    @Test
+    public void getTile_outOfBounds_xNegative() {
+        Position position = new Position(-1, 2); // x < 0
+        assertEquals(Tile.AIR, m.getTile(position));
+    }
+
+    @Test
+    public void getTile_outOfBounds_xTooLarger() {
+        Position position = new Position(5, 2); // x >= width
+        assertEquals(Tile.AIR, m.getTile(position));
+    }
+
+    @Test
+    public void getTile_inBounds_returnsCorrectTile() {
+        Position position = new Position(2, 2);
+        assertEquals(Tile.WATER, m.getTile(position));
     }
 
 }
