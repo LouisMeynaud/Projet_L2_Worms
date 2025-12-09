@@ -31,7 +31,7 @@ public class Team {
     /**
      * Inventory containing weapons and items for the team.
      */
-    private final Inventory inventory;
+    private final transient Inventory inventory;
 
     /**
      * The name of the team.
@@ -56,7 +56,7 @@ public class Team {
     /**
      * The currently active worm of the team.
      */
-    private Worm currentWorm;
+    private  Worm currentWorm;
 
     /**
      * Index of the currently active worm.

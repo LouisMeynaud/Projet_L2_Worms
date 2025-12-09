@@ -25,6 +25,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import com.lllmtb.physics.Move;
 
 public class GameWorld {
+    private final String gameName;
     private final Map map;
     private final EventBus bus;
     private final PhysicsEngine physics;
@@ -39,6 +40,7 @@ public class GameWorld {
 
 
     public GameWorld(GameSettings settings, EventBus eventBus) {
+        gameName = settings.mapFileName;
         Map tmap = null;
 
         // Init Map (we'll have to handle this better once MapLoader throws catchable exceptions)
@@ -121,6 +123,14 @@ public class GameWorld {
         return gameLoop;
     }
 
+    public int getIndexTeam() {
+        return indexTeam;
+    }
+
+    public String getGameName() {
+        return gameName;
+    }
+
     public void start() {
         if (loopThread != null && loopThread.isAlive()) {
             return;
@@ -175,6 +185,19 @@ public class GameWorld {
             return false;
         }
         return commandQueue.offer(cmd);
+    }
+
+    /**
+     * Queue multiple GameCommands to be executed in the next update cycle.
+     * @param cmds list of GameCommands to queue
+     * @return true if all commands were successfully queued, false otherwise
+     */
+    public boolean queueCommands(List<GameCommand> cmds) {
+        boolean allQueued = true;
+        for (GameCommand cmd : cmds) {
+            if (!queueCommand(cmd)) allQueued = false;
+        }
+        return allQueued;
     }
 
     /**

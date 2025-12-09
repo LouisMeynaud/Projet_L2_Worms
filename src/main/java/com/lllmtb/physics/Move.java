@@ -9,6 +9,7 @@ import org.eclipse.jdt.annotation.NonNull;
 
 import java.util.Objects;
 
+
 /**
  * The {@code Move} class provides functionality to move a worm in different directions.
  * It manages the jump capability and creates movement commands based on the specified direction.
