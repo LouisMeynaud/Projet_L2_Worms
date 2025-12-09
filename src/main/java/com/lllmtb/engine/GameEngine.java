@@ -1,5 +1,9 @@
 package com.lllmtb.engine;
 
+import java.util.Objects;
+
+import org.eclipse.jdt.annotation.NonNull;
+
 import com.lllmtb.events.EventBus;
 import com.lllmtb.events.game.GamePauseEvent;
 import com.lllmtb.events.game.StartGameEvent;
@@ -8,10 +12,6 @@ import com.lllmtb.ui.ConsoleUI;
 import com.lllmtb.ui.UI;
 import com.lllmtb.ui.graphical.GraphicalUI;
 import com.lllmtb.ui.graphical.TextureManager;
-
-import org.eclipse.jdt.annotation.NonNull;
-
-import java.util.Objects;
 
 public class GameEngine {
     private static EventBus systemBus;

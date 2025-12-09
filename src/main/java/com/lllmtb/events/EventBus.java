@@ -1,5 +1,6 @@
 package com.lllmtb.events;
 
+import com.lllmtb.engine.logger.Logger;
 import org.eclipse.jdt.annotation.NonNull;
 
 import java.util.ArrayList;
@@ -140,8 +141,7 @@ public class EventBus {
             try {
                 ((EventListener<T>) listener).handle(event); // safe to cast
             } catch (Exception ex) {
-                // temporary error log until we implement a proper logging system
-                ex.printStackTrace();
+                Logger.logger.error("Error Event : ", ex);
             }
         }
     }

@@ -17,16 +17,17 @@ import com.lllmtb.events.EventBus;
 import com.lllmtb.events.move.MouseInputEvent;
 import com.lllmtb.events.move.MouseWheelMoveInputEvent;
 import com.lllmtb.events.ui.*;
+import com.lllmtb.model.entity.worm.Worm;
 import com.lllmtb.events.game.GamePauseEvent;
 import com.lllmtb.events.game.GameStateUpdatedEvent;
 import com.lllmtb.events.game.WorldCreatedEvent;
 import com.lllmtb.events.game.MapUpdateEvent;
 import com.lllmtb.events.ui.graphical.RequestFocus;
 import com.lllmtb.model.entity.worm.Statistics;
-import com.lllmtb.model.entity.worm.Worm;
 import com.lllmtb.physics.PhysicsBody;
 import com.lllmtb.physics.Position;
 import com.lllmtb.terrain.map.Tile;
+import com.lllmtb.ui.graphical.animation.Animation;
 import com.lllmtb.ui.graphical.TextureManager;
 import com.lllmtb.model.entity.projectile.*;
 
@@ -334,8 +335,6 @@ public class GameWorldPanel extends JPanel {
             cameraOffsetY = minY;
         }
     }
-
-
     private void updateMapCache() {
         int width = mapWidth();
         int height = mapHeight();
@@ -368,10 +367,31 @@ public class GameWorldPanel extends JPanel {
         checkCameraBounds();
     }
 
+
     //////////////dessins/////////////////////////////
 
+    /**
+     * Update all worm animations.
+     */
+    private void updateAnimations() {
+        if (this.world == null || this.world.getPhysics() == null || this.world.getPhysics().getBodies() == null) {
+            return;
+        }
+        for (PhysicsBody body : this.world.getPhysics().getBodies()) {
+            Object entity = body.getEntity();
+            if (entity instanceof Worm) {
+                Worm worm = (Worm) entity;
+                Animation anim = worm.getAnimation();
+                if (anim != null) {
+                    anim.update();
+                }
+                // Update facing direction based on velocity
+                worm.updateFacingDirection();
+            }
+        }
+    }
+
     private void paintEntity(Graphics2D g2d) {
-        BufferedImage textureWorm = TextureManager.ENTITIES.get("worm1");
         double hauteurMapPixels = world.getMap().getHeight() * this.tileSize;
         Worm activeWorm = world.getTurnManager().getTurn().getWormPlayable();
 
@@ -387,15 +407,28 @@ public class GameWorldPanel extends JPanel {
                     double yPhysique = worm.getPos().getY() * tileSize;
                     double yEcran = hauteurMapPixels - yPhysique - hauteurVerPx; // -hauteurVerPx car dessin commence en haut a gauche
 
+                    Worm wormEntity = (Worm) worm.getEntity();
+                    BufferedImage textureWorm = wormEntity.getAnimation().getSprite();
 
                     AffineTransform tx = new AffineTransform();
-                    tx.translate(xEcran, yEcran); // On place le crayon
+                    tx.translate(xEcran - 2, yEcran - 12); // On place le crayon
 
-                    //scale l'image du worms pour qu'elle soit a la bonne taille.
-                    double echelleX = largeurVerPx / textureWorm.getWidth();
-                    double echelleY = hauteurVerPx / textureWorm.getHeight();
-                    tx.scale(echelleX, echelleY);
-                    g2d.drawImage(textureWorm, tx, null);
+                     // Scale l'image du worms pour qu'elle soit a la bonne taille
+                     double echelleX = 1.875 * largeurVerPx / textureWorm.getWidth();
+                     double echelleY = 1.5 * hauteurVerPx / textureWorm.getHeight();
+                     tx.scale(echelleX, echelleY);
+
+                     // Flip l'image si le ver fait face a gauche
+                     int facingDir = wormEntity.getFacingDirection();
+                     if (facingDir == -1) {
+                         double spriteWidthScaled = textureWorm.getWidth() * echelleX;
+                         tx.translate(spriteWidthScaled / 2, 0);
+                         tx.scale(-1, 1);
+                         tx.translate(-spriteWidthScaled / 2, 0);
+                     }
+
+                     g2d.drawImage(textureWorm, tx, null);
+
 
 
 
@@ -572,6 +605,8 @@ public class GameWorldPanel extends JPanel {
             return;
         }
 
+        // Update all worm animations before rendering
+        updateAnimations();
 
         Graphics2D g2d = (Graphics2D) g; // pinceau plus puissant avec les translate et les zoom
 
@@ -582,5 +617,6 @@ public class GameWorldPanel extends JPanel {
 
         paintMap(g2d);
         paintEntity(g2d);
-    }
-}
+
+            }
+        }
