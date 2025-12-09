@@ -131,7 +131,7 @@ public class GameWorld {
 
     public void pause(boolean paused) {
         if (loopThread == null || !loopThread.isAlive()) return;
-        System.out.println((paused ? "Pausing" : "Resuming") + " the game loop...");
+        Logger.logger.info("{} the game loop...", paused ? "Pausing" : "Resuming");
         gameLoop.pause(paused);
     }
 
