@@ -67,8 +67,8 @@ public class Worm extends Entity {
      * @param name the name of the worm
      * @param team the {@link Team} the worm belongs to
      */
-    public Worm(@NonNull String name, @NonNull Team team) {
-        this(name, new Statistics(100, 1, 1), team);
+    public Worm(@NonNull String name, @NonNull Team team, int maxHp) {
+        this(name, new Statistics(maxHp, 1, 1), team);
     }
 
     /**
@@ -130,6 +130,10 @@ public class Worm extends Entity {
         if (!this.stats.isAlive()) {
             this.alive = false;
         }
+    }
+
+    public static void setMaxHp(int maxHp) {
+        Statistics.setMaxHp(maxHp);
     }
 
     @Override

@@ -12,7 +12,8 @@ public final class GameSettings {
     public final int widthMap;
     public final LandScape terrainType;
     public final long turnDuration;
-    public final int maxjump;
+    public final int maxJump;
+    public final int maxLife;
 
     /**
      * @param nbTeams        Number of teams
@@ -26,8 +27,8 @@ public final class GameSettings {
      * @param terrainType    Type of terrain to generate
      */
 
-    public GameSettings(int nbTeams, String[] teamNames, int nbWorms, long turnDuration, boolean hasWind, String mapFileName, boolean floatingIsland, int widthMap,
-        LandScape terrainType, int maxjump) {
+    public GameSettings(int nbTeams, String[] teamNames, int nbWorms, int maxLife, long turnDuration, boolean hasWind, String mapFileName, boolean floatingIsland, int widthMap,
+        LandScape terrainType, int maxJump) {
 
         this.nbTeams = nbTeams;
         this.teamNames = teamNames;
@@ -38,6 +39,7 @@ public final class GameSettings {
         this.widthMap = widthMap;
         this.terrainType = terrainType;
         this.turnDuration = turnDuration;
-        this.maxjump = maxjump;
+        this.maxJump = maxJump;
+        this.maxLife = maxLife;
     }
 }

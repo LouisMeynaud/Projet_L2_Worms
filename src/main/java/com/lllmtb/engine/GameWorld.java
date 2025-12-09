@@ -58,7 +58,7 @@ public class GameWorld {
         this.map.setSpawnPoint(CreateSpawnPoint.createSpawnPoint(settings.nbTeams, settings.nbWorms, tmap));
 
         this.bus = eventBus;
-        Move.setMaxjump(settings.maxjump);
+        Move.setMaxjump(settings.maxJump);
 
         // Init GameCommand queue
         this.commandQueue = new LinkedBlockingQueue<>();
@@ -71,7 +71,7 @@ public class GameWorld {
         Logger.logger.info("Creating the Teams...");
         for (int i = 0; i < settings.nbTeams; i++) {
             try {
-                Team team = new Team(settings.teamNames[i], settings.nbWorms, tmap.getSpawnPoint()[i]);
+                Team team = new Team(settings.teamNames[i], settings.nbWorms, settings.maxLife, tmap.getSpawnPoint()[i]);
                 teams.add(team);
                 team.getTeamWorms().forEach(this::registerEntity);
                 Logger.logger.info("{} | {} - {} - {}\n", i, team.name, team.id, team.teamColor);
