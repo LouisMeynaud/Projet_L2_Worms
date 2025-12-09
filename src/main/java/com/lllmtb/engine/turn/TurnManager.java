@@ -1,11 +1,10 @@
 package com.lllmtb.engine.turn;
 
-import com.lllmtb.engine.GameWorld;
-import com.lllmtb.engine.logger.Logger;
 import java.util.List;
 import java.util.Objects;
 
-import com.lllmtb.engine.commands.GameCommand;
+import com.lllmtb.engine.GameWorld;
+import com.lllmtb.engine.logger.Logger;
 import com.lllmtb.events.Event;
 import com.lllmtb.events.EventListener;
 import com.lllmtb.events.game.WeaponSelectedEvent;
@@ -95,6 +94,7 @@ public final class TurnManager {
     }
 
     private void setupEvents() {
+        // TODO - unsubscribe in endTurn()
 
         EventListener<MoveEvent> moveListener = event -> {
             world.queueCommand(move(this.turn.getWormPlayable(), event.direction));
@@ -131,10 +131,7 @@ public final class TurnManager {
             Position spawnBullet = new Position(spawnX, spawnY);
             UseParams params = new UseParams(angle, spawnBullet, Objects.requireNonNull(turn.getWormPlayable()));
 
-            List<GameCommand> cmds = turn.getTeam().use(params);
-            for (GameCommand c : cmds) {
-                world.queueCommand(c);
-            }
+            world.queueCommands(turn.getTeam().use(params));
         };
 
         world.getBus().subscribe(MoveEvent.class, moveListener);
