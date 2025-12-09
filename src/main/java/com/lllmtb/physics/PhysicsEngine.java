@@ -295,7 +295,7 @@ public class PhysicsEngine {
      */
     protected void nextStep(double dt) {
         for (PhysicsBody body : bodies) {
-            Vector deltaV = body.getVector().scale(-0.2).add(this.gravity); // Simple air resistance + gravity effects
+            Vector deltaV = body.getVector().scale(-100).add(this.gravity); // Simple air resistance + gravity effects
             // only apply wind effects to Projectiles
             if (body.getEntity() instanceof Projectile) deltaV = deltaV.add(this.wind);
             deltaV = deltaV.scale(dt * body.getMass());
@@ -360,7 +360,7 @@ public class PhysicsEngine {
                 if (worm.isOnGround() && Math.abs(body.getVector().getY()) < 0.5) {
                     // Apply friction to horizontal velocity when on ground and not jumping
                     Vector currentVector = body.getVector();
-                    double frictionFactor = 0.95; // 15% friction per tick (~0.85^10 ≈ 0.2 after 10 ticks)
+                    double frictionFactor = 0.95;
                     double newVelX = currentVector.getX() * frictionFactor;
 
                     // Stop movement if velocity is very small
