@@ -31,6 +31,7 @@ public class SettingGamePanel extends JPanel {
     public JCheckBox friendlyFireCheckBox;
     public JSlider maxJumpSlider;
     public JSlider maxLifeSlider;
+    public JTextField gameTitleField;
 
 
     /**
@@ -63,6 +64,20 @@ public class SettingGamePanel extends JPanel {
         titre1.setFont(new Font("Arial", Font.BOLD, 16));
         contentGrid.add(titre1, gbc);
 
+
+        //gameName
+        this.gameTitleField = new JTextField("Nom de la partie", 15);
+        gbc.gridx = 0;
+        gbc.gridy = row;
+
+        JLabel labelGame = new JLabel("Nom de la partit  :");
+        contentGrid.add(labelGame, gbc);
+
+        gbc.gridx = 1;
+        contentGrid.add(gameTitleField, gbc);
+        row++;
+
+
         //numbers team
         gbc.gridwidth = 1; // take 1 column
         gbc.gridx = 0;
@@ -77,14 +92,15 @@ public class SettingGamePanel extends JPanel {
         contentGrid.add(equipesSlider, gbc);
         row++;
 
+
         //teams names
         champsNomsEquipes = new JTextField[MAX_EQUIPES];
         for (int i = 0; i < MAX_EQUIPES; i++) {
             gbc.gridx = 0;
             gbc.gridy = row;
 
-            JLabel label = new JLabel("Nom Équipe " + (i + 1) + " :");
-            contentGrid.add(label, gbc);
+            JLabel labelEquipe = new JLabel("Nom Équipe " + (i + 1) + " :");
+            contentGrid.add(labelEquipe, gbc);
 
             gbc.gridx = 1;
             champsNomsEquipes[i] = new JTextField("Équipe " + (i + 1), 15);
@@ -222,6 +238,14 @@ public class SettingGamePanel extends JPanel {
             noms[i] = champsNomsEquipes[i].getText();
         }
         return noms;
+    }
+
+    /**
+     * Gets the game name from the text field.
+     * @return the game name.
+     */
+    public String getGameName() {
+        return gameTitleField.getText();
     }
 
     /**

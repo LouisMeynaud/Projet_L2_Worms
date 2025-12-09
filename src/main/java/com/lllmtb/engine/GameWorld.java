@@ -1,28 +1,27 @@
 package com.lllmtb.engine;
 
-import com.lllmtb.engine.logger.Logger;
-import com.lllmtb.engine.commands.GameCommand;
-import com.lllmtb.engine.turn.TurnManager;
-import com.lllmtb.events.EventBus;
-import com.lllmtb.events.game.GameStateUpdatedEvent;
-import com.lllmtb.model.entity.Entity;
-import com.lllmtb.model.entity.team.Team;
-import com.lllmtb.physics.PhysicsEngine;
-import com.lllmtb.terrain.generation.GenerateMap;
-import com.lllmtb.terrain.generation.ConfigMap;
-import com.lllmtb.terrain.map.CreateSpawnPoint;
-import com.lllmtb.terrain.map.Map;
-import com.lllmtb.terrain.map.MapLoader;
-
-import org.eclipse.jdt.annotation.NonNull;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import org.eclipse.jdt.annotation.NonNull;
+
+import com.lllmtb.engine.commands.GameCommand;
+import com.lllmtb.engine.logger.Logger;
+import com.lllmtb.engine.turn.TurnManager;
+import com.lllmtb.events.EventBus;
+import com.lllmtb.events.game.GameStateUpdatedEvent;
+import com.lllmtb.model.entity.Entity;
+import com.lllmtb.model.entity.team.Team;
 import com.lllmtb.physics.Move;
+import com.lllmtb.physics.PhysicsEngine;
+import com.lllmtb.terrain.generation.ConfigMap;
+import com.lllmtb.terrain.generation.GenerateMap;
+import com.lllmtb.terrain.map.CreateSpawnPoint;
+import com.lllmtb.terrain.map.Map;
+import com.lllmtb.terrain.map.MapLoader;
 
 public class GameWorld {
     private final Map map;
@@ -33,6 +32,7 @@ public class GameWorld {
     private int indexTeam;
     private final TurnManager turnManager;
     private final long turnDuration;
+    private String gameName;
     Thread loopThread;
 
     private final BlockingQueue<GameCommand> commandQueue;
@@ -40,7 +40,7 @@ public class GameWorld {
 
     public GameWorld(GameSettings settings, EventBus eventBus) {
         Map tmap = null;
-
+        this.gameName = settings.gameName;
         // Init Map (we'll have to handle this better once MapLoader throws catchable exceptions)
         if (settings.mapFileName != null) {
             try {
