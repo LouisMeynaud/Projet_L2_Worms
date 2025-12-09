@@ -93,7 +93,7 @@ public class GameUIPanel extends JPanel {
         pauseButton.addActionListener(e -> pauseMenu(true));
         shootModeButton.addActionListener(e -> world.getBus().postQueued(new ShootMode()));
         inventoryButton.addActionListener(e -> openCloseInventory());
-        skipTurnButton.addActionListener(e -> this.eventBus.postQueued(new TurnSkipEvent()));
+        skipTurnButton.addActionListener(e -> world.getBus().postQueued(new TurnSkipEvent()));
 
 
         JPanel buttonsPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
@@ -261,6 +261,8 @@ public class GameUIPanel extends JPanel {
             //ces deux ligne sont pour tester que l'affichage s'adapte bien
             this.world.getTurnManager().getTurn().getTeam().getInventory().unlock(WeaponId.GUN);
             this.world.getTurnManager().getTurn().getTeam().getInventory().weapons.addAmmo(WeaponId.GUN, 10);
+            this.world.getTurnManager().getTurn().getTeam().getInventory().unlock(WeaponId.BAZOOKA);
+            this.world.getTurnManager().getTurn().getTeam().getInventory().weapons.addAmmo(WeaponId.BAZOOKA, 3);
             this.world.getTurnManager().getTurn().getTeam().getInventory().tools.addAmmo(ToolId.PARACHUTE, 2);
 
             createInventoryGrid();
