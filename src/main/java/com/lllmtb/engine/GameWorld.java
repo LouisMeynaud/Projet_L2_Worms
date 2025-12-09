@@ -7,6 +7,7 @@ import com.lllmtb.events.EventBus;
 import com.lllmtb.events.game.GameStateUpdatedEvent;
 import com.lllmtb.model.entity.Entity;
 import com.lllmtb.model.entity.team.Team;
+import com.lllmtb.model.entity.worm.Worm;
 import com.lllmtb.physics.PhysicsEngine;
 import com.lllmtb.terrain.generation.GenerateMap;
 import com.lllmtb.terrain.generation.ConfigMap;
@@ -71,7 +72,8 @@ public class GameWorld {
         Logger.logger.info("Creating the Teams...");
         for (int i = 0; i < settings.nbTeams; i++) {
             try {
-                Team team = new Team(settings.teamNames[i], settings.nbWorms, settings.maxLife, tmap.getSpawnPoint()[i]);
+                Worm.setMaxHp(settings.maxHp);
+                Team team = new Team(settings.teamNames[i], settings.nbWorms, settings.maxHp, tmap.getSpawnPoint()[i]);
                 teams.add(team);
                 team.getTeamWorms().forEach(this::registerEntity);
                 Logger.logger.info("{} | {} - {} - {}\n", i, team.name, team.id, team.teamColor);
@@ -127,7 +129,7 @@ public class GameWorld {
         }
         Logger.logger.debug("Starting the game loop...");
         loopThread = new Thread(gameLoop, "gameloop");
-        this.nextTeamTurn();
+        this.startTeamTurn();
         loopThread.start();
     }
 
@@ -156,9 +158,15 @@ public class GameWorld {
     }
 
 
-    public void nextTeamTurn() {
+    public void startTeamTurn() {
         if (!teams.isEmpty()) {
             this.turnManager.startTurn(teams.get(indexTeam));
+        }
+    }
+
+    public void nextTeamTurn() {
+        if (!teams.isEmpty()) {
+            this.turnManager.startTurn(teams.get(indexTeam++));
             if (indexTeam >= teams.size()) {
                 indexTeam = 0;
             }
