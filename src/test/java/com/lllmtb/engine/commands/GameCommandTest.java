@@ -1,6 +1,7 @@
 package com.lllmtb.engine.commands;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -26,6 +27,7 @@ import com.lllmtb.model.entity.projectile.Projectile;
 import com.lllmtb.physics.PhysicsEngine;
 import com.lllmtb.physics.PhysicsModifier;
 import com.lllmtb.terrain.generation.LandScape;
+
 
 public class GameCommandTest {
     private GameWorld world;
@@ -108,5 +110,16 @@ public class GameCommandTest {
         // calling processCommands again should not re-execute commands
         world.processCommands();
         assertEquals(2, executed.size());
+    }
+
+    @Test
+    void queueCommandsReturnsFalseIfAnyCommandIsNull() {
+        List<GameCommand> cmds = new ArrayList<>();
+        cmds.add(w -> {});
+        cmds.add(null);
+        cmds.add(w -> {});
+        boolean result = world.queueCommands(cmds);
+        assertFalse(result);
+        assertEquals(2, queue.size());
     }
 }
