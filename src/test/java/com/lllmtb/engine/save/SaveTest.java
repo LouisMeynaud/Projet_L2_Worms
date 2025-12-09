@@ -23,7 +23,7 @@ public class SaveTest {
     @BeforeAll
     static void setUp() {
     eventBus = new EventBus();
-    settings = new GameSettings(2, new String[]{"test","test2"}, 2, 10,true, "testGame", true, 200 , LandScape.FLAT);
+    settings = new GameSettings(2, new String[]{"test","test2"}, 2, 10,true, "testGame", true, 200, LandScape.FLAT, 2);
     gameWorld = new GameWorld(settings, eventBus);
     Save.setGameWorld(gameWorld);
     }
