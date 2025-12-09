@@ -93,6 +93,7 @@ public class Utilitaire {
         JButton button = new JButton();
         button.setLayout(new BorderLayout());
         button.setPreferredSize(new Dimension(160, 160));
+        button.setBackground(Color.DARK_GRAY);
 
         JLabel caseLabel = new JLabel("", SwingConstants.CENTER); // Label vide par défaut // place se qu'il contient au milieu
         try {
@@ -109,6 +110,7 @@ public class Utilitaire {
         button.add(caseLabel, BorderLayout.CENTER);
 
         if (isUnlocked) {
+            button.setBackground(Color.LIGHT_GRAY);
             JPanel ammoPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 5, 0));
             ammoPanel.setOpaque(false);
 
