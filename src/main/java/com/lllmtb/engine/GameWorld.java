@@ -122,9 +122,7 @@ public class GameWorld {
     }
 
     public void start() {
-        if (loopThread != null && loopThread.isAlive()) {
-            return;
-        }
+        if (loopThread != null && loopThread.isAlive()) return;
         Logger.logger.debug("Starting the game loop...");
         loopThread = new Thread(gameLoop, "gameloop");
         this.nextTeamTurn();
@@ -132,9 +130,7 @@ public class GameWorld {
     }
 
     public void pause(boolean paused) {
-        if (loopThread != null && loopThread.isAlive()) {
-            return;
-        }
+        if (loopThread == null || !loopThread.isAlive()) return;
         System.out.println((paused ? "Pausing" : "Resuming") + " the game loop...");
         gameLoop.pause(paused);
     }

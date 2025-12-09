@@ -24,10 +24,15 @@ public class GameEngine {
 
         // Engine loop thread - processes engine-level events (start, pause, quit...)
         new Thread(() -> {
-            systemBus.processQueued();
-            try {
-                Thread.sleep(10);
-            } catch (InterruptedException e) {
+            Thread current = Thread.currentThread();
+            while (!current.isInterrupted()) {
+                systemBus.processQueued();
+                try {
+                    Thread.sleep(10);
+                } catch (InterruptedException e) {
+                    current.interrupt();
+                    break;
+                }
             }
         }, "engine-loop").start();
 

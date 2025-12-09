@@ -1,6 +1,5 @@
 package com.lllmtb.engine;
 
-import com.lllmtb.events.game.GamePauseEvent;
 import org.eclipse.jdt.annotation.NonNull;
 
 import java.util.Objects;
@@ -29,6 +28,17 @@ public class GameLoop implements Runnable {
     public void run() {
         long last = System.nanoTime();
         while (running) {
+            // Handle pause state
+            if (isPaused) {
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException ignored) {
+                    stop();
+                }
+                last = System.nanoTime();
+                continue;
+            }
+
             long now = System.nanoTime();
             long elapsedMs = (now - last) / 1_000_000;
             last = now;
