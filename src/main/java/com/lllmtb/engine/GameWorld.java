@@ -158,7 +158,7 @@ public class GameWorld {
 
     public void nextTeamTurn() {
         if (!teams.isEmpty()) {
-            this.turnManager.startTurn(teams.get(indexTeam++));
+            this.turnManager.startTurn(teams.get(indexTeam));
             if (indexTeam >= teams.size()) {
                 indexTeam = 0;
             }
