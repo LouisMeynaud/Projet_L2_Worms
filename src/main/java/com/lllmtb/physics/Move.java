@@ -1,6 +1,5 @@
 package com.lllmtb.physics;
 
-import com.lllmtb.engine.logger.Logger;
 import com.lllmtb.engine.commands.AddPhysicsModifierCommand;
 import com.lllmtb.engine.commands.GameCommand;
 import com.lllmtb.model.entity.worm.Worm;
@@ -8,6 +7,8 @@ import com.lllmtb.ui.graphical.GamePanel.Direction;
 import org.eclipse.jdt.annotation.NonNull;
 
 import java.util.Objects;
+
+import static com.lllmtb.engine.logger.Logger.*;
 
 /**
  * The {@code Move} class provides functionality to move a worm in different directions.
@@ -34,18 +35,16 @@ public class Move {
         Objects.requireNonNull(worm);
         Transform t = switch (Objects.requireNonNull(direction)) {
             case Left:
-                yield v -> new Vector(Math.max(v.getX() - 5, -8), v.getY());
-                Logger.logger.debug("Worm {} : Left move ", worm);
+                logger.debug("Worm {} : Left move ", worm);
                 yield v -> new Vector(-8, v.getY());
 
             case Right:
-                Logger.logger.debug("Worm {} : Right move ", worm);
+                logger.debug("Worm {} : Right move ", worm);
                 yield v -> new Vector(8, v.getY());
-                yield v -> new Vector(Math.min(v.getX() + 5, 8), v.getY());
 
             case Up:
                 if (jump > 0) {
-                    Logger.logger.debug("Worm {} in team : Up move ", worm);
+                    logger.debug("Worm {} in team : Up move ", worm);
                     jump--;
                     yield v -> new Vector(v.getX(), 20);
                 }
