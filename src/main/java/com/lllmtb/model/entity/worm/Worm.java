@@ -38,7 +38,7 @@ public class Worm extends Entity {
     /**
      * The team this worm belongs to.
      */
-    private Team team;
+    private transient Team team;
 
     /**
      * The name of the worm.
@@ -63,7 +63,7 @@ public class Worm extends Entity {
     /**
      * The current animation.
      */
-    private Animation animation;
+    private transient Animation animation;
 
     /**
      * Direction the worm is facing: 1 for right, -1 for left.
