@@ -243,4 +243,51 @@ public class EventBusTest {
         assertEquals(0, bus.queuedEventCount());
         assertEquals(0, bus.listenerCount());
     }
+
+    // --- lock feature tests -------------------------------------------------
+
+    @Test
+    void setLocked_preventsPostSync() {
+        AtomicInteger callCount = new AtomicInteger(0);
+        bus.subscribe(SimpleEvent.class, e -> callCount.incrementAndGet());
+
+        bus.postSync(new SimpleEvent("x"));
+        assertEquals(1, callCount.get(), "listener should be invoked when not locked");
+
+        bus.setLocked(true);
+        bus.postSync(new SimpleEvent("y"));
+        assertEquals(1, callCount.get(), "listener should not be invoked when locked");
+    }
+
+    @Test
+    void setLocked_preventsPostQueued() {
+        AtomicInteger callCount = new AtomicInteger(0);
+        bus.subscribe(SimpleEvent.class, e -> callCount.incrementAndGet());
+
+        assertTrue(bus.postQueued(new SimpleEvent("x")), "postQueued should succeed when not locked");
+        bus.processQueued();
+        assertEquals(1, callCount.get(), "first event should be processed");
+
+        bus.setLocked(true);
+        assertFalse(bus.postQueued(new SimpleEvent("y")), "postQueued should return false when locked");
+        assertEquals(0, bus.queuedEventCount(), "no events should be queued when locked");
+        assertEquals(1, callCount.get(), "no new events should be processed");
+    }
+
+    @Test
+    void setLocked_canBeToggled() {
+        AtomicInteger callCount = new AtomicInteger(0);
+        bus.subscribe(SimpleEvent.class, e -> callCount.incrementAndGet());
+
+        bus.postSync(new SimpleEvent("1"));
+        assertEquals(1, callCount.get());
+
+        bus.setLocked(true);
+        bus.postSync(new SimpleEvent("2"));
+        assertEquals(1, callCount.get(), "event should not be processed when locked");
+
+        bus.setLocked(false);
+        bus.postSync(new SimpleEvent("3"));
+        assertEquals(2, callCount.get(), "event should be processed after unlocking");
+    }
 }
