@@ -23,6 +23,7 @@ import com.lllmtb.engine.GameWorld;
 import com.lllmtb.engine.logger.Logger;
 import com.lllmtb.events.EventBus;
 import com.lllmtb.events.game.GamePauseEvent;
+import com.lllmtb.events.game.SaveEvent;
 import com.lllmtb.events.game.ToolSelectedEvent;
 import com.lllmtb.events.game.WeaponSelectedEvent;
 import com.lllmtb.events.game.WorldCreatedEvent;
@@ -34,7 +35,6 @@ import com.lllmtb.model.item.tool.ToolId;
 import com.lllmtb.model.item.weapon.WeaponId;
 import com.lllmtb.ui.graphical.TextureManager;
 import com.lllmtb.ui.graphical.Utilitaire;
-
 
 public class GameUIPanel extends JPanel {
 
@@ -161,6 +161,7 @@ public class GameUIPanel extends JPanel {
     private void createPauseMenu() {
         this.pauseMenucontainer = new JPanel(new GridBagLayout()); // un conteneur pour pour centre le vrai pannel
         this.pauseMenucontainer.setOpaque(false);
+        this.pauseMenucontainer.setVisible(false);
 
 
         JPanel menuPanel = new JPanel();
@@ -179,7 +180,8 @@ public class GameUIPanel extends JPanel {
         quitButton.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         resumeButton.addActionListener(e -> pauseMenu(false));
-
+        saveButton.addActionListener(e -> eventBus.postQueued(new SaveEvent()));
+        quitButton.addActionListener(e -> System.exit(0));
 
         menuPanel.add(resumeButton);
         menuPanel.add(Box.createVerticalStrut(10));

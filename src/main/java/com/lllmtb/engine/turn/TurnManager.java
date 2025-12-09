@@ -143,6 +143,7 @@ public final class TurnManager {
 
         turnskipEventListener = event -> {
             if (remainingTimeInMs < turnDurationInMs - 3000) {
+                Logger.logger.info("Turn skipped by team\n");
             endTurn();
         }
         };

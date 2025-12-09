@@ -1,6 +1,4 @@
 package com.lllmtb.events;
-
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -13,7 +11,9 @@ import com.lllmtb.engine.GameSettings;
 import com.lllmtb.engine.GameWorld;
 import com.lllmtb.events.game.GamePauseEvent;
 import com.lllmtb.events.game.GameStateUpdatedEvent;
+import com.lllmtb.events.game.LoadEvent;
 import com.lllmtb.events.game.MapUpdateEvent;
+import com.lllmtb.events.game.SaveEvent;
 import com.lllmtb.events.game.StartGameEvent;
 import com.lllmtb.events.game.ToolSelectedEvent;
 import com.lllmtb.events.game.WeaponSelectedEvent;
@@ -111,6 +111,13 @@ public class EventsTest {
     }
 
     @Test
+    public void testCreationLoadEvent() {
+        String nom = "oui";
+        LoadEvent event = new LoadEvent(nom);
+        assertNotNull(event, "L'événement ne doit pas être null");
+        assertEquals(nom, event.stringPath, "le stringpath doit etre: oui ");
+    }
+    @Test
     public void eventWithoutArgumentTest() {
         eventWithoutArgument(new GameStateUpdatedEvent());
         eventWithoutArgument(new ScreenGenerateMap());
@@ -119,6 +126,7 @@ public class EventsTest {
         eventWithoutArgument(new ScreenNewOrLoadEvent());
         eventWithoutArgument(new ScreenSettingsGame());
         eventWithoutArgument(new MapUpdateEvent());
+        eventWithoutArgument(new SaveEvent());
         eventWithoutArgument(new RequestFocus());
         eventWithoutArgument(new ShootMode());
         eventWithoutArgument(new TurnSkipEvent());

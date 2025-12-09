@@ -33,31 +33,9 @@ public class MapLoader {
 
             for (int i = 0; i < row.length; i++) {
                 for (int j = 0; j < row[0].length(); j++) {
-                    switch (row[i].charAt(j)) { // perhaps create another `Map.setTile(x, y)` that could be used
-                        // here
-                        case 'D':
-                            tileMatrix.getMapMatrix()[i][j] = Tile.DIRT;
-                            break;
-                        case 'W':
-                            tileMatrix.getMapMatrix()[i][j] = Tile.WATER;
-                            break;
-                        case 'A':
-                            tileMatrix.getMapMatrix()[i][j] = Tile.AIR;
-                            break;
-                        case 'C':
-                            tileMatrix.getMapMatrix()[i][j] = Tile.CAVERN;
-                            break;
-                        case 'G':
-                            tileMatrix.getMapMatrix()[i][j] = Tile.GRASS;
-                            break;
-                        default:
-                            throw new IllegalArgumentException(
-                                    "attention,la lettre" + contentHightLine.charAt(i) + "ne correspond a aucun Tile");
+                        tileMatrix.getMapMatrix()[i][j] = Tile.getByFileSymbol(row[i].charAt(j));
                     }
-
                 }
-                //tileMatrix.setHightLine(hightLine);
-            }
             return tileMatrix;
 
         } catch (IOException e) { // we should propagate the exception instead so GameWorld can catch and respond accordingly

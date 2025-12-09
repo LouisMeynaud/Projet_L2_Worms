@@ -41,6 +41,7 @@ public class GameWorld {
 
 
     public GameWorld(GameSettings settings, EventBus eventBus) {
+        gameName = settings.mapFileName;
         Map tmap = null;
         this.gameName = settings.gameName;
         // Init Map (we'll have to handle this better once MapLoader throws catchable exceptions)
@@ -122,6 +123,14 @@ public class GameWorld {
 
     public GameLoop getGameLoop() {
         return gameLoop;
+    }
+
+    public int getIndexTeam() {
+        return indexTeam;
+    }
+
+    public String getGameName() {
+        return gameName;
     }
 
     public void start() {
