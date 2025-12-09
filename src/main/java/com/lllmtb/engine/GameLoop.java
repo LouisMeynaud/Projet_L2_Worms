@@ -28,39 +28,30 @@ public class GameLoop implements Runnable {
     public void run() {
         long last = System.nanoTime();
         while (running) {
-            // Handle pause state
-            if (isPaused) {
-                try {
-                    Thread.sleep(100);
-                } catch (InterruptedException ignored) {
-                    stop();
-                }
-                last = System.nanoTime();
-                continue;
-            }
-
             long now = System.nanoTime();
             long elapsedMs = (now - last) / 1_000_000;
             last = now;
 
-            System.out.print(""); // TODO : Replace by another line which will be always effective
-            // System.out.println("[" + String.format("%4d", totalTicks) + "] New tick " + elapsedMs + "ms");
-            // System.out.println("Entities in the game "
-            //         + world.getPhysics().getBodies().size() + " : "
-            //         + Arrays.toString(world.getPhysics().getBodies().stream().map(PhysicsBody::getEntity).toArray()));
-            // System.out.println("Bodies : " + Arrays.toString(world.getPhysics().getBodies().toArray()));
+            if (!isPaused) {
+                System.out.print(""); // TODO : Replace by another line which will be always effective
+                // System.out.println("[" + String.format("%4d", totalTicks) + "] New tick " + elapsedMs + "ms");
+                // System.out.println("Entities in the game "
+                //         + world.getPhysics().getBodies().size() + " : "
+                //         + Arrays.toString(world.getPhysics().getBodies().stream().map(PhysicsBody::getEntity).toArray()));
+                // System.out.println("Bodies : " + Arrays.toString(world.getPhysics().getBodies().toArray()));
 
-            // 1) process queued external events (eg. input)
-            world.getBus().processQueued();
+                // 1) process queued external events (eg. input)
+                world.getBus().processQueued();
 
-            // 2) update physics + TurnManager
-            world.update(elapsedMs);
+                // 2) update physics + TurnManager
+                world.update(elapsedMs);
 
-            // 3) process events generated during physics (collisions, explosions...)
-            world.getBus().processQueued();
+                // 3) process events generated during physics (collisions, explosions...)
+                world.getBus().processQueued();
 
-            // 4) increase totalTicks
-            totalTicks++;
+                // 4) increase totalTicks
+                totalTicks++;
+            }
 
             // 5) sleep to maintain tick rate
             try {

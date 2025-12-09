@@ -212,28 +212,25 @@ public class GameWorldTest {
         EventBus eventBus = new EventBus();
         GameWorld gw = new GameWorld(settings, eventBus);
 
-        // Start the game loop
         gw.start();
         assertTrue(gw.loopThread.isAlive(), "Game loop should be running");
         TimeUnit.MILLISECONDS.sleep(50);
-        long ticksBeforePause = gw.getGameLoop().getTicks();
-        assertTrue(ticksBeforePause > 0, "Game loop should have ticked while running");
 
-        // Pause the game loop
         gw.pause(true);
         assertTrue(gw.loopThread.isAlive(), "Game loop thread should still be alive while paused");
+        long ticksBeforePause = gw.getGameLoop().getTicks();
+        assertTrue(ticksBeforePause > 0, "Game loop should have ticked while running");
         TimeUnit.MILLISECONDS.sleep(50);
         long ticksAfterPaused = gw.getGameLoop().getTicks();
         assertEquals(ticksBeforePause, ticksAfterPaused, "Ticks should not increment while paused");
 
-        // Resume the game loop
+
         gw.pause(false);
         assertTrue(gw.loopThread.isAlive(), "Game loop thread should still be alive after resume");
-        TimeUnit.MILLISECONDS.sleep(150);
+        TimeUnit.MILLISECONDS.sleep(50);
         long ticksAfterResume = gw.getGameLoop().getTicks();
         assertTrue(ticksAfterResume > ticksAfterPaused, "Ticks should resume incrementing after pause is lifted");
 
-        // Clean up
         gw.stop();
     }
 
