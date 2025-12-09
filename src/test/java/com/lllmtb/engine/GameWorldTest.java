@@ -82,7 +82,7 @@ public class GameWorldTest {
     void whenMapFileNameProvided_MapLoaderIsUsed_insteadOfGenerateMap() {
         // we only mock MapLoader.loadMatrix to return a real map created by GenerateMap
         Map generated = MapLoader.loadMatrix("mapTest");
-        GameSettings settings = new GameSettings(0, new String[]{}, 0,100, 10, true, "mapTest", false,370,LandScape.HILLY,2);
+        GameSettings settings = new GameSettings("blabla", 0, new String[]{}, 0,100, 10, true, "mapTest", false,370,LandScape.HILLY,2);
         EventBus eventBus = new EventBus();
         GameWorld gw = new GameWorld(settings,eventBus);
 
@@ -100,7 +100,7 @@ public class GameWorldTest {
         try (MockedStatic<MapLoader> mocked = Mockito.mockStatic(MapLoader.class)) {
             mocked.when(() -> MapLoader.loadMatrix("badPath")).thenThrow(new IllegalStateException("io fail"));
 
-            GameSettings settings = new GameSettings(
+            GameSettings settings = new GameSettings("blabla", 
                     0, new String[]{}, 0, 100,10, false, "badPath", false,370,LandScape.HILLY,2);
             EventBus eventBus = new EventBus();
             RuntimeException e = assertThrows(RuntimeException.class, () -> new GameWorld(settings,eventBus));
@@ -114,6 +114,7 @@ public class GameWorldTest {
     void teams_loop_breaks_on_ArrayIndexOutOfBounds_and_only_validTeamsCreated() {
         // nbTeams = 3 but only one name provided -> GameWorld should create only the first team then break
         GameSettings settings = new GameSettings(
+            "blabla", 
                 3,
                 new String[]{"SoloTeam"},
                 3,      // 3 worms for the created team
@@ -140,7 +141,7 @@ public class GameWorldTest {
     @Test
     void startRunsLoopAndStopStopsIt_whenStartedInSeparateThread() throws Exception {
         // use a small, simple world (no teams) so physics starts empty
-        GameSettings settings = new GameSettings(0, new String[]{}, 0,100, 10, false, null, false,370,LandScape.HILLY,2);
+        GameSettings settings = new GameSettings("blabla", 0, new String[]{}, 0,100, 10, false, null, false,370,LandScape.HILLY,2);
          EventBus eventBus = new EventBus();
         GameWorld gw = new GameWorld(settings,eventBus);
 
@@ -163,7 +164,7 @@ public class GameWorldTest {
 
     @Test
     void registerEntity_null_throwsNPE() {
-        GameSettings settings = new GameSettings(0, new String[]{}, 0,100, 10, false, null, false,370,LandScape.HILLY,2);
+        GameSettings settings = new GameSettings("blabla", 0, new String[]{}, 0,100, 10, false, null, false,370,LandScape.HILLY,2);
          EventBus eventBus = new EventBus();
         GameWorld gw = new GameWorld(settings,eventBus);
 
@@ -172,7 +173,7 @@ public class GameWorldTest {
 
     @Test
     void stopLoop_whenNotRunning() {
-        GameSettings settings = new GameSettings(0, new String[]{}, 0,100, 10, false, null, false,370,LandScape.HILLY,2);
+        GameSettings settings = new GameSettings("blabla", 0, new String[]{}, 0,100, 10, false, null, false,370,LandScape.HILLY,2);
          EventBus eventBus = new EventBus();
         GameWorld gw = new GameWorld(settings,eventBus);
 
@@ -183,7 +184,7 @@ public class GameWorldTest {
 
     @Test
     void startLoop_whenAlreadyRunning() throws Exception {
-        GameSettings settings = new GameSettings(0, new String[]{}, 0,100, 10, false, null, false,370,LandScape.HILLY,2);
+        GameSettings settings = new GameSettings("blabla", 0, new String[]{}, 0,100, 10, false, null, false,370,LandScape.HILLY,2);
         EventBus eventBus = new EventBus();
         GameWorld gw = new GameWorld(settings,eventBus);
 
@@ -209,7 +210,7 @@ public class GameWorldTest {
 
     @Test
     void getTurnManage(){
-        GameSettings settings = new GameSettings(0, new String[]{}, 0,100, 10, false, null, false,370,LandScape.HILLY,2);
+        GameSettings settings = new GameSettings("blabla", 0, new String[]{}, 0,100, 10, false, null, false,370,LandScape.HILLY,2);
         EventBus eventBus = new EventBus();
         GameWorld gw = new GameWorld(settings, eventBus);
 

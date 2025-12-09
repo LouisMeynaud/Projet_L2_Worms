@@ -1,13 +1,10 @@
 package com.lllmtb.ui;
 
-import com.lllmtb.engine.GameSettings;
-import com.lllmtb.engine.GameWorld;
-import com.lllmtb.engine.logger.Logger;
-import com.lllmtb.events.EventBus;
-import com.lllmtb.events.game.StartGameEvent;
+import java.io.File;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.Map;
 
-import com.lllmtb.events.game.WorldCreatedEvent;
-import com.lllmtb.terrain.map.MapLoader;
 import org.jline.consoleui.elements.ConfirmChoice;
 import org.jline.consoleui.prompt.ConsolePrompt;
 import org.jline.consoleui.prompt.PromptResultItemIF;
@@ -21,12 +18,14 @@ import org.jline.utils.AttributedString;
 import org.jline.utils.AttributedStyle;
 import org.jline.utils.InfoCmp;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.Map;
-
+import com.lllmtb.engine.GameSettings;
+import com.lllmtb.engine.GameWorld;
+import com.lllmtb.engine.logger.Logger;
+import com.lllmtb.events.EventBus;
+import com.lllmtb.events.game.StartGameEvent;
+import com.lllmtb.events.game.WorldCreatedEvent;
 import com.lllmtb.terrain.generation.LandScape;
+import com.lllmtb.terrain.map.MapLoader;
 
 // TODO - make prompt methods content-agnostic to remove duplicated code
 //  eg: promptBool(String key, String message, ConfirmChoice.ConfirmationValue defaultValue)
@@ -100,7 +99,7 @@ public class ConsoleUI implements UI {
             }
             terminal.writer().println("   Wind: " + (hasWind ? "ON" : "OFF"));
             terminal.writer().flush();
-            return new GameSettings(nbTeams, teamNames, nbWorms, maxHealth, turnDuration, hasWind, mapFileName, floatingIsland, size, landscape, 2);
+            return new GameSettings("blabla", nbTeams, teamNames, nbWorms, maxHealth, turnDuration, hasWind, mapFileName, floatingIsland, size, landscape, 2);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
