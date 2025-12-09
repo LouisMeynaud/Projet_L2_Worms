@@ -6,7 +6,7 @@ import com.google.gson.typeadapters.RuntimeTypeAdapterFactory;
 import com.lllmtb.model.entity.Entity;
 import com.lllmtb.model.entity.projectile.Projectile;
 import com.lllmtb.model.entity.worm.Worm;
-import org.jetbrains.annotations.NotNull;
+import org.eclipse.jdt.annotation.NonNull;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -33,7 +33,7 @@ public class Load {
         }
     }
 
-    public static void reforgeGameSave(@NotNull GameSave gameSave) {
+    public static void reforgeGameSave(@NonNull GameSave gameSave) {
         for (PhysicsBodySave saveBody : gameSave.entities) {
             for (TeamSave teamSave : gameSave.teams) {
                 for (Worm worm : teamSave.team.getTeamWorms()) {
