@@ -36,11 +36,13 @@ public class GameWorld {
     private final long turnDuration;
     private String gameName;
     Thread loopThread;
+    public final GameSettings settings;
 
     private final BlockingQueue<GameCommand> commandQueue;
 
 
     public GameWorld(GameSettings settings, EventBus eventBus) {
+        this.settings = settings;
         gameName = settings.mapFileName;
         Map tmap = null;
         this.gameName = settings.gameName;

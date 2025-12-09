@@ -1,5 +1,6 @@
 package com.lllmtb.engine.save;
 
+import com.lllmtb.engine.GameSettings;
 import com.lllmtb.engine.GameWorld;
 import com.lllmtb.events.EventBus;
 import com.lllmtb.model.entity.team.Team;
@@ -22,6 +23,7 @@ public class GameSave {
     protected Vector wind;
     protected Vector gravity;
     protected ConcurrentHashMap<Integer, ArrayList<PhysicsModifier>> modifiers;
+    protected GameSettings settings;
 
 
     public GameSave(GameWorld gameWorld) {
@@ -41,6 +43,7 @@ public class GameSave {
         for (PhysicsBody body : gameWorld.getPhysics().getBodies()) {
             entities.add(new PhysicsBodySave(body));
         }
+        this.settings = gameWorld.settings;
     }
 
 
