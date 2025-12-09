@@ -1,5 +1,6 @@
 package com.lllmtb.engine;
 
+import com.lllmtb.engine.save.GameSave;
 import com.lllmtb.engine.save.Save;
 import java.util.Objects;
 
@@ -54,6 +55,7 @@ public class GameEngine {
     private static void startGame(@NonNull StartGameEvent event) {
         GameSettings settings = Objects.requireNonNull(event).getSettings();
         world = new GameWorld(settings, eventBus);
+        Save.setGameWorld(world);
         eventBus.postSync(new WorldCreatedEvent(world));
         eventBus.subscribe(SaveEvent.class, e -> {
             try {
