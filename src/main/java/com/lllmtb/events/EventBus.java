@@ -36,6 +36,8 @@ public class EventBus {
     // (bounded to avoid out-of-memory crashes)
     private final BlockingQueue<Event> queuedEvents;
 
+    private boolean locked = false;
+
     /**
      * Create an EventBus with a default queue capacity of 1000 events.
      */
@@ -53,6 +55,10 @@ public class EventBus {
             throw new IllegalArgumentException("queue capacity must be > 0");
         }
         this.queuedEvents = new LinkedBlockingQueue<>(capacity);
+    }
+
+    public void setLocked(boolean locked) {
+        this.locked = locked;
     }
 
     /**
@@ -93,6 +99,7 @@ public class EventBus {
      */
     public void postSync(@NonNull Event event) {
         Objects.requireNonNull(event);
+        if (locked) return;
         dispatch(event);
     }
 
@@ -105,6 +112,7 @@ public class EventBus {
      */
     public boolean postQueued(@NonNull Event event) {
         Objects.requireNonNull(event);
+        if (locked) return false;
         return queuedEvents.offer(event);
     }
 

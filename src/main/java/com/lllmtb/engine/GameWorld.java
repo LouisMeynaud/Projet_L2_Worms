@@ -143,6 +143,7 @@ public class GameWorld {
         if (loopThread == null || !loopThread.isAlive()) return;
         Logger.logger.info("{} the game loop...", paused ? "Pausing" : "Resuming");
         gameLoop.pause(paused);
+        bus.setLocked(paused);
     }
 
     public void stop() {
