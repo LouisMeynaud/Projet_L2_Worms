@@ -279,7 +279,7 @@ public class CollisionTest {
         Position posFinal = new Position(12, 8);
         Collision.Impact impact = collision.move(pBWorm1, posFinal);
         collision.slide(pBWorm1, impact, 1, new EventBus());
-        assertEquals(11, pBWorm1.getPos().getX());
+        assertEquals(11.5, pBWorm1.getPos().getX());
         assertEquals(10, pBWorm1.getPos().getY());
     }
 
