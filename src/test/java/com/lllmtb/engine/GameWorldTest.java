@@ -16,6 +16,7 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -206,7 +207,35 @@ public class GameWorldTest {
     }
 
     @Test
-    void getTurnManage(){
+    void pauseAndResume_togglesGameLoopPauseState() throws Exception {
+        GameSettings settings = new GameSettings(1, new String[]{"Team1"}, 1, 10, false, null, false, 370, LandScape.HILLY, 2);
+        EventBus eventBus = new EventBus();
+        GameWorld gw = new GameWorld(settings, eventBus);
+
+        gw.start();
+        assertTrue(gw.loopThread.isAlive(), "Game loop should be running");
+        TimeUnit.MILLISECONDS.sleep(50);
+
+        gw.pause(true);
+        assertTrue(gw.loopThread.isAlive(), "Game loop thread should still be alive while paused");
+        long ticksBeforePause = gw.getGameLoop().getTicks();
+        assertTrue(ticksBeforePause > 0, "Game loop should have ticked while running");
+        TimeUnit.MILLISECONDS.sleep(50);
+        long ticksAfterPaused = gw.getGameLoop().getTicks();
+        assertEquals(ticksBeforePause, ticksAfterPaused, "Ticks should not increment while paused");
+
+
+        gw.pause(false);
+        assertTrue(gw.loopThread.isAlive(), "Game loop thread should still be alive after resume");
+        TimeUnit.MILLISECONDS.sleep(50);
+        long ticksAfterResume = gw.getGameLoop().getTicks();
+        assertTrue(ticksAfterResume > ticksAfterPaused, "Ticks should resume incrementing after pause is lifted");
+
+        gw.stop();
+    }
+
+    @Test
+    void getTurnManager() {
         GameSettings settings = new GameSettings(0, new String[]{}, 0, 10, false, null, false,370,LandScape.HILLY,2);
         EventBus eventBus = new EventBus();
         GameWorld gw = new GameWorld(settings, eventBus);
