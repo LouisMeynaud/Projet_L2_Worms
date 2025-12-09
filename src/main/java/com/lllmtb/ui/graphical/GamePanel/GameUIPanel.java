@@ -20,7 +20,6 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 
 import com.lllmtb.engine.GameWorld;
-import com.lllmtb.engine.logger.Logger;
 import com.lllmtb.events.EventBus;
 import com.lllmtb.events.game.GamePauseEvent;
 import com.lllmtb.events.game.SaveEvent;
@@ -38,7 +37,7 @@ import com.lllmtb.ui.graphical.Utilitaire;
 
 public class GameUIPanel extends JPanel {
 
-    private EventBus eventBus;
+    private EventBus eventBus;  // system bus
 
     private JPanel pauseMenucontainer;
     private JPanel inventoryContainer;
@@ -92,7 +91,7 @@ public class GameUIPanel extends JPanel {
         JButton shootModeButton = Utilitaire.createImageButton(TextureManager.UI, "ShootMode", 64, 64, 48, 48);
         JButton skipTurnButton = Utilitaire.createImageButton(TextureManager.UI, "skipTurn", 64, 64, 48, 48);
         pauseButton.addActionListener(e -> pauseMenu(true));
-        shootModeButton.addActionListener(e -> this.eventBus.postQueued(new ShootMode()));
+        shootModeButton.addActionListener(e -> world.getBus().postQueued(new ShootMode()));
         inventoryButton.addActionListener(e -> openCloseInventory());
         skipTurnButton.addActionListener(e -> this.eventBus.postQueued(new TurnSkipEvent()));
 
@@ -207,10 +206,8 @@ public class GameUIPanel extends JPanel {
     this.revalidate();
     this.repaint();
     this.eventBus.postQueued(new GamePauseEvent(show));
-    Logger.logger.debug("Game Paused");
     if (!show) {
-        this.eventBus.postQueued(new RequestFocus());
-        Logger.logger.debug("Game Unpaused");
+        this.world.getBus().postQueued(new RequestFocus());
     }
     }
 
@@ -258,7 +255,7 @@ public class GameUIPanel extends JPanel {
 
         if (isInventoryOpen) {
             cardLayout.show(centerContainer, "EMPTY");
-            this.eventBus.postQueued(new RequestFocus());
+            this.world.getBus().postQueued(new RequestFocus());
 
         } else {
             //ces deux ligne sont pour tester que l'affichage s'adapte bien
@@ -289,7 +286,7 @@ public class GameUIPanel extends JPanel {
 
             if (isUnlocked && nbAmmo > 0) {
                 itemButton.addActionListener(e -> {
-                    eventBus.postQueued(new WeaponSelectedEvent(id));
+                    this.world.getBus().postQueued(new WeaponSelectedEvent(id));
                     openCloseInventory(); // on ferme l'inventaire si on choisie une arme
                 });
             } else if (isUnlocked && nbAmmo == 0) {
@@ -311,7 +308,7 @@ public class GameUIPanel extends JPanel {
 
             if (isAvailable) {
                 itemButton.addActionListener(e -> {
-                    eventBus.postQueued(new ToolSelectedEvent(id));
+                    this.world.getBus().postQueued(new ToolSelectedEvent(id));
                     openCloseInventory();
                 });
             } else {

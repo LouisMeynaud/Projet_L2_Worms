@@ -212,8 +212,36 @@ public class GameWorldTest {
     }
 
     @Test
-    void getTurnManage(){
-        GameSettings settings = new GameSettings("blabla", 0, new String[]{}, 0,100, 10, false, null, false,370,LandScape.HILLY,2);
+    void pauseAndResume_togglesGameLoopPauseState() throws Exception {
+        GameSettings settings = new GameSettings("blabla", 1, new String[]{"Team1"}, 1, 10,100, false, null, false, 370, LandScape.HILLY, 2);
+        EventBus eventBus = new EventBus();
+        GameWorld gw = new GameWorld(settings, eventBus);
+
+        gw.start();
+        assertTrue(gw.loopThread.isAlive(), "Game loop should be running");
+        TimeUnit.MILLISECONDS.sleep(50);
+
+        gw.pause(true);
+        assertTrue(gw.loopThread.isAlive(), "Game loop thread should still be alive while paused");
+        long ticksBeforePause = gw.getGameLoop().getTicks();
+        assertTrue(ticksBeforePause > 0, "Game loop should have ticked while running");
+        TimeUnit.MILLISECONDS.sleep(50);
+        long ticksAfterPaused = gw.getGameLoop().getTicks();
+        assertEquals(ticksBeforePause, ticksAfterPaused, "Ticks should not increment while paused");
+
+
+        gw.pause(false);
+        assertTrue(gw.loopThread.isAlive(), "Game loop thread should still be alive after resume");
+        TimeUnit.MILLISECONDS.sleep(50);
+        long ticksAfterResume = gw.getGameLoop().getTicks();
+        assertTrue(ticksAfterResume > ticksAfterPaused, "Ticks should resume incrementing after pause is lifted");
+
+        gw.stop();
+    }
+
+    @Test
+    void getTurnManager() {
+        GameSettings settings = new GameSettings("blabla", 0, new String[]{}, 0, 10,100, false, null, false,370,LandScape.HILLY,2);
         EventBus eventBus = new EventBus();
         GameWorld gw = new GameWorld(settings, eventBus);
 
