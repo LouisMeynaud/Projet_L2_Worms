@@ -77,7 +77,7 @@ public class EventsTest {
     public void testCreationMouseWheelEvent() {
         Direction directionTest = Direction.Up;
         MouseWheelMoveInputEvent event = new MouseWheelMoveInputEvent(directionTest);
-        assertNotNull(event, "L'objet ne doit pas être null");
+       assertNotNull(event, "L'événement ne doit pas être null");
         assertEquals(directionTest, event.direction, "La direction stockée doit être celle donnée");
     }
 
