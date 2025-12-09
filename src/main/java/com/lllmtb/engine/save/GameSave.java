@@ -13,15 +13,15 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class GameSave {
-    private CopyOnWriteArrayList<PhysicsBody> entities;
-    private transient EventBus bus;
-    private int indexTeam;
-    private long turnDuration;
-    private List<TeamSave> teams = new ArrayList<>();
-    private boolean hasWind;
-    private Vector wind;
-    private Vector gravity;
-    private ConcurrentHashMap<Integer, ArrayList<PhysicsModifier>> modifiers;
+    protected CopyOnWriteArrayList<PhysicsBodySave> entities = new CopyOnWriteArrayList<>();
+    protected transient EventBus bus;
+    protected int indexTeam;
+    protected long turnDuration;
+    protected List<TeamSave> teams = new ArrayList<>();
+    protected boolean hasWind;
+    protected Vector wind;
+    protected Vector gravity;
+    protected ConcurrentHashMap<Integer, ArrayList<PhysicsModifier>> modifiers;
 
 
     public GameSave(GameWorld gameWorld) {
@@ -38,7 +38,9 @@ public class GameSave {
         gameWorld.getPhysics().getModifiers().forEach((body, mods) -> {
            this.modifiers.put(body.getEntity().uuid, mods);
         });
-        this.entities = gameWorld.getPhysics().getBodies();
+        for (PhysicsBody body : gameWorld.getPhysics().getBodies()) {
+            entities.add(new PhysicsBodySave(body));
+        }
     }
 
 
@@ -49,7 +51,12 @@ public class GameSave {
     @Override
     public String toString() {
         System.out.println(this.modifiers.toString());
-        System.out.println(this.entities.toString());
+        for(PhysicsBodySave bodySave : this.entities){
+            System.out.println(bodySave.toString());
+            System.out.println(bodySave.entity.toString());
+            System.out.println(bodySave.physicsBody.toString());
+            System.out.println(bodySave.entity.getBody().toString());
+        }
         System.out.println(this.turnDuration);
         System.out.println(this.gravity.toString());
         System.out.println(this.indexTeam);

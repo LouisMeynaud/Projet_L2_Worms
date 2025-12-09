@@ -2,6 +2,9 @@ package com.lllmtb.engine.save;
 
 import com.google.gson.typeadapters.RuntimeTypeAdapterFactory;
 import com.lllmtb.engine.GameWorld;
+import com.lllmtb.model.entity.Entity;
+import com.lllmtb.model.entity.projectile.Projectile;
+import com.lllmtb.model.entity.worm.Worm;
 import com.lllmtb.model.item.weapon.BazookaWeapon;
 import com.lllmtb.model.item.weapon.GunWeapon;
 import com.lllmtb.model.item.weapon.Weapon;
@@ -24,11 +27,13 @@ public class Save {
     }
 
     public static void saveGameWorld(GameWorld gameWorld, String stringPath) throws IOException {
-        RuntimeTypeAdapterFactory<Weapon> weaponAdapter = RuntimeTypeAdapterFactory.of(Weapon.class, "type")
-                .registerSubtype(BazookaWeapon.class, "bazookaweapon") // Si le JSON contient "type": "bazooka", on crée un Bazooka
-                .registerSubtype(GunWeapon.class, "gunweapon");
+        RuntimeTypeAdapterFactory<Entity> entityAdapter = RuntimeTypeAdapterFactory.of(Entity.class, "type")
+                .registerSubtype(Projectile.class, "projectile") // Si le JSON contient "type": "bazooka", on crée un Bazooka
+                .registerSubtype(Worm.class, "worm");
+
         Gson gson = new GsonBuilder()
                 .setPrettyPrinting()
+                .registerTypeAdapterFactory(entityAdapter)
                 .create();
         GameSave gameSave = new GameSave(gameWorld);
         String json =  gson.toJson(gameSave);
