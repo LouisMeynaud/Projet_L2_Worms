@@ -70,7 +70,7 @@ public class SettingGamePanel extends JPanel {
         gbc.gridx = 0;
         gbc.gridy = row;
 
-        JLabel labelGame = new JLabel("Nom de la partit  :");
+        JLabel labelGame = new JLabel("Nom de la partie  :");
         contentGrid.add(labelGame, gbc);
 
         gbc.gridx = 1;
