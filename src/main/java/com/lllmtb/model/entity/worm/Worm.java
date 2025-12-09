@@ -63,7 +63,7 @@ public class Worm extends Entity {
     /**
      * The current animation.
      */
-    private Animation animation;
+    private transient Animation animation;
 
     /**
      * Direction the worm is facing: 1 for right, -1 for left.
