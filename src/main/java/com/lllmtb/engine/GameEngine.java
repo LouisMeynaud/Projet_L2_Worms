@@ -1,7 +1,10 @@
 package com.lllmtb.engine;
 
+import com.lllmtb.engine.logger.Logger;
 import com.lllmtb.engine.save.Save;
 import java.util.Objects;
+
+import com.lllmtb.events.Event;
 import org.eclipse.jdt.annotation.NonNull;
 import com.lllmtb.events.EventBus;
 import com.lllmtb.events.game.SaveEvent;
@@ -20,6 +23,7 @@ public class GameEngine {
     public static void main(String[] args) {
         boolean graphique = true;
         eventBus = new EventBus();
+        eventBus.subscribe(Event.class, e -> Logger.logger.info("[EVENT/system]: {}", e.getClass().getSimpleName()));
         eventBus.subscribe(StartGameEvent.class, GameEngine::startGame);
 
         // Engine loop thread - processes events until the world is created and the GameLoop takes over
