@@ -22,12 +22,15 @@ public class SettingGamePanel extends JPanel {
     public static final int MAX_WORM = 6;
     public static final int MAX_TIME = 40;
     public static final int MAX_JUMP = 5;
+    public static final int MAX_LIFE = 500;
 
     public JSlider equipesSlider;
     public JSlider wormsSlider;
     public JSlider turnDurationSlider;
     public JCheckBox windCheckBox;
+    public JCheckBox friendlyFireCheckBox;
     public JSlider maxJumpSlider;
+    public JSlider maxLifeSlider;
 
 
     /**
@@ -101,6 +104,17 @@ public class SettingGamePanel extends JPanel {
         contentGrid.add(wormsSlider, gbc);
         row++;
 
+        //maximum life
+        gbc.gridx = 0;
+        gbc.gridy = row;
+        JLabel maxLife = new JLabel("vie maximum :");
+        contentGrid.add(maxLife, gbc);
+
+        gbc.gridx = 1;
+        this.maxLifeSlider = Utilitaire.createSlider(100, MAX_LIFE, 100, 100);
+        contentGrid.add(maxLifeSlider, gbc);
+        row++;
+
         //turn duration
         gbc.gridx = 0;
         gbc.gridy = row;
@@ -128,6 +142,14 @@ public class SettingGamePanel extends JPanel {
         gbc.gridy = row;
         this.windCheckBox = new JCheckBox("Vent activé ?");
         contentGrid.add(this.windCheckBox, gbc);
+        row++;
+
+        //tire alliée
+        gbc.gridwidth = 2;
+        gbc.gridx = 0;
+        gbc.gridy = row;
+        this.friendlyFireCheckBox = new JCheckBox("Tire Allié ?");
+        contentGrid.add(this.friendlyFireCheckBox, gbc);
         row++;
 
 
@@ -182,6 +204,14 @@ public class SettingGamePanel extends JPanel {
     }
 
     /**
+     * gets the maximum life from the slider.
+     * @return the maximum life.
+     */
+    public int getMaxLife() {
+        return this.maxLifeSlider.getValue();
+    }
+
+    /**
      * Gets the names of the teams from the text fields.
      * @return an array of team names.
      */
@@ -200,5 +230,13 @@ public class SettingGamePanel extends JPanel {
      */
     public boolean getWind() {
         return this.windCheckBox.isSelected();
+    }
+
+    /**
+     * gets if the friendlyFire option is selected
+     * @return ture if selected.
+     */
+    public boolean getFriendlyFire() {
+        return this.friendlyFireCheckBox.isSelected();
     }
 }
