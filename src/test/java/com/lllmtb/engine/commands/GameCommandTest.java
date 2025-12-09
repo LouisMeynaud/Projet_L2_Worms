@@ -31,7 +31,7 @@ public class GameCommandTest {
 
     @BeforeEach
     void setUp() throws Exception {
-        GameSettings settings = new GameSettings(1, new String[]{"Team"}, 1, 10, false, null, false, 200, LandScape.FLAT,2);
+        GameSettings settings = new GameSettings(1, new String[]{"Team"}, 1,100, 10, false, null, false, 200, LandScape.FLAT,2);
         bus = mock(EventBus.class);
         world = new GameWorld(settings, bus);
 
