@@ -26,6 +26,7 @@ import com.lllmtb.events.ui.ShootMode;
 import com.lllmtb.events.ui.graphical.RequestFocus;
 import com.lllmtb.events.ui.graphical.ScreenGenerateMap;
 import com.lllmtb.events.ui.graphical.ScreenHomeEvent;
+import com.lllmtb.events.ui.graphical.ScreenLoadGame;
 import com.lllmtb.events.ui.graphical.ScreenLoadMap;
 import com.lllmtb.events.ui.graphical.ScreenNewOrLoadEvent;
 import com.lllmtb.events.ui.graphical.ScreenSettingsGame;
@@ -121,6 +122,7 @@ public class EventsTest {
         eventWithoutArgument(new RequestFocus());
         eventWithoutArgument(new ShootMode());
         eventWithoutArgument(new TurnSkipEvent());
+        eventWithoutArgument(new ScreenLoadGame());
     }
 
 
