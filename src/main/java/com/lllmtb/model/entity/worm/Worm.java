@@ -83,7 +83,7 @@ public class Worm extends Entity {
         this.stats = Objects.requireNonNull(stats);
         this.team = Objects.requireNonNull(team);
         this.team.addWorm(this);
-        this.animation = new Animation(standing, 5);
+        this.animation = new Animation(standing, 10);
         this.animation.start();
     }
 
