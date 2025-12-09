@@ -1,34 +1,39 @@
 package com.lllmtb.events;
-
-
-import com.lllmtb.events.game.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.*;
-
 import static org.mockito.Mockito.mock;
 
 import com.lllmtb.engine.GameSettings;
 import com.lllmtb.engine.GameWorld;
-import com.lllmtb.events.move.MouseInputEvent;
-import com.lllmtb.events.move.MouseWheelMoveInputEvent;
-import com.lllmtb.events.ui.*;
-import com.lllmtb.events.ui.graphical.RequestFocus;
-import com.lllmtb.events.ui.graphical.ScreenGenerateMap;
-import com.lllmtb.events.ui.graphical.ScreenHomeEvent;
-import com.lllmtb.events.ui.graphical.ScreenLoadMap;
-import com.lllmtb.events.ui.graphical.ScreenNewOrLoadEvent;
-import com.lllmtb.events.ui.graphical.ScreenSettingsGame;
-import com.lllmtb.model.item.weapon.WeaponId;
-import com.lllmtb.ui.graphical.GamePanel.Direction;
 import com.lllmtb.events.game.GamePauseEvent;
 import com.lllmtb.events.game.GameStateUpdatedEvent;
+import com.lllmtb.events.game.LoadEvent;
 import com.lllmtb.events.game.MapUpdateEvent;
+import com.lllmtb.events.game.SaveEvent;
 import com.lllmtb.events.game.StartGameEvent;
 import com.lllmtb.events.game.ToolSelectedEvent;
 import com.lllmtb.events.game.WeaponSelectedEvent;
 import com.lllmtb.events.game.WorldCreatedEvent;
+import com.lllmtb.events.move.MouseInputEvent;
+import com.lllmtb.events.move.MouseWheelMoveInputEvent;
+import com.lllmtb.events.turn.TurnSkipEvent;
+import com.lllmtb.events.ui.MoveEvent;
+import com.lllmtb.events.ui.ShootMode;
+import com.lllmtb.events.ui.graphical.RequestFocus;
+import com.lllmtb.events.ui.graphical.ScreenGenerateMap;
+import com.lllmtb.events.ui.graphical.ScreenHomeEvent;
+import com.lllmtb.events.ui.graphical.ScreenLoadGame;
+import com.lllmtb.events.ui.graphical.ScreenLoadMap;
+import com.lllmtb.events.ui.graphical.ScreenNewOrLoadEvent;
+import com.lllmtb.events.ui.graphical.ScreenSettingsGame;
 import com.lllmtb.model.item.tool.ToolId;
+import com.lllmtb.model.item.weapon.WeaponId;
 import com.lllmtb.physics.Position;
+import com.lllmtb.ui.graphical.GamePanel.Direction;
 
 
 public class EventsTest {
@@ -124,9 +129,11 @@ public class EventsTest {
         eventWithoutArgument(new SaveEvent());
         eventWithoutArgument(new RequestFocus());
         eventWithoutArgument(new ShootMode());
+        eventWithoutArgument(new TurnSkipEvent());
+        eventWithoutArgument(new ScreenLoadGame());
     }
 
-  
+
     private void eventWithoutArgument(Event event) {
         assertNotNull(event);
         assertTrue(event instanceof Event);

@@ -1,23 +1,21 @@
 package com.lllmtb.ui.graphical;
 
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.util.Map;
-import java.awt.BorderLayout;
-import java.awt.FlowLayout;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.SwingConstants;
-
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.Image;
-
 import javax.swing.JSlider;
+import javax.swing.SwingConstants;
 import javax.swing.border.BevelBorder;
 
 import com.lllmtb.engine.logger.Logger;
@@ -33,13 +31,19 @@ public class Utilitaire {
         JButton button = new JButton();
 
         try {
-            BufferedImage imgRaw = textureMap.get(name);
-            if (imgRaw == null) {
+            BufferedImage imgButton = textureMap.get(name);
+            BufferedImage imgButtonHover = textureMap.get(name + "Hover");
+            if (imgButton == null) {
                 throw new Exception("Image introuvable dans la map");
             }
 
-            Image scaledImage = imgRaw.getScaledInstance(iconWidth, iconHeight, Image.SCALE_REPLICATE);
-            button.setIcon(new ImageIcon(scaledImage));
+            Image imgButtonHoverScale = imgButtonHover.getScaledInstance(iconWidth, iconHeight, Image.SCALE_REPLICATE);
+            Image imgButtonScale = imgButton.getScaledInstance(iconWidth, iconHeight, Image.SCALE_REPLICATE);
+            button.setBorderPainted(false);
+            button.setContentAreaFilled(false);
+            button.setFocusPainted(false);
+            button.setIcon(new ImageIcon(imgButtonScale));
+            button.setRolloverIcon(new ImageIcon(imgButtonHoverScale));
 
         } catch (Exception e) {
             Logger.logger.error("Error image " + name + " : " + e.getMessage());

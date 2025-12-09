@@ -1,17 +1,11 @@
 package com.lllmtb.engine.save;
 
+import org.junit.jupiter.api.BeforeAll;
+
 import com.lllmtb.engine.GameSettings;
 import com.lllmtb.engine.GameWorld;
 import com.lllmtb.events.EventBus;
 import com.lllmtb.terrain.generation.LandScape;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.io.IOException;
-import java.nio.file.Paths;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class SaveTest {
     private static GameWorld gameWorld;
@@ -21,7 +15,7 @@ public class SaveTest {
     @BeforeAll
     static void setUp() {
     eventBus = new EventBus();
-    settings = new GameSettings(2, new String[]{"test","test2"}, 2, 10,true, "testGame", true, 200, LandScape.FLAT, 2);
+    settings = new GameSettings("blabla", 2, new String[]{"test","test2"}, 2, 100, 10,true, "testGame", true, 200, LandScape.FLAT, 2);
     gameWorld = new GameWorld(settings, eventBus);
     Save.setGameWorld(gameWorld);
     }

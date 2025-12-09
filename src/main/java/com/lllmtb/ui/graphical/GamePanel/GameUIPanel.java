@@ -1,14 +1,32 @@
 package com.lllmtb.ui.graphical.GamePanel;
 
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.CardLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.GridBagLayout;
+import java.awt.GridLayout;
 
-import javax.swing.*;
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.Timer;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 
 import com.lllmtb.engine.GameWorld;
 import com.lllmtb.events.EventBus;
-import com.lllmtb.events.game.*;
+import com.lllmtb.events.game.GamePauseEvent;
+import com.lllmtb.events.game.SaveEvent;
+import com.lllmtb.events.game.ToolSelectedEvent;
+import com.lllmtb.events.game.WeaponSelectedEvent;
+import com.lllmtb.events.game.WorldCreatedEvent;
+import com.lllmtb.events.turn.TurnSkipEvent;
 import com.lllmtb.events.ui.ShootMode;
 import com.lllmtb.events.ui.graphical.RequestFocus;
 import com.lllmtb.model.item.inventory.Inventory;
@@ -16,9 +34,6 @@ import com.lllmtb.model.item.tool.ToolId;
 import com.lllmtb.model.item.weapon.WeaponId;
 import com.lllmtb.ui.graphical.TextureManager;
 import com.lllmtb.ui.graphical.Utilitaire;
-
-import com.lllmtb.events.game.GamePauseEvent;
-import com.lllmtb.events.game.SaveEvent;
 
 public class GameUIPanel extends JPanel {
 
@@ -74,14 +89,17 @@ public class GameUIPanel extends JPanel {
         JButton pauseButton = Utilitaire.createImageButton(TextureManager.UI, "Pause", 64, 64, 48, 48);
         JButton inventoryButton = Utilitaire.createImageButton(TextureManager.UI, "InventoryButton", 64, 64, 48, 48);
         JButton shootModeButton = Utilitaire.createImageButton(TextureManager.UI, "ShootMode", 64, 64, 48, 48);
+        JButton skipTurnButton = Utilitaire.createImageButton(TextureManager.UI, "skipTurn", 64, 64, 48, 48);
         pauseButton.addActionListener(e -> pauseMenu(true));
         shootModeButton.addActionListener(e -> world.getBus().postQueued(new ShootMode()));
         inventoryButton.addActionListener(e -> openCloseInventory());
+        skipTurnButton.addActionListener(e -> this.eventBus.postQueued(new TurnSkipEvent()));
 
 
         JPanel buttonsPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
         buttonsPanel.setOpaque(false);
         buttonsPanel.add(pauseButton);
+        buttonsPanel.add(skipTurnButton);
 
         lowerBar.add(inventoryButton);
         lowerBar.add(shootModeButton);

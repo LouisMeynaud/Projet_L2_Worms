@@ -31,6 +31,10 @@ public class Statistics {
         return maxHp;
     }
 
+    public static void setMaxHp(int maxHp) {
+        Statistics.maxHp = maxHp;
+    }
+
 
     //Setter
     public void setHp(int hp) {

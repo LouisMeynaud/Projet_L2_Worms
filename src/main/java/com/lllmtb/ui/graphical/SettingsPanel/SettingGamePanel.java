@@ -22,12 +22,16 @@ public class SettingGamePanel extends JPanel {
     public static final int MAX_WORM = 6;
     public static final int MAX_TIME = 40;
     public static final int MAX_JUMP = 5;
+    public static final int MAX_LIFE = 500;
 
     public JSlider equipesSlider;
     public JSlider wormsSlider;
     public JSlider turnDurationSlider;
     public JCheckBox windCheckBox;
+    public JCheckBox friendlyFireCheckBox;
     public JSlider maxJumpSlider;
+    public JSlider maxLifeSlider;
+    public JTextField gameTitleField;
 
 
     /**
@@ -60,6 +64,20 @@ public class SettingGamePanel extends JPanel {
         titre1.setFont(new Font("Arial", Font.BOLD, 16));
         contentGrid.add(titre1, gbc);
 
+
+        //gameName
+        this.gameTitleField = new JTextField("Nom de la partie", 15);
+        gbc.gridx = 0;
+        gbc.gridy = row;
+
+        JLabel labelGame = new JLabel("Nom de la partie  :");
+        contentGrid.add(labelGame, gbc);
+
+        gbc.gridx = 1;
+        contentGrid.add(gameTitleField, gbc);
+        row++;
+
+
         //numbers team
         gbc.gridwidth = 1; // take 1 column
         gbc.gridx = 0;
@@ -74,14 +92,15 @@ public class SettingGamePanel extends JPanel {
         contentGrid.add(equipesSlider, gbc);
         row++;
 
+
         //teams names
         champsNomsEquipes = new JTextField[MAX_EQUIPES];
         for (int i = 0; i < MAX_EQUIPES; i++) {
             gbc.gridx = 0;
             gbc.gridy = row;
 
-            JLabel label = new JLabel("Nom Équipe " + (i + 1) + " :");
-            contentGrid.add(label, gbc);
+            JLabel labelEquipe = new JLabel("Nom Équipe " + (i + 1) + " :");
+            contentGrid.add(labelEquipe, gbc);
 
             gbc.gridx = 1;
             champsNomsEquipes[i] = new JTextField("Équipe " + (i + 1), 15);
@@ -99,6 +118,17 @@ public class SettingGamePanel extends JPanel {
         this.wormsSlider = Utilitaire.createSlider(1, MAX_WORM, 3, 1);
 
         contentGrid.add(wormsSlider, gbc);
+        row++;
+
+        //maximum life
+        gbc.gridx = 0;
+        gbc.gridy = row;
+        JLabel maxLife = new JLabel("vie maximum :");
+        contentGrid.add(maxLife, gbc);
+
+        gbc.gridx = 1;
+        this.maxLifeSlider = Utilitaire.createSlider(100, MAX_LIFE, 100, 100);
+        contentGrid.add(maxLifeSlider, gbc);
         row++;
 
         //turn duration
@@ -128,6 +158,14 @@ public class SettingGamePanel extends JPanel {
         gbc.gridy = row;
         this.windCheckBox = new JCheckBox("Vent activé ?");
         contentGrid.add(this.windCheckBox, gbc);
+        row++;
+
+        //tire alliée
+        gbc.gridwidth = 2;
+        gbc.gridx = 0;
+        gbc.gridy = row;
+        this.friendlyFireCheckBox = new JCheckBox("Tire Allié ?");
+        contentGrid.add(this.friendlyFireCheckBox, gbc);
         row++;
 
 
@@ -182,6 +220,14 @@ public class SettingGamePanel extends JPanel {
     }
 
     /**
+     * gets the maximum life from the slider.
+     * @return the maximum life.
+     */
+    public int getMaxLife() {
+        return this.maxLifeSlider.getValue();
+    }
+
+    /**
      * Gets the names of the teams from the text fields.
      * @return an array of team names.
      */
@@ -195,10 +241,26 @@ public class SettingGamePanel extends JPanel {
     }
 
     /**
+     * Gets the game name from the text field.
+     * @return the game name.
+     */
+    public String getGameName() {
+        return gameTitleField.getText();
+    }
+
+    /**
      * Gets if the wind option is selected.
      * @return true if wind is selected, false otherwise.
      */
     public boolean getWind() {
         return this.windCheckBox.isSelected();
+    }
+
+    /**
+     * gets if the friendlyFire option is selected
+     * @return ture if selected.
+     */
+    public boolean getFriendlyFire() {
+        return this.friendlyFireCheckBox.isSelected();
     }
 }
