@@ -105,4 +105,15 @@ public class GameCommandTest {
         world.processCommands();
         assertEquals(2, executed.size());
     }
+
+    @Test
+    void queueCommandsReturnsFalseIfAnyCommandIsNull() {
+        GameCommand cmd1 = w -> {};
+        GameCommand cmd2 = null;
+        GameCommand cmd3 = w -> {};
+
+        boolean result = world.queueCommands(new GameCommand[]{cmd1, cmd2, cmd3});
+        assertFalse(result);
+        assertEquals(2, queue.size());
+    }
 }
