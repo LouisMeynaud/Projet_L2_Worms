@@ -1,5 +1,6 @@
 package com.lllmtb.physics;
 
+import com.lllmtb.engine.logger.Logger;
 import com.lllmtb.engine.commands.AddPhysicsModifierCommand;
 import com.lllmtb.engine.commands.GameCommand;
 import com.lllmtb.model.entity.worm.Worm;
@@ -33,17 +34,16 @@ public class Move {
         Objects.requireNonNull(worm);
         Transform t = switch (Objects.requireNonNull(direction)) {
             case Left:
-                System.out.println("Left move");
+                Logger.logger.debug("Worm {} : Left move ", worm);
                 yield v -> new Vector(-8, v.getY());
 
             case Right:
-                System.out.println("Right move");
+                Logger.logger.debug("Worm {} : Right move ", worm);
                 yield v -> new Vector(8, v.getY());
-
 
             case Up:
                 if (jump > 0) {
-                    System.out.println("Up move");
+                    Logger.logger.debug("Worm {} in team : Up move ", worm);
                     jump--;
                     yield v -> new Vector(v.getX(), 20);
                 }
