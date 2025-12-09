@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Objects;
 
 import com.lllmtb.engine.commands.GameCommand;
+import com.lllmtb.events.Event;
 import com.lllmtb.events.EventListener;
 import com.lllmtb.events.game.WeaponSelectedEvent;
 import com.lllmtb.events.turn.TurnEndEvent;
@@ -27,14 +28,7 @@ public final class TurnManager {
 
     private Turn turn;
     private final GameWorld world;
-    private EventListener<MoveEvent> moveListener;
-    private EventListener<WeaponSelectedEvent> weaponSelectedEventEventListener;
-    private EventListener<MouseInputEvent> mouseInputEventListener;
-    private EventListener<GroundCheckCollision> groundCollisionListener = event -> {
-        if (turn.getWormPlayable().uuid == event.worm.uuid) {
-            Move.jumpToMax();
-        }
-    };
+    private List<EventListener<Event>> listeners;
 
     private long startTime;
     private final long turnDurationInMs;
@@ -72,7 +66,7 @@ public final class TurnManager {
         Logger.logger.info("Start turn for the team {}\n", team.name);
         world.getBus().postQueued(new WormPlayable(turn.getWormPlayable()));
 
-        setupEvent();
+        setupEvents();
     }
 
     public void updateTurn() {
@@ -91,8 +85,6 @@ public final class TurnManager {
     private void endTurn() {
         this.turn.end();
         Logger.logger.info("End turn - switch Team\n");
-        world.getBus().unsubscribe(MoveEvent.class, moveListener);
-        world.getBus().unsubscribe(GroundCheckCollision.class, groundCollisionListener);
         world.getBus().postQueued(new TurnEndEvent());
         world.nextTeamTurn();
 
@@ -102,17 +94,23 @@ public final class TurnManager {
         return turn;
     }
 
-    private void setupEvent() {
+    private void setupEvents() {
 
-        moveListener = event -> {
+        EventListener<MoveEvent> moveListener = event -> {
             world.queueCommand(move(this.turn.getWormPlayable(), event.direction));
         };
 
-        weaponSelectedEventEventListener = event -> {
+        EventListener<GroundCheckCollision> groundCollisionListener = event -> {
+            if (turn.getWormPlayable().uuid == event.worm.uuid) {
+                Move.jumpToMax();
+            }
+        };
+
+        EventListener<WeaponSelectedEvent> weaponSelectedEventEventListener = event -> {
             turn.getTeam().selectWeapon(event.getWeaponId());
         };
 
-        mouseInputEventListener = event -> {
+        EventListener<MouseInputEvent> mouseInputEventListener = event -> {
             PhysicsBody wormBody = turn.getWormPlayable().getBody();
 
             double mouseX = event.getPos().getX();
