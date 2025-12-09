@@ -93,7 +93,7 @@ public class GameUIPanel extends JPanel {
         pauseButton.addActionListener(e -> pauseMenu(true));
         shootModeButton.addActionListener(e -> world.getBus().postQueued(new ShootMode()));
         inventoryButton.addActionListener(e -> openCloseInventory());
-        skipTurnButton.addActionListener(e -> this.eventBus.postQueued(new TurnSkipEvent()));
+        skipTurnButton.addActionListener(e -> world.getBus().postQueued(new TurnSkipEvent()));
 
 
         JPanel buttonsPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
