@@ -1,5 +1,6 @@
 package com.lllmtb.engine;
 
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -15,6 +16,7 @@ import com.lllmtb.events.EventBus;
 import com.lllmtb.events.game.GameStateUpdatedEvent;
 import com.lllmtb.model.entity.Entity;
 import com.lllmtb.model.entity.team.Team;
+import com.lllmtb.model.entity.worm.Worm;
 import com.lllmtb.physics.Move;
 import com.lllmtb.physics.PhysicsEngine;
 import com.lllmtb.terrain.generation.ConfigMap;
@@ -58,7 +60,7 @@ public class GameWorld {
         this.map.setSpawnPoint(CreateSpawnPoint.createSpawnPoint(settings.nbTeams, settings.nbWorms, tmap));
 
         this.bus = eventBus;
-        Move.setMaxjump(settings.maxjump);
+        Move.setMaxjump(settings.maxJump);
 
         // Init GameCommand queue
         this.commandQueue = new LinkedBlockingQueue<>();
@@ -71,6 +73,7 @@ public class GameWorld {
         Logger.logger.info("Creating the Teams...");
         for (int i = 0; i < settings.nbTeams; i++) {
             try {
+                Worm.setMaxHp(settings.maxHp);
                 Team team = new Team(settings.teamNames[i], settings.nbWorms, tmap.getSpawnPoint()[i]);
                 teams.add(team);
                 team.getTeamWorms().forEach(this::registerEntity);
@@ -127,7 +130,7 @@ public class GameWorld {
         }
         Logger.logger.debug("Starting the game loop...");
         loopThread = new Thread(gameLoop, "gameloop");
-        this.nextTeamTurn();
+        this.startTeamTurn();
         loopThread.start();
     }
 
@@ -155,6 +158,12 @@ public class GameWorld {
         bus.postQueued(new GameStateUpdatedEvent());
     }
 
+
+    public void startTeamTurn() {
+        if (!teams.isEmpty()) {
+            this.turnManager.startTurn(teams.get(indexTeam));
+        }
+    }
 
     public void nextTeamTurn() {
         if (!teams.isEmpty()) {

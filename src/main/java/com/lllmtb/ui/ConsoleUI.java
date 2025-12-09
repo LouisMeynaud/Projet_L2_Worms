@@ -67,6 +67,8 @@ public class ConsoleUI implements UI {
 
             int nbWorms = promptNbWorms();
 
+            int maxHealth = promptMaxHealth();
+
             int turnDuration = promptTurnDuration();
 
             boolean loadMap = promptLoadMap();
@@ -98,7 +100,7 @@ public class ConsoleUI implements UI {
             }
             terminal.writer().println("   Wind: " + (hasWind ? "ON" : "OFF"));
             terminal.writer().flush();
-            return new GameSettings(nbTeams, teamNames, nbWorms, turnDuration, hasWind, mapFileName, floatingIsland, size, landscape, 2);
+            return new GameSettings(nbTeams, teamNames, nbWorms, maxHealth, turnDuration, hasWind, mapFileName, floatingIsland, size, landscape, 2);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -148,6 +150,21 @@ public class ConsoleUI implements UI {
                 .addPrompt();
         Map<String, PromptResultItemIF> result = prompt.prompt(builder.build());
         return Integer.parseInt(result.get("nbWorms").getResult());
+    }
+
+    private int promptMaxHealth() throws IOException {
+        ConsolePrompt prompt = new ConsolePrompt(terminal);
+        PromptBuilder builder = prompt.getPromptBuilder();
+        builder.createListPrompt()
+                .name("maxHealth")
+                .message("Max health of Worm")
+                .newItem("50").text("50").add()
+                .newItem("100").text("100").add()
+                .newItem("200").text("200").add()
+                .newItem("300").text("300").add()
+                .addPrompt();
+        Map<String, PromptResultItemIF> result = prompt.prompt(builder.build());
+        return Integer.parseInt(result.get("maxHealth").getResult());
     }
 
     private int promptTurnDuration() throws IOException {
