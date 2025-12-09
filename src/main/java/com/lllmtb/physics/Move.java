@@ -1,5 +1,6 @@
 package com.lllmtb.physics;
 
+import com.lllmtb.engine.logger.Logger;
 import com.lllmtb.engine.commands.AddPhysicsModifierCommand;
 import com.lllmtb.engine.commands.GameCommand;
 import com.lllmtb.model.entity.worm.Worm;
@@ -13,7 +14,7 @@ import java.util.Objects;
  * It manages the jump capability and creates movement commands based on the specified direction.
  */
 public class Move {
-    protected static int maxjump = 2;
+    protected static int maxjump;
     protected static int jump = 0;
 
     /**
@@ -34,14 +35,19 @@ public class Move {
         Transform t = switch (Objects.requireNonNull(direction)) {
             case Left:
                 yield v -> new Vector(Math.max(v.getX() - 5, -8), v.getY());
+                Logger.logger.debug("Worm {} : Left move ", worm);
+                yield v -> new Vector(-8, v.getY());
 
             case Right:
+                Logger.logger.debug("Worm {} : Right move ", worm);
+                yield v -> new Vector(8, v.getY());
                 yield v -> new Vector(Math.min(v.getX() + 5, 8), v.getY());
 
             case Up:
                 if (jump > 0) {
+                    Logger.logger.debug("Worm {} in team : Up move ", worm);
                     jump--;
-                    yield v -> v.add(new Vector(0, 20));
+                    yield v -> new Vector(v.getX(), 20);
                 }
                 yield null;
 
@@ -54,4 +60,10 @@ public class Move {
 
         return new AddPhysicsModifierCommand(worm, new PhysicsModifier(t, null));
     }
+
+    public static void setMaxjump(int maxjump) {
+        Move.maxjump = maxjump;
+    }
+
+
 }

@@ -2,7 +2,7 @@ package com.lllmtb.model.entity.projectile;
 
 import com.lllmtb.model.entity.Entity;
 import com.lllmtb.model.entity.worm.Worm;
-import com.lllmtb.model.item.weapon.FireParams;
+import com.lllmtb.model.item.UseParams;
 import com.lllmtb.physics.PhysicsBody;
 import com.lllmtb.physics.Vector;
 import org.eclipse.jdt.annotation.NonNull;
@@ -17,10 +17,10 @@ public abstract class Projectile extends Entity {
      * Create a new Projectile
      * @param params the {@code FireParams} sent to the Team
      */
-    public Projectile(@NonNull FireParams params, double force, double mass, double height, double width) {
+    public Projectile(@NonNull UseParams params, double force, double mass, double height, double width) {
         Objects.requireNonNull(params);
         Vector velocity = new Vector(Math.cos(params.angleRadians), Math.sin(params.angleRadians)).scale(force);
-        this.body = new PhysicsBody(this, params.spawnPos, velocity, mass, height, width);
+        this.body = new PhysicsBody(this, params.pos, velocity, mass, height, width);
         this.owner = params.owner;
     }
 

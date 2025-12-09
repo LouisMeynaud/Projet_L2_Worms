@@ -3,6 +3,7 @@ package com.lllmtb.model.item.weapon;
 import com.lllmtb.engine.commands.GameCommand;
 import com.lllmtb.engine.commands.RegisterProjectileCommand;
 import com.lllmtb.model.entity.projectile.BulletProjectile;
+import com.lllmtb.model.item.UseParams;
 import org.eclipse.jdt.annotation.NonNull;
 
 import java.util.List;
@@ -32,7 +33,7 @@ public final class GunWeapon extends Weapon {
      * @throws NullPointerException if {@code params} is {@code null}
      */
     @Override
-    public List<GameCommand> fire(@NonNull FireParams params) {
+    public List<GameCommand> fire(@NonNull UseParams params) {
         GameCommand cmd = new RegisterProjectileCommand(new BulletProjectile(Objects.requireNonNull(params)), params.owner);
         return List.of(cmd);
     }

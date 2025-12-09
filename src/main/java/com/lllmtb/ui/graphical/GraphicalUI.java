@@ -1,5 +1,6 @@
 package com.lllmtb.ui.graphical;
 
+import com.lllmtb.engine.logger.Logger;
 import com.lllmtb.events.EventBus;
 
 import java.awt.*;
@@ -70,45 +71,45 @@ public class GraphicalUI implements UI {
         windows.add(mainPanel); // the page containing the others, (the card layout).
 
 
-        /**
-         *Method allowing all subscribers to be grouped in the same place.
-         */
         subscribeToNavigationEvents();
     }
 
-
+    /**
+     * Subscribes to navigation events to switch between different screens.
+     */
     private void subscribeToNavigationEvents() {
         eventBus.subscribe(ScreenNewOrLoadEvent.class, event -> {
             cardLayout.show(mainPanel, "newOrLoadPanel");
+            Logger.logger.debug("Show ScreenNewOrLoad");
 
         });
 
         eventBus.subscribe(ScreenHomeEvent.class, event -> {
             cardLayout.show(mainPanel, "homeScreen");
+            Logger.logger.debug("Show HomeScreen");
         });
 
         eventBus.subscribe(StartGameEvent.class, event -> {
             cardLayout.show(mainPanel, "gamePanel");
+            Logger.logger.debug("Show GameScreen");
         });
 
         eventBus.subscribe(ScreenSettingsGame.class, event -> {
             cardLayout.show(mainPanel, "startSettingScreen");
+            Logger.logger.debug("Show SettingScreen");
         });
     }
 
-
-    @Override
     /**
-     * makes the page visible
+     * makes the page visible.
      */
+    @Override
     public void start() {
         windows.setVisible(true);
     }
 
+    @Override
     public void close() {
     }
 
-    public EventBus getBus() {
-        return this.eventBus;
-    }
 }

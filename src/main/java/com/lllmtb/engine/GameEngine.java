@@ -1,6 +1,10 @@
 package com.lllmtb.engine;
 
 import com.lllmtb.engine.save.Save;
+import java.util.Objects;
+
+import org.eclipse.jdt.annotation.NonNull;
+
 import com.lllmtb.events.EventBus;
 import com.lllmtb.events.game.SaveEvent;
 import com.lllmtb.events.game.StartGameEvent;
@@ -8,10 +12,8 @@ import com.lllmtb.events.game.WorldCreatedEvent;
 import com.lllmtb.ui.ConsoleUI;
 import com.lllmtb.ui.UI;
 import com.lllmtb.ui.graphical.GraphicalUI;
-import org.eclipse.jdt.annotation.NonNull;
-
 import java.io.IOException;
-import java.util.Objects;
+import com.lllmtb.ui.graphical.TextureManager;
 
 public class GameEngine {
     private static EventBus eventBus;
@@ -37,6 +39,7 @@ public class GameEngine {
         // Start the chosen UI manager
         UI ui;
         if (graphique) {
+            TextureManager.load(); // charge les textures
             ui = new GraphicalUI(eventBus);
         } else {
             ui = new ConsoleUI(eventBus);

@@ -2,6 +2,7 @@ package com.lllmtb.model.item.weapon;
 
 import com.lllmtb.engine.commands.GameCommand;
 import com.lllmtb.model.item.Item;
+import com.lllmtb.model.item.UseParams;
 import org.eclipse.jdt.annotation.NonNull;
 
 import java.util.List;
@@ -18,5 +19,5 @@ public abstract class Weapon implements Item {
      * If firing is not allowed for other reasons this should still return commands
      * or higher-level Inventory.fire() should have prevented the call.
      */
-    public abstract List<GameCommand> fire(@NonNull FireParams params);
+    public abstract List<GameCommand> fire(@NonNull UseParams params);
 }

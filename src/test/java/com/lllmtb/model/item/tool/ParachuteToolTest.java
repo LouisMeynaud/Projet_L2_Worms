@@ -2,7 +2,9 @@ package com.lllmtb.model.item.tool;
 
 import com.lllmtb.engine.commands.AddPhysicsModifierCommand;
 import com.lllmtb.engine.commands.GameCommand;
+import com.lllmtb.model.entity.team.Team;
 import com.lllmtb.model.entity.worm.Worm;
+import com.lllmtb.model.item.UseParams;
 import com.lllmtb.physics.PhysicsModifier;
 import com.lllmtb.physics.Vector;
 import org.junit.jupiter.api.Test;
@@ -23,7 +25,7 @@ public class ParachuteToolTest {
 
     @Test
     public void use() throws Exception {
-        Worm w = mock(Worm.class);
+        Worm w = new Worm("José", mock(Team.class));
         UseParams up = new UseParams(w);
 
         // Check that the use method returns the correct command

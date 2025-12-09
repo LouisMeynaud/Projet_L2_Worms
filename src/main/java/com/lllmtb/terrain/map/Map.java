@@ -63,25 +63,7 @@ public class Map {
         for (int i = 0; i < this.height; i++) {
             string.append("\n");
             for (int j = 0; j < this.width; j++) {
-                switch (this.mapMatrix[i][j]) {
-                    case AIR:
-                        string.append(" ");
-                        break;
-                    case DIRT:
-                        string.append("#");
-                        break;
-                    case WATER:
-                        string.append("o");
-                        break;
-                    case CAVERN:
-                        string.append("~");
-                        break;
-                    case GRASS:
-                        string.append("_");
-                        break;
-                    default:
-                        throw new IllegalStateException("Tile inconnue : " + mapMatrix[i][j]);
-                }
+               string.append(this.mapMatrix[i][j].getConsoleSymbol());
             }
         }
         return string.toString();
@@ -144,15 +126,7 @@ public class Map {
     }
 
     public boolean isSolid(Position position) {
-        Tile tile = this.getTile(position);
-        switch (tile) {
-            case DIRT:
-                return true;
-            case GRASS:
-                return true;
-            default:
-                return false; //add other block in future
-        }
+        return this.getTile(position).isSolid();
     }
 
     public Position[][] getSpawnPoint() {

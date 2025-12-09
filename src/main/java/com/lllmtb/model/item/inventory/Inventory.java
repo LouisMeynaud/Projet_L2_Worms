@@ -1,6 +1,7 @@
 package com.lllmtb.model.item.inventory;
 
 import com.lllmtb.engine.commands.GameCommand;
+import com.lllmtb.model.item.UseParams;
 import com.lllmtb.model.item.tool.*;
 import com.lllmtb.model.item.weapon.*;
 import org.eclipse.jdt.annotation.NonNull;
@@ -37,9 +38,7 @@ public final class Inventory {
      * @throws UnknownWeaponException if the weapon type is unknown
      */
     public void unlock(@NonNull WeaponId id) {
-        if (!weapons.contains(id)) {
-            throw new UnknownWeaponException(id);
-        }
+        if (!weapons.contains(id)) throw new UnknownWeaponException(id);
         unlocked.add(Objects.requireNonNull(id));
     }
 
@@ -68,9 +67,7 @@ public final class Inventory {
      * @throws UnknownWeaponException if the weapon type is unknown
      */
     public boolean canFire(@NonNull WeaponId id) {
-        if (!weapons.contains(id)) {
-            throw new UnknownWeaponException(id);
-        }
+        if (!weapons.contains(id)) throw new UnknownWeaponException(id);
         return isUnlocked(id) && (weapons.getAmmo(id) > 0);
     }
 
@@ -78,20 +75,18 @@ public final class Inventory {
      * Attempts to fire the given weapon.
      * <p>
      * If the weapon is unlocked and has ammo available, one ammo unit is consumed
-     * and a new {@link Projectile} is created and returned.
+     * and a new list of instructions is created and returned.
      * @param id     the weapon identifier
-     * @param params the firing parameters used to create the projectile (must not be {@code null})
-     * @return the newly created {@link Projectile}
+     * @param params the firing parameters (must not be {@code null})
+     * @return the newly created {@link List<GameCommand>} commands to execute
      * @throws NullPointerException    if {@code params} is {@code null}
      * @throws UnknownWeaponException  if the weapon is unknown
      * @throws UnusableWeaponException if the weapon cannot fire
      */
-    public List<GameCommand> fire(@NonNull WeaponId id, @NonNull FireParams params) {
+    public List<GameCommand> fire(@NonNull WeaponId id, @NonNull UseParams params) {
         Objects.requireNonNull(params);
         Weapon w = weapons.get(id);
-        if (w == null) {
-            throw new UnknownWeaponException(id);
-        }
+        if (w == null) throw new UnknownWeaponException(id);
         if (canFire(id)) {
             weapons.addAmmo(id, -1);
             return w.fire(params);
@@ -108,9 +103,7 @@ public final class Inventory {
      * @throws UnknownToolException if the tool type is unknown
      */
     public boolean canUse(@NonNull ToolId id) {
-        if (!tools.contains(id)) {
-            throw new UnknownToolException(id);
-        }
+        if (!tools.contains(id)) throw new UnknownToolException(id);
         return tools.getAmmo(id) > 0;
     }
 
@@ -129,9 +122,7 @@ public final class Inventory {
     public List<GameCommand> use(@NonNull ToolId id, @NonNull UseParams params) {
         Objects.requireNonNull(params);
         Tool t = tools.get(id);
-        if (t == null) {
-            throw new UnknownToolException(id);
-        }
+        if (t == null) throw new UnknownToolException(id);
         if (canUse(id)) {
             tools.addAmmo(id, -1);
             return t.use(params);

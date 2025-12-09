@@ -2,6 +2,7 @@ package com.lllmtb.model.item.tool;
 
 import com.lllmtb.engine.commands.GameCommand;
 import com.lllmtb.model.item.Item;
+import com.lllmtb.model.item.UseParams;
 import org.eclipse.jdt.annotation.NonNull;
 
 import java.util.List;

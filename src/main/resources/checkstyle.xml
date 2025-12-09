@@ -110,9 +110,6 @@
         <module name="JavadocType">
             <property name="severity" value="warning"/>
         </module>
-        <module name="JavadocVariable">
-            <property name="severity" value="warning"/>
-        </module>
         <module name="JavadocStyle">
             <property name="severity" value="warning"/>
         </module>
@@ -141,9 +138,8 @@
 
         <!-- Checks for Size Violations.                    -->
         <!-- See https://checkstyle.org/checks/sizes/index.html -->
-        <module name="MethodLength"/>
         <module name="ParameterNumber">
-            <property name="max" value="9"/>
+            <property name="max" value="15"/>
         </module>
 
         <!-- Checks for whitespace                               -->

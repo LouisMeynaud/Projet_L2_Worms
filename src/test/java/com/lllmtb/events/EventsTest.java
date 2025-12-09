@@ -12,12 +12,22 @@ import com.lllmtb.engine.GameWorld;
 import com.lllmtb.events.move.MouseInputEvent;
 import com.lllmtb.events.move.MouseWheelMoveInputEvent;
 import com.lllmtb.events.ui.*;
+import com.lllmtb.events.ui.graphical.RequestFocus;
 import com.lllmtb.events.ui.graphical.ScreenGenerateMap;
 import com.lllmtb.events.ui.graphical.ScreenHomeEvent;
 import com.lllmtb.events.ui.graphical.ScreenLoadMap;
 import com.lllmtb.events.ui.graphical.ScreenNewOrLoadEvent;
 import com.lllmtb.events.ui.graphical.ScreenSettingsGame;
+import com.lllmtb.model.item.weapon.WeaponId;
 import com.lllmtb.ui.graphical.GamePanel.Direction;
+import com.lllmtb.events.game.GamePauseEvent;
+import com.lllmtb.events.game.GameStateUpdatedEvent;
+import com.lllmtb.events.game.MapUpdateEvent;
+import com.lllmtb.events.game.StartGameEvent;
+import com.lllmtb.events.game.ToolSelectedEvent;
+import com.lllmtb.events.game.WeaponSelectedEvent;
+import com.lllmtb.events.game.WorldCreatedEvent;
+import com.lllmtb.model.item.tool.ToolId;
 import com.lllmtb.physics.Position;
 
 
@@ -78,6 +88,23 @@ public class EventsTest {
         assertNotNull(event, "L'événement ne doit pas être null");
         assertEquals(directionTest, event.direction, "La direction doit être 'Right'");
     }
+
+    @Test
+    public void weaponSelectedEventTest() {
+        WeaponId mockWeaponId = mock(WeaponId.class);
+        WeaponSelectedEvent event = new WeaponSelectedEvent(mockWeaponId);
+        assertNotNull(event, "L'evenement ne doit pas etre null");
+        assertSame(mockWeaponId, event.getWeaponId(), "L'ID de l'arme ");
+    }
+
+    @Test
+    public void woolSelectedEventTest() {
+        ToolId mockToolId = mock(ToolId.class);
+        ToolSelectedEvent event = new ToolSelectedEvent(mockToolId);
+        assertNotNull(event, "L'evenement ne doit pas etre null");
+        assertSame(mockToolId, event.getToolId(), "L'ID de l'arme");
+    }
+
     @Test
     public void testCreationLoadEvent() {
         String nom = "oui";
@@ -95,6 +122,8 @@ public class EventsTest {
         eventWithoutArgument(new ScreenSettingsGame());
         eventWithoutArgument(new MapUpdateEvent());
         eventWithoutArgument(new SaveEvent());
+        eventWithoutArgument(new RequestFocus());
+        eventWithoutArgument(new ShootMode());
     }
 
   
