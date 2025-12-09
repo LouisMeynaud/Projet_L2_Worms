@@ -67,8 +67,8 @@ public class Worm extends Entity {
      * @param name the name of the worm
      * @param team the {@link Team} the worm belongs to
      */
-    public Worm(@NonNull String name, @NonNull Team team, int maxHp) {
-        this(name, new Statistics(maxHp, 1, 1), team);
+    public Worm(@NonNull String name, @NonNull Team team) {
+        this(name, new Statistics(Statistics.getMaxHp(), 1, 1), team);
     }
 
     /**

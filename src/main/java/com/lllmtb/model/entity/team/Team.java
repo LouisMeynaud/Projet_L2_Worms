@@ -87,12 +87,12 @@ public class Team {
      * @param inventory     the inventory assigned to the team
      * @param spawn         the spawn position where the worms will be placed
      */
-    private Team(@NonNull String name, int numberOfWorms, int maxLifeOfWorm, @NonNull Inventory inventory, @NonNull Position[] spawn) {
+    private Team(@NonNull String name, int numberOfWorms, @NonNull Inventory inventory, @NonNull Position[] spawn) {
         this.inventory = Objects.requireNonNull(inventory);
         this.name = Objects.requireNonNull(name);
         this.numberOfWorms = numberOfWorms;
         this.id = ++Team.ids;
-        this.setUpWorms(numberOfWorms, spawn, maxLifeOfWorm);
+        this.setUpWorms(numberOfWorms, spawn);
         this.currentWorm = this.worms.get(0);
         this.selectedItem = null;
         this.teamColor = Team.chooseColor();
@@ -104,8 +104,8 @@ public class Team {
      * @param numberOfWorms number of worms in the team
      * @param spawn         the spawn position where the worms will be placed
      */
-    public Team(@NonNull String teamName, int numberOfWorms, int maxLifeOfWorm, @NonNull Position[] spawn) {
-        this(teamName, numberOfWorms, maxLifeOfWorm, new Inventory(), spawn);
+    public Team(@NonNull String teamName, int numberOfWorms, @NonNull Position[] spawn) {
+        this(teamName, numberOfWorms, new Inventory(), spawn);
     }
 
     /**
@@ -158,14 +158,13 @@ public class Team {
      * @param numberOfPlayers number of worms to create
      * @param spawns          all spawn position for all worms
      */
-    private void setUpWorms(int numberOfPlayers, @NonNull Position[] spawns, int maxLife) {
+    private void setUpWorms(int numberOfPlayers, @NonNull Position[] spawns) {
         Objects.requireNonNull(spawns);
-        Worm.setMaxHp(maxLife);
         if (spawns.length != numberOfWorms) {
             throw new IllegalArgumentException("Team spawnpoint array does not match the number of worms!");
         }
         for (int i = 1; i <= numberOfPlayers; i++) {
-            new Worm(this.name + i, this, maxLife);
+            new Worm(this.name + i, this);
             Position spawn = spawns[i - 1];
             this.worms.get(i - 1).spawn(spawn);
         }

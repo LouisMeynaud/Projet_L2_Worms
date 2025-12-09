@@ -73,7 +73,7 @@ public class GameWorld {
         for (int i = 0; i < settings.nbTeams; i++) {
             try {
                 Worm.setMaxHp(settings.maxHp);
-                Team team = new Team(settings.teamNames[i], settings.nbWorms, settings.maxHp, tmap.getSpawnPoint()[i]);
+                Team team = new Team(settings.teamNames[i], settings.nbWorms, tmap.getSpawnPoint()[i]);
                 teams.add(team);
                 team.getTeamWorms().forEach(this::registerEntity);
                 Logger.logger.info("{} | {} - {} - {}\n", i, team.name, team.id, team.teamColor);
