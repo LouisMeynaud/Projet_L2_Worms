@@ -418,11 +418,23 @@ public class Collision {
         // if the collision is with a wall
         if (impact.normal.getY() == 0) {
             body.setVector(new Vector(0, body.getVector().getY()));
+            // Mark worm as not on ground when hitting a wall
+            if (body.getEntity() instanceof Worm) {
+                ((Worm) body.getEntity()).setOnGround(false);
+            }
         } else {
             body.setVector(new Vector(body.getVector().getX() * 0.9, 0));
             // if the worm touch the ground, it can jump again
             if (impact.normal.getY() == 1) {
+                if (body.getEntity() instanceof Worm) {
+                    ((Worm) body.getEntity()).setOnGround(true);
+                }
                 bus.postQueued(new GroundCheckCollision(body.getEntity()));
+            } else if (impact.normal.getY() == -1) {
+                // Hit ceiling - mark as not on ground
+                if (body.getEntity() instanceof Worm) {
+                    ((Worm) body.getEntity()).setOnGround(false);
+                }
             }
         }
         // calculate the new position

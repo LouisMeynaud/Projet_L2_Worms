@@ -71,6 +71,11 @@ public class Worm extends Entity {
     private int facingDirection = 1;
 
     /**
+     * Indicates if the worm is currently in contact with the ground.
+     */
+    private boolean isOnGround = false;
+
+    /**
      * Private constructor to initialize a worm with statistics, a team, a spawn point and animation.
      * @param name  the name of the worm
      * @param stats the {@link Statistics} associated with the worm
@@ -167,6 +172,22 @@ public class Worm extends Entity {
         } else if (velocityX > 0) {
             setFacingDirection(1);
         }
+    }
+
+    /**
+     * Returns whether the worm is currently in contact with the ground.
+     * @return {@code true} if the worm is on the ground, {@code false} otherwise
+     */
+    public boolean isOnGround() {
+        return this.isOnGround;
+    }
+
+    /**
+     * Sets whether the worm is in contact with the ground.
+     * @param onGround {@code true} if the worm is on the ground, {@code false} otherwise
+     */
+    public void setOnGround(boolean onGround) {
+        this.isOnGround = onGround;
     }
 
     /**

@@ -35,16 +35,17 @@ public class Move {
         Transform t = switch (Objects.requireNonNull(direction)) {
             case Left:
                 Logger.logger.debug("Worm {} : Left move ", worm);
-                yield v -> new Vector(-8, v.getY());
+                yield v -> new Vector(v.getX() - 1, v.getY());
 
             case Right:
                 Logger.logger.debug("Worm {} : Right move ", worm);
-                yield v -> new Vector(8, v.getY());
+                yield v -> new Vector(v.getX() + 1, v.getY());
 
             case Up:
                 if (jump > 0) {
                     Logger.logger.debug("Worm {} in team : Up move ", worm);
                     jump--;
+                    worm.setOnGround(false); // Mark worm as not on ground when jumping
                     yield v -> new Vector(v.getX(), 20);
                 }
                 yield null;

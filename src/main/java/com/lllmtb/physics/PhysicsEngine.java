@@ -6,6 +6,7 @@ import com.lllmtb.events.physics.PhysicsCollisionWithWatterOrExitMapEvent;
 import com.lllmtb.events.physics.PhysicsModifierAddedEvent;
 import com.lllmtb.events.physics.PhysicsModifierRemovedEvent;
 import com.lllmtb.model.entity.projectile.Projectile;
+import com.lllmtb.model.entity.worm.Worm;
 import com.lllmtb.model.item.ItemId;
 import com.lllmtb.terrain.map.Map;
 import org.eclipse.jdt.annotation.NonNull;
@@ -308,6 +309,17 @@ public class PhysicsEngine {
             if (-0.5 < newVector.getX() && newVector.getX() < 0.5) {
                 newVector = new Vector(0, newVector.getY());
             }
+
+            // Limit maximum horizontal velocity for worms to prevent infinite acceleration
+            if (body.getEntity() instanceof Worm) {
+                double maxHorizontalVel = 20.0; // Maximum horizontal velocity
+                double velX = newVector.getX();
+                if (Math.abs(velX) > maxHorizontalVel) {
+                    velX = Math.signum(velX) * maxHorizontalVel;
+                    newVector = new Vector(velX, newVector.getY());
+                }
+            }
+
             body.setVector(newVector);
 
             Position nextPos = newVector.newPos(body.getPos(), dt);
@@ -336,6 +348,29 @@ public class PhysicsEngine {
                 }
             } else {
                 body.setPos(nextPos);
+                // If the body is a worm, mark it as not on ground when it's in the air
+                if (body.getEntity() instanceof Worm) {
+                    ((Worm) body.getEntity()).setOnGround(false);
+                }
+            }
+
+            // Apply ground friction to worms that are on the ground
+            if (body.getEntity() instanceof Worm) {
+                Worm worm = (Worm) body.getEntity();
+                if (worm.isOnGround() && Math.abs(body.getVector().getY()) < 0.5) {
+                    // Apply friction to horizontal velocity when on ground and not jumping
+                    Vector currentVector = body.getVector();
+                    double frictionFactor = 0.95; // 15% friction per tick (~0.85^10 ≈ 0.2 after 10 ticks)
+                    double newVelX = currentVector.getX() * frictionFactor;
+
+                    // Stop movement if velocity is very small
+                    if (Math.abs(newVelX) < 0.1) {
+                        newVelX = 0;
+                    }
+
+                    Vector fricVector = new Vector(newVelX, currentVector.getY());
+                    body.setVector(fricVector);
+                }
             }
         }
     }
