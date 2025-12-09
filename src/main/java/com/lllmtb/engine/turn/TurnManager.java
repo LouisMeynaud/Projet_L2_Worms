@@ -2,10 +2,8 @@ package com.lllmtb.engine.turn;
 
 import com.lllmtb.engine.GameWorld;
 import com.lllmtb.engine.logger.Logger;
-import java.util.List;
 import java.util.Objects;
 
-import com.lllmtb.engine.commands.GameCommand;
 import com.lllmtb.events.EventListener;
 import com.lllmtb.events.game.WeaponSelectedEvent;
 import com.lllmtb.events.turn.TurnEndEvent;
