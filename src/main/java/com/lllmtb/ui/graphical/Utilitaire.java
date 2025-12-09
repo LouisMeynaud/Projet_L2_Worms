@@ -33,13 +33,19 @@ public class Utilitaire {
         JButton button = new JButton();
 
         try {
-            BufferedImage imgRaw = textureMap.get(name);
-            if (imgRaw == null) {
+            BufferedImage imgButton = textureMap.get(name);
+            BufferedImage imgButtonHover = textureMap.get(name + "Hover");
+            if (imgButton == null) {
                 throw new Exception("Image introuvable dans la map");
             }
 
-            Image scaledImage = imgRaw.getScaledInstance(iconWidth, iconHeight, Image.SCALE_REPLICATE);
-            button.setIcon(new ImageIcon(scaledImage));
+            Image imgButtonHoverScale = imgButtonHover.getScaledInstance(iconWidth, iconHeight, Image.SCALE_REPLICATE);
+            Image imgButtonScale = imgButton.getScaledInstance(iconWidth, iconHeight, Image.SCALE_REPLICATE);
+            button.setBorderPainted(false);
+            button.setContentAreaFilled(false);
+            button.setFocusPainted(false);
+            button.setIcon(new ImageIcon(imgButtonScale));
+            button.setRolloverIcon(new ImageIcon(imgButtonHoverScale));
 
         } catch (Exception e) {
             Logger.logger.error("Error image " + name + " : " + e.getMessage());

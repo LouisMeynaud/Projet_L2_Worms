@@ -35,6 +35,8 @@ public class TextureManager {
             ///////ui-buttons/////////
             UI.put("Pause", ImageIO.read(TextureManager.class.getResource("/textures/button/Pause.png")));
             UI.put("ShootMode", ImageIO.read(TextureManager.class.getResource("/textures/button/ShootMode.png")));
+            UI.put("Start", ImageIO.read(TextureManager.class.getResource("/textures/button/Start.png")));
+            UI.put("StartHover", ImageIO.read(TextureManager.class.getResource("/textures/button/StartHover.png")));
 
             //////Arme//////////
             WEAPONS.put("GUN", ImageIO.read(TextureManager.class.getResource("/textures/weapon/weapon/Gun.png")));
