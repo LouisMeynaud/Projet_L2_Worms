@@ -36,7 +36,7 @@ public class Team {
     /**
      * Inventory containing weapons and items for the team.
      */
-    private transient final Inventory inventory;
+    private final transient Inventory inventory;
 
     /**
      * The name of the team.

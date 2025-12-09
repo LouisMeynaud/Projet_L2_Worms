@@ -5,9 +5,6 @@ import com.lllmtb.engine.GameWorld;
 import com.lllmtb.model.entity.Entity;
 import com.lllmtb.model.entity.projectile.Projectile;
 import com.lllmtb.model.entity.worm.Worm;
-import com.lllmtb.model.item.weapon.BazookaWeapon;
-import com.lllmtb.model.item.weapon.GunWeapon;
-import com.lllmtb.model.item.weapon.Weapon;
 import com.lllmtb.terrain.map.Map;
 
 import java.io.IOException;

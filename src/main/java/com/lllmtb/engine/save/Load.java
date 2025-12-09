@@ -34,16 +34,16 @@ public class Load {
     }
 
     public static void reforgeGameSave(@NotNull GameSave gameSave) {
-        for(PhysicsBodySave saveBody : gameSave.entities ){
-            for(TeamSave teamSave : gameSave.teams ){
-                for(Worm worm : teamSave.team.getTeamWorms() ){
-                    if (worm.uuid == saveBody.uuid){
+        for (PhysicsBodySave saveBody : gameSave.entities) {
+            for (TeamSave teamSave : gameSave.teams) {
+                for (Worm worm : teamSave.team.getTeamWorms()) {
+                    if (worm.uuid == saveBody.uuid) {
                         saveBody.physicsBody =  worm.getBody();
                         try {
                             Field teamField = Worm.class.getDeclaredField("team");
                             teamField.setAccessible(true);
                             Worm wormBody = (Worm) saveBody.entity;
-                            teamField.set(wormBody,teamSave.team);
+                            teamField.set(wormBody, teamSave.team);
                         } catch (NoSuchFieldException | IllegalAccessException e) {
                             throw new RuntimeException(e);
                         }
@@ -51,15 +51,14 @@ public class Load {
                 }
             }
         }
-        for(PhysicsBodySave saveBody : gameSave.entities ){
-            try{
+        for (PhysicsBodySave saveBody : gameSave.entities) {
+            try {
             if (saveBody.entity instanceof Worm worm) {
                 // use reflexion to recreate worm instance with correct PhysicsBody
                     Field bodyField = Worm.class.getDeclaredField("body");
                     bodyField.setAccessible(true);
                     bodyField.set(worm, saveBody.physicsBody);
-            }
-            else if (saveBody.entity instanceof Projectile projectile) {
+            } else if (saveBody.entity instanceof Projectile projectile) {
                 // use reflexion to recreate worm instance with correct PhysicsBody
                 Field bodyField = Projectile.class.getDeclaredField("body");
                 bodyField.setAccessible(true);

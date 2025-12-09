@@ -51,7 +51,8 @@ public class GameSave {
     @Override
     public String toString() {
         System.out.println(this.modifiers.toString());
-        for(PhysicsBodySave bodySave : this.entities){
+        for (PhysicsBodySave bodySave : this.entities) {
+
             System.out.println(bodySave.toString());
             System.out.println(bodySave.entity.toString());
             System.out.println(bodySave.physicsBody.toString());
