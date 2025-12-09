@@ -1,6 +1,7 @@
 package com.lllmtb.events;
 
 
+import com.lllmtb.events.game.*;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -17,11 +18,6 @@ import com.lllmtb.events.ui.graphical.ScreenLoadMap;
 import com.lllmtb.events.ui.graphical.ScreenNewOrLoadEvent;
 import com.lllmtb.events.ui.graphical.ScreenSettingsGame;
 import com.lllmtb.ui.graphical.GamePanel.Direction;
-import com.lllmtb.events.game.GamePauseEvent;
-import com.lllmtb.events.game.GameStateUpdatedEvent;
-import com.lllmtb.events.game.MapUpdateEvent;
-import com.lllmtb.events.game.StartGameEvent;
-import com.lllmtb.events.game.WorldCreatedEvent;
 import com.lllmtb.physics.Position;
 
 
@@ -82,7 +78,13 @@ public class EventsTest {
         assertNotNull(event, "L'événement ne doit pas être null");
         assertEquals(directionTest, event.direction, "La direction doit être 'Right'");
     }
-
+    @Test
+    public void testCreationLoadEvent() {
+        String nom = "oui";
+        LoadEvent event = new LoadEvent(nom);
+        assertNotNull(event, "L'événement ne doit pas être null");
+        assertEquals(nom, event.stringPath, "le stringpath doit etre: oui ");
+    }
     @Test
     public void eventWithoutArgumentTest() {
         eventWithoutArgument(new GameStateUpdatedEvent());
@@ -92,6 +94,7 @@ public class EventsTest {
         eventWithoutArgument(new ScreenNewOrLoadEvent());
         eventWithoutArgument(new ScreenSettingsGame());
         eventWithoutArgument(new MapUpdateEvent());
+        eventWithoutArgument(new SaveEvent());
     }
 
   
