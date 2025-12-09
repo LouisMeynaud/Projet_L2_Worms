@@ -53,5 +53,6 @@ public class GameEngine {
         world = new GameWorld(settings, worldBus);
         systemBus.postSync(new WorldCreatedEvent(world));
         world.start();
+        systemBus.subscribe(GamePauseEvent.class, e -> world.pause(e.isPaused));
     }
 }

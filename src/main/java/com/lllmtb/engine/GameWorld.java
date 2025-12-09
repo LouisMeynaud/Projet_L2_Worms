@@ -129,6 +129,14 @@ public class GameWorld {
         loopThread.start();
     }
 
+    public void pause(boolean paused) {
+        if (loopThread != null && loopThread.isAlive()) {
+            return;
+        }
+        System.out.println((paused ? "Pausing" : "Resuming") + " the game loop...");
+        gameLoop.pause(paused);
+    }
+
     public void stop() {
         System.out.println("Stopping the game loop...");
         gameLoop.stop();

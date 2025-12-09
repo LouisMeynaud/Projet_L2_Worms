@@ -61,7 +61,7 @@ public class GameWorldPanel extends JPanel {
     public GameWorldPanel(EventBus eventBus) {
         this.eventBus = eventBus;
         setFocusable(true);
-        subscribeToGameEvents();
+        subscribeToSystemEvents();
 
 
         //////////imput////////////////
@@ -235,15 +235,24 @@ public class GameWorldPanel extends JPanel {
     }
 
 
-    public void subscribeToGameEvents() {
-
+    public void subscribeToSystemEvents() {
         eventBus.subscribe(WorldCreatedEvent.class, event -> {
             this.world = event.getWorld();
+            subscribeToWorldEvents();
             this.mapMatrix = this.world.getMap().getMapMatrix();
             this.mapCache = null; //on efface l'ancienne image
             this.initialFitDone = false;
             repaint();
         });
+
+        eventBus.subscribe(GamePauseEvent.class, event -> {
+
+        });
+    }
+
+    public void subscribeToWorldEvents() {
+        if (this.world == null) return;
+
         world.getBus().subscribe(MapUpdateEvent.class, event -> {
             this.mapMatrix = this.world.getMap().getMapMatrix();
             this.mapCache = null;
@@ -255,10 +264,6 @@ public class GameWorldPanel extends JPanel {
 
         world.getBus().subscribe(ShootMode.class, event -> {
             this.shootMode = !this.shootMode;
-        });
-
-        eventBus.subscribe(GamePauseEvent.class, event -> {
-
         });
 
         world.getBus().subscribe(RequestFocus.class, event -> {
