@@ -1,4 +1,4 @@
-package com.lllmtb.engine.Save;
+package com.lllmtb.engine.save;
 
 import com.lllmtb.engine.GameWorld;
 import com.lllmtb.events.EventBus;
@@ -46,4 +46,14 @@ public class GameSave {
 
     }
 
+    @Override
+    public String toString() {
+        System.out.println(this.modifiers.toString());
+        System.out.println(this.entities.toString());
+        System.out.println(this.turnDuration);
+        System.out.println(this.gravity.toString());
+        System.out.println(this.indexTeam);
+        System.out.println(this.wind.toString());
+        return "";
+    }
 }

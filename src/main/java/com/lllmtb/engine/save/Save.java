@@ -1,4 +1,4 @@
-package com.lllmtb.engine.Save;
+package com.lllmtb.engine.save;
 
 import com.google.gson.typeadapters.RuntimeTypeAdapterFactory;
 import com.lllmtb.engine.GameWorld;

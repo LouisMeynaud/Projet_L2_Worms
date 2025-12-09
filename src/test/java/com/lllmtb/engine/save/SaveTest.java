@@ -2,7 +2,6 @@ package com.lllmtb.engine.save;
 
 import com.lllmtb.engine.GameSettings;
 import com.lllmtb.engine.GameWorld;
-import com.lllmtb.engine.Save.Save;
 import com.lllmtb.events.EventBus;
 import com.lllmtb.terrain.generation.LandScape;
 import org.junit.jupiter.api.BeforeAll;

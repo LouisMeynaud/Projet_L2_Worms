@@ -1,4 +1,4 @@
-package com.lllmtb.engine.Save;
+package com.lllmtb.engine.save;
 
 import com.lllmtb.model.entity.team.Team;
 import com.lllmtb.model.entity.team.TeamColor;

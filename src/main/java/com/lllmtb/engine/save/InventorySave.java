@@ -1,4 +1,4 @@
-package com.lllmtb.engine.Save;
+package com.lllmtb.engine.save;
 import com.lllmtb.model.item.inventory.Inventory;
 import com.lllmtb.model.item.tool.ToolId;
 import com.lllmtb.model.item.weapon.WeaponId;
