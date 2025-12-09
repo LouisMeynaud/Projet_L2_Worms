@@ -189,10 +189,10 @@ public class GameWorld {
 
     /**
      * Queue multiple GameCommands to be executed in the next update cycle.
-     * @param cmds array of GameCommands to queue
+     * @param cmds list of GameCommands to queue
      * @return true if all commands were successfully queued, false otherwise
      */
-    public boolean queueCommands(GameCommand[] cmds) {
+    public boolean queueCommands(List<GameCommand> cmds) {
         boolean allQueued = true;
         for (GameCommand cmd : cmds) if (!queueCommand(cmd)) allQueued = false;
         return allQueued;

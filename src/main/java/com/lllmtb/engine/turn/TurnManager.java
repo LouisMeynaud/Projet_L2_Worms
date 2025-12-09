@@ -133,10 +133,7 @@ public final class TurnManager {
             Position spawnBullet = new Position(spawnX, spawnY);
             UseParams params = new UseParams(angle, spawnBullet, Objects.requireNonNull(turn.getWormPlayable()));
 
-            List<GameCommand> cmds = turn.getTeam().use(params);
-            for (GameCommand c : cmds) {
-                world.queueCommand(c);
-            }
+            world.queueCommands(turn.getTeam().use(params));
         };
 
         world.getBus().subscribe(MoveEvent.class, moveListener);

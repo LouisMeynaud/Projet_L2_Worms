@@ -13,6 +13,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -108,11 +109,11 @@ public class GameCommandTest {
 
     @Test
     void queueCommandsReturnsFalseIfAnyCommandIsNull() {
-        GameCommand cmd1 = w -> {};
-        GameCommand cmd2 = null;
-        GameCommand cmd3 = w -> {};
-
-        boolean result = world.queueCommands(new GameCommand[]{cmd1, cmd2, cmd3});
+        List<GameCommand> cmds = new ArrayList<>();
+        cmds.add(w -> {});
+        cmds.add(null);
+        cmds.add(w -> {});
+        boolean result = world.queueCommands(cmds);
         assertFalse(result);
         assertEquals(2, queue.size());
     }
