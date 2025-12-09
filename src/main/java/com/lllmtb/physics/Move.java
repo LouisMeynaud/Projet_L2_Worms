@@ -44,7 +44,7 @@ public class Move {
 
             case Up:
                 if (jump > 0) {
-                    logger.debug("Worm {} in team : Up move ", worm);
+                    Logger.logger.debug("Worm {} in team : Up move ", worm);
                     jump--;
                     yield v -> new Vector(v.getX(), 20);
                 }
