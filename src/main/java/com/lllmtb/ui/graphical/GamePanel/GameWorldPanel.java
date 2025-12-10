@@ -23,6 +23,7 @@ import com.lllmtb.events.game.GamePauseEvent;
 import com.lllmtb.events.game.GameStateUpdatedEvent;
 import com.lllmtb.events.game.MapUpdateEvent;
 import com.lllmtb.events.game.WorldCreatedEvent;
+import com.lllmtb.events.input.ProcessInputsEvent;
 import com.lllmtb.events.move.MouseInputEvent;
 import com.lllmtb.events.move.MouseWheelMoveInputEvent;
 import com.lllmtb.events.ui.MoveEvent;
@@ -85,18 +86,8 @@ public class GameWorldPanel extends JPanel {
             @Override
             public void keyPressed(KeyEvent e) {
                 pressedKeys.add(e.getKeyCode());
-
                 if (pressedKeys.contains(KeyEvent.VK_UP)) {
                     world.getBus().postQueued(new MoveEvent(Direction.Up));
-                }
-                if (pressedKeys.contains(KeyEvent.VK_DOWN)) {
-                    world.getBus().postQueued(new MoveEvent(Direction.Down));
-                }
-                if (pressedKeys.contains(KeyEvent.VK_LEFT)) {
-                    world.getBus().postQueued(new MoveEvent(Direction.Left));
-                }
-                if (pressedKeys.contains(KeyEvent.VK_RIGHT)) {
-                    world.getBus().postQueued(new MoveEvent(Direction.Right));
                 }
             }
 
@@ -244,6 +235,21 @@ public class GameWorldPanel extends JPanel {
         return world.getMap().getHeight() * tileSize;
     }
 
+    /**
+     * Process pressed keys and send movement events.
+     * This method should be called every game tick for smooth continuous movement.
+     */
+    public void processInputs() {
+        if (pressedKeys.contains(KeyEvent.VK_DOWN)) {
+            world.getBus().postQueued(new MoveEvent(Direction.Down));
+        }
+        if (pressedKeys.contains(KeyEvent.VK_LEFT)) {
+            world.getBus().postQueued(new MoveEvent(Direction.Left));
+        }
+        if (pressedKeys.contains(KeyEvent.VK_RIGHT)) {
+            world.getBus().postQueued(new MoveEvent(Direction.Right));
+        }
+    }
 
     public void subscribeToSystemEvents() {
         eventBus.subscribe(WorldCreatedEvent.class, event -> {
@@ -278,6 +284,10 @@ public class GameWorldPanel extends JPanel {
 
         world.getBus().subscribe(RequestFocus.class, event -> {
             this.requestFocusInWindow();
+        });
+
+        world.getBus().subscribe(ProcessInputsEvent.class, event -> {
+            processInputs();
         });
     }
 
