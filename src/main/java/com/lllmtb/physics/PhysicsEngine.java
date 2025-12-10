@@ -344,7 +344,11 @@ public class PhysicsEngine {
                 if (impact.die) {
                     bus.postQueued(new PhysicsCollisionWithWatterOrExitMapEvent(body.getEntity()));
                 } else {
-                    bus.postQueued(new PhysicsCollisionDetectedEvent(body.getEntity()));
+                    if (impact.hitBody == null) {
+                        bus.postQueued(new PhysicsCollisionDetectedEvent(body.getEntity(), null));
+                    } else {
+                        bus.postQueued(new PhysicsCollisionDetectedEvent(body.getEntity(), impact.hitBody.getEntity()));
+                    }
                 }
             } else {
                 body.setPos(nextPos);
