@@ -31,6 +31,7 @@ public class TextureManager {
             TILES.put("CAVERN0".toString(), ImageIO.read(TextureManager.class.getResource("/textures/block/Cavern0.png")));
             TILES.put("GRASS0".toString(), ImageIO.read(TextureManager.class.getResource("/textures/block/Grass0.png")));
             TILES.put("GRASS1".toString(), ImageIO.read(TextureManager.class.getResource("/textures/block/Grass1.png")));
+            TILES.put("UNDERDIRT0".toString(), ImageIO.read(TextureManager.class.getResource("/textures/block/UnderDirt0.png")));
 
             ///////Entite/////////
             ///////ui-buttons/////////

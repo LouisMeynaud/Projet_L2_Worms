@@ -26,7 +26,7 @@ public class GenerateMap {
         } else {
             lowLine = new int[config.getWidth()];
             for (int i = 0; i < config.getWidth(); i++) {
-                lowLine[i] = 0;
+                lowLine[i] = config.getWaterHeight()+1;
             }
         }
 

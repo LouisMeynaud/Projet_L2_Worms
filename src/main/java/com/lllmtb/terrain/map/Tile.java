@@ -5,7 +5,8 @@ public enum Tile {
     WATER('W', 'o', false, 2),
     AIR('A', ' ', false, 1),
     CAVERN('C', '~', false, 1),
-    GRASS('G', '_', true, 2);
+    GRASS('G', '_', true, 2),
+    UNDERDIRT('U', '#', true, 1);
 
     private final char fileSymbol;
     private final char consoleSymbol;
