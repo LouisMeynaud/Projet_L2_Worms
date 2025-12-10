@@ -43,12 +43,12 @@ public class SettingsStartPanel extends JPanel {
         // Launch and return button: southern zone
 
         JPanel zoneSud = new JPanel(new FlowLayout(FlowLayout.RIGHT)); // met les bouton a droite (flowLayout afficheles un apres les autre);
-        JButton backButton = Utilitaire.createImageButton(TextureManager.UI, "Back", 128, 64, 64, 48);
-        JButton starButton = Utilitaire.createImageButton(TextureManager.UI, "Start", 128, 64, 64, 48);
+        JButton backButton = Utilitaire.createImageButton(TextureManager.UI, "Back", 128, 64, 64, 48,"Back","Arial",16);
+        JButton startButton = Utilitaire.createImageButton(TextureManager.UI, "Start", 128, 64, 64, 48,"Start","Arial",16);
 
 
         zoneSud.add(backButton);
-        zoneSud.add(starButton);
+        zoneSud.add(startButton);
         this.add(zoneSud, BorderLayout.SOUTH);
 
 
@@ -66,7 +66,7 @@ public class SettingsStartPanel extends JPanel {
             eventBus.postQueued(new ScreenNewOrLoadEvent());
         });
 
-        starButton.addActionListener(e -> {
+        startButton.addActionListener(e -> {
             eventBus.postQueued(new StartGameEvent(setSettings(gameSettingsPanel)));
         });
     }
@@ -91,7 +91,7 @@ public class SettingsStartPanel extends JPanel {
             LandScape terrainType = this.mapSettingPanel.generateMapPanel.getReliefType();
             int widthMap = this.mapSettingPanel.generateMapPanel.getWidthMapSlider();
             boolean flightIsland = this.mapSettingPanel.generateMapPanel.getflightIsland();
-            return new GameSettings(gameName, nbEquipes, nomsEquipes, maxLife, nbVWorms, turnDuration, wind, null, flightIsland, widthMap, terrainType, maxJump);
+            return new GameSettings(gameName, nbEquipes, nomsEquipes, nbVWorms, maxLife, turnDuration, wind, null, flightIsland, widthMap, terrainType, maxJump);
 
 
         }

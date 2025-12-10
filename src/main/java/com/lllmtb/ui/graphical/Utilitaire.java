@@ -27,7 +27,7 @@ import com.lllmtb.model.item.weapon.WeaponId;
 public class Utilitaire {
 
 
-    public static <T> JButton createImageButton(Map<T, BufferedImage> textureMap, T name, int buttonWidth, int buttonHeight, int iconWidth, int iconHeight) {
+    public static <T> JButton createImageButton(Map<T, BufferedImage> textureMap, T name, int buttonWidth, int buttonHeight, int iconWidth, int iconHeight, String text, String font, int fontSize ) {
         JButton button = new JButton();
 
         try {
@@ -53,7 +53,10 @@ public class Utilitaire {
         button.setBackground(Color.LIGHT_GRAY);
         button.setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
         button.setPreferredSize(new Dimension(buttonWidth, buttonHeight));
-
+        button.setText(text);
+        button.setFont(new Font(font, Font.BOLD, fontSize));
+        button.setHorizontalTextPosition(SwingConstants.CENTER);
+        button.setVerticalTextPosition(SwingConstants.CENTER);
         return button;
     }
 
