@@ -35,7 +35,6 @@ public class GameWorld {
     private final GameLoop gameLoop;
     private int indexTeam;
     private final TurnManager turnManager;
-    private final long turnDuration;
     private String gameName;
     Thread loopThread;
     public final GameSettings settings;
@@ -78,7 +77,6 @@ public class GameWorld {
 
         //Init TurnManager
         this.turnManager = new TurnManager(this, settings.turnDuration);
-        this.turnDuration = this.getTurnDuration();
     }
 
     public GameWorld(GameSettings settings, EventBus eventBus) {
@@ -132,7 +130,6 @@ public class GameWorld {
 
         //Init TurnManager
         this.turnManager = new TurnManager(this, settings.turnDuration);
-        this.turnDuration = this.getTurnDuration();
     }
 
     public Map getMap() {
@@ -210,11 +207,11 @@ public class GameWorld {
     public void update(double tickTime) {
         processCommands();
         physics.next(tickTime);
-        turnManager.updateTurn();
+        turnManager.updateTurn(tickTime);
         bus.postQueued(new GameStateUpdatedEvent());
     }
 
-
+    // TODO - find out why startTurn is called on the main engine-loop thread at the start
     public void startTeamTurn() {
         if (!teams.isEmpty()) {
             this.turnManager.startTurn(teams.get(indexTeam));
