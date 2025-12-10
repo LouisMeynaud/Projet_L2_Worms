@@ -27,7 +27,6 @@ public final class TurnManager {
 
     private Turn turn;
     private final GameWorld world;
-    private List<EventListener<Event>> listeners;
 
     private final long turnDurationInMs;
     private long remainingTimeInMs;
@@ -51,9 +50,7 @@ public final class TurnManager {
     }
 
     public void init() {
-        world.getBus().subscribe(TurnStopEvent.class, event -> {
-            this.turn.setIsEnd();
-        });
+        setupEvents();
     }
 
     public void startTurn(Team team) {
@@ -62,8 +59,6 @@ public final class TurnManager {
         world.getBus().postQueued(new TurnStarEvent(team));
         Logger.logger.info("Start turn for the team {}\n", team.name);
         world.getBus().postQueued(new WormPlayable(turn.getWormPlayable()));
-
-        setupEvents();
     }
 
     public void updateTurn(double elapsedTime) {
@@ -89,7 +84,18 @@ public final class TurnManager {
     }
 
     private void setupEvents() {
-        // TODO - unsubscribe in endTurn()
+        // TODO - unsubscribe when stopping the gameworld. Note that we can keep these listeners across turns because they use dynamic data
+
+        EventListener<TurnStopEvent> turnStopListener = event -> {
+            this.turn.setIsEnd();
+        };
+
+        EventListener<TurnSkipEvent> turnskipEventListener = event -> {
+            if (remainingTimeInMs < turnDurationInMs - 3000) {
+                Logger.logger.info("Turn skipped by team {}", this.turn.getTeam().name);
+                endTurn();
+            }
+        };
 
         EventListener<MoveEvent> moveListener = event -> {
             world.queueCommand(move(this.turn.getWormPlayable(), event.direction));
@@ -129,17 +135,12 @@ public final class TurnManager {
             world.queueCommands(turn.getTeam().use(params));
         };
 
-        EventListener<TurnSkipEvent> turnskipEventListener = event -> {
-            if (remainingTimeInMs < turnDurationInMs - 3000) {
-                Logger.logger.info("Turn skipped by team {}", this.turn.getTeam().name);
-                endTurn();
-            }
-        };
+        world.getBus().subscribe(TurnStopEvent.class, turnStopListener);
+        world.getBus().subscribe(TurnSkipEvent.class, turnskipEventListener);
 
         world.getBus().subscribe(MoveEvent.class, moveListener);
         world.getBus().subscribe(GroundCheckCollision.class, groundCollisionListener);
         world.getBus().subscribe(WeaponSelectedEvent.class, weaponSelectedEventEventListener);
         world.getBus().subscribe(MouseInputEvent.class, mouseInputEventListener);
-        world.getBus().subscribe(TurnSkipEvent.class, turnskipEventListener);
     }
 }
