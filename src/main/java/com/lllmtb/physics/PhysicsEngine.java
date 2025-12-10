@@ -149,6 +149,16 @@ public class PhysicsEngine {
         modifiers.clear();
     }
 
+    public void actualizeBodies() {
+        for (PhysicsBody body : bodies) {
+            if (body.getEntity() instanceof Worm) {
+                if (!((Worm) body.getEntity()).isAlive()) {
+                    bodies.remove(body);
+                }
+            }
+        }
+    }
+
     /**
      * Randomly changes the wind vector to simulate natural fluctuations in wind force and direction.
      * <p>

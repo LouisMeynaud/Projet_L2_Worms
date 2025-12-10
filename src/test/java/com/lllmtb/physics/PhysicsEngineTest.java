@@ -397,5 +397,16 @@ class PhysicsEngineTest {
         assertEquals(0, bus.queuedEventCount());
         assertEquals(0, removedCount.get());
     }
+
+    @Test
+    void actualizeBodiesTest(){
+        Worm worm = new Worm("Test", new Team("TestTeam", 1, new Position[]{new Position(3,3)}));
+        pE.add(worm.getBody());
+        int size = pE.getBodies().size();
+        worm.getStats().setHp(0);
+        worm.setDeath();
+        pE.actualizeBodies();
+        assertEquals(pE.getBodies().size(), size-1);
+    }
 }
 
