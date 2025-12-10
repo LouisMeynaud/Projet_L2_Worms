@@ -2,9 +2,9 @@ package com.lllmtb.events.physics;
 
 import com.lllmtb.model.entity.Entity;
 
-public class PhysicsCollisionWithWatterOrExitMapEvent extends PhysicsCollisionEvent {
+public class PhysicsCollisionWithWaterOrExitMapEvent extends PhysicsCollisionEvent {
 
-    public PhysicsCollisionWithWatterOrExitMapEvent(Entity movingBody) {
+    public PhysicsCollisionWithWaterOrExitMapEvent(Entity movingBody) {
         super(movingBody);
     }
 }
