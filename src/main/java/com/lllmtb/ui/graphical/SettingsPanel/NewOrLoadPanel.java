@@ -23,14 +23,14 @@ public class NewOrLoadPanel extends JPanel {
 
 
 
-        JButton newGameButton = Utilitaire.createImageButton(TextureManager.UI, "NewGame", 128, 64, 64, 48, "New Game","Arial",16);
+        JButton newGameButton = Utilitaire.createImageButton(TextureManager.UI, "NewGame", 128, 64, 64, 48, "New Game", "Arial", 16);
         newGameButton.addActionListener(e -> {
 
             eventBus.postQueued(new ScreenSettingsGame());
         });
         this.add(newGameButton);
 
-        JButton loadGameButton = Utilitaire.createImageButton(TextureManager.UI, "LoadGame", 128, 64, 64, 48, "Load Game","Arial",16);
+        JButton loadGameButton = Utilitaire.createImageButton(TextureManager.UI, "LoadGame", 128, 64, 64, 48, "Load Game", "Arial", 16);
         loadGameButton.addActionListener(e -> {
             eventBus.postQueued(new ScreenLoadGame());
         });
@@ -38,7 +38,7 @@ public class NewOrLoadPanel extends JPanel {
 
 
 
-        JButton backButton = Utilitaire.createImageButton(TextureManager.UI, "Back", 128, 64, 64, 48, "Back","Arial",16);
+        JButton backButton = Utilitaire.createImageButton(TextureManager.UI, "Back", 128, 64, 64, 48, "Back", "Arial", 16);
     backButton.addActionListener(e -> {
 
             eventBus.postQueued(new ScreenHomeEvent());

@@ -27,7 +27,8 @@ import com.lllmtb.model.item.weapon.WeaponId;
 public class Utilitaire {
 
 
-    public static <T> JButton createImageButton(Map<T, BufferedImage> textureMap, T name, int buttonWidth, int buttonHeight, int iconWidth, int iconHeight, String text, String font, int fontSize ) {
+    public static <T> JButton createImageButton(
+        Map<T, BufferedImage> textureMap, T name, int buttonWidth, int buttonHeight, int iconWidth, int iconHeight, String text, String font, int fontSize) {
         JButton button = new JButton();
 
         try {
