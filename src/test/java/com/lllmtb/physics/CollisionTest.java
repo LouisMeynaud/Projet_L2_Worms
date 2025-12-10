@@ -70,6 +70,7 @@ public class CollisionTest {
         assertEquals(0, impact.normal.getX());
         assertEquals(0, impact.normal.getY());
         assertFalse(impact.collided);
+        assertFalse(impact.die);
     }
 
     @Test
@@ -85,6 +86,7 @@ public class CollisionTest {
         assertEquals(-1, impact.normal.getX());
         assertEquals(0, impact.normal.getY());
         assertTrue(impact.collided);
+        assertFalse(impact.die);
     }
 
     @Test
@@ -101,6 +103,7 @@ public class CollisionTest {
         assertEquals(-1, impact.normal.getX());
         assertEquals(0, impact.normal.getY());
         assertTrue(impact.collided);
+        assertFalse(impact.die);
     }
 
     @Test
@@ -114,6 +117,7 @@ public class CollisionTest {
         assertEquals(-1, impact.normal.getX());
         assertEquals(0, impact.normal.getY());
         assertTrue(impact.collided);
+        assertFalse(impact.die);
     }
 
     @Test
@@ -128,6 +132,7 @@ public class CollisionTest {
         assertEquals(-1, impact.normal.getX());
         assertEquals(0, impact.normal.getY());
         assertTrue(impact.collided);
+        assertFalse(impact.die);
     }
 
     @Test
@@ -146,6 +151,7 @@ public class CollisionTest {
         assertEquals(0, impact.normal.getX());
         assertEquals(-1, impact.normal.getY());
         assertTrue(impact.collided);
+        assertFalse(impact.die);
     }
 
     @Test
@@ -158,6 +164,7 @@ public class CollisionTest {
         assertEquals(0, impact.normal.getX());
         assertEquals(0, impact.normal.getY());
         assertFalse(impact.collided);
+        assertFalse(impact.die);
     }
 
     @Test
@@ -171,6 +178,7 @@ public class CollisionTest {
         assertEquals(-1, impact.normal.getX());
         assertEquals(0, impact.normal.getY());
         assertTrue(impact.collided);
+        assertFalse(impact.die);
     }
 
     @Test
@@ -188,6 +196,7 @@ public class CollisionTest {
         assertEquals(0, impact.normal.getX());
         assertEquals(1, impact.normal.getY());
         assertTrue(impact.collided);
+        assertFalse(impact.die);
     }
 
     @Test
@@ -203,6 +212,7 @@ public class CollisionTest {
         assertEquals(0, impact.normal.getX());
         assertEquals(1, impact.normal.getY());
         assertTrue(impact.collided);
+        assertFalse(impact.die);
     }
 
     @Test
@@ -216,6 +226,7 @@ public class CollisionTest {
         assertEquals(1, impact.normal.getX());
         assertEquals(0, impact.normal.getY());
         assertTrue(impact.collided);
+        assertTrue(impact.die);
     }
 
     @Test
@@ -230,6 +241,7 @@ public class CollisionTest {
         assertEquals(1, impact.normal.getX());
         assertEquals(0, impact.normal.getY());
         assertTrue(impact.collided);
+        assertTrue(impact.die);
     }
 
     @Test
@@ -268,7 +280,7 @@ public class CollisionTest {
         Collision.Impact impact = collision.move(pBWorm1, posFinal);
         collision.slide(pBWorm1, impact, 1, new EventBus());
         assertEquals(12, pBWorm1.getPos().getX());
-        assertEquals(10, pBWorm1.getPos().getY());
+        assertEquals(10.002, pBWorm1.getPos().getY());
     }
 
     @Test
@@ -277,7 +289,8 @@ public class CollisionTest {
         Position posFinal = new Position(28, 14);
         Collision.Impact impact = collision.move(pBWorm1, posFinal);
         collision.bounce(pBWorm1, impact, 0.5);
-        assertEquals(impact.collisionPos, pBWorm1.getPos());
+        assertEquals(13.998, pBWorm1.getPos().getX());
+        assertEquals(14.0, pBWorm1.getPos().getY());
         assertEquals(-14, pBWorm1.getVector().getX());
         assertEquals(0, pBWorm1.getVector().getY());
     }
