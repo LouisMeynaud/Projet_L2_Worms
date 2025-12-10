@@ -41,7 +41,7 @@ public class MoveTest {
         assertNotNull(gameCommand, "La commande ne doit pas être null");
         assertInstanceOf(AddPhysicsModifierCommand.class, gameCommand, "La commande doit être de type AddPhysicsModifierCommand");
         assertTrue(m.oneShot);
-        assertEquals(-8.0, vector.getX());
+        assertEquals(-1.0, vector.getX());
         assertEquals(v.getY(), vector.getY());
     }
 
@@ -60,7 +60,7 @@ public class MoveTest {
         assertNotNull(gameCommand, "La commande ne doit pas être null");
         assertInstanceOf(AddPhysicsModifierCommand.class, gameCommand, "La commande doit être de type AddPhysicsModifierCommand");
         assertTrue(m.oneShot);
-        assertEquals(8.0, vector.getX());
+        assertEquals(1.0, vector.getX());
         assertEquals(v.getY(), vector.getY());
     }
 
