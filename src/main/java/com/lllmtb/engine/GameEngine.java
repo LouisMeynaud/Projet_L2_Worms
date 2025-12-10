@@ -24,7 +24,8 @@ public class GameEngine {
     public static void main(String[] args) {
         boolean graphique = true;
         systemBus = new EventBus();
-        systemBus.subscribe(Event.class, e -> Logger.logger.info("[EVENT/system]: {}", e.getClass().getSimpleName()));
+        // Uncomment to log all system events for debugging
+        //systemBus.subscribe(Event.class, e -> Logger.logger.info("[EVENT/system]: {}", e.getClass().getSimpleName()));
         systemBus.subscribe(StartGameEvent.class, GameEngine::startGame);
 
         // Engine loop thread - processes engine-level events (start, pause, quit...)
@@ -60,7 +61,8 @@ public class GameEngine {
     private static void startGame(@NonNull StartGameEvent event) {
         GameSettings settings = Objects.requireNonNull(event).getSettings();
         EventBus worldBus = new EventBus();
-        worldBus.subscribe(Event.class, e -> Logger.logger.info("[EVENT/world]: {}", e.getClass().getSimpleName()));
+        // Uncomment to log all world events for debugging
+        //worldBus.subscribe(Event.class, e -> Logger.logger.info("[EVENT/world]: {}", e.getClass().getSimpleName()));
         world = new GameWorld(settings, worldBus);
         Save.setGameWorld(world);
         systemBus.postSync(new WorldCreatedEvent(world));
