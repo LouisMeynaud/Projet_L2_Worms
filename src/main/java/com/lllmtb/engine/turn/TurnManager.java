@@ -8,17 +8,17 @@ import com.lllmtb.engine.logger.Logger;
 import com.lllmtb.events.Event;
 import com.lllmtb.events.EventListener;
 import com.lllmtb.events.game.WeaponSelectedEvent;
+import com.lllmtb.events.move.GroundCheckCollision;
+import com.lllmtb.events.move.MouseInputEvent;
 import com.lllmtb.events.turn.TurnEndEvent;
+import com.lllmtb.events.turn.TurnSkipEvent;
 import com.lllmtb.events.turn.TurnStarEvent;
 import com.lllmtb.events.turn.TurnStopEvent;
 import com.lllmtb.events.turn.WormPlayable;
-import com.lllmtb.events.move.GroundCheckCollision;
-import com.lllmtb.events.move.MouseInputEvent;
 import com.lllmtb.events.ui.MoveEvent;
 import com.lllmtb.model.entity.team.Team;
 import com.lllmtb.model.item.UseParams;
 import com.lllmtb.physics.Move;
-
 import static com.lllmtb.physics.Move.move;
 import com.lllmtb.physics.PhysicsBody;
 import com.lllmtb.physics.Position;
@@ -29,9 +29,8 @@ public final class TurnManager {
     private final GameWorld world;
     private List<EventListener<Event>> listeners;
 
-    private long startTime;
     private final long turnDurationInMs;
-    private long remainingTime;
+    private long remainingTimeInMs;
 
     public TurnManager(GameWorld world, long turnDuration) {
         this.world = world;
@@ -48,7 +47,7 @@ public final class TurnManager {
     }
 
     public long getRemainingTime() {
-        return this.remainingTime;
+        return this.remainingTimeInMs;
     }
 
     public void init() {
@@ -58,8 +57,7 @@ public final class TurnManager {
     }
 
     public void startTurn(Team team) {
-        this.remainingTime = turnDurationInMs;
-        startTime = System.currentTimeMillis();
+        this.remainingTimeInMs = turnDurationInMs;
         this.turn = new Turn(team);
         world.getBus().postQueued(new TurnStarEvent(team));
         Logger.logger.info("Start turn for the team {}\n", team.name);
@@ -68,15 +66,12 @@ public final class TurnManager {
         setupEvents();
     }
 
-    public void updateTurn() {
-        long now = System.currentTimeMillis();
-        long timeElapsed = now - startTime;
-        this.remainingTime = turnDurationInMs - timeElapsed;
-        // Timer
-        if (now - startTime >= turnDurationInMs) {
+    public void updateTurn(double elapsedTime) {
+        this.remainingTimeInMs -= (long) elapsedTime;
+        if (remainingTimeInMs <= 0) {
             endTurn();
         }
-        if (this.turn.getIsEnd()) {
+        else if (this.turn.getIsEnd()) {
             endTurn();
         }
     }
@@ -134,9 +129,17 @@ public final class TurnManager {
             world.queueCommands(turn.getTeam().use(params));
         };
 
+        EventListener<TurnSkipEvent> turnskipEventListener = event -> {
+            if (remainingTimeInMs < turnDurationInMs - 3000) {
+                Logger.logger.info("Turn skipped by team {}", this.turn.getTeam().name);
+                endTurn();
+            }
+        };
+
         world.getBus().subscribe(MoveEvent.class, moveListener);
         world.getBus().subscribe(GroundCheckCollision.class, groundCollisionListener);
         world.getBus().subscribe(WeaponSelectedEvent.class, weaponSelectedEventEventListener);
         world.getBus().subscribe(MouseInputEvent.class, mouseInputEventListener);
+        world.getBus().subscribe(TurnSkipEvent.class, turnskipEventListener);
     }
 }

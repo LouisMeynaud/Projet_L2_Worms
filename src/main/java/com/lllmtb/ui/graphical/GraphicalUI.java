@@ -11,10 +11,12 @@ import javax.swing.UIManager;
 
 import com.lllmtb.events.game.StartGameEvent;
 import com.lllmtb.events.ui.graphical.ScreenHomeEvent;
+import com.lllmtb.events.ui.graphical.ScreenLoadGame;
 import com.lllmtb.events.ui.graphical.ScreenNewOrLoadEvent;
 import com.lllmtb.events.ui.graphical.ScreenSettingsGame;
 import com.lllmtb.ui.*;
 import com.lllmtb.ui.graphical.GamePanel.GameScreen;
+import com.lllmtb.ui.graphical.SettingsPanel.LoadGamePanel;
 import com.lllmtb.ui.graphical.SettingsPanel.NewOrLoadPanel;
 import com.lllmtb.ui.graphical.SettingsPanel.SettingsStartPanel;;
 
@@ -64,10 +66,12 @@ public class GraphicalUI implements UI {
         SettingsStartPanel startSettingScreen = new SettingsStartPanel(this.eventBus);
         GameScreen gamePanel = new GameScreen(eventbus);
         NewOrLoadPanel newOrLoadPanel = new NewOrLoadPanel(eventbus);
+        LoadGamePanel loadGamePanel = new LoadGamePanel(eventbus);
         mainPanel.add(homeScreen, "homeScreen"); // the principal page
         mainPanel.add(startSettingScreen, "startSettingScreen"); // the game launch settings page
         mainPanel.add(gamePanel, "gamePanel"); // la page de jeu
         mainPanel.add(newOrLoadPanel, "newOrLoadPanel"); //The page allowing you to choose whether you want to load or create a game
+        mainPanel.add(loadGamePanel, "loadGamePanel");
         windows.add(mainPanel); // the page containing the others, (the card layout).
 
 
@@ -97,6 +101,12 @@ public class GraphicalUI implements UI {
         eventBus.subscribe(ScreenSettingsGame.class, event -> {
             cardLayout.show(mainPanel, "startSettingScreen");
             Logger.logger.debug("Show SettingScreen");
+        });
+
+        eventBus.subscribe(ScreenLoadGame.class, event -> {
+            cardLayout.show(mainPanel, "loadGamePanel");
+            Logger.logger.debug("Show loadGamePanel");
+
         });
     }
 

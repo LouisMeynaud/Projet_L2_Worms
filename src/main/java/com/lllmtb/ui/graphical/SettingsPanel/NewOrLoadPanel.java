@@ -5,6 +5,7 @@ import javax.swing.JPanel;
 
 import com.lllmtb.events.EventBus;
 import com.lllmtb.events.ui.graphical.ScreenHomeEvent;
+import com.lllmtb.events.ui.graphical.ScreenLoadGame;
 import com.lllmtb.events.ui.graphical.ScreenSettingsGame;
 import com.lllmtb.ui.graphical.TextureManager;
 import com.lllmtb.ui.graphical.Utilitaire;
@@ -31,7 +32,7 @@ public class NewOrLoadPanel extends JPanel {
 
         JButton loadGameButton = Utilitaire.createImageButton(TextureManager.UI, "LoadGame", 128, 64, 64, 48);
         loadGameButton.addActionListener(e -> {
-            //
+            eventBus.postQueued(new ScreenLoadGame());
         });
         this.add(loadGameButton);
 
