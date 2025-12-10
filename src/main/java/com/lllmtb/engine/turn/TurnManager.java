@@ -65,8 +65,7 @@ public final class TurnManager {
         this.remainingTimeInMs -= (long) elapsedTime;
         if (remainingTimeInMs <= 0) {
             endTurn();
-        }
-        else if (this.turn.getIsEnd()) {
+        } else if (this.turn.getIsEnd()) {
             endTurn();
         }
     }
