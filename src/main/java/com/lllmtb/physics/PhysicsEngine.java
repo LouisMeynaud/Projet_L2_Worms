@@ -118,6 +118,10 @@ public class PhysicsEngine {
         return wind;
     }
 
+
+    public ConcurrentHashMap<PhysicsBody, ArrayList<PhysicsModifier>> getModifiers() {
+        return modifiers;
+    }
     /**
      * Adds a physics body to the simulation.
      * @param body the {@link PhysicsBody} to add.

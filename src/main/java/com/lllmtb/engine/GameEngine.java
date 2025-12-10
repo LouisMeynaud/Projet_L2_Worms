@@ -1,33 +1,38 @@
 package com.lllmtb.engine;
 
+import com.lllmtb.engine.save.Save;
 import java.util.Objects;
-
 import org.eclipse.jdt.annotation.NonNull;
-
 import com.lllmtb.events.EventBus;
+import com.lllmtb.events.game.GamePauseEvent;
+import com.lllmtb.events.game.SaveEvent;
 import com.lllmtb.events.game.StartGameEvent;
 import com.lllmtb.events.game.WorldCreatedEvent;
 import com.lllmtb.ui.ConsoleUI;
 import com.lllmtb.ui.UI;
 import com.lllmtb.ui.graphical.GraphicalUI;
+import java.io.IOException;
 import com.lllmtb.ui.graphical.TextureManager;
 
 public class GameEngine {
-    private static EventBus eventBus;
+    private static EventBus systemBus;
     private static GameWorld world;
 
     public static void main(String[] args) {
         boolean graphique = true;
-        eventBus = new EventBus();
-        eventBus.subscribe(StartGameEvent.class, GameEngine::startGame);
+        systemBus = new EventBus();
+        systemBus.subscribe(StartGameEvent.class, GameEngine::startGame);
 
-        // Engine loop thread - processes events until the world is created and the GameLoop takes over
+        // Engine loop thread - processes engine-level events (start, pause, quit...)
         new Thread(() -> {
-            while (world == null) {
-                eventBus.processQueued();
+            Thread current = Thread.currentThread();
+            while (!current.isInterrupted()) {
+                systemBus.processQueued();
                 try {
                     Thread.sleep(10);
                 } catch (InterruptedException e) {
+                    current.interrupt();
+                    break;
                 }
             }
         }, "engine-loop").start();
@@ -37,9 +42,9 @@ public class GameEngine {
         UI ui;
         if (graphique) {
             TextureManager.load(); // charge les textures
-            ui = new GraphicalUI(eventBus);
+            ui = new GraphicalUI(systemBus);
         } else {
-            ui = new ConsoleUI(eventBus);
+            ui = new ConsoleUI(systemBus);
         }
         ui.start();
     }
@@ -50,8 +55,18 @@ public class GameEngine {
      */
     private static void startGame(@NonNull StartGameEvent event) {
         GameSettings settings = Objects.requireNonNull(event).getSettings();
-        world = new GameWorld(settings, eventBus);
-        eventBus.postSync(new WorldCreatedEvent(world));
+        EventBus worldBus = new EventBus();
+        world = new GameWorld(settings, worldBus);
+        Save.setGameWorld(world);
+        systemBus.postSync(new WorldCreatedEvent(world));
+        systemBus.subscribe(SaveEvent.class, e -> {
+            try {
+                Save.saveAll();
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
         world.start();
+        systemBus.subscribe(GamePauseEvent.class, e -> world.pause(e.isPaused));
     }
 }

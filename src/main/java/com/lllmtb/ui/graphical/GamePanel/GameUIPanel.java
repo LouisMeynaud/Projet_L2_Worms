@@ -1,15 +1,32 @@
 package com.lllmtb.ui.graphical.GamePanel;
 
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.CardLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.GridBagLayout;
+import java.awt.GridLayout;
 
-import javax.swing.*;
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.Timer;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 
 import com.lllmtb.engine.GameWorld;
-import com.lllmtb.engine.logger.Logger;
 import com.lllmtb.events.EventBus;
-import com.lllmtb.events.game.*;
+import com.lllmtb.events.game.GamePauseEvent;
+import com.lllmtb.events.game.SaveEvent;
+import com.lllmtb.events.game.ToolSelectedEvent;
+import com.lllmtb.events.game.WeaponSelectedEvent;
+import com.lllmtb.events.game.WorldCreatedEvent;
+import com.lllmtb.events.turn.TurnSkipEvent;
 import com.lllmtb.events.ui.ShootMode;
 import com.lllmtb.events.ui.graphical.RequestFocus;
 import com.lllmtb.model.item.inventory.Inventory;
@@ -18,10 +35,9 @@ import com.lllmtb.model.item.weapon.WeaponId;
 import com.lllmtb.ui.graphical.TextureManager;
 import com.lllmtb.ui.graphical.Utilitaire;
 
-
 public class GameUIPanel extends JPanel {
 
-    private EventBus eventBus;
+    private EventBus eventBus;  // system bus
 
     private JPanel pauseMenucontainer;
     private JPanel inventoryContainer;
@@ -73,14 +89,17 @@ public class GameUIPanel extends JPanel {
         JButton pauseButton = Utilitaire.createImageButton(TextureManager.UI, "Pause", 64, 64, 48, 48);
         JButton inventoryButton = Utilitaire.createImageButton(TextureManager.UI, "InventoryButton", 64, 64, 48, 48);
         JButton shootModeButton = Utilitaire.createImageButton(TextureManager.UI, "ShootMode", 64, 64, 48, 48);
+        JButton skipTurnButton = Utilitaire.createImageButton(TextureManager.UI, "skipTurn", 64, 64, 48, 48);
         pauseButton.addActionListener(e -> pauseMenu(true));
-        shootModeButton.addActionListener(e -> this.eventBus.postQueued(new ShootMode()));
+        shootModeButton.addActionListener(e -> world.getBus().postQueued(new ShootMode()));
         inventoryButton.addActionListener(e -> openCloseInventory());
+        skipTurnButton.addActionListener(e -> world.getBus().postQueued(new TurnSkipEvent()));
 
 
         JPanel buttonsPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
         buttonsPanel.setOpaque(false);
         buttonsPanel.add(pauseButton);
+        buttonsPanel.add(skipTurnButton);
 
         lowerBar.add(inventoryButton);
         lowerBar.add(shootModeButton);
@@ -141,6 +160,7 @@ public class GameUIPanel extends JPanel {
     private void createPauseMenu() {
         this.pauseMenucontainer = new JPanel(new GridBagLayout()); // un conteneur pour pour centre le vrai pannel
         this.pauseMenucontainer.setOpaque(false);
+        this.pauseMenucontainer.setVisible(false);
 
 
         JPanel menuPanel = new JPanel();
@@ -159,7 +179,8 @@ public class GameUIPanel extends JPanel {
         quitButton.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         resumeButton.addActionListener(e -> pauseMenu(false));
-
+        saveButton.addActionListener(e -> eventBus.postQueued(new SaveEvent()));
+        quitButton.addActionListener(e -> System.exit(0));
 
         menuPanel.add(resumeButton);
         menuPanel.add(Box.createVerticalStrut(10));
@@ -185,10 +206,8 @@ public class GameUIPanel extends JPanel {
     this.revalidate();
     this.repaint();
     this.eventBus.postQueued(new GamePauseEvent(show));
-    Logger.logger.debug("Game Paused");
     if (!show) {
-        this.eventBus.postQueued(new RequestFocus());
-        Logger.logger.debug("Game Unpaused");
+        this.world.getBus().postQueued(new RequestFocus());
     }
     }
 
@@ -236,12 +255,14 @@ public class GameUIPanel extends JPanel {
 
         if (isInventoryOpen) {
             cardLayout.show(centerContainer, "EMPTY");
-            this.eventBus.postQueued(new RequestFocus());
+            this.world.getBus().postQueued(new RequestFocus());
 
         } else {
             //ces deux ligne sont pour tester que l'affichage s'adapte bien
             this.world.getTurnManager().getTurn().getTeam().getInventory().unlock(WeaponId.GUN);
             this.world.getTurnManager().getTurn().getTeam().getInventory().weapons.addAmmo(WeaponId.GUN, 10);
+            this.world.getTurnManager().getTurn().getTeam().getInventory().unlock(WeaponId.BAZOOKA);
+            this.world.getTurnManager().getTurn().getTeam().getInventory().weapons.addAmmo(WeaponId.BAZOOKA, 3);
             this.world.getTurnManager().getTurn().getTeam().getInventory().tools.addAmmo(ToolId.PARACHUTE, 2);
 
             createInventoryGrid();
@@ -267,7 +288,7 @@ public class GameUIPanel extends JPanel {
 
             if (isUnlocked && nbAmmo > 0) {
                 itemButton.addActionListener(e -> {
-                    eventBus.postQueued(new WeaponSelectedEvent(id));
+                    this.world.getBus().postQueued(new WeaponSelectedEvent(id));
                     openCloseInventory(); // on ferme l'inventaire si on choisie une arme
                 });
             } else if (isUnlocked && nbAmmo == 0) {
@@ -289,7 +310,7 @@ public class GameUIPanel extends JPanel {
 
             if (isAvailable) {
                 itemButton.addActionListener(e -> {
-                    eventBus.postQueued(new ToolSelectedEvent(id));
+                    this.world.getBus().postQueued(new ToolSelectedEvent(id));
                     openCloseInventory();
                 });
             } else {

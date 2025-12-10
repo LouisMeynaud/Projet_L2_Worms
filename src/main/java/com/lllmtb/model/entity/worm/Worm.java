@@ -38,7 +38,7 @@ public class Worm extends Entity {
     /**
      * The team this worm belongs to.
      */
-    private Team team;
+    private transient Team team;
 
     /**
      * The name of the worm.
@@ -63,7 +63,7 @@ public class Worm extends Entity {
     /**
      * The current animation.
      */
-    private Animation animation;
+    private transient Animation animation;
 
     /**
      * Direction the worm is facing: 1 for right, -1 for left.
@@ -99,7 +99,7 @@ public class Worm extends Entity {
      * @param team the {@link Team} the worm belongs to
      */
     public Worm(@NonNull String name, @NonNull Team team) {
-        this(name, new Statistics(100, 1, 1), team);
+        this(name, new Statistics(Statistics.getMaxHp(), 1, 1), team);
     }
 
     /**
@@ -216,6 +216,10 @@ public class Worm extends Entity {
         if (!this.stats.isAlive()) {
             this.alive = false;
         }
+    }
+
+    public static void setMaxHp(int maxHp) {
+        Statistics.setMaxHp(maxHp);
     }
 
     @Override
