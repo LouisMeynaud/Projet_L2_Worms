@@ -14,16 +14,16 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class GameSave {
-    protected CopyOnWriteArrayList<PhysicsBodySave> entities = new CopyOnWriteArrayList<>();
-    protected transient EventBus bus;
-    protected int indexTeam;
-    protected long turnDuration;
-    protected List<TeamSave> teams = new ArrayList<>();
-    protected boolean hasWind;
-    protected Vector wind;
-    protected Vector gravity;
-    protected ConcurrentHashMap<Integer, ArrayList<PhysicsModifier>> modifiers;
-    protected GameSettings settings;
+    public CopyOnWriteArrayList<PhysicsBodySave> entities = new CopyOnWriteArrayList<>();
+    public transient EventBus bus;
+    public int indexTeam;
+    public long turnDuration;
+    public List<TeamSave> teams = new ArrayList<>();
+    public boolean hasWind;
+    public Vector wind;
+    public Vector gravity;
+    public ConcurrentHashMap<Integer, ArrayList<PhysicsModifier>> modifiers;
+    public GameSettings settings;
 
 
     public GameSave(GameWorld gameWorld) {

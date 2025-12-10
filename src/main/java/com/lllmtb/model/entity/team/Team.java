@@ -3,6 +3,7 @@ package com.lllmtb.model.entity.team;
 import java.util.*;
 
 import com.lllmtb.engine.commands.GameCommand;
+import com.lllmtb.engine.save.TeamSave;
 import com.lllmtb.model.entity.worm.Worm;
 import com.lllmtb.model.item.*;
 import com.lllmtb.model.item.tool.*;
@@ -106,6 +107,33 @@ public class Team {
      */
     public Team(@NonNull String teamName, int numberOfWorms, @NonNull Position[] spawn) {
         this(teamName, numberOfWorms, new Inventory(), spawn);
+    }
+
+    /**
+     * Public constructor used to initialize a team using the private constructor.
+     * @param teamSave      the save of the team
+     */
+    public Team(@NonNull TeamSave teamSave) {
+        this.inventory = new Inventory();
+        for (WeaponId weaponId: teamSave.inventorySave.unlockedWeapons){
+            inventory.unlock(weaponId);
+        }
+        for (WeaponId weaponId: teamSave.inventorySave.weaponAmmo.keySet()){
+            inventory.weapons.addAmmo(weaponId,teamSave.inventorySave.weaponAmmo.get(weaponId));
+        }
+        for (ToolId toolId: teamSave.inventorySave.toolAmmo.keySet()) {
+            inventory.tools.addAmmo(toolId,teamSave.inventorySave.toolAmmo.get(toolId));
+        }
+
+        this.name = teamSave.team.name;
+        this.numberOfWorms =  teamSave.team.numberOfWorms;
+        this.id = teamSave.team.id;
+        for(Worm worm: teamSave.team.getTeamWorms()){
+            this.worms.add(worm);
+        }
+        this.currentWorm = teamSave.team.worms.get(teamSave.team.index);
+        this.selectedItem = null;
+        this.teamColor = teamSave.team.teamColor;
     }
 
     /**

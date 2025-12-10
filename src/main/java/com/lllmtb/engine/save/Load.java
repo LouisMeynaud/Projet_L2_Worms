@@ -3,9 +3,12 @@ package com.lllmtb.engine.save;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.typeadapters.RuntimeTypeAdapterFactory;
+import com.lllmtb.engine.GameWorld;
 import com.lllmtb.model.entity.Entity;
 import com.lllmtb.model.entity.projectile.Projectile;
 import com.lllmtb.model.entity.worm.Worm;
+import com.lllmtb.terrain.map.Map;
+import com.lllmtb.terrain.map.MapLoader;
 import org.eclipse.jdt.annotation.NonNull;
 
 import java.io.FileNotFoundException;
@@ -69,6 +72,16 @@ public class Load {
                 throw new RuntimeException(e);
             }
 
+        }
+    }
+    public  static GameWorld LoadAll(String name){
+        try {
+            GameSave gameSave = loadGameSave(name);
+            reforgeGameSave(gameSave);
+            Map map = MapLoader.loadMatrix(name);
+            return new GameWorld(gameSave, map);
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
         }
     }
 }

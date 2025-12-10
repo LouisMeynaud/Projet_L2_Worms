@@ -7,6 +7,8 @@ import java.util.Objects;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import com.lllmtb.engine.save.GameSave;
+import com.lllmtb.engine.save.TeamSave;
 import org.eclipse.jdt.annotation.NonNull;
 
 import com.lllmtb.engine.commands.GameCommand;
@@ -40,6 +42,40 @@ public class GameWorld {
 
     private final BlockingQueue<GameCommand> commandQueue;
 
+    public GameWorld(GameSave gameSave, Map map) {
+        this.settings = gameSave.settings;
+        gameName = settings.mapFileName;
+        this.gameName = settings.gameName;
+        // Init Map (we'll have to handle this better once MapLoader throws catchable exceptions)
+
+        if (map == null) {
+            System.out.println("Generating a new map...");
+            ConfigMap config = new ConfigMap(settings.widthMap, 4, 5, settings.floatingIsland, 17, settings.terrainType, settings.nbTeams, settings.nbWorms);
+            map = GenerateMap.createMap(config);
+        }
+        this.map = map;
+        this.bus = gameSave.bus;
+        Move.setMaxjump(settings.maxJump);
+
+        // Init GameCommand queue
+        this.commandQueue = new LinkedBlockingQueue<>();
+
+        // Init PhysicsEngine
+        this.physics = new PhysicsEngine(map, bus, settings.hasWind);
+
+        // Init Teams
+        this.teams = new ArrayList<>();
+        for (TeamSave saveTeam :gameSave.teams  ){
+            this.teams.add(new Team(saveTeam));
+        }
+        // Init GameLoop
+        this.gameLoop = new GameLoop(this);
+        Logger.logger.debug("Game initialised");
+
+        //Init TurnManager
+        this.turnManager = new TurnManager(this, settings.turnDuration);
+        this.turnDuration = this.getTurnDuration();
+    }
 
     public GameWorld(GameSettings settings, EventBus eventBus) {
         this.settings = settings;

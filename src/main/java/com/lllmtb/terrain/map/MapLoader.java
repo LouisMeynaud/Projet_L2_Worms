@@ -11,7 +11,9 @@ public class MapLoader {
         String path;
         if (mapName.contains("Test")) {
             path = "src/test/resources/map/";
-        } else {
+        } else if (mapName.contains("Save")) {
+            path = "src/test/resources/SaveTest/";
+    } else {
             path = "src/main/resources/map/";
         }
 
