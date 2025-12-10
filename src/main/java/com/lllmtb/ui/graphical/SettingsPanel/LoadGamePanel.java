@@ -37,15 +37,16 @@ public class LoadGamePanel extends JPanel {
         this.add(titre, BorderLayout.NORTH);
 
 
+
         this.panelListe = new PanelListe(MapLoader.getListeDossiersMaps());
         this.add(panelListe, BorderLayout.CENTER);
 
 
         JPanel zoneSud = new JPanel(new FlowLayout(FlowLayout.RIGHT, 20, 20));
         zoneSud.setOpaque(false);
+        JButton backButton = Utilitaire.createImageButton(TextureManager.UI, "Panel", 150, 75, 150, 75, "Back", "Arial", 16, Color.WHITE);
+        JButton starButton = Utilitaire.createImageButton(TextureManager.UI, "Panel", 150, 75, 150, 75, "Start", "Arial", 16, Color.WHITE);
 
-        JButton backButton = Utilitaire.createImageButton(TextureManager.UI, "Back", 128, 64, 64, 48);
-        JButton starButton = Utilitaire.createImageButton(TextureManager.UI, "Start", 128, 64, 64, 48);
 
 
         backButton.addActionListener(e -> {

@@ -86,10 +86,10 @@ public class GameUIPanel extends JPanel {
         this.add(lowerBar, BorderLayout.SOUTH);
 
 
-        JButton pauseButton = Utilitaire.createImageButton(TextureManager.UI, "Pause", 64, 64, 48, 48);
-        JButton inventoryButton = Utilitaire.createImageButton(TextureManager.UI, "InventoryButton", 64, 64, 48, 48);
-        JButton shootModeButton = Utilitaire.createImageButton(TextureManager.UI, "ShootMode", 64, 64, 48, 48);
-        JButton skipTurnButton = Utilitaire.createImageButton(TextureManager.UI, "skipTurn", 64, 64, 48, 48);
+        JButton pauseButton = Utilitaire.createImageButton(TextureManager.UI, "Pause", 128, 128, 128, 128, "", "Arial", 16, Color.WHITE);
+        JButton inventoryButton = Utilitaire.createImageButton(TextureManager.UI, "InventoryButton", 128, 128, 128, 128, "", "Arial", 16, Color.WHITE);
+        JButton shootModeButton = Utilitaire.createImageButton(TextureManager.UI, "ShootMode", 120, 120, 120, 120, "", "Arial", 16, Color.WHITE);
+        JButton skipTurnButton = Utilitaire.createImageButton(TextureManager.UI, "SkipTurn", 128, 128, 128, 128, "", "Arial", 16, Color.WHITE);
         pauseButton.addActionListener(e -> pauseMenu(true));
         shootModeButton.addActionListener(e -> world.getBus().postQueued(new ShootMode()));
         inventoryButton.addActionListener(e -> openCloseInventory());

@@ -44,13 +44,12 @@ public class WormTest {
     }
     @Test
     public void testIsAliveFalse(){
-        worm.getStats().setHp(0);
-        worm.setDeath();
+        worm.damageWorm(worm.getStats().getHp());
         assertFalse(worm.isAlive());
     }
     @Test
     public void testSetDeathFailed(){
-        worm.setDeath();
+        worm.damageWorm(0);
         assertTrue(worm.isAlive());
     }
     @Test
@@ -65,8 +64,7 @@ public class WormTest {
         assertDoesNotThrow(() -> worm.toString());
         assertTrue(worm.isAlive());
         assertTrue(worm.toString().contains("♥"));
-        worm.getStats().setHp(0);
-        worm.setDeath();
+        worm.damageWorm(worm.getStats().getHp());
         assertFalse(worm.isAlive());
         assertTrue(worm.toString().contains("☠"));
     }

@@ -12,6 +12,7 @@ import org.eclipse.jdt.annotation.NonNull;
 import com.lllmtb.events.EventBus;
 import com.lllmtb.events.physics.PhysicsModifierAddedEvent;
 import com.lllmtb.events.physics.PhysicsModifierRemovedEvent;
+import com.lllmtb.events.physics.RemoveWormOfTeam;
 import com.lllmtb.model.entity.projectile.Projectile;
 import com.lllmtb.model.entity.worm.Worm;
 import com.lllmtb.model.item.ItemId;
@@ -154,6 +155,17 @@ public class PhysicsEngine {
     public void clear() {
         bodies.clear();
         modifiers.clear();
+    }
+
+    public void actualizeBodies() {
+        for (PhysicsBody body : bodies) {
+            if (body.getEntity() instanceof Worm worm) {
+                if (!(worm.isAlive())) {
+                    bodies.remove(body);
+                    bus.postQueued(new RemoveWormOfTeam(worm));
+                }
+            }
+        }
     }
 
     /**
