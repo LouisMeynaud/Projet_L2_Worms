@@ -18,6 +18,8 @@ public class TextureManager {
     public static final Map<String, BufferedImage> WEAPONS = new HashMap<>();
     public static final Map<String, BufferedImage> TOOLS = new HashMap<>();
     public static final Map<String, BufferedImage> PROJECTILES = new HashMap<>();
+    public static final Map<String, BufferedImage> BACKGROUND = new HashMap<>();
+
 
     public static void load() {
         try {
@@ -29,12 +31,20 @@ public class TextureManager {
             TILES.put(Tile.CAVERN, ImageIO.read(TextureManager.class.getResource("/textures/block/Cavern.png")));
             TILES.put(Tile.GRASS, ImageIO.read(TextureManager.class.getResource("/textures/block/Grass.png")));
 
-            ///////Entite/////////
             ///////ui-buttons/////////
             UI.put("Pause", ImageIO.read(TextureManager.class.getResource("/textures/button/Pause.png")));
+            UI.put("PauseHover", ImageIO.read(TextureManager.class.getResource("/textures/button/Pause.png")));
+            UI.put("InventoryButton", ImageIO.read(TextureManager.class.getResource("/textures/button/InventoryButton.png")));
+            UI.put("InventoryButtonHover", ImageIO.read(TextureManager.class.getResource("/textures/button/InventoryButton.png")));
+            UI.put("SkipTurn", ImageIO.read(TextureManager.class.getResource("/textures/button/SkipTurn.png")));
+            UI.put("SkipTurnHover", ImageIO.read(TextureManager.class.getResource("/textures/button/SkipTurn.png")));
             UI.put("ShootMode", ImageIO.read(TextureManager.class.getResource("/textures/button/ShootMode.png")));
-            UI.put("Start", ImageIO.read(TextureManager.class.getResource("/textures/button/Start.png")));
-            UI.put("StartHover", ImageIO.read(TextureManager.class.getResource("/textures/button/StartHover.png")));
+            UI.put("ShootModeHover", ImageIO.read(TextureManager.class.getResource("/textures/button/ShootMode.png")));
+            UI.put("Panel", ImageIO.read(TextureManager.class.getResource("/textures/button/Panel.png")));
+            UI.put("PanelHover", ImageIO.read(TextureManager.class.getResource("/textures/button/Panel.png")));
+
+            ///////Background/////////
+            BACKGROUND.put("Background", ImageIO.read(TextureManager.class.getResource("/textures/Background.png")));
 
             //////Arme//////////
             WEAPONS.put("GUN", ImageIO.read(TextureManager.class.getResource("/textures/weapon/weapon/Gun.png")));
