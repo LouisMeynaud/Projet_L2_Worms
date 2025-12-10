@@ -1,9 +1,11 @@
 package com.lllmtb.ui.graphical;
 
 import java.awt.Color;
+import java.awt.Graphics;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.image.BufferedImage;
 
 import javax.swing.JButton;
 import javax.swing.JPanel;
@@ -39,4 +41,11 @@ public class HomeScreenPanel extends JPanel {
         gbc.gridy = 2;
         this.add(closeButton, gbc);
     }
+
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        BufferedImage backgroundImage = TextureManager.BACKGROUND.get("Background");
+        g.drawImage(backgroundImage, 0, 0, this.getWidth(), this.getHeight(), this);
+    }
+
 }

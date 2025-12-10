@@ -60,7 +60,7 @@ public class SettingGamePanel extends JPanel {
         gbc.gridwidth = 2; // The title takes up 2 columns
         gbc.gridx = 0;
         gbc.gridy = row++;
-        JLabel titre1 = new JLabel("PARAMETRE DE LA PARTIE");
+        JLabel titre1 = new JLabel("PARAMETRES DE LA PARTIE");
         titre1.setFont(new Font("Arial", Font.BOLD, 16));
         contentGrid.add(titre1, gbc);
 
@@ -70,7 +70,7 @@ public class SettingGamePanel extends JPanel {
         gbc.gridx = 0;
         gbc.gridy = row;
 
-        JLabel labelGame = new JLabel("Nom de la partie  :");
+        JLabel labelGame = new JLabel("Nom de la partie :");
         contentGrid.add(labelGame, gbc);
 
         gbc.gridx = 1;
@@ -123,7 +123,7 @@ public class SettingGamePanel extends JPanel {
         //maximum life
         gbc.gridx = 0;
         gbc.gridy = row;
-        JLabel maxLife = new JLabel("vie maximum :");
+        JLabel maxLife = new JLabel("Vie maximum :");
         contentGrid.add(maxLife, gbc);
 
         gbc.gridx = 1;
@@ -134,7 +134,7 @@ public class SettingGamePanel extends JPanel {
         //turn duration
         gbc.gridx = 0;
         gbc.gridy = row;
-        JLabel turnDurationLabel = new JLabel("Temps d'un tour en seconde:");
+        JLabel turnDurationLabel = new JLabel("Temps d'un tour en seconde :");
         contentGrid.add(turnDurationLabel, gbc);
 
         gbc.gridx = 1;
@@ -148,7 +148,7 @@ public class SettingGamePanel extends JPanel {
         gbc.gridwidth = 2;
         gbc.gridx = 0;
         gbc.gridy = row++;
-        JLabel titre2 = new JLabel("PARAMETRE PHYSIQUE");
+        JLabel titre2 = new JLabel("PARAMETRES PHYSIQUE");
         titre2.setFont(new Font("Arial", Font.BOLD, 16));
         contentGrid.add(titre2, gbc);
 
@@ -156,7 +156,7 @@ public class SettingGamePanel extends JPanel {
         gbc.gridwidth = 2;
         gbc.gridx = 0;
         gbc.gridy = row;
-        this.windCheckBox = new JCheckBox("Vent activé ?");
+        this.windCheckBox = new JCheckBox("Vent activé");
         contentGrid.add(this.windCheckBox, gbc);
         row++;
 
@@ -164,7 +164,7 @@ public class SettingGamePanel extends JPanel {
         gbc.gridwidth = 2;
         gbc.gridx = 0;
         gbc.gridy = row;
-        this.friendlyFireCheckBox = new JCheckBox("Tire Allié ?");
+        this.friendlyFireCheckBox = new JCheckBox("Tir allié");
         contentGrid.add(this.friendlyFireCheckBox, gbc);
         row++;
 
@@ -173,7 +173,7 @@ public class SettingGamePanel extends JPanel {
         //turn duration
         gbc.gridx = 0;
         gbc.gridy = row;
-        JLabel maxJumpLabel = new JLabel("Maximum de saut:");
+        JLabel maxJumpLabel = new JLabel("Maximum de saut :");
         contentGrid.add(maxJumpLabel, gbc);
 
         gbc.gridx = 1;
