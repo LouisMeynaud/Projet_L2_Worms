@@ -27,6 +27,7 @@ public class TextureManager {
             TILES.put("DIRT0".toString(), ImageIO.read(TextureManager.class.getResource("/textures/block/Dirt0.png")));
             TILES.put("DIRT1".toString(), ImageIO.read(TextureManager.class.getResource("/textures/block/Dirt1.png")));
             TILES.put("DIRT2".toString(), ImageIO.read(TextureManager.class.getResource("/textures/block/Dirt2.png")));
+            TILES.put("DIRT3".toString(), ImageIO.read(TextureManager.class.getResource("/textures/block/Dirt3.png")));
             TILES.put("WATER0".toString(), ImageIO.read(TextureManager.class.getResource("/textures/block/Water0.png")));
             TILES.put("WATER1".toString(), ImageIO.read(TextureManager.class.getResource("/textures/block/Water1.png")));
             TILES.put("AIR0".toString(), ImageIO.read(TextureManager.class.getResource("/textures/block/Air0.png")));

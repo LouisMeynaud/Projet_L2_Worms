@@ -1,7 +1,7 @@
 package com.lllmtb.terrain.map;
 
 public enum Tile {
-    DIRT('D', '#', true, 3),
+    DIRT('D', '#', true, 4),
     WATER('W', 'o', false, 2),
     AIR('A', ' ', false, 1),
     CAVERN('C', '~', false, 1),
