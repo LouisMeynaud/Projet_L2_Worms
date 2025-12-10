@@ -77,6 +77,9 @@ public class GameWorldPanel extends JPanel {
             @Override
             public void keyPressed(KeyEvent e) {
                 pressedKeys.add(e.getKeyCode());
+                if (pressedKeys.contains(KeyEvent.VK_UP)) {
+                    world.getBus().postQueued(new MoveEvent(Direction.Up));
+                }
             }
 
             @Override
@@ -228,9 +231,6 @@ public class GameWorldPanel extends JPanel {
      * This method should be called every game tick for smooth continuous movement.
      */
     public void processInputs() {
-        if (pressedKeys.contains(KeyEvent.VK_UP)) {
-            world.getBus().postQueued(new MoveEvent(Direction.Up));
-        }
         if (pressedKeys.contains(KeyEvent.VK_DOWN)) {
             world.getBus().postQueued(new MoveEvent(Direction.Down));
         }
