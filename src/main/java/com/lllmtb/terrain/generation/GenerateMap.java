@@ -35,7 +35,6 @@ public class GenerateMap {
         MapBalancer.thicknessBalencer(config.getThicknessMin(), MapBalancer.averageThickness(lowLine, hightLine, 0, config.getWidth()), hightLine);
         MapFiller.fillingWater(map, config.getWaterHeight());
         MapFiller.fillingDirt(map, hightLine, lowLine);
-        map.setHightLine(hightLine);
 
         return map;
     }

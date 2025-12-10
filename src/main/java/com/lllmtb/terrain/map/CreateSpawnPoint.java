@@ -7,32 +7,51 @@ import com.lllmtb.physics.Position;
 public class CreateSpawnPoint {
 
 
-    public static Position[][] createSpawnPoint(int nbTeams, int nbWorms, Map map) {
-        int nbspawnPoint = nbTeams * nbWorms;
-        Position[] spawnPointPos = new Position[nbspawnPoint];
-        int i = 0;
-        boolean exist;
-        Random random = new Random();
-        while (i < nbspawnPoint) {
-            exist = false;
-            int xPosition = random.nextInt(map.getHightLine().length);
-            Position nouvellePos = new Position(xPosition, map.getHightLine()[xPosition]);
-            for (int j = 0; j < i; j++) {
-                if (nouvellePos.equals(spawnPointPos[j])) {
-                    exist = true;
+
+
+public static Position[][] createSpawnPoint(int nbTeams, int nbWorms, Map map) {
+    int nbSpawnPoint = nbTeams * nbWorms;
+    Position[] spawnPointPos = new Position[nbSpawnPoint];
+    int i = 0;
+    Random random = new Random();
+
+    int mapWidth = map.getWidth();
+    int mapHeight = map.getHeight();
+    int waterLevel = map.getHeightWater();
+
+    int attempts = 0;
+    int maxAttempts = nbSpawnPoint * 100;
+
+    while (i < nbSpawnPoint && attempts < maxAttempts) {
+        attempts++;
+        int x = random.nextInt(mapWidth);
+        boolean wormPlaced = false;
+
+
+        for (int y = mapHeight - 1; y > waterLevel; y--) {
+            Position headPos = new Position(x, y);
+
+            boolean headIsFree = !map.isSolid(new Position(x, y));
+            boolean feetAreSolid = map.isSolid(new Position(x, y - 2));
+
+            if (headIsFree && feetAreSolid) {
+                boolean occupied = false;
+                for (int j = 0; j < i; j++) {
+                    if (headPos.equals(spawnPointPos[j])) {
+                        occupied = true;
+                    }
+                }
+
+                if (!occupied && !wormPlaced) {
+                    spawnPointPos[i] = headPos;
+                    i++;
+                    wormPlaced = true;
                 }
             }
-            int waterLevel = map.getHeightWater();
-            Position sousNouvellePos = new Position(nouvellePos.getX(), nouvellePos.getY() - 1);
-            if (!exist && !map.isTileAt(sousNouvellePos, Tile.WATER) && nouvellePos.getY() > waterLevel) {
-
-                spawnPointPos[i] = nouvellePos;
-                i++;
-            }
-
         }
-        return separateSpawnTeam(nbTeams, nbWorms, spawnPointPos);
     }
+    return separateSpawnTeam(nbTeams, nbWorms, spawnPointPos);
+}
 
     private static Position[][] separateSpawnTeam(int nbTeams, int nbWorms, Position[] spawnPointPos) {
         Position[][] teamSpawnPointPositions = new Position[nbTeams][nbWorms];
