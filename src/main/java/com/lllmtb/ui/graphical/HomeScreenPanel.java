@@ -1,8 +1,11 @@
 package com.lllmtb.ui.graphical;
 
+import java.awt.Color;
+import java.awt.Graphics;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.image.BufferedImage;
 
 import javax.swing.JButton;
 import javax.swing.JPanel;
@@ -24,9 +27,9 @@ public class HomeScreenPanel extends JPanel {
         gbc.insets = new Insets(15, 0, 15, 0);
 
 
-        JButton playButton = Utilitaire.createImageButton(TextureManager.UI, "Start", 128, 64, 128, 64);
-        JButton settingButton = Utilitaire.createImageButton(TextureManager.UI, "GameSetting", 128, 64, 128, 64);
-        JButton closeButton = Utilitaire.createImageButton(TextureManager.UI, "Close", 128, 64, 128, 64);
+        JButton playButton = Utilitaire.createImageButton(TextureManager.UI, "Panel", 256, 128, 256, 128, "Start", "Arial", 23, Color.WHITE);
+        JButton settingButton = Utilitaire.createImageButton(TextureManager.UI, "Panel", 256, 128, 256, 128, "Game Settings", "Arial", 23, Color.WHITE);
+        JButton closeButton = Utilitaire.createImageButton(TextureManager.UI, "Panel", 256, 128, 256, 128, "Close", "Arial", 23, Color.WHITE);
 
         playButton.addActionListener(e -> {
             eventBus.postQueued(new ScreenNewOrLoadEvent());
@@ -38,4 +41,11 @@ public class HomeScreenPanel extends JPanel {
         gbc.gridy = 2;
         this.add(closeButton, gbc);
     }
+
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        BufferedImage backgroundImage = TextureManager.BACKGROUND.get("Background");
+        g.drawImage(backgroundImage, 0, 0, this.getWidth(), this.getHeight(), this);
+    }
+
 }

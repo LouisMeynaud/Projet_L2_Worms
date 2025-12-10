@@ -49,7 +49,7 @@ public class GenerateMapPanel extends JPanel {
         gbc.gridwidth = 2; // The title takes up 2 columns
         gbc.gridx = 0;
         gbc.gridy = row++;
-        JLabel titre1 = new JLabel("PARAMETRE DE LA MAP");
+        JLabel titre1 = new JLabel("PARAMETRES DE LA MAP");
         titre1.setFont(new Font("Arial", Font.BOLD, 16));
         contentGrid.add(titre1, gbc);
 
@@ -57,7 +57,7 @@ public class GenerateMapPanel extends JPanel {
         gbc.gridwidth = 1; // take one column
         gbc.gridx = 0;
         gbc.gridy = row;
-        JLabel mapWidthLabel = new JLabel("Largeur map");
+        JLabel mapWidthLabel = new JLabel("Largeur map :");
         contentGrid.add(mapWidthLabel, gbc);
 
         gbc.gridx = 1; // second columns
@@ -80,7 +80,7 @@ public class GenerateMapPanel extends JPanel {
         gbc.gridwidth = 2;
         gbc.gridx = 0;
         gbc.gridy = row;
-        this.flightIslandCheckBox = new JCheckBox("Ile volante ?");
+        this.flightIslandCheckBox = new JCheckBox("Ile volante");
         contentGrid.add(this.flightIslandCheckBox, gbc);
         row++;
     }
