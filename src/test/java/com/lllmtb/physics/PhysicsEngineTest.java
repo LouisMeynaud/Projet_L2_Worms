@@ -157,6 +157,23 @@ class PhysicsEngineTest {
     }
 
     @Test
+    void testNextStep_whenCollision2() {
+        double dt = 0.0167;
+        PhysicsEngine tpE = new PhysicsEngine(map, bus, false);
+        pBWorm.setVector(new Vector(0, 0));
+        pBWorm.setPos(new Position(2, 4));
+        pBBP.setPos(new Position(1, 5));
+        pBBP.setVector(new Vector(5, 0));
+        tpE.add(pBWorm);
+        tpE.add(pBBP);
+        tpE.nextStep(dt);
+        assertEquals(1.0001197841492524, pBBP.getPos().getX());
+        assertEquals(4.999988225378354, pBBP.getPos().getY());
+        assertEquals(2, pBWorm.getPos().getX());
+        assertEquals(4.002, pBWorm.getPos().getY());
+    }
+
+    @Test
     void testWindChangesEvery600Ticks() {
         double ticktime = 16.7;
         Vector windBefore = pE.getWind();
@@ -397,4 +414,3 @@ class PhysicsEngineTest {
         assertEquals(0, removedCount.get());
     }
 }
-

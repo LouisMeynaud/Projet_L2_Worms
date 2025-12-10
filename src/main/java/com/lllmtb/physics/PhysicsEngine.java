@@ -6,11 +6,10 @@ import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import com.lllmtb.events.physics.*;
 import org.eclipse.jdt.annotation.NonNull;
 
 import com.lllmtb.events.EventBus;
-import com.lllmtb.events.physics.PhysicsCollisionDetectedEvent;
-import com.lllmtb.events.physics.PhysicsCollisionWithWaterOrExitMapEvent;
 import com.lllmtb.events.physics.PhysicsModifierAddedEvent;
 import com.lllmtb.events.physics.PhysicsModifierRemovedEvent;
 import com.lllmtb.model.entity.projectile.Projectile;
@@ -351,9 +350,9 @@ public class PhysicsEngine {
                     bus.postQueued(new PhysicsCollisionWithWaterOrExitMapEvent(body.getEntity()));
                 } else {
                     if (impact.hitBody == null) {
-                        bus.postQueued(new PhysicsCollisionDetectedEvent(body.getEntity(), null));
+                        bus.postQueued(new PhysicsCollisionWithMap(body.getEntity()));
                     } else {
-                        bus.postQueued(new PhysicsCollisionDetectedEvent(body.getEntity(), impact.hitBody.getEntity()));
+                        bus.postQueued(new PhysicsCollisionWithOtherEntityEvent(body.getEntity(), impact.hitBody.getEntity()));
                     }
                 }
             } else {
