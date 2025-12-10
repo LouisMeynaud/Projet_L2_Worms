@@ -4,6 +4,7 @@ import com.google.gson.typeadapters.RuntimeTypeAdapterFactory;
 import com.lllmtb.engine.GameWorld;
 import com.lllmtb.model.entity.Entity;
 import com.lllmtb.model.entity.projectile.Projectile;
+import com.lllmtb.model.entity.team.Team;
 import com.lllmtb.model.entity.worm.Worm;
 import com.lllmtb.terrain.map.Map;
 
@@ -16,13 +17,39 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.lllmtb.terrain.map.SaveMap;
 
+/**
+ * Utility class responsible for game data persistence.
+ * <p>
+ * This class handles saving the state of the {@link GameWorld}, the terrain configuration ({@link Map}),
+ * the heightline, and game meta-information. Data is exported in both JSON and text formats.
+ * </p>
+ */
 public class Save {
+
+    /** Static instance of the game world used for global save operations. */
     protected static GameWorld gameWorld;
 
+    /**
+     * Sets the static GameWorld instance to be used by the save methods.
+     *
+     * @param gWorld The current {@link GameWorld} instance to save.
+     */
     public static void setGameWorld(GameWorld gWorld) {
         gameWorld = gWorld;
     }
 
+    /**
+     * Saves the complete state of the GameWorld to a JSON file.
+     * <p>
+     * This method uses GSON with a {@link RuntimeTypeAdapterFactory} to handle entity polymorphism
+     * (e.g., differentiating between {@link Projectile} and {@link Worm}).
+     * The output file is named {@code test.json}.
+     * </p>
+     *
+     * @param gameWorld  The {@link GameWorld} object containing the current game state.
+     * @param stringPath The directory path where the JSON file will be created.
+     * @throws IOException If an error occurs during directory creation or file writing.
+     */
     public static void saveGameWorld(GameWorld gameWorld, String stringPath) throws IOException {
         RuntimeTypeAdapterFactory<Entity> entityAdapter = RuntimeTypeAdapterFactory.of(Entity.class, "type")
                 .registerSubtype(Projectile.class, "projectile") // Si le JSON contient "type": "bazooka", on crée un Bazooka
@@ -47,6 +74,15 @@ public class Save {
         }
     }
 
+    /**
+     * Saves the terrain heightline (contour) to a text file.
+     * The output file is named {@code hightline.txt}.
+     *
+     * @param map        The {@link Map} object containing terrain data.
+     * @param stringPath The destination directory path.
+     * @return {@code true} if the save was successful, {@code false} otherwise.
+     * @throws IOException If a critical I/O error occurs.
+     */
     public static boolean saveHightline(Map map, String stringPath) throws IOException {
         try {
             Path path = Paths.get(stringPath); //concataine
@@ -63,6 +99,15 @@ public class Save {
         }
     }
 
+    /**
+     * Saves the map structure to a text file.
+     * The output file is named {@code map.txt}.
+     *
+     * @param map        The {@link Map} object to save.
+     * @param stringPath The destination directory path.
+     * @return {@code true} if the save was successful, {@code false} otherwise.
+     * @throws IOException If a critical I/O error occurs.
+     */
     public static  boolean saveMap(Map map, String stringPath) throws IOException {
         try {
             Path path = Paths.get(stringPath);
@@ -78,12 +123,20 @@ public class Save {
             return false;
         }
     }
+
+    /**
+     * Saves general game information (Name, Teams, Current Turn) to a text file.
+     * The output file is named {@code info.txt}.
+     *
+     * @param gameWorld  The GameWorld source for the information.
+     * @param stringPath The destination directory path.
+     */
     public static  void saveInfo(GameWorld gameWorld, String stringPath) {
         try {
             Path path = Paths.get(stringPath);
             Files.createDirectories(path);
             Path filePath = path.resolve("info.txt");
-            Files.writeString(filePath,info(gameWorld));
+            Files.writeString(filePath, info(gameWorld));
 
             System.out.println("Succès : Info sauvegardée dans " + filePath);
 
@@ -94,15 +147,34 @@ public class Save {
         }
     }
 
+    /**
+     * Generates a string representation of the game's meta-information.
+     *
+     * @param gameWorld The source GameWorld.
+     * @return A formatted string containing the game name, team list, and the team currently playing.
+     */
     private static String  info(GameWorld gameWorld)  {
         String info = "";
         info +=  "Nom de la partie: " + gameWorld.getGameName() + "\n ";
-        info +=  "Les équipes: " + gameWorld.getTeams().toString() + "\n ";
-        info +=  "Equipe à jouer: " + gameWorld.getPlayingTeam()+ "\n ";
+        info +=  "Les équipes: ";
+        for (Team team : gameWorld.getTeams()) {
+            info += team.name;
+            info += "; ";
+        }
+        info += "\n ";
+        info +=  "Equipe à jouer: " + gameWorld.getPlayingTeam().name + "\n";
         return info;
     }
 
-    @SuppressWarnings("unused")
+    /**
+     * Orchestrates the complete save process for all game elements.
+     * <p>
+     * This method creates a directory based on the game name inside {@code src/test/resources/SaveTest/}
+     * and sequentially calls save methods for the Hightline, Map, Info, and GameWorld (JSON).
+     * </p>
+     *
+     * @throws IOException If an error occurs during any of the save processes.
+     */
     public static void saveAll() throws IOException {
         String stringPath = "src/test/resources/SaveTest/" + gameWorld.getGameName();
         saveHightline(gameWorld.getMap(), stringPath);

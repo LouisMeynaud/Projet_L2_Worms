@@ -54,7 +54,11 @@ public class GameWorld {
             map = GenerateMap.createMap(config);
         }
         this.map = map;
-        this.bus = gameSave.bus;
+        if (gameSave.bus == null) {
+            this.bus = new EventBus();
+        } else {
+            this.bus = gameSave.bus;
+        }
         Move.setMaxjump(settings.maxJump);
 
         // Init GameCommand queue
@@ -65,7 +69,7 @@ public class GameWorld {
 
         // Init Teams
         this.teams = new ArrayList<>();
-        for (TeamSave saveTeam :gameSave.teams  ){
+        for (TeamSave saveTeam :gameSave.teams) {
             this.teams.add(new Team(saveTeam));
         }
         // Init GameLoop

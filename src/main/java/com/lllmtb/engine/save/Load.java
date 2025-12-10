@@ -16,7 +16,29 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.lang.reflect.Field;
 
+/**
+ * Utility class responsible for loading game data from the file system.
+ * <p>
+ * This class handles the deserialization of the {@link GameSave} object from JSON
+ * and reconstructs complex object relationships (such as PhysicsBodies and Team references)
+ * that may have been severed or handled specifically during the serialization process.
+ * </p>
+ */
 public class Load {
+
+    /**
+     * Deserializes the {@link GameSave} object from a JSON file.
+     * <p>
+     * This method configures GSON with a {@link RuntimeTypeAdapterFactory} to correctly
+     * instantiate polymorphic subtypes of {@link Entity} (specifically {@link Projectile} and {@link Worm}).
+     * It reads from the hardcoded path {@code src/test/resources/SaveTest/[name]/test.json}.
+     * </p>
+     *
+     * @param name The name of the save folder to load from.
+     * @return The raw deserialized {@link GameSave} object.
+     * @throws FileNotFoundException If the JSON file does not exist in the expected directory.
+     * @throws RuntimeException If an I/O error occurs during reading.
+     */
     public static GameSave loadGameSave(String name) throws FileNotFoundException {
         String stringpath = "src/test/resources/SaveTest/" + name + "/test.json";
         RuntimeTypeAdapterFactory<Entity> entityAdapter = RuntimeTypeAdapterFactory.of(Entity.class, "type")
@@ -36,6 +58,22 @@ public class Load {
         }
     }
 
+    /**
+     * Reconstructs the runtime links between entities, physics bodies, and teams using Reflection.
+     * <p>
+     * JSON deserialization often creates detached objects. This method iterates through the
+     * loaded entities and performs the following repair operations:
+     * <ul>
+     * <li>Matches {@link Worm} entities to their {@link PhysicsBodySave} using UUIDs.</li>
+     * <li>Re-injects the correct {@link com.lllmtb.model.entity.team.Team} reference into {@link Worm} instances.</li>
+     * <li>Re-injects the physical body reference into {@link Worm} and {@link Projectile} instances.</li>
+     * </ul>
+     * This is necessary because fields like {@code body} or {@code team} might be transient or circular.
+     * </p>
+     *
+     * @param gameSave The {@link GameSave} object containing the detached entities to be reforged.
+     * @throws RuntimeException If a reflection error (NoSuchFieldException, IllegalAccessException) occurs.
+     */
     public static void reforgeGameSave(@NonNull GameSave gameSave) {
         for (PhysicsBodySave saveBody : gameSave.entities) {
             for (TeamSave teamSave : gameSave.teams) {
@@ -74,7 +112,25 @@ public class Load {
 
         }
     }
-    public  static GameWorld LoadAll(String name){
+
+
+    /**
+     * Orchestrates the complete loading process to create a playable {@link GameWorld}.
+     * <p>
+     * This method performs the following steps:
+     * <ol>
+     * <li>Deserializes the {@link GameSave} from JSON.</li>
+     * <li>Reforges the internal object links (Reflection).</li>
+     * <li>Loads the terrain {@link Map} using {@link MapLoader}.</li>
+     * <li>Constructs and returns the final {@link GameWorld}.</li>
+     * </ol>
+     * </p>
+     *
+     * @param name The name of the save (folder) to load.
+     * @return A fully initialized {@link GameWorld} ready for the game loop.
+     * @throws RuntimeException If the save file is not found or other loading errors occur.
+     */
+    public  static GameWorld loadAll(String name) {
         try {
             GameSave gameSave = loadGameSave(name);
             reforgeGameSave(gameSave);

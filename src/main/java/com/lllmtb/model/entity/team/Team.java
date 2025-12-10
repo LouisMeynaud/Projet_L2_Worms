@@ -115,20 +115,20 @@ public class Team {
      */
     public Team(@NonNull TeamSave teamSave) {
         this.inventory = new Inventory();
-        for (WeaponId weaponId: teamSave.inventorySave.unlockedWeapons){
+        for (WeaponId weaponId: teamSave.inventorySave.unlockedWeapons) {
             inventory.unlock(weaponId);
         }
-        for (WeaponId weaponId: teamSave.inventorySave.weaponAmmo.keySet()){
-            inventory.weapons.addAmmo(weaponId,teamSave.inventorySave.weaponAmmo.get(weaponId));
+        for (WeaponId weaponId: teamSave.inventorySave.weaponAmmo.keySet()) {
+            inventory.weapons.addAmmo(weaponId, teamSave.inventorySave.weaponAmmo.get(weaponId));
         }
         for (ToolId toolId: teamSave.inventorySave.toolAmmo.keySet()) {
-            inventory.tools.addAmmo(toolId,teamSave.inventorySave.toolAmmo.get(toolId));
+            inventory.tools.addAmmo(toolId, teamSave.inventorySave.toolAmmo.get(toolId));
         }
 
         this.name = teamSave.team.name;
         this.numberOfWorms =  teamSave.team.numberOfWorms;
         this.id = teamSave.team.id;
-        for(Worm worm: teamSave.team.getTeamWorms()){
+        for (Worm worm: teamSave.team.getTeamWorms()) {
             this.worms.add(worm);
         }
         this.currentWorm = teamSave.team.worms.get(teamSave.team.index);
