@@ -403,8 +403,7 @@ class PhysicsEngineTest {
         Worm worm = new Worm("Test", new Team("TestTeam", 1, new Position[]{new Position(3,3)}));
         pE.add(worm.getBody());
         int size = pE.getBodies().size();
-        worm.getStats().setHp(0);
-        worm.setDeath();
+        worm.damageWorm(worm.getStats().getHp());
         pE.actualizeBodies();
         assertEquals(pE.getBodies().size(), size-1);
     }
