@@ -28,7 +28,7 @@ public class Utilitaire {
 
 
     public static <T> JButton createImageButton(
-        Map<T, BufferedImage> textureMap, T name, int buttonWidth, int buttonHeight, int iconWidth, int iconHeight, String text, String font, int fontSize) {
+        Map<T, BufferedImage> textureMap, T name, int buttonWidth, int buttonHeight, int iconWidth, int iconHeight, String text, String font, int fontSize, Color fontColor) {
         JButton button = new JButton();
 
         try {
@@ -56,6 +56,7 @@ public class Utilitaire {
         button.setPreferredSize(new Dimension(buttonWidth, buttonHeight));
         button.setText(text);
         button.setFont(new Font(font, Font.BOLD, fontSize));
+        button.setForeground(fontColor);
         button.setHorizontalTextPosition(SwingConstants.CENTER);
         button.setVerticalTextPosition(SwingConstants.CENTER);
         return button;

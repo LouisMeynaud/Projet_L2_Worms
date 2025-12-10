@@ -1,5 +1,6 @@
 package com.lllmtb.ui.graphical;
 
+import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -24,9 +25,9 @@ public class HomeScreenPanel extends JPanel {
         gbc.insets = new Insets(15, 0, 15, 0);
 
 
-        JButton playButton = Utilitaire.createImageButton(TextureManager.UI, "Start", 128, 64, 128, 64, "Start", "Arial", 16);
-        JButton settingButton = Utilitaire.createImageButton(TextureManager.UI, "GameSetting", 128, 64, 128, 64, "Game Settings", "Arial", 16);
-        JButton closeButton = Utilitaire.createImageButton(TextureManager.UI, "Close", 128, 64, 128, 64, "Close", "Arial", 16);
+        JButton playButton = Utilitaire.createImageButton(TextureManager.UI, "Panel", 256, 128, 256, 128, "Start", "Arial", 23, Color.WHITE);
+        JButton settingButton = Utilitaire.createImageButton(TextureManager.UI, "Panel", 256, 128, 256, 128, "Game Settings", "Arial", 23, Color.WHITE);
+        JButton closeButton = Utilitaire.createImageButton(TextureManager.UI, "Panel", 256, 128, 256, 128, "Close", "Arial", 23, Color.WHITE);
 
         playButton.addActionListener(e -> {
             eventBus.postQueued(new ScreenNewOrLoadEvent());
