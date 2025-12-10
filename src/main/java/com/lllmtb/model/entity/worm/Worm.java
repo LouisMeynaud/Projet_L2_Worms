@@ -212,10 +212,15 @@ public class Worm extends Entity {
      * <p>If the worm's health (or other relevant stat) indicates it is dead,
      * this method will mark the worm as no longer alive.</p>
      */
-    public void setDeath() {
+    private void setDeath() {
         if (!this.stats.isAlive()) {
             this.alive = false;
         }
+    }
+
+    public void damageWorm(int damage) {
+        this.stats.damageTake(damage);
+        this.setDeath();
     }
 
     public static void setMaxHp(int maxHp) {
