@@ -78,12 +78,36 @@ public class Save {
             return false;
         }
     }
+    public static  void saveInfo(GameWorld gameWorld, String stringPath) {
+        try {
+            Path path = Paths.get(stringPath);
+            Files.createDirectories(path);
+            Path filePath = path.resolve("info.txt");
+            Files.writeString(filePath,info(gameWorld));
+
+            System.out.println("Succès : Info sauvegardée dans " + filePath);
+
+        } catch (IOException e) {
+            System.err.println("Erreur lors de la sauvegarde : " + e.getMessage());
+            e.printStackTrace();
+
+        }
+    }
+
+    private static String  info(GameWorld gameWorld)  {
+        String info = "";
+        info +=  "Nom de la partie: " + gameWorld.getGameName() + "\n ";
+        info +=  "Les équipes: " + gameWorld.getTeams().toString() + "\n ";
+        info +=  "Equipe à jouer: " + gameWorld.getPlayingTeam()+ "\n ";
+        return info;
+    }
 
     @SuppressWarnings("unused")
     public static void saveAll() throws IOException {
         String stringPath = "src/test/resources/SaveTest/" + gameWorld.getGameName();
         saveHightline(gameWorld.getMap(), stringPath);
         saveMap(gameWorld.getMap(), stringPath);
+        saveInfo(gameWorld, stringPath);
         saveGameWorld(gameWorld, stringPath);
     }
 }
