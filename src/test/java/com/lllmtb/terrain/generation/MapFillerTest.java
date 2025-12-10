@@ -1,11 +1,11 @@
 package com.lllmtb.terrain.generation;
 
-import com.lllmtb.terrain.map.*;
-import com.lllmtb.physics.*;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
-
 import org.junit.jupiter.api.Test;
+
+import com.lllmtb.physics.Position;
+import com.lllmtb.terrain.map.Map;
+import com.lllmtb.terrain.map.Tile;
 
 public class MapFillerTest {
     @Test
@@ -20,6 +20,10 @@ public class MapFillerTest {
                 Position position = new Position(j, i);
                 if (i < ligneHaute[j] && i > ligneBasse[j]) {
                    assertEquals(Tile.DIRT, map.getTile(position));
+                } else if (i == ligneHaute[j] && i > ligneBasse[j]) {
+                   assertEquals(Tile.GRASS, map.getTile(position));
+                } else if (i < ligneHaute[j] && i == ligneBasse[j]) {
+                   assertEquals(Tile.UNDERDIRT, map.getTile(position));
                 } else {
                     assertEquals(Tile.AIR, map.getTile(position));
                 }
