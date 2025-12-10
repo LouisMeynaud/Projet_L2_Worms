@@ -1,7 +1,9 @@
 package com.lllmtb.engine;
 
+import com.lllmtb.engine.logger.Logger;
 import com.lllmtb.engine.save.Save;
 import java.util.Objects;
+
 import org.eclipse.jdt.annotation.NonNull;
 import com.lllmtb.events.EventBus;
 import com.lllmtb.events.game.GamePauseEvent;
@@ -21,6 +23,8 @@ public class GameEngine {
     public static void main(String[] args) {
         boolean graphique = true;
         systemBus = new EventBus();
+        // Uncomment to log all system events for debugging
+        //systemBus.subscribe(Event.class, e -> Logger.logger.info("[EVENT/system]: {}", e.getClass().getSimpleName()));
         systemBus.subscribe(StartGameEvent.class, GameEngine::startGame);
 
         // Engine loop thread - processes engine-level events (start, pause, quit...)
@@ -41,9 +45,11 @@ public class GameEngine {
         // Start the chosen UI manager
         UI ui;
         if (graphique) {
+            Logger.logger.info("Using graphical interface");
             TextureManager.load(); // charge les textures
             ui = new GraphicalUI(systemBus);
         } else {
+            Logger.logger.info("Using console interface");
             ui = new ConsoleUI(systemBus);
         }
         ui.start();
@@ -56,6 +62,8 @@ public class GameEngine {
     private static void startGame(@NonNull StartGameEvent event) {
         GameSettings settings = Objects.requireNonNull(event).getSettings();
         EventBus worldBus = new EventBus();
+        // Uncomment to log all world events for debugging
+        //worldBus.subscribe(Event.class, e -> Logger.logger.info("[EVENT/world]: {}", e.getClass().getSimpleName()));
         world = new GameWorld(settings, worldBus);
         Save.setGameWorld(world);
         systemBus.postSync(new WorldCreatedEvent(world));
