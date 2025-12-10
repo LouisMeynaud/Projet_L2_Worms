@@ -160,7 +160,7 @@ public class SettingGamePanel extends JPanel {
         contentGrid.add(this.windCheckBox, gbc);
         row++;
 
-        //tire alliée
+        //tir allié
         gbc.gridwidth = 2;
         gbc.gridx = 0;
         gbc.gridy = row;
