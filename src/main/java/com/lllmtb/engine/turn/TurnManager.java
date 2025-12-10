@@ -75,15 +75,11 @@ public final class TurnManager {
         setupEvent();
     }
 
-    public void updateTurn() {
-        long now = System.currentTimeMillis();
-        long timeElapsed = now - startTime;
-        this.remainingTimeInMs = turnDurationInMs - timeElapsed;
-        // Timer
-        if (now - startTime >= turnDurationInMs) {
+    public void updateTurn(double elapsedTime) {
+        this.remainingTimeInMs -= (long) elapsedTime;
+        if (remainingTimeInMs <= 0) {
             endTurn();
-        }
-        if (this.turn.getIsEnd()) {
+        } else if (this.turn.getIsEnd()) {
             endTurn();
         }
     }
