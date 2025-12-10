@@ -1,5 +1,13 @@
 package com.lllmtb.physics;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
+
+import org.eclipse.jdt.annotation.NonNull;
+
 import com.lllmtb.events.EventBus;
 import com.lllmtb.events.physics.PhysicsCollisionDetectedEvent;
 import com.lllmtb.events.physics.PhysicsCollisionWithWatterOrExitMapEvent;
@@ -10,13 +18,6 @@ import com.lllmtb.model.entity.projectile.Projectile;
 import com.lllmtb.model.entity.worm.Worm;
 import com.lllmtb.model.item.ItemId;
 import com.lllmtb.terrain.map.Map;
-import org.eclipse.jdt.annotation.NonNull;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * The {@code PhysicsEngine} class manages and updates a collection of {@link PhysicsBody} objects
@@ -61,6 +62,9 @@ public class PhysicsEngine {
      */
     private int cpt = 0;
 
+    private static final double MAX_WORM_SPEED = 8.0;
+    private static final double GROUND_FRICTION = 0.90;
+    private static final double AIR_RESISTANCE_X = 0.98;
 
     /**
      * Constructs a new {@code PhysicsEngine} instance.
@@ -117,6 +121,10 @@ public class PhysicsEngine {
      */
     public Vector getWind() {
         return wind;
+    }
+
+    public ConcurrentHashMap<PhysicsBody, ArrayList<PhysicsModifier>> getModifiers() {
+        return modifiers;
     }
 
     /**
@@ -307,27 +315,25 @@ public class PhysicsEngine {
      */
     protected void nextStep(double dt) {
         for (PhysicsBody body : bodies) {
-            Vector deltaV = body.getVector().scale(-100).add(this.gravity); // Simple air resistance + gravity effects
-            // only apply wind effects to Projectiles
+            Vector deltaV = this.gravity;
+            deltaV = deltaV.add(body.getVector().scale(-0.5));
+
             if (body.getEntity() instanceof Projectile) deltaV = deltaV.add(this.wind);
             deltaV = deltaV.scale(dt * body.getMass());
 
-
             Vector newVector = body.getVector().add(deltaV);
 
-            // apply modifiers for this tick only - we don't want to stack them every tick - not sure about this,
-            // for example gravity in the vector keeps increasing when the parachute is deployed and we don't want that
+            // apply modifiers for this tick only - we don't want to stack them every tick
             newVector = applyModifiers(body, newVector, dt);
-            if (-0.5 < newVector.getX() && newVector.getX() < 0.5) {
+
+            if (Math.abs(newVector.getX()) < 0.1) {
                 newVector = new Vector(0, newVector.getY());
             }
 
-            // Limit maximum horizontal velocity for worms to prevent infinite acceleration
             if (body.getEntity() instanceof Worm) {
-                double maxHorizontalVel = 20.0; // Maximum horizontal velocity
                 double velX = newVector.getX();
-                if (Math.abs(velX) > maxHorizontalVel) {
-                    velX = Math.signum(velX) * maxHorizontalVel;
+                if (Math.abs(velX) > MAX_WORM_SPEED) {
+                    velX = Math.signum(velX) * MAX_WORM_SPEED;
                     newVector = new Vector(velX, newVector.getY());
                 }
             }
@@ -370,23 +376,24 @@ public class PhysicsEngine {
                 }
             }
 
-            // Apply ground friction to worms that are on the ground
             if (body.getEntity() instanceof Worm) {
                 Worm worm = (Worm) body.getEntity();
-                if (worm.isOnGround() && Math.abs(body.getVector().getY()) < 0.5) {
-                    // Apply friction to horizontal velocity when on ground and not jumping
-                    Vector currentVector = body.getVector();
-                    double frictionFactor = 0.95;
-                    double newVelX = currentVector.getX() * frictionFactor;
+                Vector currentVector = body.getVector();
+                double newVelX = currentVector.getX();
 
-                    // Stop movement if velocity is very small
-                    if (Math.abs(newVelX) < 0.1) {
-                        newVelX = 0;
+                if (worm.isOnGround()) {
+                    if (Math.abs(currentVector.getY()) < 0.5) {
+                        newVelX *= GROUND_FRICTION;
                     }
-
-                    Vector fricVector = new Vector(newVelX, currentVector.getY());
-                    body.setVector(fricVector);
+                } else {
+                    newVelX *= AIR_RESISTANCE_X;
                 }
+
+                if (Math.abs(newVelX) < 0.1) {
+                    newVelX = 0;
+                }
+
+                body.setVector(new Vector(newVelX, currentVector.getY()));
             }
         }
     }

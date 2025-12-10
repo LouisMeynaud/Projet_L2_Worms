@@ -33,7 +33,7 @@ import com.lllmtb.ui.graphical.TextureManager;
 import com.lllmtb.model.entity.projectile.*;
 
 public class GameWorldPanel extends JPanel {
-    private EventBus eventBus;
+    private EventBus eventBus;  // system bus
     private GameWorld world;
     private Tile[][] mapMatrix;
     private final int tileSize = 12;
@@ -63,7 +63,7 @@ public class GameWorldPanel extends JPanel {
     public GameWorldPanel(EventBus eventBus) {
         this.eventBus = eventBus;
         setFocusable(true);
-        subscribeToGameEvents();
+        subscribeToSystemEvents();
 
 
         //////////imput////////////////
@@ -107,19 +107,16 @@ public class GameWorldPanel extends JPanel {
                 // double worldX = (e.getX() - cameraOffsetX) / currentZoom;
                 // double worldY = (e.getY() - cameraOffsetY) / currentZoom;
 
-
-
                 if (type == MouseEvent.BUTTON1 && shootMode) {
                    Position worldPos = screenToWorld(e.getX(), e.getY());
-                    eventBus.postQueued(new MouseInputEvent(worldPos, duration, Direction.Left));
-
+                    world.getBus().postQueued(new MouseInputEvent(worldPos, duration, Direction.Left));
                 }
 
                 if (type == MouseEvent.BUTTON3) {
                     isCameraMode = false;
                     if (!hasDraggedCamera) {
                         int a = 0; //suprimer une fois l'implementation du else faite
-                        //eventBus.postQueued(new MouseInputEvent(new Position(worldX, worldY),duration, Direction.Right));
+                        //world.getBus().postQueued(new MouseInputEvent(new Position(worldX, worldY),duration, Direction.Right));
 
                     }
                 }
@@ -179,15 +176,13 @@ public class GameWorldPanel extends JPanel {
                     repaint();
                 } else {
                     if (rotation < 0) {
-
-                    eventBus.postQueued(new MouseWheelMoveInputEvent(Direction.Down));
-                }
-                if (rotation > 0) {
-                    eventBus.postQueued(new MouseWheelMoveInputEvent(Direction.Up));
+                        world.getBus().postQueued(new MouseWheelMoveInputEvent(Direction.Down));
+                    }
+                    if (rotation > 0) {
+                        world.getBus().postQueued(new MouseWheelMoveInputEvent(Direction.Up));
+                    }
                 }
             }
-            }
-
 
             @Override
             public void mouseMoved(MouseEvent e) {
@@ -234,50 +229,55 @@ public class GameWorldPanel extends JPanel {
      */
     public void processInputs() {
         if (pressedKeys.contains(KeyEvent.VK_UP)) {
-            eventBus.postQueued(new MoveEvent(Direction.Up));
+            world.getBus().postQueued(new MoveEvent(Direction.Up));
         }
         if (pressedKeys.contains(KeyEvent.VK_DOWN)) {
-            eventBus.postQueued(new MoveEvent(Direction.Down));
+            world.getBus().postQueued(new MoveEvent(Direction.Down));
         }
         if (pressedKeys.contains(KeyEvent.VK_LEFT)) {
-            eventBus.postQueued(new MoveEvent(Direction.Left));
+            world.getBus().postQueued(new MoveEvent(Direction.Left));
         }
         if (pressedKeys.contains(KeyEvent.VK_RIGHT)) {
-            eventBus.postQueued(new MoveEvent(Direction.Right));
+            world.getBus().postQueued(new MoveEvent(Direction.Right));
         }
     }
 
-    public void subscribeToGameEvents() {
-
+    public void subscribeToSystemEvents() {
         eventBus.subscribe(WorldCreatedEvent.class, event -> {
             this.world = event.getWorld();
+            subscribeToWorldEvents();
             this.mapMatrix = this.world.getMap().getMapMatrix();
             this.mapCache = null; //on efface l'ancienne image
             this.initialFitDone = false;
             repaint();
         });
-        eventBus.subscribe(MapUpdateEvent.class, event -> {
-            this.mapMatrix = this.world.getMap().getMapMatrix();
-            this.mapCache = null;
-            repaint();
-        });
-        eventBus.subscribe(GameStateUpdatedEvent.class, event -> {
-            repaint();
-        });
-
-        eventBus.subscribe(ShootMode.class, event -> {
-            this.shootMode = !this.shootMode;
-        });
 
         eventBus.subscribe(GamePauseEvent.class, event -> {
 
         });
+    }
 
-        eventBus.subscribe(RequestFocus.class, event -> {
+    public void subscribeToWorldEvents() {
+        if (this.world == null) return;
+
+        world.getBus().subscribe(MapUpdateEvent.class, event -> {
+            this.mapMatrix = this.world.getMap().getMapMatrix();
+            this.mapCache = null;
+            repaint();
+        });
+        world.getBus().subscribe(GameStateUpdatedEvent.class, event -> {
+            repaint();
+        });
+
+        world.getBus().subscribe(ShootMode.class, event -> {
+            this.shootMode = !this.shootMode;
+        });
+
+        world.getBus().subscribe(RequestFocus.class, event -> {
             this.requestFocusInWindow();
         });
 
-        eventBus.subscribe(ProcessInputsEvent.class, event -> {
+        world.getBus().subscribe(ProcessInputsEvent.class, event -> {
             processInputs();
         });
     }

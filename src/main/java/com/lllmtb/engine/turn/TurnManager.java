@@ -1,30 +1,27 @@
 package com.lllmtb.engine.turn;
 
+import java.util.Objects;
 import com.lllmtb.engine.GameWorld;
 import com.lllmtb.engine.logger.Logger;
-import java.util.List;
-import java.util.Objects;
-
-import com.lllmtb.engine.commands.GameCommand;
 import com.lllmtb.events.EventListener;
 import com.lllmtb.events.game.WeaponSelectedEvent;
+import com.lllmtb.events.move.GroundCheckCollision;
+import com.lllmtb.events.move.MouseInputEvent;
 import com.lllmtb.events.physics.ActualizePhysicsEvent;
 import com.lllmtb.events.physics.PhysicsCollisionDetectedEvent;
 import com.lllmtb.events.physics.PhysicsCollisionWithWatterOrExitMapEvent;
 import com.lllmtb.events.physics.RemoveWormOfTeam;
 import com.lllmtb.events.turn.TurnEndEvent;
+import com.lllmtb.events.turn.TurnSkipEvent;
 import com.lllmtb.events.turn.TurnStarEvent;
 import com.lllmtb.events.turn.TurnStopEvent;
 import com.lllmtb.events.turn.WormPlayable;
-import com.lllmtb.events.move.GroundCheckCollision;
-import com.lllmtb.events.move.MouseInputEvent;
 import com.lllmtb.events.ui.MoveEvent;
 import com.lllmtb.model.entity.projectile.Projectile;
 import com.lllmtb.model.entity.team.Team;
 import com.lllmtb.model.entity.worm.Worm;
 import com.lllmtb.model.item.UseParams;
 import com.lllmtb.physics.Move;
-
 import static com.lllmtb.physics.Move.move;
 import com.lllmtb.physics.PhysicsBody;
 import com.lllmtb.physics.Position;
@@ -33,13 +30,9 @@ public final class TurnManager {
 
     private Turn turn;
     private final GameWorld world;
-    private EventListener<MoveEvent> moveListener;
-    private EventListener<WeaponSelectedEvent> weaponSelectedEventEventListener;
-    private EventListener<MouseInputEvent> mouseInputEventListener;
-    private EventListener<GroundCheckCollision> groundCollisionListener;
-    private long startTime;
+
     private final long turnDurationInMs;
-    private long remainingTime;
+    private long remainingTimeInMs;
 
     public TurnManager(GameWorld world, long turnDuration) {
         this.world = world;
@@ -56,35 +49,26 @@ public final class TurnManager {
     }
 
     public long getRemainingTime() {
-        return this.remainingTime;
+        return this.remainingTimeInMs;
     }
 
     public void init() {
-        world.getBus().subscribe(TurnStopEvent.class, event -> {
-            this.turn.setIsEnd();
-        });
+        setupEvents();
     }
 
     public void startTurn(Team team) {
-        this.remainingTime = turnDurationInMs;
-        startTime = System.currentTimeMillis();
+        this.remainingTimeInMs = turnDurationInMs;
         this.turn = new Turn(team);
         world.getBus().postQueued(new TurnStarEvent(team));
         Logger.logger.info("Start turn for the team {}\n", team.name);
         world.getBus().postQueued(new WormPlayable(turn.getWormPlayable()));
-
-        setupEvent();
     }
 
-    public void updateTurn() {
-        long now = System.currentTimeMillis();
-        long timeElapsed = now - startTime;
-        this.remainingTime = turnDurationInMs - timeElapsed;
-        // Timer
-        if (now - startTime >= turnDurationInMs) {
+    public void updateTurn(double elapsedTime) {
+        this.remainingTimeInMs -= (long) elapsedTime;
+        if (remainingTimeInMs <= 0) {
             endTurn();
-        }
-        if (this.turn.getIsEnd()) {
+        } else if (this.turn.getIsEnd()) {
             endTurn();
         }
     }
@@ -92,8 +76,6 @@ public final class TurnManager {
     private void endTurn() {
         this.turn.end();
         Logger.logger.info("End turn - switch Team\n");
-        world.getBus().unsubscribe(MoveEvent.class, moveListener);
-        world.getBus().unsubscribe(GroundCheckCollision.class, groundCollisionListener);
         world.getBus().postQueued(new TurnEndEvent());
         world.nextTeamTurn();
 
@@ -103,13 +85,31 @@ public final class TurnManager {
         return turn;
     }
 
-    private void setupEvent() {
+    private void setupEvents() {
+        // TODO - unsubscribe when stopping the gameworld. Note that we can keep these listeners across turns because they use dynamic data
 
-        moveListener = event -> {
+        EventListener<TurnStopEvent> turnStopListener = event -> {
+            this.turn.setIsEnd();
+        };
+
+        EventListener<TurnSkipEvent> turnskipEventListener = event -> {
+            if (remainingTimeInMs < turnDurationInMs - 3000) {
+                Logger.logger.info("Turn skipped by team {}", this.turn.getTeam().name);
+                endTurn();
+            }
+        };
+
+        EventListener<MoveEvent> moveListener = event -> {
             world.queueCommand(move(this.turn.getWormPlayable(), event.direction));
         };
 
-        weaponSelectedEventEventListener = event -> {
+        EventListener<GroundCheckCollision> groundCollisionListener = event -> {
+            if (turn.getWormPlayable().uuid == event.worm.uuid) {
+                Move.jumpToMax();
+            }
+        };
+
+        EventListener<WeaponSelectedEvent> weaponSelectedEventEventListener = event -> {
             turn.getTeam().selectWeapon(event.getWeaponId());
         };
 
@@ -135,7 +135,7 @@ public final class TurnManager {
             if (event.movingBody() instanceof Projectile) {
                 if (event.hitBody() != null && event.hitBody() instanceof Worm worm) {
                     Projectile bullet = (Projectile) event.movingBody();
-                   worm.damageWorm(20);
+                    worm.damageWorm(20);
                 }
             }
             world.getBus().postQueued(new ActualizePhysicsEvent());
@@ -150,7 +150,7 @@ public final class TurnManager {
             worm.getTeam().removeWorm(worm);
         };
 
-        mouseInputEventListener = event -> {
+        EventListener<MouseInputEvent> mouseInputEventListener = event -> {
             PhysicsBody wormBody = turn.getWormPlayable().getBody();
 
             double mouseX = event.getPos().getX();
@@ -171,11 +171,11 @@ public final class TurnManager {
             Position spawnBullet = new Position(spawnX, spawnY);
             UseParams params = new UseParams(angle, spawnBullet, Objects.requireNonNull(turn.getWormPlayable()));
 
-            List<GameCommand> cmds = turn.getTeam().use(params);
-            for (GameCommand c : cmds) {
-                world.queueCommand(c);
-            }
+            world.queueCommands(turn.getTeam().use(params));
         };
+
+        world.getBus().subscribe(TurnStopEvent.class, turnStopListener);
+        world.getBus().subscribe(TurnSkipEvent.class, turnskipEventListener);
 
         world.getBus().subscribe(MoveEvent.class, moveListener);
         world.getBus().subscribe(GroundCheckCollision.class, groundCollisionListener);

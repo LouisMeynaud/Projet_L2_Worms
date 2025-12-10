@@ -1,5 +1,23 @@
 package com.lllmtb.engine.commands;
 
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.LinkedBlockingQueue;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import static org.mockito.ArgumentMatchers.argThat;
+import static org.mockito.ArgumentMatchers.isNull;
+import static org.mockito.ArgumentMatchers.same;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+
 import com.lllmtb.engine.GameSettings;
 import com.lllmtb.engine.GameWorld;
 import com.lllmtb.events.EventBus;
@@ -9,19 +27,7 @@ import com.lllmtb.model.entity.projectile.Projectile;
 import com.lllmtb.physics.PhysicsEngine;
 import com.lllmtb.physics.PhysicsModifier;
 import com.lllmtb.terrain.generation.LandScape;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 
-import java.lang.reflect.Field;
-import java.util.List;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.LinkedBlockingQueue;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.isNull;
-import static org.mockito.ArgumentMatchers.same;
-import static org.mockito.Mockito.*;
 
 public class GameCommandTest {
     private GameWorld world;
@@ -31,7 +37,7 @@ public class GameCommandTest {
 
     @BeforeEach
     void setUp() throws Exception {
-        GameSettings settings = new GameSettings(1, new String[]{"Team"}, 1, 10, false, null, false, 200, LandScape.FLAT,2);
+        GameSettings settings = new GameSettings("blabla", 1, new String[]{"Team"}, 1, 100, 10, false, null, false, 200, LandScape.FLAT,2);
         bus = mock(EventBus.class);
         world = new GameWorld(settings, bus);
 
@@ -104,5 +110,16 @@ public class GameCommandTest {
         // calling processCommands again should not re-execute commands
         world.processCommands();
         assertEquals(2, executed.size());
+    }
+
+    @Test
+    void queueCommandsReturnsFalseIfAnyCommandIsNull() {
+        List<GameCommand> cmds = new ArrayList<>();
+        cmds.add(w -> {});
+        cmds.add(null);
+        cmds.add(w -> {});
+        boolean result = world.queueCommands(cmds);
+        assertFalse(result);
+        assertEquals(2, queue.size());
     }
 }

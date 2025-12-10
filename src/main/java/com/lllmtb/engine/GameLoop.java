@@ -1,6 +1,5 @@
 package com.lllmtb.engine;
 
-import com.lllmtb.events.game.GamePauseEvent;
 import com.lllmtb.events.input.ProcessInputsEvent;
 import org.eclipse.jdt.annotation.NonNull;
 
@@ -20,21 +19,7 @@ public class GameLoop implements Runnable {
      */
     public GameLoop(@NonNull GameWorld world) {
         this.world = Objects.requireNonNull(world);
-
-        this.world.getBus().subscribe(GamePauseEvent.class, this::onPauseEvent);
     }
-
-
-
-    /**
-     * Handles game pause events to update the paused state of the game loop.
-     * @param event the {@link GamePauseEvent} containing the new paused state
-     * @throws NullPointerException if {@code event} is {@code null}
-     */
-    private void onPauseEvent(@NonNull GamePauseEvent event) {
-        this.isPaused = Objects.requireNonNull(event).isPaused;
-    }
-
 
     /**
      * The main game loop method.
@@ -43,7 +28,6 @@ public class GameLoop implements Runnable {
     @Override
     public void run() {
         long last = System.nanoTime();
-        int acc = 0;
         while (running) {
             long now = System.nanoTime();
             long elapsedMs = (now - last) / 1_000_000;
@@ -51,12 +35,11 @@ public class GameLoop implements Runnable {
 
             if (!isPaused) {
                 System.out.print(""); // TODO : Replace by another line which will be always effective
-                // System.out.println("[" + String.format("%4d", acc++) + "] New tick " + elapsedMs + "ms");
+                // System.out.println("[" + String.format("%4d", totalTicks) + "] New tick " + elapsedMs + "ms");
                 // System.out.println("Entities in the game "
                 //         + world.getPhysics().getBodies().size() + " : "
                 //         + Arrays.toString(world.getPhysics().getBodies().stream().map(PhysicsBody::getEntity).toArray()));
                 // System.out.println("Bodies : " + Arrays.toString(world.getPhysics().getBodies().toArray()));
-            }
 
             // 0) Signal input processing to allow UI components to send input events
             world.getBus().postQueued(new ProcessInputsEvent());
@@ -64,15 +47,14 @@ public class GameLoop implements Runnable {
             // 1) process queued external events (eg. input)
             world.getBus().processQueued();
 
-            if (!isPaused) {
-                // 2) update physics + TurnManager
-                world.update(ticktime);
+            // 2) update physics + TurnManager
+                world.update(elapsedMs);
 
                 // 3) process events generated during physics (collisions, explosions...)
                 world.getBus().processQueued();
 
-                //6) increace totalTicks
-                this.totalTicks++;
+                // 4) increase totalTicks
+                totalTicks++;
             }
 
             // 5) sleep to maintain tick rate
@@ -82,6 +64,14 @@ public class GameLoop implements Runnable {
                 stop();
             }
         }
+    }
+
+    /**
+     * Pauses or resumes the game loop.
+     * @param isPaused {@code true} to pause the game, {@code false} to resume
+     */
+    public void pause(boolean isPaused) {
+        this.isPaused = isPaused;
     }
 
     /**

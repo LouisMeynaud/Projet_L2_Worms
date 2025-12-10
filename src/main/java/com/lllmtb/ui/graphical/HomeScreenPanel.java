@@ -24,9 +24,9 @@ public class HomeScreenPanel extends JPanel {
         gbc.insets = new Insets(15, 0, 15, 0);
 
 
-        JButton playButton = Utilitaire.createImageButton(TextureManager.UI, "Start", 128, 64, 64, 48);
-        JButton settingButton = Utilitaire.createImageButton(TextureManager.UI, "GameSetting", 128, 64, 64, 48);
-        JButton closeButton = Utilitaire.createImageButton(TextureManager.UI, "Close", 128, 64, 64, 48);
+        JButton playButton = Utilitaire.createImageButton(TextureManager.UI, "Start", 128, 64, 128, 64);
+        JButton settingButton = Utilitaire.createImageButton(TextureManager.UI, "GameSetting", 128, 64, 128, 64);
+        JButton closeButton = Utilitaire.createImageButton(TextureManager.UI, "Close", 128, 64, 128, 64);
 
         playButton.addActionListener(e -> {
             eventBus.postQueued(new ScreenNewOrLoadEvent());

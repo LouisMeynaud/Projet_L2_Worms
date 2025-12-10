@@ -1,25 +1,27 @@
 package com.lllmtb.engine;
 
-import com.lllmtb.events.EventBus;
-import com.lllmtb.model.entity.team.Team;
-import com.lllmtb.physics.PhysicsEngine;
-import com.lllmtb.terrain.generation.GenerateMap;
-import com.lllmtb.terrain.map.Map;
-import com.lllmtb.terrain.map.MapLoader;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import org.junit.jupiter.api.AfterEach;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-
-import static org.junit.jupiter.api.Assertions.*;
-
+import com.lllmtb.events.EventBus;
+import com.lllmtb.model.entity.team.Team;
+import com.lllmtb.physics.PhysicsEngine;
 import com.lllmtb.terrain.generation.LandScape;
+import com.lllmtb.terrain.map.Map;
+import com.lllmtb.terrain.map.MapLoader;
 
 /**
  * Tests for GameWorld with minimal Mockito usage.
@@ -40,9 +42,11 @@ public class GameWorldTest {
     void whenMapFileNameIsNull_thenGenerateMapCreatesMap_and_teamsAndWormsRegistered() {
         // Use floatingIsland = false (WORLD)
         GameSettings settings = new GameSettings(
+            "blabla",
                 1,                 // nbTeams
                 new String[]{"TeamA"}, // teamNames
                 2,                 // nbWorms
+                100,                //Max Health
                 10,              //Turn Duration
                 false,             // hasWind
                 null,              // mapFileName -> will use GenerateMap.createMap(WORLD)
@@ -81,7 +85,7 @@ public class GameWorldTest {
     void whenMapFileNameProvided_MapLoaderIsUsed_insteadOfGenerateMap() {
         // we only mock MapLoader.loadMatrix to return a real map created by GenerateMap
         Map generated = MapLoader.loadMatrix("mapTest");
-        GameSettings settings = new GameSettings(0, new String[]{}, 0, 10, true, "mapTest", false,370,LandScape.HILLY,2);
+        GameSettings settings = new GameSettings("blabla", 0, new String[]{}, 0,100, 10, true, "mapTest", false,370,LandScape.HILLY,2);
         EventBus eventBus = new EventBus();
         GameWorld gw = new GameWorld(settings,eventBus);
 
@@ -99,8 +103,8 @@ public class GameWorldTest {
         try (MockedStatic<MapLoader> mocked = Mockito.mockStatic(MapLoader.class)) {
             mocked.when(() -> MapLoader.loadMatrix("badPath")).thenThrow(new IllegalStateException("io fail"));
 
-            GameSettings settings = new GameSettings(
-                    0, new String[]{}, 0, 10, false, "badPath", false,370,LandScape.HILLY,2);
+            GameSettings settings = new GameSettings("blabla", 
+                    0, new String[]{}, 0, 100,10, false, "badPath", false,370,LandScape.HILLY,2);
             EventBus eventBus = new EventBus();
             RuntimeException e = assertThrows(RuntimeException.class, () -> new GameWorld(settings,eventBus));
             assertNotNull(e.getCause());
@@ -113,9 +117,11 @@ public class GameWorldTest {
     void teams_loop_breaks_on_ArrayIndexOutOfBounds_and_only_validTeamsCreated() {
         // nbTeams = 3 but only one name provided -> GameWorld should create only the first team then break
         GameSettings settings = new GameSettings(
+            "blabla", 
                 3,
                 new String[]{"SoloTeam"},
                 3,      // 3 worms for the created team
+                100,
                 10000,
                 true,
                 null,   // use GenerateMap
@@ -138,7 +144,7 @@ public class GameWorldTest {
     @Test
     void startRunsLoopAndStopStopsIt_whenStartedInSeparateThread() throws Exception {
         // use a small, simple world (no teams) so physics starts empty
-        GameSettings settings = new GameSettings(0, new String[]{}, 0, 10, false, null, false,370,LandScape.HILLY,2);
+        GameSettings settings = new GameSettings("blabla", 0, new String[]{}, 0,100, 10, false, null, false,370,LandScape.HILLY,2);
          EventBus eventBus = new EventBus();
         GameWorld gw = new GameWorld(settings,eventBus);
 
@@ -161,7 +167,7 @@ public class GameWorldTest {
 
     @Test
     void registerEntity_null_throwsNPE() {
-        GameSettings settings = new GameSettings(0, new String[]{}, 0, 10, false, null, false,370,LandScape.HILLY,2);
+        GameSettings settings = new GameSettings("blabla", 0, new String[]{}, 0,100, 10, false, null, false,370,LandScape.HILLY,2);
          EventBus eventBus = new EventBus();
         GameWorld gw = new GameWorld(settings,eventBus);
 
@@ -170,7 +176,7 @@ public class GameWorldTest {
 
     @Test
     void stopLoop_whenNotRunning() {
-        GameSettings settings = new GameSettings(0, new String[]{}, 0, 10, false, null, false,370,LandScape.HILLY,2);
+        GameSettings settings = new GameSettings("blabla", 0, new String[]{}, 0,100, 10, false, null, false,370,LandScape.HILLY,2);
          EventBus eventBus = new EventBus();
         GameWorld gw = new GameWorld(settings,eventBus);
 
@@ -180,10 +186,10 @@ public class GameWorldTest {
     }
 
     @Test
-    void startLoopWhenAlreadyRunning() throws Exception {
-        GameSettings settings = new GameSettings(0, new String[]{}, 0, 10, false, null, false,370,LandScape.HILLY,2);
+    void startLoop_whenAlreadyRunning() throws Exception {
+        GameSettings settings = new GameSettings("blabla", 0, new String[]{}, 0,100, 10, false, null, false,370,LandScape.HILLY,2);
         EventBus eventBus = new EventBus();
-        GameWorld gw = new GameWorld(settings, eventBus);
+        GameWorld gw = new GameWorld(settings,eventBus);
 
         gw.start();
         Thread first = gw.loopThread;
@@ -205,10 +211,37 @@ public class GameWorldTest {
         gw.stop();
     }
 
+    @Test
+    void pauseAndResume_togglesGameLoopPauseState() throws Exception {
+        GameSettings settings = new GameSettings("blabla", 1, new String[]{"Team1"}, 1, 10,100, false, null, false, 370, LandScape.HILLY, 2);
+        EventBus eventBus = new EventBus();
+        GameWorld gw = new GameWorld(settings, eventBus);
+
+        gw.start();
+        assertTrue(gw.loopThread.isAlive(), "Game loop should be running");
+        TimeUnit.MILLISECONDS.sleep(50);
+
+        gw.pause(true);
+        assertTrue(gw.loopThread.isAlive(), "Game loop thread should still be alive while paused");
+        long ticksBeforePause = gw.getGameLoop().getTicks();
+        assertTrue(ticksBeforePause > 0, "Game loop should have ticked while running");
+        TimeUnit.MILLISECONDS.sleep(50);
+        long ticksAfterPaused = gw.getGameLoop().getTicks();
+        assertEquals(ticksBeforePause, ticksAfterPaused, "Ticks should not increment while paused");
+
+
+        gw.pause(false);
+        assertTrue(gw.loopThread.isAlive(), "Game loop thread should still be alive after resume");
+        TimeUnit.MILLISECONDS.sleep(50);
+        long ticksAfterResume = gw.getGameLoop().getTicks();
+        assertTrue(ticksAfterResume > ticksAfterPaused, "Ticks should resume incrementing after pause is lifted");
+
+        gw.stop();
+    }
 
     @Test
-    void getTurnManage() {
-        GameSettings settings = new GameSettings(0, new String[]{}, 0, 10, false, null, false, 370, LandScape.HILLY, 2);
+    void getTurnManager() {
+        GameSettings settings = new GameSettings("blabla", 0, new String[]{}, 0, 10,100, false, null, false,370,LandScape.HILLY,2);
         EventBus eventBus = new EventBus();
         GameWorld gw = new GameWorld(settings, eventBus);
 
