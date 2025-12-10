@@ -132,8 +132,8 @@ public final class TurnManager {
         };
 
         EventListener<PhysicsCollisionDetectedEvent> hitCollision = event -> {
-            if (event.movingBody() instanceof Projectile){
-                if (event.hitBody() != null && event.hitBody() instanceof Worm worm){
+            if (event.movingBody() instanceof Projectile) {
+                if (event.hitBody() != null && event.hitBody() instanceof Worm worm) {
                     Projectile bullet = (Projectile) event.movingBody();
                    worm.damageWorm(20);
                 }

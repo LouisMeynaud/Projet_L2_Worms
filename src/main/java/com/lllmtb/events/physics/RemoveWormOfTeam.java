@@ -7,7 +7,7 @@ public class RemoveWormOfTeam implements Event {
 
     public final Worm worm;
 
-    public RemoveWormOfTeam(Worm worm){
+    public RemoveWormOfTeam(Worm worm) {
         this.worm = worm;
     }
 }

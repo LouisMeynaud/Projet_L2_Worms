@@ -188,7 +188,7 @@ public class Team {
         this.numberOfWorms = this.worms.size();
     }
 
-    public void removeWorm(Worm worm){
+    public void removeWorm(Worm worm) {
         this.worms.remove(worm);
         this.numberOfWorms = this.worms.size();
     }
