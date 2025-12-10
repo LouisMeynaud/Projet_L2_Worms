@@ -1,11 +1,48 @@
 package com.lllmtb.terrain.map;
 
-/**
- * Enum represent the different elements of the map.
- * If an element is added, remember to add it to the switch statement of the MapLoader's CreateMatrix method.
- */
-
 public enum Tile {
-    DIRT, WATER, AIR, CAVERN, GRASS, UNKNOWN
+    DIRT('D', '#', true, 4),
+    WATER('W', 'o', false, 2),
+    AIR('A', ' ', false, 1),
+    CAVERN('C', '~', false, 1),
+    GRASS('G', '_', true, 2),
+    UNDERDIRT('U', '#', true, 1);
+
+    private final char fileSymbol;
+    private final char consoleSymbol;
+    private final boolean solid;
+    private final int nbTexture;
+
+    Tile(char fileSymbol, char consoleSymbol, boolean solid, int nbTexture) {
+        this.fileSymbol = fileSymbol;
+        this.consoleSymbol = consoleSymbol;
+        this.solid = solid;
+        this.nbTexture = nbTexture;
+    }
+
+    public char getConsoleSymbol() {
+        return this.consoleSymbol;
+    }
+
+    public char getFileSymbol() {
+        return this.fileSymbol;
+    }
+
+    public boolean isSolid() {
+        return this.solid;
+    }
+
+    public int getNbTexture() {
+        return this.nbTexture;
+    }
+
+
+    public static Tile getByFileSymbol(char symbol) {
+        for (Tile tile : values()) {
+            if (tile.fileSymbol == symbol) {
+                return tile;
+            }
+        }
+        throw new IllegalArgumentException("Attention , la lettre :" + symbol + " n'a pas de Tile correspondante.");
+    }
 }
-//UNKNOW uniquement utile pour les test , ne sera jamais initialisé dans une matrice.

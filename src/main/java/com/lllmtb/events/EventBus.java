@@ -1,5 +1,6 @@
 package com.lllmtb.events;
 
+import com.lllmtb.engine.logger.Logger;
 import org.eclipse.jdt.annotation.NonNull;
 
 import java.util.ArrayList;
@@ -22,9 +23,8 @@ import java.util.concurrent.*;
  *   returns {@code false} when the buffer is full.</li>
  *   <li>Subscribers are stored in a {@link CopyOnWriteArraySet}, which makes iteration safe during dispatch and
  *   guarantees that handlers see a consistent snapshot.</li>
- *   <li>Dispatch currently matches listeners registered for the exact runtime class of the posted {@link Event}.
- *   It does not dispatch to listeners registered on superclasses or interfaces,
- *   but this behaviour could easily be implemented in the future</li>
+   <li>Dispatch matches listeners registered for the exact event class as well as any superclasses.
+   For example, if a listener is subscribed to a superclass type E, it will receive events posted as subclasses of E.</li>
  * </ul>
  */
 public class EventBus {
@@ -34,6 +34,8 @@ public class EventBus {
     // Queue for events posted from anywhere to be processed by the game loop
     // (bounded to avoid out-of-memory crashes)
     private final BlockingQueue<Event> queuedEvents;
+
+    private boolean locked = false;
 
     /**
      * Create an EventBus with a default queue capacity of 1000 events.
@@ -52,6 +54,10 @@ public class EventBus {
             throw new IllegalArgumentException("queue capacity must be > 0");
         }
         this.queuedEvents = new LinkedBlockingQueue<>(capacity);
+    }
+
+    public void setLocked(boolean locked) {
+        this.locked = locked;
     }
 
     /**
@@ -92,6 +98,7 @@ public class EventBus {
      */
     public void postSync(@NonNull Event event) {
         Objects.requireNonNull(event);
+        if (locked) return;
         dispatch(event);
     }
 
@@ -104,6 +111,7 @@ public class EventBus {
      */
     public boolean postQueued(@NonNull Event event) {
         Objects.requireNonNull(event);
+        if (locked) return false;
         return queuedEvents.offer(event);
     }
 
@@ -120,28 +128,30 @@ public class EventBus {
     }
 
     /**
-     * Internal dispatch implementation. It invokes listeners registered for the exact runtime class of the event.
+     * Internal dispatch implementation. It invokes listeners registered for the exact runtime class of the event
+     * as well as any superclasses of the event.
      * @param event the event to dispatch
      */
     @SuppressWarnings("unchecked")
     private <T extends Event> void dispatch(@NonNull T event) {
         Objects.requireNonNull(event);
 
-        // Look up listeners for the exact event class. If none exist, skip.
-        //      Later on we can add a way to dispatch to listeners listening for a superclass of the event as well
-        //      if we end up adding subclasses to events.
-        //      Alternatively, we could register the listener in all compatible subclasses directly and keep the logic below
-        CopyOnWriteArraySet<EventListener<? extends Event>> matching = listeners.get(event.getClass());
-        if (matching == null || matching.isEmpty()) {
-            return;
-        }
+        Class<?> eventClass = event.getClass();
 
-        for (EventListener<? extends Event> listener : matching) {
-            try {
-                ((EventListener<T>) listener).handle(event); // safe to cast
-            } catch (Exception ex) {
-                // temporary error log until we implement a proper logging system
-                ex.printStackTrace();
+        // Iterate through all registered listener types and check if they are assignable from the event class
+        for (var entry : listeners.entrySet()) {
+            Class<?> listenerType = entry.getKey();
+            CopyOnWriteArraySet<EventListener<? extends Event>> listenerSet = entry.getValue();
+
+            // Check if the event is an instance of (or subclass of) the listener's registered type
+            if (listenerType.isAssignableFrom(eventClass)) {
+                for (EventListener<? extends Event> listener : listenerSet) {
+                    try {
+                        ((EventListener<T>) listener).handle(event); // safe to cast
+                    } catch (Exception ex) {
+                        Logger.logger.error("Error while handling event {} with listener {} : ", event, listener, ex);
+                    }
+                }
             }
         }
     }

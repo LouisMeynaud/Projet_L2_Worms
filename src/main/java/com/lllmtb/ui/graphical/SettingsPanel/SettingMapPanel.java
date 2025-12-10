@@ -16,17 +16,17 @@ import com.lllmtb.terrain.map.MapLoader;
 public class SettingMapPanel extends JPanel {
     public CardLayout cardLayout;
     public GenerateMapPanel generateMapPanel;
-    public PanelListeMap panelListeMap;
+    public PanelListe panelListeMap;
     public EventBus eventBus;
     public boolean loadMap = true;
 
     /**
      *
      * @param eventBus the event bus of the game
-     *                 This page contains  2 panel and 2 button for choose the panel
+     * This page contains  2 panel and 2 button for choose the panel
      *
-     *                 1: panelListeMap for choose a map
-     *                 2: generateMapPanel for create a map
+     * 1: panelListeMap for choose a map
+     * 2: generateMapPanel for create a map
      *
      */
     public SettingMapPanel(EventBus eventBus) {
@@ -41,7 +41,7 @@ public class SettingMapPanel extends JPanel {
         JButton generateButton = new JButton("Generate Map");
 
         this.generateMapPanel = new GenerateMapPanel();
-        this.panelListeMap = new PanelListeMap(MapLoader.getListeDossiersMaps());
+        this.panelListeMap = new PanelListe(MapLoader.getListeDossiersMaps());
 
 
         cardPanel.add(this.panelListeMap, "panelListeMap");
@@ -79,6 +79,10 @@ public class SettingMapPanel extends JPanel {
 
     }
 
+    /**
+     * Gets the generate map panel.
+     * @return the generate map panel.
+     */
     public GenerateMapPanel getGenerateMapPanel() {
         return this.generateMapPanel;
     }

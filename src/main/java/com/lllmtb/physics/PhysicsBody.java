@@ -6,7 +6,7 @@ import org.eclipse.jdt.annotation.NonNull;
 import java.util.Objects;
 
 public class PhysicsBody {
-    private final Entity entity;
+    private final transient Entity entity;
     private Position position;
     private Vector vector;
     private final double mass;

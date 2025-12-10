@@ -1,13 +1,12 @@
 package com.lllmtb.model.entity.team;
 
 import com.lllmtb.model.entity.worm.Worm;
+import com.lllmtb.model.item.UseParams;
 import com.lllmtb.model.item.weapon.WeaponId;
-import com.lllmtb.model.item.weapon.FireParams;
 import com.lllmtb.model.item.weapon.UnknownWeaponException;
 import com.lllmtb.model.item.weapon.LockedWeaponException;
 import com.lllmtb.model.item.weapon.UnusableWeaponException;
 import com.lllmtb.model.item.tool.ToolId;
-import com.lllmtb.model.item.tool.UseParams;
 import com.lllmtb.model.item.tool.UnknownToolException;
 import com.lllmtb.model.item.tool.UnusableToolException;
 import com.lllmtb.physics.Position;
@@ -159,6 +158,16 @@ public class TeamTest {
         assertFalse(team2.getTeamWorms().contains(worm1));
     }
 
+    @Test
+    public void removeWorm_byHimself(){
+        Worm worm2 = new Worm("DeleteWorm", team);
+        assertEquals(2, team.getNumberOfWorms());
+        team.removeWorm(worm2);
+        assertEquals(1, team.getNumberOfWorms());
+        assertFalse(team.getTeamWorms().contains(worm2));
+
+    }
+
     // ==================== Worm Selection Tests ====================
 
     @Test
@@ -295,8 +304,8 @@ public class TeamTest {
         team.addAmmo(WeaponId.GUN, 10);
         team.selectWeapon(WeaponId.GUN);
         
-        FireParams params = new FireParams(0, new Position(0, 0), team.getCurrentWorm());
-        assertDoesNotThrow(() -> team.fire(params));
+        UseParams params = new UseParams(0, new Position(0, 0), team.getCurrentWorm());
+        assertDoesNotThrow(() -> team.use(params));
     }
 
     @Test
@@ -305,8 +314,8 @@ public class TeamTest {
         team.addAmmo(WeaponId.GUN, 10);
         team.selectWeapon(WeaponId.GUN);
         
-        FireParams params = new FireParams(0, new Position(0, 0), team.getCurrentWorm());
-        team.fire(params);
+        UseParams params = new UseParams(0, new Position(0, 0), team.getCurrentWorm());
+        team.use(params);
         
         assertEquals(9, team.getInventory().weapons.getAmmo(WeaponId.GUN));
     }
@@ -317,8 +326,8 @@ public class TeamTest {
         team.addAmmo(WeaponId.GUN, 10);
         team.selectWeapon(WeaponId.GUN);
         
-        FireParams params = new FireParams(0, new Position(0, 0), team.getCurrentWorm());
-        var result = team.fire(params);
+        UseParams params = new UseParams(0, new Position(0, 0), team.getCurrentWorm());
+        var result = team.use(params);
         
         assertNotNull(result);
         assertFalse(result.isEmpty());

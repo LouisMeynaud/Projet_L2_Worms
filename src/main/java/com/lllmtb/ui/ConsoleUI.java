@@ -1,12 +1,10 @@
 package com.lllmtb.ui;
 
-import com.lllmtb.engine.GameSettings;
-import com.lllmtb.engine.GameWorld;
-import com.lllmtb.events.EventBus;
-import com.lllmtb.events.game.StartGameEvent;
+import java.io.File;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.Map;
 
-import com.lllmtb.events.game.WorldCreatedEvent;
-import com.lllmtb.terrain.map.MapLoader;
 import org.jline.consoleui.elements.ConfirmChoice;
 import org.jline.consoleui.prompt.ConsolePrompt;
 import org.jline.consoleui.prompt.PromptResultItemIF;
@@ -20,12 +18,14 @@ import org.jline.utils.AttributedString;
 import org.jline.utils.AttributedStyle;
 import org.jline.utils.InfoCmp;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.Map;
-
+import com.lllmtb.engine.GameSettings;
+import com.lllmtb.engine.GameWorld;
+import com.lllmtb.engine.logger.Logger;
+import com.lllmtb.events.EventBus;
+import com.lllmtb.events.game.StartGameEvent;
+import com.lllmtb.events.game.WorldCreatedEvent;
 import com.lllmtb.terrain.generation.LandScape;
+import com.lllmtb.terrain.map.MapLoader;
 
 // TODO - make prompt methods content-agnostic to remove duplicated code
 //  eg: promptBool(String key, String message, ConfirmChoice.ConfirmationValue defaultValue)
@@ -51,7 +51,7 @@ public class ConsoleUI implements UI {
             terminal.writer().println();
             terminal.writer().flush();
         } catch (IOException e) {
-            System.err.println("Error while initialising JLine Terminal");
+            Logger.logger.error("Error while initialising JLine Terminal");
         }
     }
 
@@ -65,6 +65,8 @@ public class ConsoleUI implements UI {
             String[] teamNames = promptTeamNames(nbTeams);
 
             int nbWorms = promptNbWorms();
+
+            int maxHealth = promptMaxHealth();
 
             int turnDuration = promptTurnDuration();
 
@@ -97,7 +99,7 @@ public class ConsoleUI implements UI {
             }
             terminal.writer().println("   Wind: " + (hasWind ? "ON" : "OFF"));
             terminal.writer().flush();
-            return new GameSettings(nbTeams, teamNames, nbWorms, turnDuration, hasWind, mapFileName, floatingIsland, size, landscape);
+            return new GameSettings("blabla", nbTeams, teamNames, nbWorms, maxHealth, turnDuration, hasWind, mapFileName, floatingIsland, size, landscape, 2);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -147,6 +149,21 @@ public class ConsoleUI implements UI {
                 .addPrompt();
         Map<String, PromptResultItemIF> result = prompt.prompt(builder.build());
         return Integer.parseInt(result.get("nbWorms").getResult());
+    }
+
+    private int promptMaxHealth() throws IOException {
+        ConsolePrompt prompt = new ConsolePrompt(terminal);
+        PromptBuilder builder = prompt.getPromptBuilder();
+        builder.createListPrompt()
+                .name("maxHealth")
+                .message("Max health of Worm")
+                .newItem("50").text("50").add()
+                .newItem("100").text("100").add()
+                .newItem("200").text("200").add()
+                .newItem("300").text("300").add()
+                .addPrompt();
+        Map<String, PromptResultItemIF> result = prompt.prompt(builder.build());
+        return Integer.parseInt(result.get("maxHealth").getResult());
     }
 
     private int promptTurnDuration() throws IOException {
@@ -264,7 +281,7 @@ public class ConsoleUI implements UI {
             boolean ready = this.readyToPlay();
 
             if (ready) {
-                terminal.writer().println("Lancement du jeu...");
+                terminal.writer().println("Starting the game...");
                 terminal.writer().flush();
                 this.eventBus.postQueued(new StartGameEvent(settings));
                 eventBus.subscribe(WorldCreatedEvent.class, e -> {
@@ -273,8 +290,8 @@ public class ConsoleUI implements UI {
                 });
             }
         } catch (Exception e) {
-            System.err.println("Une erreur est survenue durant la configuration :");
-            e.printStackTrace();
+            Logger.logger.error("An error occurred during configuration :");
+            Logger.logger.error("", e);
             close();
         }
     }

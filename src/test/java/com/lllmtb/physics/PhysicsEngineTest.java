@@ -7,8 +7,8 @@ import com.lllmtb.model.entity.projectile.BulletProjectile;
 import com.lllmtb.model.entity.team.Team;
 import com.lllmtb.model.entity.worm.Worm;
 import com.lllmtb.model.item.ItemId;
+import com.lllmtb.model.item.UseParams;
 import com.lllmtb.model.item.tool.ToolId;
-import com.lllmtb.model.item.weapon.FireParams;
 import com.lllmtb.model.item.weapon.WeaponId;
 import com.lllmtb.terrain.map.Map;
 import com.lllmtb.terrain.map.MapLoader;
@@ -40,7 +40,7 @@ class PhysicsEngineTest {
         Worm w = new Worm("José", new Team("Team", 1, new Position[]{pw}));
         assertTrue(map.inMap(pw));
         Position pBP = new Position(0, 5);
-        BulletProjectile bP = new BulletProjectile(new FireParams(0, pBP, w));
+        BulletProjectile bP = new BulletProjectile(new UseParams(0, pBP, w));
         assertTrue(map.inMap(pw));
         pBWorm = w.getBody();
         pBBP = bP.getBody();
@@ -106,6 +106,30 @@ class PhysicsEngineTest {
     }
 
     @Test
+    void testNextStep_WhenNoCollisions() {
+        double dt = 0;
+        PhysicsEngine tpE = new PhysicsEngine(map, bus, false);
+        tpE.add(pBBP);
+        pBBP.setPos(new Position(0, 5));
+        pBBP.setVector(new Vector(0, 0));
+        tpE.nextStep(dt);
+        assertEquals(5, pBBP.getPos().getY());
+        assertEquals(0, pBBP.getPos().getX());
+    }
+
+    @Test
+    void testNextStep_WhenDie() {
+        double dt = 0.0167;
+        PhysicsEngine tpE = new PhysicsEngine(map, bus, false);
+        tpE.add(pBBP);
+        pBBP.setPos(new Position(0, 5));
+        pBBP.setVector(new Vector(-10, 0));
+        tpE.nextStep(dt);
+        assertEquals(5, pBBP.getPos().getY());
+        assertEquals(0, pBBP.getPos().getX());
+    }
+
+    @Test
     void testNextStep() {
         double dt = 0.0167;
         Vector initialVector = pBWorm.getVector();
@@ -113,8 +137,8 @@ class PhysicsEngineTest {
         pE.nextStep(dt);
         Position newPos = pBWorm.getPos();
         Vector newVector = pBWorm.getVector();
-        assertEquals(3.9165027889, newPos.getX());
-        assertEquals(initialPos.getY(), newPos.getY());
+        assertEquals(4.0, newPos.getX());
+        assertEquals(4.002, newPos.getY());
         assertNotEquals(initialVector.getX(), newVector.getX());
         assertNotEquals(initialVector.getY(), newVector.getY());
     }
@@ -127,9 +151,26 @@ class PhysicsEngineTest {
         tpE.add(pBBP);
         tpE.nextStep(dt);
         assertEquals(0, pBBP.getPos().getX());
-        assertEquals(4, pBBP.getPos().getY());
-        assertTrue(pBWorm.getPos().getX() < 4);
-        assertEquals(4, pBWorm.getPos().getY());
+        assertEquals(4.92499394064, pBBP.getPos().getY());
+        assertEquals(4, pBWorm.getPos().getX());
+        assertEquals(4.002, pBWorm.getPos().getY());
+    }
+
+    @Test
+    void testNextStep_whenCollision2() {
+        double dt = 0.0167;
+        PhysicsEngine tpE = new PhysicsEngine(map, bus, false);
+        pBWorm.setVector(new Vector(0, 0));
+        pBWorm.setPos(new Position(2, 4));
+        pBBP.setPos(new Position(1, 5));
+        pBBP.setVector(new Vector(5, 0));
+        tpE.add(pBWorm);
+        tpE.add(pBBP);
+        tpE.nextStep(dt);
+        assertEquals(1.0001197841492524, pBBP.getPos().getX());
+        assertEquals(4.999988225378354, pBBP.getPos().getY());
+        assertEquals(2, pBWorm.getPos().getX());
+        assertEquals(4.002, pBWorm.getPos().getY());
     }
 
     @Test
@@ -371,6 +412,16 @@ class PhysicsEngineTest {
         pE.removeModifierFor(pBWorm, ToolId.PARACHUTE); // different source
         assertEquals(0, bus.queuedEventCount());
         assertEquals(0, removedCount.get());
+    }
+
+    @Test
+    void actualizeBodiesTest(){
+        Worm worm = new Worm("Test", new Team("TestTeam", 1, new Position[]{new Position(3,3)}));
+        pE.add(worm.getBody());
+        int size = pE.getBodies().size();
+        worm.damageWorm(worm.getStats().getHp());
+        pE.actualizeBodies();
+        assertEquals(pE.getBodies().size(), size-1);
     }
 }
 

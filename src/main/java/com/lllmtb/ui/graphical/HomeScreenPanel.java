@@ -1,8 +1,11 @@
 package com.lllmtb.ui.graphical;
 
+import java.awt.Color;
+import java.awt.Graphics;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.image.BufferedImage;
 
 import javax.swing.JButton;
 import javax.swing.JPanel;
@@ -11,19 +14,12 @@ import com.lllmtb.events.EventBus;
 import com.lllmtb.events.ui.graphical.ScreenNewOrLoadEvent;
 
 public class HomeScreenPanel extends JPanel {
-    EventBus eventBus;
-
 
     /**
-     *
+     * The main page is used to open the settings, launch a game, or quit the game.
      * @param eventBus the eventBus of the game.
-     *
-     *                 The main page is used to open the settings, launch a game, or quit the game.
-     *
-     *
      */
     public HomeScreenPanel(EventBus eventBus) {
-        this.eventBus = eventBus;
         this.setLayout(new GridBagLayout());
 
         GridBagConstraints gbc = new GridBagConstraints();
@@ -31,10 +27,9 @@ public class HomeScreenPanel extends JPanel {
         gbc.insets = new Insets(15, 0, 15, 0);
 
 
-        JButton playButton = new JButton("Play");
-        JButton settingsButton = new JButton("Game Settings");
-        JButton exitButton = new JButton("Exit");
-
+        JButton playButton = Utilitaire.createImageButton(TextureManager.UI, "Panel", 256, 128, 256, 128, "Start", "Arial", 23, Color.WHITE);
+        JButton settingButton = Utilitaire.createImageButton(TextureManager.UI, "Panel", 256, 128, 256, 128, "Game Settings", "Arial", 23, Color.WHITE);
+        JButton closeButton = Utilitaire.createImageButton(TextureManager.UI, "Panel", 256, 128, 256, 128, "Close", "Arial", 23, Color.WHITE);
 
         playButton.addActionListener(e -> {
             eventBus.postQueued(new ScreenNewOrLoadEvent());
@@ -42,8 +37,15 @@ public class HomeScreenPanel extends JPanel {
         gbc.gridy = 0;
         this.add(playButton, gbc);
         gbc.gridy = 1;
-        this.add(settingsButton, gbc);
+        this.add(settingButton, gbc);
         gbc.gridy = 2;
-        this.add(exitButton, gbc);
+        this.add(closeButton, gbc);
     }
+
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        BufferedImage backgroundImage = TextureManager.BACKGROUND.get("Background");
+        g.drawImage(backgroundImage, 0, 0, this.getWidth(), this.getHeight(), this);
+    }
+
 }

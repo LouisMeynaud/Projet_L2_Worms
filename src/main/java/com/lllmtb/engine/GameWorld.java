@@ -1,24 +1,29 @@
 package com.lllmtb.engine;
 
-import com.lllmtb.engine.commands.GameCommand;
-import com.lllmtb.events.EventBus;
-import com.lllmtb.events.game.GameStateUpdatedEvent;
-import com.lllmtb.model.entity.Entity;
-import com.lllmtb.model.entity.team.Team;
-import com.lllmtb.physics.PhysicsEngine;
-import com.lllmtb.terrain.generation.GenerateMap;
-import com.lllmtb.terrain.generation.ConfigMap;
-import com.lllmtb.terrain.map.CreateSpawnPoint;
-import com.lllmtb.terrain.map.Map;
-import com.lllmtb.terrain.map.MapLoader;
-
-import org.eclipse.jdt.annotation.NonNull;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
+
+import org.eclipse.jdt.annotation.NonNull;
+
+import com.lllmtb.engine.commands.GameCommand;
+import com.lllmtb.engine.logger.Logger;
+import com.lllmtb.engine.turn.TurnManager;
+import com.lllmtb.events.EventBus;
+import com.lllmtb.events.game.GameStateUpdatedEvent;
+import com.lllmtb.model.entity.Entity;
+import com.lllmtb.model.entity.team.Team;
+import com.lllmtb.model.entity.worm.Worm;
+import com.lllmtb.physics.Move;
+import com.lllmtb.physics.PhysicsEngine;
+import com.lllmtb.terrain.generation.ConfigMap;
+import com.lllmtb.terrain.generation.GenerateMap;
+import com.lllmtb.terrain.map.CreateSpawnPoint;
+import com.lllmtb.terrain.map.Map;
+import com.lllmtb.terrain.map.MapLoader;
 
 public class GameWorld {
     private final Map map;
@@ -28,15 +33,16 @@ public class GameWorld {
     private final GameLoop gameLoop;
     private int indexTeam;
     private final TurnManager turnManager;
-    private final long turnDuration;
+    private String gameName;
     Thread loopThread;
 
     private final BlockingQueue<GameCommand> commandQueue;
 
 
     public GameWorld(GameSettings settings, EventBus eventBus) {
+        gameName = settings.mapFileName;
         Map tmap = null;
-
+        this.gameName = settings.gameName;
         // Init Map (we'll have to handle this better once MapLoader throws catchable exceptions)
         if (settings.mapFileName != null) {
             try {
@@ -54,6 +60,7 @@ public class GameWorld {
         this.map.setSpawnPoint(CreateSpawnPoint.createSpawnPoint(settings.nbTeams, settings.nbWorms, tmap));
 
         this.bus = eventBus;
+        Move.setMaxjump(settings.maxJump);
 
         // Init GameCommand queue
         this.commandQueue = new LinkedBlockingQueue<>();
@@ -63,13 +70,14 @@ public class GameWorld {
 
         // Init Teams
         this.teams = new ArrayList<>();
-        System.out.println("Creating the Teams...");
+        Logger.logger.info("Creating the Teams...");
         for (int i = 0; i < settings.nbTeams; i++) {
             try {
+                Worm.setMaxHp(settings.maxHp);
                 Team team = new Team(settings.teamNames[i], settings.nbWorms, tmap.getSpawnPoint()[i]);
                 teams.add(team);
                 team.getTeamWorms().forEach(this::registerEntity);
-                System.out.printf("%d | %s - %d - %s\n", i, team.name, team.id, team.teamColor);
+                Logger.logger.info("{} | {} - {} - {}\n", i, team.name, team.id, team.teamColor);
             } catch (ArrayIndexOutOfBoundsException e) {
                 break;
             }
@@ -77,11 +85,10 @@ public class GameWorld {
 
         // Init GameLoop
         this.gameLoop = new GameLoop(this);
-        System.out.println("Game initialised");
+        Logger.logger.debug("Game initialised");
 
         //Init TurnManager
         this.turnManager = new TurnManager(this, settings.turnDuration);
-        this.turnDuration = this.getTurnDuration();
     }
 
     public Map getMap() {
@@ -100,8 +107,8 @@ public class GameWorld {
         return teams;
     }
 
-    public int getIndexTeam() {
-        return indexTeam;
+    public Team getPlayingTeam() {
+        return teams.get(indexTeam);
     }
 
     public TurnManager getTurnManager() {
@@ -112,18 +119,35 @@ public class GameWorld {
         return this.turnManager.getTurnDuration();
     }
 
+    public GameLoop getGameLoop() {
+        return gameLoop;
+    }
+
+    public int getIndexTeam() {
+        return indexTeam;
+    }
+
+    public String getGameName() {
+        return gameName;
+    }
+
     public void start() {
-        if (loopThread != null && loopThread.isAlive()) {
-            return;
-        }
-        System.out.println("Starting the game loop...");
+        if (loopThread != null && loopThread.isAlive()) return;
+        Logger.logger.debug("Starting the game loop...");
         loopThread = new Thread(gameLoop, "gameloop");
-        this.nextTeamTurn();
+        this.startTeamTurn();
         loopThread.start();
     }
 
+    public void pause(boolean paused) {
+        if (loopThread == null || !loopThread.isAlive()) return;
+        Logger.logger.info("{} the game loop...", paused ? "Pausing" : "Resuming");
+        gameLoop.pause(paused);
+        bus.setLocked(paused);
+    }
+
     public void stop() {
-        System.out.println("Stopping the game loop...");
+        Logger.logger.debug("Stopping the game loop...");
         gameLoop.stop();
         if (loopThread != null) {
             loopThread.interrupt();
@@ -142,10 +166,16 @@ public class GameWorld {
     public void update(double tickTime) {
         processCommands();
         physics.next(tickTime);
-        turnManager.updateTurn();
+        turnManager.updateTurn(tickTime);
         bus.postQueued(new GameStateUpdatedEvent());
     }
 
+    // TODO - find out why startTurn is called on the main engine-loop thread at the start
+    public void startTeamTurn() {
+        if (!teams.isEmpty()) {
+            this.turnManager.startTurn(teams.get(indexTeam));
+        }
+    }
 
     public void nextTeamTurn() {
         if (!teams.isEmpty()) {
@@ -169,6 +199,19 @@ public class GameWorld {
     }
 
     /**
+     * Queue multiple GameCommands to be executed in the next update cycle.
+     * @param cmds list of GameCommands to queue
+     * @return true if all commands were successfully queued, false otherwise
+     */
+    public boolean queueCommands(List<GameCommand> cmds) {
+        boolean allQueued = true;
+        for (GameCommand cmd : cmds) {
+            if (!queueCommand(cmd)) allQueued = false;
+        }
+        return allQueued;
+    }
+
+    /**
      * Process and execute all queued GameCommands in order.
      * This method is called during the update cycle.
      * If a command throws an exception, it is caught and logged, allowing subsequent commands to be processed.
@@ -180,7 +223,7 @@ public class GameWorld {
             try {
                 cmd.execute(this);
             } catch (Exception ex) {
-                ex.printStackTrace(); // temporary error log until we implement a proper logging system
+                Logger.logger.error("Error commands : {} ", ex.getMessage(), ex);
             }
         }
     }

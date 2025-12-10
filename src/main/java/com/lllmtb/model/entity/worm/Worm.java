@@ -6,6 +6,10 @@ import com.lllmtb.model.entity.CollisionType;
 import com.lllmtb.physics.PhysicsBody;
 import com.lllmtb.physics.Position;
 import com.lllmtb.physics.Vector;
+import com.lllmtb.ui.graphical.animation.*;
+import java.awt.image.BufferedImage;
+
+
 import org.eclipse.jdt.annotation.NonNull;
 
 import java.util.Objects;
@@ -16,6 +20,16 @@ import java.util.Objects;
  */
 public class Worm extends Entity {
 
+    public static final BufferedImage[] standing = {SpriteWorm.getSprite(0, 0),
+                                                    SpriteWorm.getSprite(1, 0),
+                                                    SpriteWorm.getSprite(0, 1),
+                                                    SpriteWorm.getSprite(1, 1),
+                                                    SpriteWorm.getSprite(0, 2),
+                                                    SpriteWorm.getSprite(0, 2),
+                                                    SpriteWorm.getSprite(1, 1),
+                                                    SpriteWorm.getSprite(0, 1),
+                                                    SpriteWorm.getSprite(1, 0)};
+
     /**
      * The physical body of the worm used for physics simulation and position tracking.
      */
@@ -24,7 +38,7 @@ public class Worm extends Entity {
     /**
      * The team this worm belongs to.
      */
-    private Team team;
+    private transient Team team;
 
     /**
      * The name of the worm.
@@ -47,18 +61,35 @@ public class Worm extends Entity {
     private final CollisionType collisionType = CollisionType.SLIDE;
 
     /**
-     * Private constructor to initialize a worm with statistics, a team and a spawn point.
+     * The current animation.
+     */
+    private transient Animation animation;
+
+    /**
+     * Direction the worm is facing: 1 for right, -1 for left.
+     */
+    private int facingDirection = 1;
+
+    /**
+     * Indicates if the worm is currently in contact with the ground.
+     */
+    private boolean isOnGround = false;
+
+    /**
+     * Private constructor to initialize a worm with statistics, a team, a spawn point and animation.
      * @param name  the name of the worm
      * @param stats the {@link Statistics} associated with the worm
      * @param team  the {@link Team} the worm belongs to
      */
     private Worm(@NonNull String name, @NonNull Statistics stats, @NonNull Team team) {
         super();
-        this.body = new PhysicsBody(this, new Position(0, 0), new Vector(0, 0), 100, 2, 1);
+        this.body = new PhysicsBody(this, new Position(0, 0), new Vector(0, 0), 0.01, 2, 1);
         this.name = Objects.requireNonNull(name);
         this.stats = Objects.requireNonNull(stats);
         this.team = Objects.requireNonNull(team);
         this.team.addWorm(this);
+        this.animation = new Animation(standing, 10);
+        this.animation.start();
     }
 
     /**
@@ -68,7 +99,7 @@ public class Worm extends Entity {
      * @param team the {@link Team} the worm belongs to
      */
     public Worm(@NonNull String name, @NonNull Team team) {
-        this(name, new Statistics(100, 1, 1), team);
+        this(name, new Statistics(Statistics.getMaxHp(), 1, 1), team);
     }
 
     /**
@@ -105,6 +136,61 @@ public class Worm extends Entity {
     }
 
     /**
+     * Returns the current animation of the worm.
+     * @return the {@link Animation} of the worm
+     */
+    public Animation getAnimation() {
+        return this.animation;
+    }
+
+    /**
+     * Gets the direction the worm is facing.
+     * @return 1 for right, -1 for left
+     */
+    public int getFacingDirection() {
+        return this.facingDirection;
+    }
+
+    /**
+     * Sets the direction the worm is facing.
+     * @param direction 1 for right, -1 for left
+     */
+    public void setFacingDirection(int direction) {
+        if (direction == 1 || direction == -1) {
+            this.facingDirection = direction;
+        }
+    }
+
+    /**
+     * Updates the facing direction based on the worm's velocity.
+     * If velocity x is negative, face left; if positive, face right.
+     */
+    public void updateFacingDirection() {
+        double velocityX = this.body.getVector().getX();
+        if (velocityX < 0) {
+            setFacingDirection(-1);
+        } else if (velocityX > 0) {
+            setFacingDirection(1);
+        }
+    }
+
+    /**
+     * Returns whether the worm is currently in contact with the ground.
+     * @return {@code true} if the worm is on the ground, {@code false} otherwise
+     */
+    public boolean isOnGround() {
+        return this.isOnGround;
+    }
+
+    /**
+     * Sets whether the worm is in contact with the ground.
+     * @param onGround {@code true} if the worm is on the ground, {@code false} otherwise
+     */
+    public void setOnGround(boolean onGround) {
+        this.isOnGround = onGround;
+    }
+
+    /**
      * Spawns the worm at the specified position.
      * <p>This sets the worm's {@link PhysicsBody} position in the game world.</p>
      * @param spawn the {@link Position} to place the worm
@@ -126,10 +212,19 @@ public class Worm extends Entity {
      * <p>If the worm's health (or other relevant stat) indicates it is dead,
      * this method will mark the worm as no longer alive.</p>
      */
-    public void setDeath() {
+    private void setDeath() {
         if (!this.stats.isAlive()) {
             this.alive = false;
         }
+    }
+
+    public void damageWorm(int damage) {
+        this.stats.damageTake(damage);
+        this.setDeath();
+    }
+
+    public static void setMaxHp(int maxHp) {
+        Statistics.setMaxHp(maxHp);
     }
 
     @Override

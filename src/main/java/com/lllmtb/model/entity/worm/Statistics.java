@@ -2,6 +2,7 @@ package com.lllmtb.model.entity.worm;
 
 public class Statistics {
     //Champs
+    private static int maxHp = 100;
     private int hp;
     private int speed;
     private int strength;
@@ -25,6 +26,15 @@ public class Statistics {
     public int getStrength() {
         return this.strength;
     }
+
+    public static int getMaxHp() {
+        return maxHp;
+    }
+
+    public static void setMaxHp(int maxHp) {
+        Statistics.maxHp = maxHp;
+    }
+
 
     //Setter
     public void setHp(int hp) {
@@ -52,6 +62,10 @@ public class Statistics {
     //Method
     public boolean isAlive() {
         return this.hp > 0;
+    }
+
+    public void damageTake(int damage) {
+        this.setHp(this.hp - damage);
     }
 
 }

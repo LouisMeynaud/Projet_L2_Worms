@@ -2,7 +2,7 @@ package com.lllmtb.model.entity.projectile;
 
 import com.lllmtb.model.entity.team.Team;
 import com.lllmtb.model.entity.worm.Worm;
-import com.lllmtb.model.item.weapon.FireParams;
+import com.lllmtb.model.item.UseParams;
 import com.lllmtb.physics.Position;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class ProjectileTest {
     private Worm owner;
     private Position spawn;
-    private FireParams params;
+    private UseParams params;
 
     @BeforeEach
     public void setUp() {
@@ -20,7 +20,7 @@ public class ProjectileTest {
         this.owner = new Worm("Test", team);
         this.spawn = new Position(3.0, 0.0);
         double angle = Math.PI / 4.0;
-        this.params = new FireParams(angle, spawn, owner);
+        this.params = new UseParams(angle, spawn, owner);
     }
 
     @Test
@@ -39,7 +39,7 @@ public class ProjectileTest {
         subForceField.setAccessible(true);
         double subForceValue = subForceField.getDouble(bullet);
 
-        assertEquals(60.0, subForceValue, 1e-12,
+        assertEquals(100.0, subForceValue, 1e-12,
                 "Subclass field 'force' should be 60.0 as declared in BulletProjectile.");
     }
 

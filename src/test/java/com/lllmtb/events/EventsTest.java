@@ -1,28 +1,43 @@
 package com.lllmtb.events;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-
+import com.lllmtb.events.physics.ActualizePhysicsEvent;
+import com.lllmtb.events.physics.PhysicsCollisionWithOtherEntityEvent;
+import com.lllmtb.model.entity.Entity;
 import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.*;
-
 import static org.mockito.Mockito.mock;
 
 import com.lllmtb.engine.GameSettings;
 import com.lllmtb.engine.GameWorld;
+import com.lllmtb.events.game.GamePauseEvent;
+import com.lllmtb.events.game.GameStateUpdatedEvent;
+import com.lllmtb.events.game.LoadEvent;
+import com.lllmtb.events.game.MapUpdateEvent;
+import com.lllmtb.events.game.SaveEvent;
+import com.lllmtb.events.game.StartGameEvent;
+import com.lllmtb.events.game.ToolSelectedEvent;
+import com.lllmtb.events.game.WeaponSelectedEvent;
+import com.lllmtb.events.game.WorldCreatedEvent;
 import com.lllmtb.events.move.MouseInputEvent;
 import com.lllmtb.events.move.MouseWheelMoveInputEvent;
-import com.lllmtb.events.ui.*;
+import com.lllmtb.events.turn.TurnSkipEvent;
+import com.lllmtb.events.ui.MoveEvent;
+import com.lllmtb.events.ui.ShootMode;
+import com.lllmtb.events.ui.graphical.RequestFocus;
 import com.lllmtb.events.ui.graphical.ScreenGenerateMap;
 import com.lllmtb.events.ui.graphical.ScreenHomeEvent;
+import com.lllmtb.events.ui.graphical.ScreenLoadGame;
 import com.lllmtb.events.ui.graphical.ScreenLoadMap;
 import com.lllmtb.events.ui.graphical.ScreenNewOrLoadEvent;
 import com.lllmtb.events.ui.graphical.ScreenSettingsGame;
-import com.lllmtb.ui.graphical.GamePanel.Direction;
-import com.lllmtb.events.game.GamePauseEvent;
-import com.lllmtb.events.game.GameStateUpdatedEvent;
-import com.lllmtb.events.game.MapUpdateEvent;
-import com.lllmtb.events.game.StartGameEvent;
-import com.lllmtb.events.game.WorldCreatedEvent;
+import com.lllmtb.model.item.tool.ToolId;
+import com.lllmtb.model.item.weapon.WeaponId;
 import com.lllmtb.physics.Position;
+import com.lllmtb.ui.graphical.GamePanel.Direction;
 
 
 public class EventsTest {
@@ -71,7 +86,7 @@ public class EventsTest {
     public void testCreationMouseWheelEvent() {
         Direction directionTest = Direction.Up;
         MouseWheelMoveInputEvent event = new MouseWheelMoveInputEvent(directionTest);
-        assertNotNull(event, "L'objet ne doit pas être null");
+        assertNotNull(event, "L'événement ne doit pas être null");
         assertEquals(directionTest, event.direction, "La direction stockée doit être celle donnée");
     }
 
@@ -84,6 +99,29 @@ public class EventsTest {
     }
 
     @Test
+    public void weaponSelectedEventTest() {
+        WeaponId mockWeaponId = mock(WeaponId.class);
+        WeaponSelectedEvent event = new WeaponSelectedEvent(mockWeaponId);
+        assertNotNull(event, "L'evenement ne doit pas etre null");
+        assertSame(mockWeaponId, event.getWeaponId(), "L'ID de l'arme ");
+    }
+
+    @Test
+    public void woolSelectedEventTest() {
+        ToolId mockToolId = mock(ToolId.class);
+        ToolSelectedEvent event = new ToolSelectedEvent(mockToolId);
+        assertNotNull(event, "L'evenement ne doit pas etre null");
+        assertSame(mockToolId, event.getToolId(), "L'ID de l'arme");
+    }
+
+    @Test
+    public void testCreationLoadEvent() {
+        String nom = "oui";
+        LoadEvent event = new LoadEvent(nom);
+        assertNotNull(event, "L'événement ne doit pas être null");
+        assertEquals(nom, event.stringPath, "le stringpath doit etre: oui ");
+    }
+    @Test
     public void eventWithoutArgumentTest() {
         eventWithoutArgument(new GameStateUpdatedEvent());
         eventWithoutArgument(new ScreenGenerateMap());
@@ -92,11 +130,34 @@ public class EventsTest {
         eventWithoutArgument(new ScreenNewOrLoadEvent());
         eventWithoutArgument(new ScreenSettingsGame());
         eventWithoutArgument(new MapUpdateEvent());
+        eventWithoutArgument(new SaveEvent());
+        eventWithoutArgument(new RequestFocus());
+        eventWithoutArgument(new ShootMode());
+        eventWithoutArgument(new TurnSkipEvent());
+        eventWithoutArgument(new ScreenLoadGame());
     }
 
-  
+
     private void eventWithoutArgument(Event event) {
         assertNotNull(event);
         assertTrue(event instanceof Event);
+    }
+
+    @Test
+    void PhysicsCollisionWithOtherEntityEventTest() {
+        Entity movingBodyMock = mock(com.lllmtb.model.entity.Entity.class);
+        Entity hitBodyMock = mock(com.lllmtb.model.entity.Entity.class);
+
+        PhysicsCollisionWithOtherEntityEvent event = new PhysicsCollisionWithOtherEntityEvent(movingBodyMock, hitBodyMock);
+
+        assertNotNull(event);
+        assertSame(movingBodyMock, event.getMovingBody());
+        assertSame(hitBodyMock, event.getHitBody());
+    }
+
+    @Test
+    void actualizePhysicsEventTest(){
+        ActualizePhysicsEvent ap = new ActualizePhysicsEvent();
+        assertNotNull(ap);
     }
 }

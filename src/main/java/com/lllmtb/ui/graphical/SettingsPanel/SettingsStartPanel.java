@@ -10,11 +10,15 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
+import java.awt.Color;
+
 import com.lllmtb.engine.GameSettings;
 import com.lllmtb.events.EventBus;
 import com.lllmtb.events.game.StartGameEvent;
 import com.lllmtb.events.ui.graphical.ScreenNewOrLoadEvent;
 import com.lllmtb.terrain.generation.LandScape;
+import com.lllmtb.ui.graphical.TextureManager;
+import com.lllmtb.ui.graphical.Utilitaire;
 
 public class SettingsStartPanel extends JPanel {
     public EventBus eventBus;
@@ -39,12 +43,14 @@ public class SettingsStartPanel extends JPanel {
         this.add(titre, BorderLayout.NORTH);
 
         // Launch and return button: southern zone
+
         JPanel zoneSud = new JPanel(new FlowLayout(FlowLayout.RIGHT)); // met les bouton a droite (flowLayout afficheles un apres les autre);
-        JButton backButton = new JButton("Back");
-        JButton starButton = new JButton("Start the game");
+        JButton backButton = Utilitaire.createImageButton(TextureManager.UI, "Panel", 150, 75, 150, 75, "Back", "Arial", 16, Color.WHITE);
+        JButton startButton = Utilitaire.createImageButton(TextureManager.UI, "Panel", 150, 75, 150, 75, "Start", "Arial", 16, Color.WHITE);
+
 
         zoneSud.add(backButton);
-        zoneSud.add(starButton);
+        zoneSud.add(startButton);
         this.add(zoneSud, BorderLayout.SOUTH);
 
 
@@ -62,29 +68,34 @@ public class SettingsStartPanel extends JPanel {
             eventBus.postQueued(new ScreenNewOrLoadEvent());
         });
 
-        starButton.addActionListener(e -> {
+        startButton.addActionListener(e -> {
             eventBus.postQueued(new StartGameEvent(setSettings(gameSettingsPanel)));
         });
     }
 
-    /**
-     *
-     * @param gameSettingsPanel retrieves the parameters chosen in the gameSetting panel
-     * @returnreturns a type setting for creating the game.
-     */
-    public GameSettings setSettings(SettingGamePanel gameSettingsPanel) {
+
+    private GameSettings setSettings(SettingGamePanel gameSettingsPanel) {
         int nbEquipes = gameSettingsPanel.getNbEquipes();
         int nbVWorms = gameSettingsPanel.getNbWorms();
         String[] nomsEquipes = gameSettingsPanel.getNomsEquipes();
         boolean wind = gameSettingsPanel.getWind();
+        boolean friendlyFire = gameSettingsPanel.getFriendlyFire(); //TODO : ajouter le friendlyFire au setting une fois les modif necessaire faite dans team etc
         int turnDuration = gameSettingsPanel.getTurnDuration();
+        int maxLife = gameSettingsPanel.getMaxLife();
+        int maxJump = gameSettingsPanel.getMaxJumps();
+        String gameName = gameSettingsPanel.getGameName();
         if (this.mapSettingPanel.loadMap) {
             String mapFileName = this.mapSettingPanel.panelListeMap.getFichierSelectionne().getName();
-            return new GameSettings(nbEquipes, nomsEquipes, nbVWorms, turnDuration, wind, mapFileName, false, 0, null);
+            return new GameSettings(gameName, nbEquipes, nomsEquipes, nbVWorms, maxLife, turnDuration, wind, mapFileName, false, 0, null, maxJump);
+
+
         } else {
             LandScape terrainType = this.mapSettingPanel.generateMapPanel.getReliefType();
             int widthMap = this.mapSettingPanel.generateMapPanel.getWidthMapSlider();
-            return new GameSettings(nbEquipes, nomsEquipes, nbVWorms, turnDuration, wind, null, false, widthMap, terrainType);
+            boolean flightIsland = this.mapSettingPanel.generateMapPanel.getflightIsland();
+            return new GameSettings(gameName, nbEquipes, nomsEquipes, nbVWorms, maxLife, turnDuration, wind, null, flightIsland, widthMap, terrainType, maxJump);
+
+
         }
 
 
