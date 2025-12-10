@@ -7,6 +7,11 @@ import java.nio.file.Path;
 
 public class MapLoader {
 
+    /**
+     * Load a map from a given map name.
+     * @param mapName
+     * @return the loaded Map object.
+     */
     public static Map loadMatrix(String mapName) {
         String path;
         if (mapName.contains("Test")) {
@@ -20,16 +25,7 @@ public class MapLoader {
             System.out.println("TEST " + mapPath);
             String contentMap = Files.readString(Path.of(mapPath));
             String[] row = contentMap.split("\n");
-
-            String hightLinePath = path + mapName + "/hightLine.txt";
-            String contentHightLine = Files.readString(Path.of(hightLinePath));
-            String[] stringtabHightLine = contentHightLine.split(",");
-            int[] intTabHightLine = new int[stringtabHightLine.length];
-            for (int i = 0; i < stringtabHightLine.length; i++) {
-                intTabHightLine[i] = Integer.valueOf(stringtabHightLine[i]);
-            }
             Map tileMatrix = new Map(row.length, row[0].length(), mapName + ".txt");
-            tileMatrix.setHightLine(intTabHightLine);
 
             for (int i = 0; i < row.length; i++) {
                 for (int j = 0; j < row[0].length(); j++) {
@@ -46,12 +42,20 @@ public class MapLoader {
         }
     }
 
-
+    /**
+     * Gets the list of map directories.
+     * @return an array of map directories.
+     */
     public static File[] getListeDossiersMaps() {
         String cheminDossierMaps = "src/main/resources/map";
         return getListeDossiers(new File(cheminDossierMaps));
     }
 
+    /**
+     * Gets the list of subdirectories in a given root directory.
+     * @param dossierRacine the root directory.
+     * @return an array of subdirectories.
+     */
     public static File[] getListeDossiers(File dossierRacine) {
         if (!dossierRacine.exists() || !dossierRacine.isDirectory()) {
             System.err.println("Erreur le chemin n'est pas bon : " + dossierRacine.getAbsolutePath());

@@ -144,6 +144,11 @@ public class Utilitaire {
         return button;
     }
 
-
+    public static int getHashId(int x, int y, int max) {
+    int h = x * 374761393 + y * 668265263;
+    h = (h ^ (h >> 13)) * 1274126177;
+    h = h ^ (h >> 16);
+    return (Math.abs(h) % max);
+}
 
 }

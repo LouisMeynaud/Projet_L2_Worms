@@ -81,7 +81,7 @@ public class SettingsStartPanel extends JPanel {
         boolean wind = gameSettingsPanel.getWind();
         boolean friendlyFire = gameSettingsPanel.getFriendlyFire(); //TODO : ajouter le friendlyFire au setting une fois les modif necessaire faite dans team etc
         int turnDuration = gameSettingsPanel.getTurnDuration();
-        int maxLife = gameSettingsPanel.getMaxLife(); //TODO : ajouter le maxhp au setting une fois les modif necessaire faite dans team etc
+        int maxLife = gameSettingsPanel.getMaxLife();
         int maxJump = gameSettingsPanel.getMaxJumps();
         String gameName = gameSettingsPanel.getGameName();
         if (this.mapSettingPanel.loadMap) {

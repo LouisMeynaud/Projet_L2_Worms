@@ -14,7 +14,6 @@ public class Map {
     private Tile[][] mapMatrix;
     private String filesTxt;
     private Position[][] spawnPoint;
-    private int[] hightLine;
     private int heightWater = 0; //devra etre changer
 
     public Map(int height, int width, String filesTxt) {
@@ -49,11 +48,6 @@ public class Map {
 
     public void setSpawnPoint(Position[][] spawnPoint) {
         this.spawnPoint = spawnPoint;
-    }
-
-
-    public void setHightLine(int[] hightLine) {
-        this.hightLine = hightLine;
     }
 
 
@@ -133,22 +127,7 @@ public class Map {
         return spawnPoint;
     }
 
-    public int[] getHightLine() {
-        return hightLine;
-    }
-
     public int getHeightWater() {
         return heightWater;
     }
-
-    public String hightLineToString() {
-        String string = "";
-        for (int i = 0; i < this.hightLine.length; i++) {
-            string += (this.hightLine[i]);
-            string += (",");
-        }
-        string = string.substring(0, string.length() - 1);
-        return string;
-    }
-
 }
