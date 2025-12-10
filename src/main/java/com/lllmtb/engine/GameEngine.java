@@ -4,7 +4,6 @@ import com.lllmtb.engine.logger.Logger;
 import com.lllmtb.engine.save.Save;
 import java.util.Objects;
 
-import com.lllmtb.events.Event;
 import org.eclipse.jdt.annotation.NonNull;
 import com.lllmtb.events.EventBus;
 import com.lllmtb.events.game.GamePauseEvent;
@@ -46,9 +45,11 @@ public class GameEngine {
         // Start the chosen UI manager
         UI ui;
         if (graphique) {
+            Logger.logger.info("Using graphical interface");
             TextureManager.load(); // charge les textures
             ui = new GraphicalUI(systemBus);
         } else {
+            Logger.logger.info("Using console interface");
             ui = new ConsoleUI(systemBus);
         }
         ui.start();
