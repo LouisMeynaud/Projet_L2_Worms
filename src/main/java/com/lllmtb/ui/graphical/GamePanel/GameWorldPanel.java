@@ -1,35 +1,44 @@
 package com.lllmtb.ui.graphical.GamePanel;
 
-import java.awt.*;
-import java.awt.event.*;
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.event.HierarchyEvent;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseWheelEvent;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
-
 import java.util.HashSet;
-
 import java.util.Set;
 
-
-import javax.swing.*;
+import javax.swing.JPanel;
 
 import com.lllmtb.engine.GameWorld;
 import com.lllmtb.events.EventBus;
-import com.lllmtb.events.move.MouseInputEvent;
-import com.lllmtb.events.move.MouseWheelMoveInputEvent;
-import com.lllmtb.events.ui.*;
-import com.lllmtb.model.entity.worm.Worm;
 import com.lllmtb.events.game.GamePauseEvent;
 import com.lllmtb.events.game.GameStateUpdatedEvent;
-import com.lllmtb.events.game.WorldCreatedEvent;
 import com.lllmtb.events.game.MapUpdateEvent;
+import com.lllmtb.events.game.WorldCreatedEvent;
+import com.lllmtb.events.move.MouseInputEvent;
+import com.lllmtb.events.move.MouseWheelMoveInputEvent;
+import com.lllmtb.events.ui.MoveEvent;
+import com.lllmtb.events.ui.ShootMode;
 import com.lllmtb.events.ui.graphical.RequestFocus;
+import com.lllmtb.model.entity.projectile.BulletProjectile;
+import com.lllmtb.model.entity.projectile.Projectile;
+import com.lllmtb.model.entity.projectile.RocketProjectile;
 import com.lllmtb.model.entity.worm.Statistics;
+import com.lllmtb.model.entity.worm.Worm;
 import com.lllmtb.physics.PhysicsBody;
 import com.lllmtb.physics.Position;
 import com.lllmtb.terrain.map.Tile;
-import com.lllmtb.ui.graphical.animation.Animation;
 import com.lllmtb.ui.graphical.TextureManager;
-import com.lllmtb.model.entity.projectile.*;
+import com.lllmtb.ui.graphical.Utilitaire;
+import com.lllmtb.ui.graphical.animation.Animation;
 
 public class GameWorldPanel extends JPanel {
     private EventBus eventBus;  // system bus
@@ -347,10 +356,11 @@ public class GameWorldPanel extends JPanel {
 
         for (int y = 0; y < mapMatrix.length; y++) {
             for (int x = 0; x < mapMatrix[y].length; x++) {
-                Tile tileType = mapMatrix[y][x];
-
-
-                BufferedImage texture = TextureManager.TILES.get(tileType);
+                String tileType = mapMatrix[y][x].toString();
+                BufferedImage texture;
+                    tileType = tileType + Utilitaire.getHashId(x, y, mapMatrix[y][x].getNbTexture());
+                    System.out.println(tileType);
+                    texture = TextureManager.TILES.get(tileType);
 
                 if (texture != null) {
                     int screenX = x * tileSize;
