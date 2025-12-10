@@ -4,6 +4,10 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import com.lllmtb.events.physics.ActualizePhysicsEvent;
+import com.lllmtb.events.physics.PhysicsCollisionWithOtherEntityEvent;
+import com.lllmtb.model.entity.Entity;
 import org.junit.jupiter.api.Test;
 import static org.mockito.Mockito.mock;
 
@@ -137,5 +141,23 @@ public class EventsTest {
     private void eventWithoutArgument(Event event) {
         assertNotNull(event);
         assertTrue(event instanceof Event);
+    }
+
+    @Test
+    void PhysicsCollisionWithOtherEntityEventTest() {
+        Entity movingBodyMock = mock(com.lllmtb.model.entity.Entity.class);
+        Entity hitBodyMock = mock(com.lllmtb.model.entity.Entity.class);
+
+        PhysicsCollisionWithOtherEntityEvent event = new PhysicsCollisionWithOtherEntityEvent(movingBodyMock, hitBodyMock);
+
+        assertNotNull(event);
+        assertSame(movingBodyMock, event.getMovingBody());
+        assertSame(hitBodyMock, event.getHitBody());
+    }
+
+    @Test
+    void actualizePhysicsEventTest(){
+        ActualizePhysicsEvent ap = new ActualizePhysicsEvent();
+        assertNotNull(ap);
     }
 }

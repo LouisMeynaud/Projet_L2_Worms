@@ -1,5 +1,6 @@
 package com.lllmtb.engine;
 
+import com.lllmtb.events.input.ProcessInputsEvent;
 import org.eclipse.jdt.annotation.NonNull;
 
 import java.util.Objects;
@@ -39,6 +40,9 @@ public class GameLoop implements Runnable {
                 //         + world.getPhysics().getBodies().size() + " : "
                 //         + Arrays.toString(world.getPhysics().getBodies().stream().map(PhysicsBody::getEntity).toArray()));
                 // System.out.println("Bodies : " + Arrays.toString(world.getPhysics().getBodies().toArray()));
+
+                // 0) Signal input processing to allow UI components to send input events
+                world.getBus().postQueued(new ProcessInputsEvent());
 
                 // 1) process queued external events (eg. input)
                 world.getBus().processQueued();

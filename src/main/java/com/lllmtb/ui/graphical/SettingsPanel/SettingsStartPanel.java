@@ -10,6 +10,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
+import java.awt.Color;
+
 import com.lllmtb.engine.GameSettings;
 import com.lllmtb.events.EventBus;
 import com.lllmtb.events.game.StartGameEvent;
@@ -43,12 +45,12 @@ public class SettingsStartPanel extends JPanel {
         // Launch and return button: southern zone
 
         JPanel zoneSud = new JPanel(new FlowLayout(FlowLayout.RIGHT)); // met les bouton a droite (flowLayout afficheles un apres les autre);
-        JButton backButton = Utilitaire.createImageButton(TextureManager.UI, "Back", 128, 64, 64, 48);
-        JButton starButton = Utilitaire.createImageButton(TextureManager.UI, "Start", 128, 64, 64, 48);
+        JButton backButton = Utilitaire.createImageButton(TextureManager.UI, "Panel", 150, 75, 150, 75, "Back", "Arial", 16, Color.WHITE);
+        JButton startButton = Utilitaire.createImageButton(TextureManager.UI, "Panel", 150, 75, 150, 75, "Start", "Arial", 16, Color.WHITE);
 
 
         zoneSud.add(backButton);
-        zoneSud.add(starButton);
+        zoneSud.add(startButton);
         this.add(zoneSud, BorderLayout.SOUTH);
 
 
@@ -66,7 +68,7 @@ public class SettingsStartPanel extends JPanel {
             eventBus.postQueued(new ScreenNewOrLoadEvent());
         });
 
-        starButton.addActionListener(e -> {
+        startButton.addActionListener(e -> {
             eventBus.postQueued(new StartGameEvent(setSettings(gameSettingsPanel)));
         });
     }
@@ -91,7 +93,7 @@ public class SettingsStartPanel extends JPanel {
             LandScape terrainType = this.mapSettingPanel.generateMapPanel.getReliefType();
             int widthMap = this.mapSettingPanel.generateMapPanel.getWidthMapSlider();
             boolean flightIsland = this.mapSettingPanel.generateMapPanel.getflightIsland();
-            return new GameSettings(gameName, nbEquipes, nomsEquipes, maxLife, nbVWorms, turnDuration, wind, null, flightIsland, widthMap, terrainType, maxJump);
+            return new GameSettings(gameName, nbEquipes, nomsEquipes, nbVWorms, maxLife, turnDuration, wind, null, flightIsland, widthMap, terrainType, maxJump);
 
 
         }

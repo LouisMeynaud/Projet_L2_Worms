@@ -64,4 +64,8 @@ public class Statistics {
         return this.hp > 0;
     }
 
+    public void damageTake(int damage) {
+        this.setHp(this.hp - damage);
+    }
+
 }

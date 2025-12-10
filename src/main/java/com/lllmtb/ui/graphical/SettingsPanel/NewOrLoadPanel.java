@@ -3,6 +3,8 @@ package com.lllmtb.ui.graphical.SettingsPanel;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
+import java.awt.Color;
+
 import com.lllmtb.events.EventBus;
 import com.lllmtb.events.ui.graphical.ScreenHomeEvent;
 import com.lllmtb.events.ui.graphical.ScreenLoadGame;
@@ -23,14 +25,14 @@ public class NewOrLoadPanel extends JPanel {
 
 
 
-        JButton newGameButton = Utilitaire.createImageButton(TextureManager.UI, "NewGame", 128, 64, 64, 48);
+        JButton newGameButton = Utilitaire.createImageButton(TextureManager.UI, "Panel", 150, 75, 150, 75, "New Game", "Arial", 16, Color.WHITE);
         newGameButton.addActionListener(e -> {
 
             eventBus.postQueued(new ScreenSettingsGame());
         });
         this.add(newGameButton);
 
-        JButton loadGameButton = Utilitaire.createImageButton(TextureManager.UI, "LoadGame", 128, 64, 64, 48);
+        JButton loadGameButton = Utilitaire.createImageButton(TextureManager.UI, "Panel", 150, 75, 150, 75, "Load Game", "Arial", 16, Color.WHITE);
         loadGameButton.addActionListener(e -> {
             eventBus.postQueued(new ScreenLoadGame());
         });
@@ -38,7 +40,7 @@ public class NewOrLoadPanel extends JPanel {
 
 
 
-        JButton backButton = Utilitaire.createImageButton(TextureManager.UI, "Back", 128, 64, 64, 48);
+        JButton backButton = Utilitaire.createImageButton(TextureManager.UI, "Panel", 150, 75, 150, 75, "Back", "Arial", 16, Color.WHITE);
     backButton.addActionListener(e -> {
 
             eventBus.postQueued(new ScreenHomeEvent());

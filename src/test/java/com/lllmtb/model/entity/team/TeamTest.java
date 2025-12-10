@@ -170,6 +170,16 @@ public class TeamTest {
         assertFalse(team2.getTeamWorms().contains(worm1));
     }
 
+    @Test
+    public void removeWorm_byHimself(){
+        Worm worm2 = new Worm("DeleteWorm", team);
+        assertEquals(2, team.getNumberOfWorms());
+        team.removeWorm(worm2);
+        assertEquals(1, team.getNumberOfWorms());
+        assertFalse(team.getTeamWorms().contains(worm2));
+
+    }
+
     // ==================== Worm Selection Tests ====================
 
     @Test

@@ -71,6 +71,11 @@ public class Worm extends Entity {
     private int facingDirection = 1;
 
     /**
+     * Indicates if the worm is currently in contact with the ground.
+     */
+    private boolean isOnGround = false;
+
+    /**
      * Private constructor to initialize a worm with statistics, a team, a spawn point and animation.
      * @param name  the name of the worm
      * @param stats the {@link Statistics} associated with the worm
@@ -170,6 +175,22 @@ public class Worm extends Entity {
     }
 
     /**
+     * Returns whether the worm is currently in contact with the ground.
+     * @return {@code true} if the worm is on the ground, {@code false} otherwise
+     */
+    public boolean isOnGround() {
+        return this.isOnGround;
+    }
+
+    /**
+     * Sets whether the worm is in contact with the ground.
+     * @param onGround {@code true} if the worm is on the ground, {@code false} otherwise
+     */
+    public void setOnGround(boolean onGround) {
+        this.isOnGround = onGround;
+    }
+
+    /**
      * Spawns the worm at the specified position.
      * <p>This sets the worm's {@link PhysicsBody} position in the game world.</p>
      * @param spawn the {@link Position} to place the worm
@@ -191,10 +212,15 @@ public class Worm extends Entity {
      * <p>If the worm's health (or other relevant stat) indicates it is dead,
      * this method will mark the worm as no longer alive.</p>
      */
-    public void setDeath() {
+    private void setDeath() {
         if (!this.stats.isAlive()) {
             this.alive = false;
         }
+    }
+
+    public void damageWorm(int damage) {
+        this.stats.damageTake(damage);
+        this.setDeath();
     }
 
     public static void setMaxHp(int maxHp) {
