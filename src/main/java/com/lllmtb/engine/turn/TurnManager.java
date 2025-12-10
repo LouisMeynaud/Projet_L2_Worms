@@ -37,10 +37,6 @@ public final class TurnManager {
     private EventListener<WeaponSelectedEvent> weaponSelectedEventEventListener;
     private EventListener<MouseInputEvent> mouseInputEventListener;
     private EventListener<GroundCheckCollision> groundCollisionListener;
-    private EventListener<PhysicsCollisionWithWatterOrExitMapEvent> waterExitCollistion;
-    private EventListener<ActualizePhysicsEvent> actualizePhysics;
-    private EventListener<PhysicsCollisionDetectedEvent> hitCollision;
-    private EventListener<RemoveWormOfTeam> removeWorm;
     private long startTime;
     private final long turnDurationInMs;
     private long remainingTime;
@@ -123,7 +119,7 @@ public final class TurnManager {
             }
         };
 
-        waterExitCollistion = event -> {
+        EventListener<PhysicsCollisionWithWatterOrExitMapEvent> waterExitCollision = event -> {
             if (event.entity() instanceof Worm) {
                 Worm worm = (Worm) event.entity();
                 worm.damageWorm(worm.getStats().getHp());
@@ -135,7 +131,7 @@ public final class TurnManager {
             }
         };
 
-        hitCollision = event -> {
+        EventListener<PhysicsCollisionDetectedEvent> hitCollision = event -> {
             if (event.movingBody() instanceof Projectile){
                 if (event.hitBody() != null && event.hitBody() instanceof Worm worm){
                     Projectile bullet = (Projectile) event.movingBody();
@@ -145,11 +141,11 @@ public final class TurnManager {
             world.getBus().postQueued(new ActualizePhysicsEvent());
         };
 
-        actualizePhysics = event -> {
+        EventListener<ActualizePhysicsEvent> actualizePhysicsBodies = event -> {
             world.getPhysics().actualizeBodies();
         };
 
-        removeWorm = event -> {
+        EventListener<RemoveWormOfTeam> removeWormDeathInTeam = event -> {
             Worm worm = event.worm;
             worm.getTeam().removeWorm(worm);
         };
@@ -185,8 +181,9 @@ public final class TurnManager {
         world.getBus().subscribe(GroundCheckCollision.class, groundCollisionListener);
         world.getBus().subscribe(WeaponSelectedEvent.class, weaponSelectedEventEventListener);
         world.getBus().subscribe(MouseInputEvent.class, mouseInputEventListener);
-        world.getBus().subscribe(PhysicsCollisionWithWatterOrExitMapEvent.class, waterExitCollistion);
-        world.getBus().subscribe(ActualizePhysicsEvent.class, actualizePhysics);
+        world.getBus().subscribe(PhysicsCollisionWithWatterOrExitMapEvent.class, waterExitCollision);
+        world.getBus().subscribe(ActualizePhysicsEvent.class, actualizePhysicsBodies);
         world.getBus().subscribe(PhysicsCollisionDetectedEvent.class, hitCollision);
+        world.getBus().subscribe(RemoveWormOfTeam.class, removeWormDeathInTeam);
     }
 }
