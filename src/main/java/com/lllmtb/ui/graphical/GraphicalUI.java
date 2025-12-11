@@ -9,6 +9,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.UIManager;
 
+import com.lllmtb.events.game.LoadEvent;
 import com.lllmtb.events.game.StartGameEvent;
 import com.lllmtb.events.ui.graphical.ScreenHomeEvent;
 import com.lllmtb.events.ui.graphical.ScreenLoadGame;
@@ -94,6 +95,11 @@ public class GraphicalUI implements UI {
         });
 
         eventBus.subscribe(StartGameEvent.class, event -> {
+            cardLayout.show(mainPanel, "gamePanel");
+            Logger.logger.debug("Show GameScreen");
+        });
+
+        eventBus.subscribe(LoadEvent.class, event -> {
             cardLayout.show(mainPanel, "gamePanel");
             Logger.logger.debug("Show GameScreen");
         });

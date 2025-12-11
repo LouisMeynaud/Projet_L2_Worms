@@ -71,7 +71,7 @@ public class Save {
         Path path = Paths.get(stringPath);
         try {
             Files.createDirectories(path);
-            Path folderPath = path.resolve("test.json");
+            Path folderPath = path.resolve("save.json");
             System.out.println("Game World sauvegardé dans: " + stringPath);
             Files.write(folderPath, json.getBytes());
         } catch (IOException e) {
@@ -163,9 +163,10 @@ public class Save {
         for (int y = 0; y < mapMatrix.length; y++) {
             for (int x = 0; x < mapMatrix[y].length; x++) {
                 Tile tileType = mapMatrix[y][x];
+                String type = tileType.toString() + "0";
 
 
-                BufferedImage texture = TextureManager.TILES.get(tileType);
+                BufferedImage texture = TextureManager.TILES.get(type);
 
                 if (texture != null) {
                     int screenX = x * tileSize;
@@ -204,7 +205,7 @@ public class Save {
      * @throws IOException If an error occurs during any of the save processes.
      */
     public static void saveAll() throws IOException {
-        String stringPath = "src/test/resources/saveTest/" + gameWorld.getGameName();
+        String stringPath = "src/main/resources/save/" + gameWorld.getGameName() + "_save";
         saveMap(gameWorld.getMap(), stringPath);
         saveGameWorld(gameWorld, stringPath);
         saveInfo(gameWorld, stringPath);

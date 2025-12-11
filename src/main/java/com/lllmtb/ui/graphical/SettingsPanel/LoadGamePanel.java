@@ -13,6 +13,7 @@ import javax.swing.SwingConstants;
 
 import com.lllmtb.engine.logger.Logger;
 import com.lllmtb.events.EventBus;
+import com.lllmtb.events.game.LoadEvent;
 import com.lllmtb.events.ui.graphical.ScreenNewOrLoadEvent;
 import com.lllmtb.terrain.map.MapLoader;
 import com.lllmtb.ui.graphical.TextureManager;
@@ -38,7 +39,7 @@ public class LoadGamePanel extends JPanel {
 
 
 
-        this.panelListe = new PanelListe(MapLoader.getListeDossiersMaps());
+        this.panelListe = new PanelListe(MapLoader.getListeDossiersSave());
         this.add(panelListe, BorderLayout.CENTER);
 
 
@@ -58,7 +59,7 @@ public class LoadGamePanel extends JPanel {
             File dossierSelectionne = panelListe.getFichierSelectionne();
             if (dossierSelectionne != null) {
                 Logger.logger.debug("Chargement du dossier : " + dossierSelectionne.getAbsolutePath());
-                // TODO : mettre la logique une fois loadGame fait
+                eventBus.postQueued(new LoadEvent(dossierSelectionne.getName()));
 
             } else {
                 Logger.logger.debug("aucun dossier choçisi");

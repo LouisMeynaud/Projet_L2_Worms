@@ -3,8 +3,8 @@
     {
       "physicsBody": {
         "position": {
-          "x": 86.0,
-          "y": 41.002
+          "x": 74.0,
+          "y": 103.002
         },
         "vector": {
           "x": 0.0,
@@ -19,8 +19,8 @@
         "type": "worm",
         "body": {
           "position": {
-            "x": 86.0,
-            "y": 41.002
+            "x": 74.0,
+            "y": 103.002
           },
           "vector": {
             "x": 0.0,
@@ -46,8 +46,8 @@
     {
       "physicsBody": {
         "position": {
-          "x": 71.0,
-          "y": 41.002
+          "x": 150.0,
+          "y": 104.002
         },
         "vector": {
           "x": 0.0,
@@ -62,8 +62,8 @@
         "type": "worm",
         "body": {
           "position": {
-            "x": 71.0,
-            "y": 41.002
+            "x": 150.0,
+            "y": 104.002
           },
           "vector": {
             "x": 0.0,
@@ -89,8 +89,8 @@
     {
       "physicsBody": {
         "position": {
-          "x": 363.0,
-          "y": 47.002
+          "x": 94.0,
+          "y": 103.002
         },
         "vector": {
           "x": 0.0,
@@ -105,8 +105,8 @@
         "type": "worm",
         "body": {
           "position": {
-            "x": 363.0,
-            "y": 47.002
+            "x": 94.0,
+            "y": 103.002
           },
           "vector": {
             "x": 0.0,
@@ -132,8 +132,8 @@
     {
       "physicsBody": {
         "position": {
-          "x": 54.0,
-          "y": 32.002
+          "x": 161.0,
+          "y": 103.002
         },
         "vector": {
           "x": 0.0,
@@ -148,8 +148,8 @@
         "type": "worm",
         "body": {
           "position": {
-            "x": 54.0,
-            "y": 32.002
+            "x": 161.0,
+            "y": 103.002
           },
           "vector": {
             "x": 0.0,
@@ -175,8 +175,8 @@
     {
       "physicsBody": {
         "position": {
-          "x": 172.0,
-          "y": 53.002
+          "x": 166.0,
+          "y": 104.002
         },
         "vector": {
           "x": 0.0,
@@ -191,8 +191,8 @@
         "type": "worm",
         "body": {
           "position": {
-            "x": 172.0,
-            "y": 53.002
+            "x": 166.0,
+            "y": 104.002
           },
           "vector": {
             "x": 0.0,
@@ -218,8 +218,8 @@
     {
       "physicsBody": {
         "position": {
-          "x": 152.0,
-          "y": 50.002
+          "x": 21.0,
+          "y": 103.002
         },
         "vector": {
           "x": 0.0,
@@ -234,8 +234,8 @@
         "type": "worm",
         "body": {
           "position": {
-            "x": 152.0,
-            "y": 50.002
+            "x": 21.0,
+            "y": 103.002
           },
           "vector": {
             "x": 0.0,
@@ -268,8 +268,8 @@
           {
             "body": {
               "position": {
-                "x": 86.0,
-                "y": 41.002
+                "x": 74.0,
+                "y": 103.002
               },
               "vector": {
                 "x": 0.0,
@@ -294,8 +294,8 @@
           {
             "body": {
               "position": {
-                "x": 71.0,
-                "y": 41.002
+                "x": 150.0,
+                "y": 104.002
               },
               "vector": {
                 "x": 0.0,
@@ -320,8 +320,8 @@
           {
             "body": {
               "position": {
-                "x": 363.0,
-                "y": 47.002
+                "x": 94.0,
+                "y": 103.002
               },
               "vector": {
                 "x": 0.0,
@@ -350,8 +350,8 @@
         "currentWorm": {
           "body": {
             "position": {
-              "x": 86.0,
-              "y": 41.002
+              "x": 74.0,
+              "y": 103.002
             },
             "vector": {
               "x": 0.0,
@@ -374,7 +374,7 @@
           "uuid": 1
         },
         "index": 0,
-        "teamColor": "YELLOW"
+        "teamColor": "BLUE"
       },
       "inventorySave": {
         "toolAmmo": {
@@ -393,8 +393,8 @@
           {
             "body": {
               "position": {
-                "x": 54.0,
-                "y": 32.002
+                "x": 161.0,
+                "y": 103.002
               },
               "vector": {
                 "x": 0.0,
@@ -419,8 +419,8 @@
           {
             "body": {
               "position": {
-                "x": 172.0,
-                "y": 53.002
+                "x": 166.0,
+                "y": 104.002
               },
               "vector": {
                 "x": 0.0,
@@ -445,8 +445,8 @@
           {
             "body": {
               "position": {
-                "x": 152.0,
-                "y": 50.002
+                "x": 21.0,
+                "y": 103.002
               },
               "vector": {
                 "x": 0.0,
@@ -475,8 +475,8 @@
         "currentWorm": {
           "body": {
             "position": {
-              "x": 54.0,
-              "y": 32.002
+              "x": 161.0,
+              "y": 103.002
             },
             "vector": {
               "x": 0.0,
@@ -499,7 +499,7 @@
           "uuid": 4
         },
         "index": 0,
-        "teamColor": "GREEN"
+        "teamColor": "RED"
       },
       "inventorySave": {
         "toolAmmo": {
@@ -531,11 +531,11 @@
     ],
     "nbWorms": 3,
     "hasWind": false,
+    "mapFileName": "Roquefort",
     "floatingIsland": false,
-    "widthMap": 400,
-    "terrainType": "HILLY",
+    "widthMap": 0,
     "turnDuration": 30,
-    "gameName": "Test",
+    "gameName": "test",
     "maxJump": 1,
     "maxHp": 100
   }

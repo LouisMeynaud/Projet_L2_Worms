@@ -14,10 +14,10 @@ public class MapLoader {
      */
     public static Map loadMatrix(String mapName) {
         String path;
-        if (mapName.contains("Test")) {
+        if (mapName.contains("save")) {
+            path = "src/main/resources/save/";
+        } else if (mapName.contains("Test")) {
             path = "src/test/resources/map/";
-        } else if (mapName.contains("Save")) {
-            path = "src/test/resources/SaveTest/";
     } else {
             path = "src/main/resources/map/";
         }
@@ -52,6 +52,16 @@ public class MapLoader {
         String cheminDossierMaps = "src/main/resources/map";
         return getListeDossiers(new File(cheminDossierMaps));
     }
+
+    /**
+     * Gets the list of map directories.
+     * @return an array of map directories.
+     */
+    public static File[] getListeDossiersSave() {
+        String cheminDossierMaps = "src/main/resources/save";
+        return getListeDossiers(new File(cheminDossierMaps));
+    }
+
 
     /**
      * Gets the list of subdirectories in a given root directory.

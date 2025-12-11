@@ -6,15 +6,20 @@ import com.google.gson.typeadapters.RuntimeTypeAdapterFactory;
 import com.lllmtb.engine.GameWorld;
 import com.lllmtb.model.entity.Entity;
 import com.lllmtb.model.entity.projectile.Projectile;
+import com.lllmtb.model.entity.team.Team;
 import com.lllmtb.model.entity.worm.Worm;
+import com.lllmtb.physics.PhysicsBody;
 import com.lllmtb.terrain.map.Map;
 import com.lllmtb.terrain.map.MapLoader;
+import com.lllmtb.ui.graphical.animation.Animation;
 import org.eclipse.jdt.annotation.NonNull;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.lang.reflect.Field;
+
+import static com.lllmtb.model.entity.worm.Worm.standing;
 
 /**
  * Utility class responsible for loading game data from the file system.
@@ -40,9 +45,9 @@ public class Load {
      * @throws RuntimeException If an I/O error occurs during reading.
      */
     public static GameSave loadGameSave(String name) throws FileNotFoundException {
-        String stringpath = "src/test/resources/saveTest/" + name + "/test.json";
+        String stringpath = "src/main/resources/save/" + name + "/save.json";
         if (name.contains("Test")) {
-            stringpath = "src/test/resources/saveTest/" + name + "/test.json";
+            stringpath = "src/test/resources/saveTest/" + name + "/save.json";
         }
         RuntimeTypeAdapterFactory<Entity> entityAdapter = RuntimeTypeAdapterFactory.of(Entity.class, "type")
                 .registerSubtype(Projectile.class, "projectile") // Si le JSON contient "type": "bazooka", on crée un Bazooka
@@ -82,12 +87,12 @@ public class Load {
             for (TeamSave teamSave : gameSave.teams) {
                 for (Worm worm : teamSave.team.getTeamWorms()) {
                     if (worm.uuid == saveBody.uuid) {
-                        saveBody.physicsBody =  worm.getBody();
                         try {
                             Field teamField = Worm.class.getDeclaredField("team");
                             teamField.setAccessible(true);
                             Worm wormBody = (Worm) saveBody.entity;
                             teamField.set(wormBody, teamSave.team);
+                            saveBody.physicsBody =  worm.getBody();
                         } catch (NoSuchFieldException | IllegalAccessException e) {
                             throw new RuntimeException(e);
                         }
@@ -112,9 +117,35 @@ public class Load {
             } catch (NoSuchFieldException | IllegalAccessException e) {
                 throw new RuntimeException(e);
             }
-
         }
+        for (PhysicsBodySave savePhysicsBody : gameSave.entities) {
+            try {
+                Field entityField = PhysicsBody.class.getDeclaredField("entity");
+                entityField.setAccessible(true);
+                entityField.set(savePhysicsBody.physicsBody, savePhysicsBody.entity);
+                Field animationField = Worm.class.getDeclaredField("animation");
+                animationField.setAccessible(true);
+                animationField.set(savePhysicsBody.physicsBody.getEntity(), new Animation(standing, 10));
+            } catch (NoSuchFieldException | IllegalAccessException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        for (TeamSave teamSave: gameSave.teams) {
+            for (Worm worm : teamSave.team.getTeamWorms()) {
+                if (worm.uuid == teamSave.team.getCurrentWorm().uuid) {
+                    try {
+                        Field currentWormField = Team.class.getDeclaredField("currentWorm");
+                        currentWormField.setAccessible(true);
+                        currentWormField.set(teamSave.team, worm);
+                    } catch (NoSuchFieldException | IllegalAccessException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            }
+        }
+
     }
+
 
 
     /**

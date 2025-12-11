@@ -8,6 +8,7 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import com.lllmtb.engine.save.GameSave;
+import com.lllmtb.engine.save.PhysicsBodySave;
 import com.lllmtb.engine.save.TeamSave;
 import org.eclipse.jdt.annotation.NonNull;
 
@@ -65,6 +66,9 @@ public class GameWorld {
 
         // Init PhysicsEngine
         this.physics = new PhysicsEngine(map, bus, settings.hasWind);
+        for (PhysicsBodySave physicsBodySave : gameSave.entities) {
+            physics.add(physicsBodySave.physicsBody);
+        }
 
         // Init Teams
         this.teams = new ArrayList<>();
