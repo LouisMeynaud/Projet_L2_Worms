@@ -18,13 +18,6 @@ import com.lllmtb.terrain.map.Map;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.lllmtb.terrain.map.SaveMap;
 import com.lllmtb.terrain.map.Tile;
 import com.lllmtb.ui.graphical.TextureManager;
@@ -157,8 +150,8 @@ public class Save {
 
     public static BufferedImage maptoBuffered(Map map) throws IOException {
         int tileSize = 12;
-        int width = map.getWidth()*tileSize;
-        int height = map.getHeight()*tileSize;
+        int width = map.getWidth() * tileSize;
+        int height = map.getHeight() * tileSize;
 
         BufferedImage mapCache = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g2d = mapCache.createGraphics(); //cree un crayon dans mapCache
