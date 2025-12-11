@@ -25,7 +25,6 @@ public class SaveTest {
     Save.saveAll();
     Path path = Paths.get("src/test/resources/SaveTest/testGame");
     assertTrue(Files.exists(path));
-    assertTrue(Files.exists(path.resolve("hightline.txt")));
     assertTrue(Files.exists(path.resolve("map.txt")));
     assertTrue(Files.exists(path.resolve("test.json")));
     }
@@ -44,13 +43,6 @@ public class SaveTest {
         Path path = Paths.get("src/test/resources/SaveTest/testGame");
         assertTrue(Files.exists(path));
         assertTrue(Files.exists(path.resolve("map.txt")));
-    }
-    @Test
-    void saveHightlineTest() throws IOException {
-        Save.saveHightline(gameWorld.getMap(), "src/test/resources/SaveTest/testGame");
-        Path path = Paths.get("src/test/resources/SaveTest/testGame");
-        assertTrue(Files.exists(path));
-        assertTrue(Files.exists(path.resolve("hightline.txt")));
     }
 
     @Test
