@@ -24,6 +24,7 @@ public class GameEngine {
         // Uncomment to log all system events for debugging
         //systemBus.subscribe(Event.class, e -> Logger.logger.info("[EVENT/system]: {}", e.getClass().getSimpleName()));
         systemBus.subscribe(StartGameEvent.class, GameEngine::startGame);
+        systemBus.subscribe(LoadEvent.class, GameEngine::startGame);
 
         // Engine loop thread - processes engine-level events (start, pause, quit...)
         new Thread(() -> {

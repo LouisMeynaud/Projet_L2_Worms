@@ -8,6 +8,9 @@ import com.lllmtb.model.entity.team.Team;
 import com.lllmtb.model.entity.worm.Worm;
 import com.lllmtb.terrain.map.Map;
 
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -16,6 +19,10 @@ import java.nio.file.Paths;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.lllmtb.terrain.map.SaveMap;
+import com.lllmtb.terrain.map.Tile;
+import com.lllmtb.ui.graphical.TextureManager;
+
+import javax.imageio.ImageIO;
 
 /**
  * Utility class responsible for game data persistence.
@@ -166,6 +173,52 @@ public class Save {
         return info;
     }
 
+    public static BufferedImage maptoBuffered(Map map) throws IOException {
+        int tileSize = 12;
+        int width = map.getWidth()*tileSize;
+        int height = map.getHeight()*tileSize;
+
+        BufferedImage mapCache = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g2d = mapCache.createGraphics(); //cree un crayon dans mapCache
+
+        g2d.setColor(new Color(135, 206, 235));
+        g2d.fillRect(0, 0, width, height);
+        Tile[][] mapMatrix = map.getMapMatrix();
+
+        for (int y = 0; y < mapMatrix.length; y++) {
+            for (int x = 0; x < mapMatrix[y].length; x++) {
+                Tile tileType = mapMatrix[y][x];
+
+
+                BufferedImage texture = TextureManager.TILES.get(tileType);
+
+                if (texture != null) {
+                    int screenX = x * tileSize;
+                    int screenY = y * tileSize;
+                    g2d.drawImage(texture, screenX, screenY, tileSize, tileSize, null);
+                }
+            }
+        }
+        g2d.dispose();
+
+        return mapCache;
+    }
+
+    public static void saveImage(BufferedImage image, String stringPath) throws IOException {
+        if (image == null) {
+            System.err.println("Erreur : L'image à sauvegarder est nulle !");
+            return;
+        }
+
+        try {
+            File outputFile = new File(stringPath + "/image.png");
+            ImageIO.write(image, "png", outputFile);
+            System.out.println("Succès : Image sauvegardée dans" + outputFile.getAbsolutePath());
+        } catch (IOException e) {
+            System.err.println("Erreur d'écriture : " + e.getMessage());
+        }
+    }
+
     /**
      * Orchestrates the complete save process for all game elements.
      * <p>
@@ -176,10 +229,12 @@ public class Save {
      * @throws IOException If an error occurs during any of the save processes.
      */
     public static void saveAll() throws IOException {
-        String stringPath = "src/test/resources/SaveTest/" + gameWorld.getGameName();
+        String stringPath = "src/test/resources/saveTest/" + gameWorld.getGameName();
         saveHightline(gameWorld.getMap(), stringPath);
         saveMap(gameWorld.getMap(), stringPath);
         saveInfo(gameWorld, stringPath);
         saveGameWorld(gameWorld, stringPath);
+        BufferedImage image = maptoBuffered(gameWorld.getMap());
+        saveImage(image, stringPath);
     }
 }
