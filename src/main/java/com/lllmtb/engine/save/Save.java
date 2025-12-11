@@ -89,31 +89,6 @@ public class Save {
     }
 
     /**
-     * Saves the terrain heightline (contour) to a text file.
-     * The output file is named {@code hightline.txt}.
-     *
-     * @param map        The {@link Map} object containing terrain data.
-     * @param stringPath The destination directory path.
-     * @return {@code true} if the save was successful, {@code false} otherwise.
-     * @throws IOException If a critical I/O error occurs.
-     */
-    public static boolean saveHightline(Map map, String stringPath) throws IOException {
-        try {
-            Path path = Paths.get(stringPath); //concataine
-            Files.createDirectories(path);
-            Path filePath = path.resolve("hightline.txt");
-            Files.writeString(filePath, map.hightLineToString());
-
-            System.out.println("Succès : Hightline sauvegardée dans " + filePath);
-            return true;
-        } catch (IOException e) {
-            System.err.println("Erreur lors de la sauvegarde : " + e.getMessage());
-            e.printStackTrace();
-            return false;
-        }
-    }
-
-    /**
      * Saves the map structure to a text file.
      * The output file is named {@code map.txt}.
      *
@@ -136,6 +111,48 @@ public class Save {
             e.printStackTrace();
             return false;
         }
+    }
+
+    /**
+     * Saves general game information (Name, Teams, Current Turn) to a text file.
+     * The output file is named {@code info.txt}.
+     *
+     * @param gameWorld  The GameWorld source for the information.
+     * @param stringPath The destination directory path.
+     */
+    public static  void saveInfo(GameWorld gameWorld, String stringPath) {
+        try {
+            Path path = Paths.get(stringPath);
+            Files.createDirectories(path);
+            Path filePath = path.resolve("info.txt");
+            Files.writeString(filePath, info(gameWorld));
+
+            System.out.println("Succès : Info sauvegardée dans " + filePath);
+
+        } catch (IOException e) {
+            System.err.println("Erreur lors de la sauvegarde : " + e.getMessage());
+            e.printStackTrace();
+
+        }
+    }
+
+    /**
+     * Generates a string representation of the game's meta-information.
+     *
+     * @param gameWorld The source GameWorld.
+     * @return A formatted string containing the game name, team list, and the team currently playing.
+     */
+    private static String  info(GameWorld gameWorld)  {
+        String info = "";
+        info +=  "Nom de la partie: " + gameWorld.getGameName() + "\n ";
+        info +=  "Les équipes: ";
+        for (Team team : gameWorld.getTeams()) {
+            info += team.name;
+            info += "; ";
+        }
+        info += "\n ";
+        info +=  "Equipe à jouer: " + gameWorld.getPlayingTeam().name + "\n";
+        return info;
     }
 
     public static BufferedImage maptoBuffered(Map map) throws IOException {
@@ -195,9 +212,9 @@ public class Save {
      */
     public static void saveAll() throws IOException {
         String stringPath = "src/test/resources/saveTest/" + gameWorld.getGameName();
-        saveHightline(gameWorld.getMap(), stringPath);
         saveMap(gameWorld.getMap(), stringPath);
         saveGameWorld(gameWorld, stringPath);
+        saveInfo(gameWorld, stringPath);
         BufferedImage image = maptoBuffered(gameWorld.getMap());
         saveImage(image, stringPath);
     }
