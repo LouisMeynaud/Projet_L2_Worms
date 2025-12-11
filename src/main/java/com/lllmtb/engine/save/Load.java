@@ -40,7 +40,10 @@ public class Load {
      * @throws RuntimeException If an I/O error occurs during reading.
      */
     public static GameSave loadGameSave(String name) throws FileNotFoundException {
-        String stringpath = "src/test/resources/SaveTest/" + name + "/test.json";
+        String stringpath = "src/test/resources/saveTest/" + name + "/test.json";
+        if (name.contains("Test")) {
+            stringpath = "src/test/resources/saveTest/" + name + "/test.json";
+        }
         RuntimeTypeAdapterFactory<Entity> entityAdapter = RuntimeTypeAdapterFactory.of(Entity.class, "type")
                 .registerSubtype(Projectile.class, "projectile") // Si le JSON contient "type": "bazooka", on crée un Bazooka
                 .registerSubtype(Worm.class, "worm");
