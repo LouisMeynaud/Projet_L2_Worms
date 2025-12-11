@@ -121,7 +121,7 @@ public class GameWorldTest {
         GameSave gameSave = Load.loadGameSave("e_save");
         GameWorld gameWorld =new GameWorld(gameSave, map);
         assertNotNull(gameWorld);
-        assertEquals(gameWorld.getGameName(), "Test");
+        assertEquals(gameWorld.getGameName(), "e");
     }
 
     @Test
