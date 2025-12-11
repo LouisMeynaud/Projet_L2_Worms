@@ -1,0 +1,542 @@
+{
+  "entities": [
+    {
+      "physicsBody": {
+        "position": {
+          "x": 56.0,
+          "y": 40.002
+        },
+        "vector": {
+          "x": 0.0,
+          "y": 0.0
+        },
+        "mass": 0.01,
+        "height": 2.0,
+        "width": 1.0
+      },
+      "uuid": 1,
+      "entity": {
+        "type": "worm",
+        "body": {
+          "position": {
+            "x": 56.0,
+            "y": 40.002
+          },
+          "vector": {
+            "x": 0.0,
+            "y": 0.0
+          },
+          "mass": 0.01,
+          "height": 2.0,
+          "width": 1.0
+        },
+        "name": "Équipe 11",
+        "stats": {
+          "hp": 100,
+          "speed": 1,
+          "strength": 1
+        },
+        "alive": true,
+        "collisionType": "SLIDE",
+        "facingDirection": 1,
+        "isOnGround": true,
+        "uuid": 1
+      }
+    },
+    {
+      "physicsBody": {
+        "position": {
+          "x": 159.0,
+          "y": 113.002
+        },
+        "vector": {
+          "x": 0.0,
+          "y": 0.0
+        },
+        "mass": 0.01,
+        "height": 2.0,
+        "width": 1.0
+      },
+      "uuid": 2,
+      "entity": {
+        "type": "worm",
+        "body": {
+          "position": {
+            "x": 159.0,
+            "y": 113.002
+          },
+          "vector": {
+            "x": 0.0,
+            "y": 0.0
+          },
+          "mass": 0.01,
+          "height": 2.0,
+          "width": 1.0
+        },
+        "name": "Équipe 12",
+        "stats": {
+          "hp": 100,
+          "speed": 1,
+          "strength": 1
+        },
+        "alive": true,
+        "collisionType": "SLIDE",
+        "facingDirection": 1,
+        "isOnGround": true,
+        "uuid": 2
+      }
+    },
+    {
+      "physicsBody": {
+        "position": {
+          "x": 13.0,
+          "y": 52.002
+        },
+        "vector": {
+          "x": 0.0,
+          "y": 0.0
+        },
+        "mass": 0.01,
+        "height": 2.0,
+        "width": 1.0
+      },
+      "uuid": 3,
+      "entity": {
+        "type": "worm",
+        "body": {
+          "position": {
+            "x": 13.0,
+            "y": 52.002
+          },
+          "vector": {
+            "x": 0.0,
+            "y": 0.0
+          },
+          "mass": 0.01,
+          "height": 2.0,
+          "width": 1.0
+        },
+        "name": "Équipe 13",
+        "stats": {
+          "hp": 100,
+          "speed": 1,
+          "strength": 1
+        },
+        "alive": true,
+        "collisionType": "SLIDE",
+        "facingDirection": 1,
+        "isOnGround": true,
+        "uuid": 3
+      }
+    },
+    {
+      "physicsBody": {
+        "position": {
+          "x": 124.0,
+          "y": 79.002
+        },
+        "vector": {
+          "x": 0.0,
+          "y": 0.0
+        },
+        "mass": 0.01,
+        "height": 2.0,
+        "width": 1.0
+      },
+      "uuid": 4,
+      "entity": {
+        "type": "worm",
+        "body": {
+          "position": {
+            "x": 124.0,
+            "y": 79.002
+          },
+          "vector": {
+            "x": 0.0,
+            "y": 0.0
+          },
+          "mass": 0.01,
+          "height": 2.0,
+          "width": 1.0
+        },
+        "name": "Équipe 21",
+        "stats": {
+          "hp": 100,
+          "speed": 1,
+          "strength": 1
+        },
+        "alive": true,
+        "collisionType": "SLIDE",
+        "facingDirection": 1,
+        "isOnGround": true,
+        "uuid": 4
+      }
+    },
+    {
+      "physicsBody": {
+        "position": {
+          "x": 30.0,
+          "y": 109.002
+        },
+        "vector": {
+          "x": 0.0,
+          "y": 0.0
+        },
+        "mass": 0.01,
+        "height": 2.0,
+        "width": 1.0
+      },
+      "uuid": 5,
+      "entity": {
+        "type": "worm",
+        "body": {
+          "position": {
+            "x": 30.0,
+            "y": 109.002
+          },
+          "vector": {
+            "x": 0.0,
+            "y": 0.0
+          },
+          "mass": 0.01,
+          "height": 2.0,
+          "width": 1.0
+        },
+        "name": "Équipe 22",
+        "stats": {
+          "hp": 100,
+          "speed": 1,
+          "strength": 1
+        },
+        "alive": true,
+        "collisionType": "SLIDE",
+        "facingDirection": 1,
+        "isOnGround": true,
+        "uuid": 5
+      }
+    },
+    {
+      "physicsBody": {
+        "position": {
+          "x": 19.0,
+          "y": 53.002
+        },
+        "vector": {
+          "x": 0.0,
+          "y": 0.0
+        },
+        "mass": 0.01,
+        "height": 2.0,
+        "width": 1.0
+      },
+      "uuid": 6,
+      "entity": {
+        "type": "worm",
+        "body": {
+          "position": {
+            "x": 19.0,
+            "y": 53.002
+          },
+          "vector": {
+            "x": 0.0,
+            "y": 0.0
+          },
+          "mass": 0.01,
+          "height": 2.0,
+          "width": 1.0
+        },
+        "name": "Équipe 23",
+        "stats": {
+          "hp": 100,
+          "speed": 1,
+          "strength": 1
+        },
+        "alive": true,
+        "collisionType": "SLIDE",
+        "facingDirection": 1,
+        "isOnGround": true,
+        "uuid": 6
+      }
+    }
+  ],
+  "indexTeam": 0,
+  "turnDuration": 30000,
+  "teams": [
+    {
+      "team": {
+        "worms": [
+          {
+            "body": {
+              "position": {
+                "x": 56.0,
+                "y": 40.002
+              },
+              "vector": {
+                "x": 0.0,
+                "y": 0.0
+              },
+              "mass": 0.01,
+              "height": 2.0,
+              "width": 1.0
+            },
+            "name": "Équipe 11",
+            "stats": {
+              "hp": 100,
+              "speed": 1,
+              "strength": 1
+            },
+            "alive": true,
+            "collisionType": "SLIDE",
+            "facingDirection": 1,
+            "isOnGround": true,
+            "uuid": 1
+          },
+          {
+            "body": {
+              "position": {
+                "x": 159.0,
+                "y": 113.002
+              },
+              "vector": {
+                "x": 0.0,
+                "y": 0.0
+              },
+              "mass": 0.01,
+              "height": 2.0,
+              "width": 1.0
+            },
+            "name": "Équipe 12",
+            "stats": {
+              "hp": 100,
+              "speed": 1,
+              "strength": 1
+            },
+            "alive": true,
+            "collisionType": "SLIDE",
+            "facingDirection": 1,
+            "isOnGround": true,
+            "uuid": 2
+          },
+          {
+            "body": {
+              "position": {
+                "x": 13.0,
+                "y": 52.002
+              },
+              "vector": {
+                "x": 0.0,
+                "y": 0.0
+              },
+              "mass": 0.01,
+              "height": 2.0,
+              "width": 1.0
+            },
+            "name": "Équipe 13",
+            "stats": {
+              "hp": 100,
+              "speed": 1,
+              "strength": 1
+            },
+            "alive": true,
+            "collisionType": "SLIDE",
+            "facingDirection": 1,
+            "isOnGround": true,
+            "uuid": 3
+          }
+        ],
+        "name": "Équipe 1",
+        "numberOfWorms": 3,
+        "id": 1,
+        "currentWorm": {
+          "body": {
+            "position": {
+              "x": 56.0,
+              "y": 40.002
+            },
+            "vector": {
+              "x": 0.0,
+              "y": 0.0
+            },
+            "mass": 0.01,
+            "height": 2.0,
+            "width": 1.0
+          },
+          "name": "Équipe 11",
+          "stats": {
+            "hp": 100,
+            "speed": 1,
+            "strength": 1
+          },
+          "alive": true,
+          "collisionType": "SLIDE",
+          "facingDirection": 1,
+          "isOnGround": true,
+          "uuid": 1
+        },
+        "index": 0,
+        "teamColor": "GREEN"
+      },
+      "inventorySave": {
+        "toolAmmo": {
+          "PARACHUTE": 0
+        },
+        "weaponAmmo": {
+          "GUN": 0,
+          "BAZOOKA": 0
+        },
+        "unlockedWeapons": []
+      }
+    },
+    {
+      "team": {
+        "worms": [
+          {
+            "body": {
+              "position": {
+                "x": 124.0,
+                "y": 79.002
+              },
+              "vector": {
+                "x": 0.0,
+                "y": 0.0
+              },
+              "mass": 0.01,
+              "height": 2.0,
+              "width": 1.0
+            },
+            "name": "Équipe 21",
+            "stats": {
+              "hp": 100,
+              "speed": 1,
+              "strength": 1
+            },
+            "alive": true,
+            "collisionType": "SLIDE",
+            "facingDirection": 1,
+            "isOnGround": true,
+            "uuid": 4
+          },
+          {
+            "body": {
+              "position": {
+                "x": 30.0,
+                "y": 109.002
+              },
+              "vector": {
+                "x": 0.0,
+                "y": 0.0
+              },
+              "mass": 0.01,
+              "height": 2.0,
+              "width": 1.0
+            },
+            "name": "Équipe 22",
+            "stats": {
+              "hp": 100,
+              "speed": 1,
+              "strength": 1
+            },
+            "alive": true,
+            "collisionType": "SLIDE",
+            "facingDirection": 1,
+            "isOnGround": true,
+            "uuid": 5
+          },
+          {
+            "body": {
+              "position": {
+                "x": 19.0,
+                "y": 53.002
+              },
+              "vector": {
+                "x": 0.0,
+                "y": 0.0
+              },
+              "mass": 0.01,
+              "height": 2.0,
+              "width": 1.0
+            },
+            "name": "Équipe 23",
+            "stats": {
+              "hp": 100,
+              "speed": 1,
+              "strength": 1
+            },
+            "alive": true,
+            "collisionType": "SLIDE",
+            "facingDirection": 1,
+            "isOnGround": true,
+            "uuid": 6
+          }
+        ],
+        "name": "Équipe 2",
+        "numberOfWorms": 3,
+        "id": 2,
+        "currentWorm": {
+          "body": {
+            "position": {
+              "x": 124.0,
+              "y": 79.002
+            },
+            "vector": {
+              "x": 0.0,
+              "y": 0.0
+            },
+            "mass": 0.01,
+            "height": 2.0,
+            "width": 1.0
+          },
+          "name": "Équipe 21",
+          "stats": {
+            "hp": 100,
+            "speed": 1,
+            "strength": 1
+          },
+          "alive": true,
+          "collisionType": "SLIDE",
+          "facingDirection": 1,
+          "isOnGround": true,
+          "uuid": 4
+        },
+        "index": 0,
+        "teamColor": "BLUE"
+      },
+      "inventorySave": {
+        "toolAmmo": {
+          "PARACHUTE": 0
+        },
+        "weaponAmmo": {
+          "GUN": 0,
+          "BAZOOKA": 0
+        },
+        "unlockedWeapons": []
+      }
+    }
+  ],
+  "hasWind": false,
+  "wind": {
+    "x": 0.0,
+    "y": 0.0
+  },
+  "gravity": {
+    "x": 0.0,
+    "y": -9810.0
+  },
+  "modifiers": {},
+  "settings": {
+    "nbTeams": 2,
+    "teamNames": [
+      "Équipe 1",
+      "Équipe 2"
+    ],
+    "nbWorms": 3,
+    "hasWind": false,
+    "mapFileName": "Gorgonzola",
+    "floatingIsland": false,
+    "widthMap": 0,
+    "turnDuration": 30,
+    "gameName": "e",
+    "maxJump": 1,
+    "maxHp": 100
+  }
+}
