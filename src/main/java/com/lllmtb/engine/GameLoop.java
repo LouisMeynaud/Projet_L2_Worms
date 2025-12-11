@@ -1,10 +1,7 @@
 package com.lllmtb.engine;
 
 import com.lllmtb.events.input.ProcessInputsEvent;
-import com.lllmtb.physics.PhysicsBody;
 import org.eclipse.jdt.annotation.NonNull;
-
-import java.util.Arrays;
 import java.util.Objects;
 
 public class GameLoop implements Runnable {
