@@ -37,14 +37,14 @@ public class GameLoop implements Runnable {
 
             if (!isPaused) {
                 System.out.print(""); // TODO : Replace by another line which will be always effective
-                System.out.println("[" + String.format("%4d", totalTicks) + "] New tick " + elapsedMs + "ms");
-                System.out.println("Entities in the game "
-                        + world.getPhysics().getBodies().size() + " : "
-                        + Arrays.toString(world.getPhysics().getBodies().stream().map(PhysicsBody::getEntity).toArray()));
-                System.out.println("Bodies : " + Arrays.toString(world.getPhysics().getBodies().toArray()));
-                for (PhysicsBody body : world.getPhysics().getBodies()) {
-                    System.out.println(body.getEntity().toString());
-                }
+                //System.out.println("[" + String.format("%4d", totalTicks) + "] New tick " + elapsedMs + "ms");
+                //System.out.println("Entities in the game "
+                        //+ world.getPhysics().getBodies().size() + " : "
+                        //+ Arrays.toString(world.getPhysics().getBodies().stream().map(PhysicsBody::getEntity).toArray()));
+                //System.out.println("Bodies : " + Arrays.toString(world.getPhysics().getBodies().toArray()));
+                //for (PhysicsBody body : world.getPhysics().getBodies()) {
+                  //  System.out.println(body.getEntity().toString());
+                //}
 
                 // 0) Signal input processing to allow UI components to send input events
                 world.getBus().postQueued(new ProcessInputsEvent());
