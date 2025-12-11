@@ -8,11 +8,10 @@ import java.util.Map;
 import javax.imageio.ImageIO;
 
 import com.lllmtb.engine.logger.Logger;
-import com.lllmtb.terrain.map.Tile;
 
 public class TextureManager {
 
-    public static final Map<Tile, BufferedImage> TILES = new HashMap<>();
+    public static final Map<String, BufferedImage> TILES = new HashMap<>();
     public static final Map<String, BufferedImage> ENTITIES = new HashMap<>();
     public static final Map<String, BufferedImage> UI = new HashMap<>();
     public static final Map<String, BufferedImage> WEAPONS = new HashMap<>();
@@ -25,11 +24,17 @@ public class TextureManager {
         try {
 
             ///////Blocs/////////
-            TILES.put(Tile.DIRT, ImageIO.read(TextureManager.class.getResource("/textures/block/Dirt.png")));
-            TILES.put(Tile.WATER, ImageIO.read(TextureManager.class.getResource("/textures/block/Water.png")));
-            TILES.put(Tile.AIR, ImageIO.read(TextureManager.class.getResource("/textures/block/Air.png")));
-            TILES.put(Tile.CAVERN, ImageIO.read(TextureManager.class.getResource("/textures/block/Cavern.png")));
-            TILES.put(Tile.GRASS, ImageIO.read(TextureManager.class.getResource("/textures/block/Grass.png")));
+            TILES.put("DIRT0".toString(), ImageIO.read(TextureManager.class.getResource("/textures/block/Dirt0.png")));
+            TILES.put("DIRT1".toString(), ImageIO.read(TextureManager.class.getResource("/textures/block/Dirt1.png")));
+            TILES.put("DIRT2".toString(), ImageIO.read(TextureManager.class.getResource("/textures/block/Dirt2.png")));
+            TILES.put("DIRT3".toString(), ImageIO.read(TextureManager.class.getResource("/textures/block/Dirt3.png")));
+            TILES.put("WATER0".toString(), ImageIO.read(TextureManager.class.getResource("/textures/block/Water0.png")));
+            TILES.put("WATER1".toString(), ImageIO.read(TextureManager.class.getResource("/textures/block/Water1.png")));
+            TILES.put("AIR0".toString(), ImageIO.read(TextureManager.class.getResource("/textures/block/Air0.png")));
+            TILES.put("CAVERN0".toString(), ImageIO.read(TextureManager.class.getResource("/textures/block/Cavern0.png")));
+            TILES.put("GRASS0".toString(), ImageIO.read(TextureManager.class.getResource("/textures/block/Grass0.png")));
+            TILES.put("GRASS1".toString(), ImageIO.read(TextureManager.class.getResource("/textures/block/Grass1.png")));
+            TILES.put("UNDERDIRT0".toString(), ImageIO.read(TextureManager.class.getResource("/textures/block/UnderDirt0.png")));
 
             ///////ui-buttons/////////
             UI.put("Pause", ImageIO.read(TextureManager.class.getResource("/textures/button/Pause.png")));

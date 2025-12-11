@@ -26,7 +26,7 @@ public class GenerateMap {
         } else {
             lowLine = new int[config.getWidth()];
             for (int i = 0; i < config.getWidth(); i++) {
-                lowLine[i] = 0;
+                lowLine[i] = config.getWaterHeight() + 1;
             }
         }
 
@@ -35,7 +35,6 @@ public class GenerateMap {
         MapBalancer.thicknessBalencer(config.getThicknessMin(), MapBalancer.averageThickness(lowLine, hightLine, 0, config.getWidth()), hightLine);
         MapFiller.fillingWater(map, config.getWaterHeight());
         MapFiller.fillingDirt(map, hightLine, lowLine);
-        map.setHightLine(hightLine);
 
         return map;
     }

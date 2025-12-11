@@ -1,8 +1,8 @@
 package com.lllmtb.terrain.generation;
 
+import com.lllmtb.physics.Position;
 import com.lllmtb.terrain.map.Map;
 import com.lllmtb.terrain.map.Tile;
-import com.lllmtb.physics.*;
 
 public class MapFiller {
     /**
@@ -30,7 +30,11 @@ public class MapFiller {
         for (int i = 0; i < map.getHeight(); i++) {
             for (int j = 0; j < map.getWidth(); j++) {
                 Position position = new Position(j, i);
-                if ((i < hightLine[j] && i > lowLine[j]) && !map.isTileAt(position, Tile.WATER)) {
+                if ((i == hightLine[j] && i > lowLine[j]) && !map.isTileAt(position, Tile.WATER)) {
+                    map.setTile(position, Tile.GRASS);
+                } else if ((i < hightLine[j] && i == lowLine[j]) && !map.isTileAt(position, Tile.WATER)) {
+                    map.setTile(position, Tile.UNDERDIRT);
+                } else if ((i < hightLine[j] && i > lowLine[j]) && !map.isTileAt(position, Tile.WATER)) {
                     map.setTile(position, Tile.DIRT);
                 } else if (!map.isTileAt(position, Tile.WATER)) {
                     map.setTile(position, Tile.AIR);

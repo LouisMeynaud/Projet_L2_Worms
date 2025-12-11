@@ -16,7 +16,7 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 
 
-public class PanelListeMap extends JPanel {
+public class PanelListe extends JPanel {
 
     private static final String NOM_FICHIER_INFO = "info.txt";
     private static final String NOM_FICHIER_IMAGE = "image.png";
@@ -46,7 +46,7 @@ public class PanelListeMap extends JPanel {
      * Constructor of the panel that displays the list of maps available in the maps folder.
      * @param tableauDeDossiers an array of files representing the map directories.
      */
-    public PanelListeMap(File[] tableauDeDossiers) {
+    public PanelListe(File[] tableauDeDossiers) {
         setBackground(Color.DARK_GRAY);
         this.setLayout(new BorderLayout());
 

@@ -1,5 +1,12 @@
 package com.lllmtb.engine.save;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.typeadapters.RuntimeTypeAdapterFactory;
 import com.lllmtb.engine.GameWorld;
 import com.lllmtb.model.entity.Entity;
@@ -131,48 +138,6 @@ public class Save {
         }
     }
 
-    /**
-     * Saves general game information (Name, Teams, Current Turn) to a text file.
-     * The output file is named {@code info.txt}.
-     *
-     * @param gameWorld  The GameWorld source for the information.
-     * @param stringPath The destination directory path.
-     */
-    public static  void saveInfo(GameWorld gameWorld, String stringPath) {
-        try {
-            Path path = Paths.get(stringPath);
-            Files.createDirectories(path);
-            Path filePath = path.resolve("info.txt");
-            Files.writeString(filePath, info(gameWorld));
-
-            System.out.println("Succès : Info sauvegardée dans " + filePath);
-
-        } catch (IOException e) {
-            System.err.println("Erreur lors de la sauvegarde : " + e.getMessage());
-            e.printStackTrace();
-
-        }
-    }
-
-    /**
-     * Generates a string representation of the game's meta-information.
-     *
-     * @param gameWorld The source GameWorld.
-     * @return A formatted string containing the game name, team list, and the team currently playing.
-     */
-    private static String  info(GameWorld gameWorld)  {
-        String info = "";
-        info +=  "Nom de la partie: " + gameWorld.getGameName() + "\n ";
-        info +=  "Les équipes: ";
-        for (Team team : gameWorld.getTeams()) {
-            info += team.name;
-            info += "; ";
-        }
-        info += "\n ";
-        info +=  "Equipe à jouer: " + gameWorld.getPlayingTeam().name + "\n";
-        return info;
-    }
-
     public static BufferedImage maptoBuffered(Map map) throws IOException {
         int tileSize = 12;
         int width = map.getWidth()*tileSize;
@@ -232,7 +197,6 @@ public class Save {
         String stringPath = "src/test/resources/saveTest/" + gameWorld.getGameName();
         saveHightline(gameWorld.getMap(), stringPath);
         saveMap(gameWorld.getMap(), stringPath);
-        saveInfo(gameWorld, stringPath);
         saveGameWorld(gameWorld, stringPath);
         BufferedImage image = maptoBuffered(gameWorld.getMap());
         saveImage(image, stringPath);
