@@ -45,6 +45,9 @@ public abstract class Projectile extends Entity {
         list.add(world -> world.getPhysics().remove(this.getBody()));
         if (entity instanceof Worm worm){
             worm.damageWorm(damage);
+            if(!worm.isAlive()){
+                list.add(world -> world.getPhysics().remove(worm.getBody()));
+            }
         }
     }
 }
