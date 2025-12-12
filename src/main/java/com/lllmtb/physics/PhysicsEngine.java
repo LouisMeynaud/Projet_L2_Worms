@@ -162,7 +162,7 @@ public class PhysicsEngine {
             if (body.getEntity() instanceof Worm worm) {
                 if (!(worm.isAlive())) {
                     bodies.remove(body);
-                    bus.postQueued(new RemoveWormOfTeam(worm));
+                    //TODO : Remove a worm from a team or maybe set a state for worm when is dead
                 }
             }
         }
@@ -359,12 +359,12 @@ public class PhysicsEngine {
                     default -> System.out.print(""); // TODO : Replace by another default case
                 }
                 if (impact.die) {
-                    bus.postQueued(new PhysicsCollisionWithWaterOrExitMapEvent(body.getEntity()));
+                    //TODO : Worm out of map or in Water
                 } else {
                     if (impact.hitBody == null) {
-                        bus.postQueued(new PhysicsCollisionWithMap(body.getEntity()));
+                        //TODO : Collision with ground/Map
                     } else {
-                        bus.postQueued(new PhysicsCollisionWithOtherEntityEvent(body.getEntity(), impact.hitBody.getEntity()));
+                        //TODO : Collision wih another entity impactEntity and currentBody
                     }
                 }
             } else {
