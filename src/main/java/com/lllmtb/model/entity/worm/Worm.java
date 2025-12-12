@@ -1,5 +1,6 @@
 package com.lllmtb.model.entity.worm;
 
+import com.lllmtb.engine.logger.Logger;
 import com.lllmtb.model.entity.Entity;
 import com.lllmtb.model.entity.team.Team;
 import com.lllmtb.model.entity.CollisionType;
@@ -215,6 +216,7 @@ public class Worm extends Entity {
     private void setDeath() {
         if (!this.stats.isAlive()) {
             this.alive = false;
+            Logger.logger.debug("Worm {} from the team {} is dead", this.name, this.team.name);
         }
     }
 

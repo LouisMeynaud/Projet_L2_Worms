@@ -52,10 +52,17 @@ public final class TurnManager {
 
     public void startTurn(Team team) {
         this.remainingTimeInMs = turnDurationInMs;
-        this.turn = new Turn(team);
-        world.getBus().postQueued(new TurnStarEvent(team));
-        Logger.logger.info("Start turn for the team {}\n", team.name);
-        world.getBus().postQueued(new WormPlayable(turn.getWormPlayable()));
+        if(team.oneAlive()){
+            this.turn = new Turn(team);
+            world.getBus().postQueued(new TurnStarEvent(team));
+            Logger.logger.info("Start turn for the team {}\n", team.name);
+            world.getBus().postQueued(new WormPlayable(turn.getWormPlayable()));
+        }
+        else{
+            Logger.logger.info("All worms is death in team {}", team.name);
+            //TODO : END THE GAME OR SKIP TURN IF 2 TWO TEAM ALIVE
+        }
+
     }
 
     public void updateTurn(double elapsedTime) {
@@ -67,7 +74,7 @@ public final class TurnManager {
         }
     }
 
-    private void endTurn() {
+    public void endTurn() {
         this.turn.end();
         Logger.logger.info("End turn - switch Team\n");
         world.getBus().postQueued(new TurnEndEvent());

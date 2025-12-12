@@ -7,6 +7,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import com.lllmtb.engine.GameWorld;
+import com.lllmtb.engine.logger.Logger;
 import com.lllmtb.events.physics.*;
 import org.eclipse.jdt.annotation.NonNull;
 
@@ -359,13 +360,24 @@ public class PhysicsEngine {
                     default -> System.out.print(""); // TODO : Replace by another default case
                 }
                 if (impact.die) {
-                    //TODO : Worm out of map or in Water
+                    remove(body);
+                    Logger.logger.debug("Entity out of map");
+                    if(body.getEntity() instanceof Worm worm){
+                        worm.damageWorm(worm.getStats().getHp());
+                        world.getTurnManager().endTurn();
+                    }
 
                 } else {
                     if (impact.hitBody == null) {
                         //TODO : Collision with ground/Map
+                        if(body.getEntity() instanceof Projectile){
+                            remove(body);
+                        }
                     } else {
                         //TODO : Collision wih another entity impactEntity and currentBody
+                        if(body.getEntity() instanceof Projectile proj){
+                            world.queueCommands(proj.onImpact(impact.hitBody.getEntity()));
+                        }
                     }
                 }
             } else {
