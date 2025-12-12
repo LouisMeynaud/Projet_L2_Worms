@@ -2,6 +2,7 @@ package com.lllmtb.physics;
 
 import com.lllmtb.engine.GameSettings;
 import com.lllmtb.engine.GameWorld;
+import com.lllmtb.engine.turn.TurnManager;
 import com.lllmtb.events.EventBus;
 import com.lllmtb.events.physics.PhysicsModifierAddedEvent;
 import com.lllmtb.events.physics.PhysicsModifierRemovedEvent;
@@ -182,6 +183,10 @@ class PhysicsEngineTest {
     @Test
     void testWindChangesEvery600Ticks() {
         double ticktime = 16.7;
+        TurnManager t = new TurnManager(world, 10000);
+        Team team = new Team("TestTeam", 1, new Position[]{new Position(2,4)});
+        Mockito.when(world.getTurnManager()).thenReturn(t);
+        t.startTurn(team);
         Vector windBefore = pE.getWind();
         for (int i = 0; i < 605; i++) {
             pE.next(ticktime);

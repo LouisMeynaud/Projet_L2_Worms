@@ -9,6 +9,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import com.lllmtb.engine.GameWorld;
 import com.lllmtb.engine.logger.Logger;
 import com.lllmtb.events.physics.*;
+import com.lllmtb.model.entity.CollisionType;
 import org.eclipse.jdt.annotation.NonNull;
 
 import com.lllmtb.events.EventBus;
@@ -369,12 +370,13 @@ public class PhysicsEngine {
 
                 } else {
                     if (impact.hitBody == null) {
-                        //TODO : Collision with ground/Map
-                        if(body.getEntity() instanceof Projectile){
+                        //Collision with ground/Map
+                        if(body.getEntity() instanceof Projectile && (body.getEntity().getCollisionType() != CollisionType.BOUNCE)){
                             remove(body);
+
                         }
                     } else {
-                        //TODO : Collision wih another entity impactEntity and currentBody
+                        // Collision wih another entity impactEntity and currentBody
                         if(body.getEntity() instanceof Projectile proj){
                             world.queueCommands(proj.onImpact(impact.hitBody.getEntity()));
                         }
