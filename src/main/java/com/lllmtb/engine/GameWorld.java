@@ -66,7 +66,7 @@ public class GameWorld {
         this.commandQueue = new LinkedBlockingQueue<>();
 
         // Init PhysicsEngine
-        this.physics = new PhysicsEngine(map, bus, settings.hasWind);
+        this.physics = new PhysicsEngine(map, this, settings.hasWind);
 
         // Init Teams
         this.teams = new ArrayList<>();

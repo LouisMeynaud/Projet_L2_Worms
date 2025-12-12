@@ -1,5 +1,7 @@
 package com.lllmtb.physics;
 
+import com.lllmtb.engine.GameSettings;
+import com.lllmtb.engine.GameWorld;
 import com.lllmtb.events.EventBus;
 import com.lllmtb.events.physics.PhysicsModifierAddedEvent;
 import com.lllmtb.events.physics.PhysicsModifierRemovedEvent;
@@ -14,6 +16,7 @@ import com.lllmtb.terrain.map.Map;
 import com.lllmtb.terrain.map.MapLoader;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 import java.util.HashSet;
 import java.util.List;
@@ -26,16 +29,19 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class PhysicsEngineTest {
     private Map map;
-    private EventBus bus;
+    private GameWorld world;
     private PhysicsEngine pE;
     private PhysicsBody pBWorm;
     private PhysicsBody pBBP;
+    private EventBus bus;
 
     @BeforeEach
     void setUp() {
         map = MapLoader.loadMatrix("mapTest");
         bus = new EventBus(4);
-        pE = new PhysicsEngine(map, bus, true);
+        world = Mockito.mock(GameWorld.class);
+        Mockito.when(world.getBus()).thenReturn(bus);
+        pE = new PhysicsEngine(map, world, true);
         Position pw = new Position(4, 4);
         Worm w = new Worm("José", new Team("Team", 1, new Position[]{pw}));
         assertTrue(map.inMap(pw));
@@ -76,7 +82,7 @@ class PhysicsEngineTest {
 
     @Test
     void testChangeWind_whenNoWind() {
-        PhysicsEngine tpE = new PhysicsEngine(map, bus, false);
+        PhysicsEngine tpE = new PhysicsEngine(map, world, false);
         tpE.add(pBWorm);
 
         Vector before = tpE.getWind();
@@ -108,7 +114,7 @@ class PhysicsEngineTest {
     @Test
     void testNextStep_WhenNoCollisions() {
         double dt = 0;
-        PhysicsEngine tpE = new PhysicsEngine(map, bus, false);
+        PhysicsEngine tpE = new PhysicsEngine(map, world, false);
         tpE.add(pBBP);
         pBBP.setPos(new Position(0, 5));
         pBBP.setVector(new Vector(0, 0));
@@ -120,7 +126,7 @@ class PhysicsEngineTest {
     @Test
     void testNextStep_WhenDie() {
         double dt = 0.0167;
-        PhysicsEngine tpE = new PhysicsEngine(map, bus, false);
+        PhysicsEngine tpE = new PhysicsEngine(map, world, false);
         tpE.add(pBBP);
         pBBP.setPos(new Position(0, 5));
         pBBP.setVector(new Vector(-10, 0));
@@ -146,7 +152,7 @@ class PhysicsEngineTest {
     @Test
     void testNextStep_whenCollision() {
         double dt = 0.0167;
-        PhysicsEngine tpE = new PhysicsEngine(map, bus, false);
+        PhysicsEngine tpE = new PhysicsEngine(map, world, false);
         tpE.add(pBWorm);
         tpE.add(pBBP);
         tpE.nextStep(dt);
@@ -159,7 +165,7 @@ class PhysicsEngineTest {
     @Test
     void testNextStep_whenCollision2() {
         double dt = 0.0167;
-        PhysicsEngine tpE = new PhysicsEngine(map, bus, false);
+        PhysicsEngine tpE = new PhysicsEngine(map, world, false);
         pBWorm.setVector(new Vector(0, 0));
         pBWorm.setPos(new Position(2, 4));
         pBBP.setPos(new Position(1, 5));

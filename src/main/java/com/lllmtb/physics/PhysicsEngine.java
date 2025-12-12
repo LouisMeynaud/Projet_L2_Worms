@@ -6,13 +6,13 @@ import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import com.lllmtb.engine.GameWorld;
 import com.lllmtb.events.physics.*;
 import org.eclipse.jdt.annotation.NonNull;
 
 import com.lllmtb.events.EventBus;
 import com.lllmtb.events.physics.PhysicsModifierAddedEvent;
 import com.lllmtb.events.physics.PhysicsModifierRemovedEvent;
-import com.lllmtb.events.physics.RemoveWormOfTeam;
 import com.lllmtb.model.entity.projectile.Projectile;
 import com.lllmtb.model.entity.worm.Worm;
 import com.lllmtb.model.item.ItemId;
@@ -27,7 +27,7 @@ import com.lllmtb.terrain.map.Map;
  * </p>
  */
 public class PhysicsEngine {
-    private final EventBus bus;
+    private final GameWorld world;
 
     /**
      * The list of all physics bodies currently managed by this engine.
@@ -72,11 +72,11 @@ public class PhysicsEngine {
      * in meters per second squared.
      * </p>
      * @param map     the {@code Map} instance representing the environment for collision detection.
-     * @param bus     the global {@code EventBus} instance created upstream.
+     * @param world     the global {@code GameWorld} instance created upstream.
      * @param hasWind if wind should be simulated.
      */
-    public PhysicsEngine(Map map, EventBus bus, boolean hasWind) {
-        this.bus = bus;
+    public PhysicsEngine(Map map, GameWorld world, boolean hasWind) {
+        this.world = world;
         this.bodies = new CopyOnWriteArrayList<>();
         this.modifiers = new ConcurrentHashMap<>();
         this.collision = new Collision(map, this.bodies);
@@ -199,7 +199,7 @@ public class PhysicsEngine {
         Objects.requireNonNull(body);
         Objects.requireNonNull(modifier);
         modifiers.computeIfAbsent(body, b -> new ArrayList<>()).add(modifier);
-        bus.postQueued(new PhysicsModifierAddedEvent(body, modifier));
+        world.getBus().postQueued(new PhysicsModifierAddedEvent(body, modifier));
     }
 
     /**
@@ -220,7 +220,7 @@ public class PhysicsEngine {
         }
 
         if (list.remove(modifier)) {
-            bus.postQueued(new PhysicsModifierRemovedEvent(body, modifier));
+            world.getBus().postQueued(new PhysicsModifierRemovedEvent(body, modifier));
         }
         if (list.isEmpty()) {
             modifiers.remove(body);
@@ -248,7 +248,7 @@ public class PhysicsEngine {
         for (PhysicsModifier m : new ArrayList<>(list)) {
             if (Objects.equals(m.source, source)) {
                 list.remove(m);
-                bus.postQueued(new PhysicsModifierRemovedEvent(body, m));
+                world.getBus().postQueued(new PhysicsModifierRemovedEvent(body, m));
             }
         }
         if (list.isEmpty()) {
@@ -346,7 +346,7 @@ public class PhysicsEngine {
             if (impact.collided) {
                 switch (body.getEntity().getCollisionType()) {
                     // if body slides along cliffs (if the collision is with the ground)
-                    case SLIDE -> collision.slide(body, impact, dt, bus);
+                    case SLIDE -> collision.slide(body, impact, dt, world.getBus());
 
                     // if body bounces
                     case BOUNCE -> collision.bounce(body, impact, 0.5);
@@ -360,6 +360,7 @@ public class PhysicsEngine {
                 }
                 if (impact.die) {
                     //TODO : Worm out of map or in Water
+
                 } else {
                     if (impact.hitBody == null) {
                         //TODO : Collision with ground/Map
