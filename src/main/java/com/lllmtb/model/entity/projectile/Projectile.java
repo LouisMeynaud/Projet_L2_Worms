@@ -1,13 +1,15 @@
 package com.lllmtb.model.entity.projectile;
 
+import java.util.Objects;
+
+import org.eclipse.jdt.annotation.NonNull;
+
 import com.lllmtb.model.entity.Entity;
 import com.lllmtb.model.entity.worm.Worm;
 import com.lllmtb.model.item.UseParams;
 import com.lllmtb.physics.PhysicsBody;
+import com.lllmtb.physics.PhysicsEngine;
 import com.lllmtb.physics.Vector;
-import org.eclipse.jdt.annotation.NonNull;
-
-import java.util.Objects;
 
 public abstract class Projectile extends Entity {
     private final PhysicsBody body;
@@ -36,5 +38,5 @@ public abstract class Projectile extends Entity {
     /**
      * Called by collision detection when an impact is detected.
      */
-    abstract void onImpact();
+    public abstract void onImpact(PhysicsEngine engine);
 }

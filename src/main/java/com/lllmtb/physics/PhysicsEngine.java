@@ -17,7 +17,6 @@ import com.lllmtb.events.physics.PhysicsModifierAddedEvent;
 import com.lllmtb.events.physics.PhysicsModifierRemovedEvent;
 import com.lllmtb.events.physics.RemoveWormOfTeam;
 import com.lllmtb.model.entity.projectile.Projectile;
-import com.lllmtb.model.entity.projectile.RocketProjectile;
 import com.lllmtb.model.entity.worm.Worm;
 import com.lllmtb.model.item.ItemId;
 import com.lllmtb.terrain.map.Map;
@@ -348,11 +347,9 @@ public class PhysicsEngine {
             Collision.Impact impact = collision.move(body, nextPos);
             // if collision
             if (impact.collided) {
-                if (body.getEntity() instanceof RocketProjectile ) {
-                 Explosion explosion = new Explosion();
-                 explosion.explosionMapEffect(impact.collisionPos, (RocketProjectile) body.getEntity(),collision.getMap());
-                 bus.postQueued(new MapUpdateEvent());
-                 bodies.remove(body);
+                //if the body is an explosive projectile
+                if (body.getEntity() instanceof Projectile) {
+                    ((Projectile) body.getEntity()).onImpact(this);
                 }
                 
                 switch (body.getEntity().getCollisionType()) {
@@ -424,5 +421,13 @@ public class PhysicsEngine {
             changeWind();
         }
         nextStep(ticktime / 1000.0);
+    }
+
+    public void createExplosion(Projectile projectile, int rayonDegatMap, int rayonSuffle, int degats, double forceSuffle) {
+        Position position = projectile.getBody().getPos();
+        Explosion.explosionMapEffect(position, rayonDegatMap,collision.getMap());
+        Explosion.explosionSuffleEffect(position, rayonSuffle, forceSuffle,collision.getMap(),bodies);
+        bus.postQueued(new MapUpdateEvent());
+        bodies.remove(projectile.getBody());
     }
 }

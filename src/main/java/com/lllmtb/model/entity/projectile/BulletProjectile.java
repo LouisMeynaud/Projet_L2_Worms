@@ -4,6 +4,7 @@ import org.eclipse.jdt.annotation.NonNull;
 
 import com.lllmtb.model.entity.CollisionType;
 import com.lllmtb.model.item.UseParams;
+import com.lllmtb.physics.PhysicsEngine;
 
 public final class BulletProjectile extends Projectile {
     private static final double force  = 100.0;
@@ -21,7 +22,7 @@ public final class BulletProjectile extends Projectile {
     }
 
     @Override
-    public void onImpact() {
+    public void onImpact(PhysicsEngine engine) {
         // trigger the reaction chain (explosion, events...)
     }
 }
