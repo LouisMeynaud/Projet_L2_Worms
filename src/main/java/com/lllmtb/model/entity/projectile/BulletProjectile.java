@@ -1,8 +1,9 @@
 package com.lllmtb.model.entity.projectile;
 
+import org.eclipse.jdt.annotation.NonNull;
+
 import com.lllmtb.model.entity.CollisionType;
 import com.lllmtb.model.item.UseParams;
-import org.eclipse.jdt.annotation.NonNull;
 
 public final class BulletProjectile extends Projectile {
     private static final double force  = 100.0;

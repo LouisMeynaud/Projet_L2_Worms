@@ -506,4 +506,7 @@ public class Collision {
     public void cross(PhysicsBody body, Position pos) {
         body.setPos(pos);
     }
+    public Map getMap() {
+        return this.map;
+    }
 }

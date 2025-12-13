@@ -6,14 +6,18 @@ import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import com.lllmtb.events.physics.*;
 import org.eclipse.jdt.annotation.NonNull;
 
 import com.lllmtb.events.EventBus;
+import com.lllmtb.events.game.MapUpdateEvent;
+import com.lllmtb.events.physics.PhysicsCollisionWithMap;
+import com.lllmtb.events.physics.PhysicsCollisionWithOtherEntityEvent;
+import com.lllmtb.events.physics.PhysicsCollisionWithWaterOrExitMapEvent;
 import com.lllmtb.events.physics.PhysicsModifierAddedEvent;
 import com.lllmtb.events.physics.PhysicsModifierRemovedEvent;
 import com.lllmtb.events.physics.RemoveWormOfTeam;
 import com.lllmtb.model.entity.projectile.Projectile;
+import com.lllmtb.model.entity.projectile.RocketProjectile;
 import com.lllmtb.model.entity.worm.Worm;
 import com.lllmtb.model.item.ItemId;
 import com.lllmtb.terrain.map.Map;
@@ -344,6 +348,13 @@ public class PhysicsEngine {
             Collision.Impact impact = collision.move(body, nextPos);
             // if collision
             if (impact.collided) {
+                if (body.getEntity() instanceof RocketProjectile ) {
+                 Explosion explosion = new Explosion();
+                 explosion.explosionMapEffect(impact.collisionPos, (RocketProjectile) body.getEntity(),collision.getMap());
+                 bus.postQueued(new MapUpdateEvent());
+                 bodies.remove(body);
+                }
+                
                 switch (body.getEntity().getCollisionType()) {
                     // if body slides along cliffs (if the collision is with the ground)
                     case SLIDE -> collision.slide(body, impact, dt, bus);
