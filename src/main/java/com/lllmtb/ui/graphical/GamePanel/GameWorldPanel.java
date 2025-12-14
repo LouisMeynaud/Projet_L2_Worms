@@ -12,7 +12,9 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.swing.JPanel;
@@ -26,6 +28,7 @@ import com.lllmtb.events.game.WorldCreatedEvent;
 import com.lllmtb.events.input.ProcessInputsEvent;
 import com.lllmtb.events.move.MouseInputEvent;
 import com.lllmtb.events.move.MouseWheelMoveInputEvent;
+import com.lllmtb.events.physics.ExplosionEvent;
 import com.lllmtb.events.ui.MoveEvent;
 import com.lllmtb.events.ui.ShootMode;
 import com.lllmtb.events.ui.graphical.RequestFocus;
@@ -40,6 +43,8 @@ import com.lllmtb.terrain.map.Tile;
 import com.lllmtb.ui.graphical.TextureManager;
 import com.lllmtb.ui.graphical.Utilitaire;
 import com.lllmtb.ui.graphical.animation.Animation;
+import com.lllmtb.ui.graphical.animation.AnimationManager;
+import com.lllmtb.ui.graphical.animation.VisualEffect;
 
 public class GameWorldPanel extends JPanel {
     private EventBus eventBus;  // system bus
@@ -48,6 +53,8 @@ public class GameWorldPanel extends JPanel {
     private final int tileSize = 12;
     private boolean shootMode;
     private final Set<Integer> pressedKeys = new HashSet<>();
+    
+    private final List<VisualEffect> activeEffects = new ArrayList<>();
 
 
     private BufferedImage mapCache = null;
@@ -275,6 +282,8 @@ public class GameWorldPanel extends JPanel {
             repaint();
         });
         world.getBus().subscribe(GameStateUpdatedEvent.class, event -> {
+            updateAnimations();
+            updateEffects();
             repaint();
         });
 
@@ -288,6 +297,15 @@ public class GameWorldPanel extends JPanel {
 
         world.getBus().subscribe(ProcessInputsEvent.class, event -> {
             processInputs();
+        });
+
+        world.getBus().subscribe(ExplosionEvent.class, event -> {
+            Animation anim = AnimationManager.create(event.getAnimationKey(), 2);
+    
+            if (anim != null) {
+                double size = event.getRadius() * 2.5;
+                activeEffects.add(new VisualEffect(event.getPosition(), anim, size, size));
+            }
         });
     }
 
@@ -408,6 +426,23 @@ public class GameWorldPanel extends JPanel {
                 // Update facing direction based on velocity
                 worm.updateFacingDirection();
             }
+        }
+    }
+
+    private void updateEffects() {
+        for (int i = activeEffects.size() - 1; i >= 0; i--) {
+            VisualEffect effect = activeEffects.get(i);
+            effect.update();
+            if (effect.isFinished()) {
+                activeEffects.remove(i);
+            }
+        }
+    }
+
+    private void drawEffects(Graphics2D g2d) {
+        double hauteurMapPixels = world.getMap().getHeight() * this.tileSize;
+        for (VisualEffect effect : activeEffects) {
+            effect.draw(g2d, tileSize, hauteurMapPixels);
         }
     }
 
@@ -625,9 +660,6 @@ public class GameWorldPanel extends JPanel {
             return;
         }
 
-        // Update all worm animations before rendering
-        updateAnimations();
-
         Graphics2D g2d = (Graphics2D) g; // pinceau plus puissant avec les translate et les zoom
 
         g2d.translate(cameraOffsetX, cameraOffsetY); //decalle le pinceau en fonction de la position camera (si negatif le dessin est deplacer vers la gauche)
@@ -637,6 +669,7 @@ public class GameWorldPanel extends JPanel {
 
         paintMap(g2d);
         paintEntity(g2d);
+        drawEffects(g2d);
 
             }
         }

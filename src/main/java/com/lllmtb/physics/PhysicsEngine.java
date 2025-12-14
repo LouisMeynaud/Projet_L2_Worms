@@ -10,12 +10,14 @@ import org.eclipse.jdt.annotation.NonNull;
 
 import com.lllmtb.events.EventBus;
 import com.lllmtb.events.game.MapUpdateEvent;
+import com.lllmtb.events.physics.ExplosionEvent;
 import com.lllmtb.events.physics.PhysicsCollisionWithMap;
 import com.lllmtb.events.physics.PhysicsCollisionWithOtherEntityEvent;
 import com.lllmtb.events.physics.PhysicsCollisionWithWaterOrExitMapEvent;
 import com.lllmtb.events.physics.PhysicsModifierAddedEvent;
 import com.lllmtb.events.physics.PhysicsModifierRemovedEvent;
 import com.lllmtb.events.physics.RemoveWormOfTeam;
+import com.lllmtb.model.entity.projectile.ExplosiveProjectile;
 import com.lllmtb.model.entity.projectile.Projectile;
 import com.lllmtb.model.entity.worm.Worm;
 import com.lllmtb.model.item.ItemId;
@@ -427,6 +429,7 @@ public class PhysicsEngine {
         Position position = projectile.getBody().getPos();
         Explosion.explosionMapEffect(position, rayonDegatMap,collision.getMap());
         Explosion.explosionSuffleEffect(position, rayonSuffle, forceSuffle,collision.getMap(),bodies);
+        bus.postQueued(new ExplosionEvent(position, rayonSuffle,((ExplosiveProjectile) projectile).getExplosionTexture()));
         bus.postQueued(new MapUpdateEvent());
         bodies.remove(projectile.getBody());
     }

@@ -17,6 +17,7 @@ public final class RocketProjectile extends Projectile implements ExplosiveProje
     private static final int RAYON_SOUFFLE = 15;
     private static final int DEGATS = 30;        
     private static final double FORCE_SOUFFLE = 100; 
+    private static final String TEXTURE_KEY = "BazookaExplosion";
 
     public RocketProjectile(@NonNull UseParams params) {
         super(params, force, mass, height, width);
@@ -50,5 +51,10 @@ public final class RocketProjectile extends Projectile implements ExplosiveProje
     @Override
     public double getExplosionForce() {
         return FORCE_SOUFFLE;
+    }
+
+    @Override
+    public String getExplosionTexture() {
+        return TEXTURE_KEY;
     }
 }

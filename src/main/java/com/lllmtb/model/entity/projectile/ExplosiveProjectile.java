@@ -5,4 +5,5 @@ public interface ExplosiveProjectile {
     int getSuffleRadius();           
     int getExplosionDamage();       
     double getExplosionForce();     
+    String getExplosionTexture();
 }
