@@ -16,9 +16,21 @@ public class AnimationManager {
         
         
         //WORM
-        BufferedImage wormSheet = TextureManager.ENTITIES.get("Worm"); 
-        if (wormSheet != null) {
-            FRAMES_MAP.put("Worm", Utilitaire.cutSpriteSheet(wormSheet, 2, 3)); 
+        BufferedImage wormGREEN = TextureManager.ENTITIES.get("WormGREEN"); 
+        if (wormGREEN != null) {
+            FRAMES_MAP.put("WormGREEN", Utilitaire.cutSpriteSheet(wormGREEN, 2, 3)); 
+        }
+        BufferedImage wormYELLOW = TextureManager.ENTITIES.get("WormYELLOW"); 
+        if (wormYELLOW != null) {
+            FRAMES_MAP.put("WormYELLOW", Utilitaire.cutSpriteSheet(wormYELLOW, 2, 3)); 
+        }
+        BufferedImage wormBLUE = TextureManager.ENTITIES.get("WormBLUE"); 
+        if (wormBLUE != null) {
+            FRAMES_MAP.put("WormBLUE", Utilitaire.cutSpriteSheet(wormBLUE, 2, 3)); 
+        }
+        BufferedImage wormRED = TextureManager.ENTITIES.get("WormRED"); 
+        if (wormRED != null) {
+            FRAMES_MAP.put("WormRED", Utilitaire.cutSpriteSheet(wormRED, 2, 3)); 
         }
 
         //EXPLOSION 

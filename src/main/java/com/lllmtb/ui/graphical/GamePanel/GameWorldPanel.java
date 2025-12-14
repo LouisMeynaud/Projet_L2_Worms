@@ -300,7 +300,7 @@ public class GameWorldPanel extends JPanel {
         });
 
         world.getBus().subscribe(ExplosionEvent.class, event -> {
-            Animation anim = AnimationManager.create(event.getAnimationKey(), 2);
+            Animation anim = AnimationManager.create(event.getAnimationKey(), 7);
     
             if (anim != null) {
                 double size = event.getRadius() * 2.5;
@@ -387,7 +387,6 @@ public class GameWorldPanel extends JPanel {
                 String tileType = mapMatrix[y][x].toString();
                 BufferedImage texture;
                     tileType = tileType + Utilitaire.getHashId(x, y, mapMatrix[y][x].getNbTexture());
-                    System.out.println(tileType);
                     texture = TextureManager.TILES.get(tileType);
 
                 if (texture != null) {

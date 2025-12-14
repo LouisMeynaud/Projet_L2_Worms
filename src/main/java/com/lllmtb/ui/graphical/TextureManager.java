@@ -53,7 +53,10 @@ public class TextureManager {
             BACKGROUND.put("Background", ImageIO.read(TextureManager.class.getResource("/textures/Background.png")));
 
             //////Entities//////////
-            ENTITIES.put("Worm", ImageIO.read(TextureManager.class.getResource("/sprites/worm/WormRight.png")));
+            ENTITIES.put("WormBLUE", ImageIO.read(TextureManager.class.getResource("/sprites/worm/WormRightBLUE.png")));
+            ENTITIES.put("WormGREEN", ImageIO.read(TextureManager.class.getResource("/sprites/worm/WormRightGREEN.png")));
+            ENTITIES.put("WormYELLOW", ImageIO.read(TextureManager.class.getResource("/sprites/worm/WormRightYELLOW.png")));
+            ENTITIES.put("WormRED", ImageIO.read(TextureManager.class.getResource("/sprites/worm/WormRightRED.png")));
 
             //////Arme//////////
             WEAPONS.put("GUN", ImageIO.read(TextureManager.class.getResource("/textures/weapon/weapon/Gun.png")));

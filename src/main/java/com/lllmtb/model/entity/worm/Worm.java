@@ -79,7 +79,8 @@ public class Worm extends Entity {
         this.team.addWorm(this);
         
         
-        this.animation = AnimationManager.create("Worm", 12);
+        System.out.println(team.getTeamColor().toString());
+        this.animation = AnimationManager.create("Worm"+team.getTeamColor().toString(), 12);
         if (this.animation != null) {
             this.animation.start();
         }

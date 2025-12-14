@@ -1,16 +1,27 @@
 package com.lllmtb.model.entity.team;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
+import java.util.Random;
+
+import org.eclipse.jdt.annotation.NonNull;
 
 import com.lllmtb.engine.commands.GameCommand;
 import com.lllmtb.model.entity.worm.Worm;
-import com.lllmtb.model.item.*;
-import com.lllmtb.model.item.tool.*;
-import com.lllmtb.model.item.weapon.*;
+import com.lllmtb.model.item.ItemId;
+import com.lllmtb.model.item.UnknownItemException;
+import com.lllmtb.model.item.UseParams;
 import com.lllmtb.model.item.inventory.Inventory;
+import com.lllmtb.model.item.tool.ToolId;
+import com.lllmtb.model.item.tool.UnknownToolException;
+import com.lllmtb.model.item.tool.UnusableToolException;
+import com.lllmtb.model.item.weapon.LockedWeaponException;
+import com.lllmtb.model.item.weapon.UnknownWeaponException;
+import com.lllmtb.model.item.weapon.UnusableWeaponException;
+import com.lllmtb.model.item.weapon.WeaponId;
 import com.lllmtb.physics.Position;
-
-import org.eclipse.jdt.annotation.NonNull;
 
 /**
  * Represents a team of {@link Worm} entities in the game.
@@ -88,6 +99,7 @@ public class Team {
      * @param spawn         the spawn position where the worms will be placed
      */
     private Team(@NonNull String name, int numberOfWorms, @NonNull Inventory inventory, @NonNull Position[] spawn) {
+        this.teamColor = Team.chooseColor();
         this.inventory = Objects.requireNonNull(inventory);
         this.name = Objects.requireNonNull(name);
         this.numberOfWorms = numberOfWorms;
@@ -95,7 +107,6 @@ public class Team {
         this.setUpWorms(numberOfWorms, spawn);
         this.currentWorm = this.worms.get(0);
         this.selectedItem = null;
-        this.teamColor = Team.chooseColor();
     }
 
     /**
@@ -334,5 +345,8 @@ public class Team {
     public void nextWorm() {
         this.index = (++this.index >= this.worms.size()) ? 0 : this.index;
         this.currentWorm = this.getIndexWorm(this.index);
+    }
+    public TeamColor getTeamColor(){
+        return this.teamColor;
     }
 }
