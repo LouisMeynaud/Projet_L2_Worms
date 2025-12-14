@@ -55,4 +55,21 @@ public class Explosion {
             }
         }
     }
+
+    public static void explosionDamageEffect(Position position, int damageRadius, int maxDamage, CopyOnWriteArrayList<PhysicsBody> Bodies) {
+    for (PhysicsBody body : Bodies) {
+        Position bodyPos = body.getPos();
+        double dx = bodyPos.getX() - position.getX();
+        double dy = bodyPos.getY() - position.getY();
+        double distance = Math.sqrt(dx * dx + dy * dy);
+
+        if (distance <= damageRadius) {
+            double ratio = 1 - (distance / damageRadius);
+            int actualDamage = (int) (maxDamage * ratio);
+            if (body.getEntity() instanceof Worm) {
+                ((Worm) body.getEntity()).damageWorm(actualDamage);
+            }
+        }
+    }
+}
 }

@@ -558,7 +558,7 @@ public class GameWorldPanel extends JPanel {
 
 
         int barX = (int) (x - 5);
-        int barY = (int) (y - barHeight - 5);
+        int barY = (int) (y - barHeight - 10);
 
         g2d.setColor(Color.RED);
         g2d.fillRect(barX, barY, barWidth, barHeight);

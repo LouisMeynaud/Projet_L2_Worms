@@ -429,6 +429,7 @@ public class PhysicsEngine {
         Position position = projectile.getBody().getPos();
         Explosion.explosionMapEffect(position, rayonDegatMap,collision.getMap());
         Explosion.explosionSuffleEffect(position, rayonSuffle, forceSuffle,collision.getMap(),bodies);
+        Explosion.explosionDamageEffect(position, rayonSuffle, degats, bodies);
         bus.postQueued(new ExplosionEvent(position, rayonSuffle,((ExplosiveProjectile) projectile).getExplosionTexture()));
         bus.postQueued(new MapUpdateEvent());
         bodies.remove(projectile.getBody());
