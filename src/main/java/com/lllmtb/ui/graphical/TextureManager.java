@@ -18,6 +18,7 @@ public class TextureManager {
     public static final Map<String, BufferedImage> TOOLS = new HashMap<>();
     public static final Map<String, BufferedImage> PROJECTILES = new HashMap<>();
     public static final Map<String, BufferedImage> BACKGROUND = new HashMap<>();
+    public static final Map<String, BufferedImage> EFFECT = new HashMap<>();
 
 
     public static void load() {
@@ -51,6 +52,9 @@ public class TextureManager {
             ///////Background/////////
             BACKGROUND.put("Background", ImageIO.read(TextureManager.class.getResource("/textures/Background.png")));
 
+            //////Entities//////////
+            ENTITIES.put("Worm", ImageIO.read(TextureManager.class.getResource("/sprites/worm/WormRight.png")));
+
             //////Arme//////////
             WEAPONS.put("GUN", ImageIO.read(TextureManager.class.getResource("/textures/weapon/weapon/Gun.png")));
             WEAPONS.put("LockedGUN", ImageIO.read(TextureManager.class.getResource("/textures/weapon/lockedWeapon/Gun.png")));
@@ -71,6 +75,8 @@ public class TextureManager {
             PROJECTILES.put("BulletProjectile", ImageIO.read(TextureManager.class.getResource("/sprites/weapon/BulletGun.png")));
             PROJECTILES.put("RocketProjectile", ImageIO.read(TextureManager.class.getResource("/sprites/weapon/BulletBazooka.png")));
 
+            /////////////EFFECT/////////////////
+            EFFECT.put("BazookaExplosion", ImageIO.read(TextureManager.class.getResource("/sprites/effect/BazookaExplosion.png")));
 
 
         } catch (IOException e) {
