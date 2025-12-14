@@ -151,4 +151,27 @@ public class Utilitaire {
     return (Math.abs(h) % max);
 }
 
+    public static BufferedImage[] cutSpriteSheet(BufferedImage sheet, int cols, int rows) {
+        if (sheet == null) {
+            return new BufferedImage[0];}
+
+        int frameWidth = sheet.getWidth() / cols;
+        int frameHeight = sheet.getHeight() / rows;
+        BufferedImage[] sprites = new BufferedImage[cols * rows];
+
+        int count = 0;
+        for (int y = 0; y < rows; y++) {
+            for (int x = 0; x < cols; x++) {
+                sprites[count] = sheet.getSubimage(
+                        x * frameWidth,
+                        y * frameHeight,
+                        frameWidth,
+                        frameHeight
+                );
+                count++;
+            }
+        }
+        return sprites;
+    }
+
 }
