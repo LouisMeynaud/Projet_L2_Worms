@@ -22,6 +22,7 @@ import com.lllmtb.model.entity.projectile.Projectile;
 import com.lllmtb.model.entity.worm.Worm;
 import com.lllmtb.model.item.ItemId;
 import com.lllmtb.terrain.map.Map;
+import com.lllmtb.terrain.map.Tile;
 
 /**
  * The {@code PhysicsEngine} class manages and updates a collection of {@link PhysicsBody} objects
@@ -392,7 +393,13 @@ public class PhysicsEngine {
 
                 if (worm.isOnGround()) {
                     if (Math.abs(currentVector.getY()) < 0.5) {
-                        newVelX *= GROUND_FRICTION;
+                        double friction = GROUND_FRICTION;
+                        Position checkPos = new Position(body.getPos().getX(), body.getPos().getY() - 2);
+                        if (collision.getMap().inMap(checkPos)) {
+                            Tile t = collision.getMap().getTile(checkPos);
+                            friction = t.getFriction();
+                        }
+                        newVelX *= friction;
                     }
                 } else {
                     newVelX *= AIR_RESISTANCE_X;
@@ -427,9 +434,9 @@ public class PhysicsEngine {
 
     public void createExplosion(Projectile projectile, int rayonDegatMap, int rayonSuffle, int degats, double forceSuffle) {
         Position position = projectile.getBody().getPos();
+        Explosion.explosionDamageEffect(position, rayonSuffle, degats, bodies);
         Explosion.explosionMapEffect(position, rayonDegatMap,collision.getMap());
         Explosion.explosionSuffleEffect(position, rayonSuffle, forceSuffle,collision.getMap(),bodies);
-        Explosion.explosionDamageEffect(position, rayonSuffle, degats, bodies);
         bus.postQueued(new ExplosionEvent(position, rayonSuffle,((ExplosiveProjectile) projectile).getExplosionTexture()));
         bus.postQueued(new MapUpdateEvent());
         bodies.remove(projectile.getBody());

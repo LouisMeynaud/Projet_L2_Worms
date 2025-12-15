@@ -36,6 +36,16 @@ public class TextureManager {
             TILES.put("GRASS0".toString(), ImageIO.read(TextureManager.class.getResource("/textures/block/Grass0.png")));
             TILES.put("GRASS1".toString(), ImageIO.read(TextureManager.class.getResource("/textures/block/Grass1.png")));
             TILES.put("UNDERDIRT0".toString(), ImageIO.read(TextureManager.class.getResource("/textures/block/UnderDirt0.png")));
+            
+            TILES.put("LAVA0".toString(), ImageIO.read(TextureManager.class.getResource("/textures/block/LAVA0.png")));
+            TILES.put("LAVA1".toString(), ImageIO.read(TextureManager.class.getResource("/textures/block/LAVA1.png")));
+            TILES.put("LAVA2".toString(), ImageIO.read(TextureManager.class.getResource("/textures/block/LAVA2.png")));
+            TILES.put("LAVA3".toString(), ImageIO.read(TextureManager.class.getResource("/textures/block/LAVA3.png")));
+            TILES.put("ICE0".toString(), ImageIO.read(TextureManager.class.getResource("/textures/block/ICE0.png")));
+            TILES.put("ICE1".toString(), ImageIO.read(TextureManager.class.getResource("/textures/block/ICE1.png")));
+            TILES.put("ICE2".toString(), ImageIO.read(TextureManager.class.getResource("/textures/block/ICE2.png")));
+            TILES.put("ICE3".toString(), ImageIO.read(TextureManager.class.getResource("/textures/block/ICE3.png")));
+           
 
             ///////ui-buttons/////////
             UI.put("Pause", ImageIO.read(TextureManager.class.getResource("/textures/button/Pause.png")));
