@@ -8,6 +8,9 @@ import java.util.Map;
 import javax.imageio.ImageIO;
 
 import com.lllmtb.engine.logger.Logger;
+import com.lllmtb.model.entity.team.TeamColor;
+import com.lllmtb.model.item.weapon.WeaponId;
+import com.lllmtb.terrain.map.Tile;
 
 public class TextureManager {
 
@@ -25,34 +28,11 @@ public class TextureManager {
         try {
 
             ///////Blocs/////////
-            TILES.put("DIRT0".toString(), ImageIO.read(TextureManager.class.getResource("/textures/block/Dirt0.png")));
-            TILES.put("DIRT1".toString(), ImageIO.read(TextureManager.class.getResource("/textures/block/Dirt1.png")));
-            TILES.put("DIRT2".toString(), ImageIO.read(TextureManager.class.getResource("/textures/block/Dirt2.png")));
-            TILES.put("DIRT3".toString(), ImageIO.read(TextureManager.class.getResource("/textures/block/Dirt3.png")));
-            TILES.put("WATER0".toString(), ImageIO.read(TextureManager.class.getResource("/textures/block/Water0.png")));
-            TILES.put("WATER1".toString(), ImageIO.read(TextureManager.class.getResource("/textures/block/Water1.png")));
-            TILES.put("AIR0".toString(), ImageIO.read(TextureManager.class.getResource("/textures/block/Air0.png")));
-            TILES.put("CAVERN0".toString(), ImageIO.read(TextureManager.class.getResource("/textures/block/Cavern0.png")));
-            TILES.put("GRASS0".toString(), ImageIO.read(TextureManager.class.getResource("/textures/block/Grass0.png")));
-            TILES.put("GRASS1".toString(), ImageIO.read(TextureManager.class.getResource("/textures/block/Grass1.png")));
-            TILES.put("UNDERDIRT0".toString(), ImageIO.read(TextureManager.class.getResource("/textures/block/UnderDirt0.png")));
-            
-            TILES.put("LAVA0".toString(), ImageIO.read(TextureManager.class.getResource("/textures/block/LAVA0.png")));
-            TILES.put("LAVA1".toString(), ImageIO.read(TextureManager.class.getResource("/textures/block/LAVA1.png")));
-            TILES.put("LAVA2".toString(), ImageIO.read(TextureManager.class.getResource("/textures/block/LAVA2.png")));
-            TILES.put("LAVA3".toString(), ImageIO.read(TextureManager.class.getResource("/textures/block/LAVA3.png")));
-            TILES.put("ICE0".toString(), ImageIO.read(TextureManager.class.getResource("/textures/block/ICE0.png")));
-            TILES.put("ICE1".toString(), ImageIO.read(TextureManager.class.getResource("/textures/block/ICE1.png")));
-            TILES.put("ICE2".toString(), ImageIO.read(TextureManager.class.getResource("/textures/block/ICE2.png")));
-            TILES.put("ICE3".toString(), ImageIO.read(TextureManager.class.getResource("/textures/block/ICE3.png")));
-            TILES.put("SNOW0".toString(), ImageIO.read(TextureManager.class.getResource("/textures/block/SNOW0.png")));
-            TILES.put("SNOW1".toString(), ImageIO.read(TextureManager.class.getResource("/textures/block/SNOW1.png")));
-            TILES.put("SNOW2".toString(), ImageIO.read(TextureManager.class.getResource("/textures/block/SNOW2.png")));
-            TILES.put("SNOW3".toString(), ImageIO.read(TextureManager.class.getResource("/textures/block/SNOW3.png")));
-
-            TILES.put("MOONDIRT0".toString(), ImageIO.read(TextureManager.class.getResource("/textures/block/MOONDIRT0.png")));
-            TILES.put("MOONUNDERDIRT0".toString(), ImageIO.read(TextureManager.class.getResource("/textures/block/MOONUNDERDIRT0.png")));
-            TILES.put("MOONGRASS0".toString(), ImageIO.read(TextureManager.class.getResource("/textures/block/MOONGRASS0.png")));
+            for(Tile tile : Tile.values()){
+                for(int i = 0;i<tile.getNbTexture();i++){
+                    TILES.put(tile.toString()+i, ImageIO.read(TextureManager.class.getResource("/textures/block/"+tile.toString()+i+".png")));
+                }
+            }
            
 
             ///////ui-buttons/////////
@@ -71,22 +51,19 @@ public class TextureManager {
             BACKGROUND.put("Background", ImageIO.read(TextureManager.class.getResource("/textures/Background.png")));
 
             //////Entities//////////
-            ENTITIES.put("WormBLUE", ImageIO.read(TextureManager.class.getResource("/sprites/worm/WormRightBLUE.png")));
-            ENTITIES.put("WormGREEN", ImageIO.read(TextureManager.class.getResource("/sprites/worm/WormRightGREEN.png")));
-            ENTITIES.put("WormYELLOW", ImageIO.read(TextureManager.class.getResource("/sprites/worm/WormRightYELLOW.png")));
-            ENTITIES.put("WormRED", ImageIO.read(TextureManager.class.getResource("/sprites/worm/WormRightRED.png")));
+            for(TeamColor color: TeamColor.values()){
+            ENTITIES.put("Worm"+color.toString(), ImageIO.read(TextureManager.class.getResource("/sprites/worm/WormRight"+color.toString()+".png")));
+            }
 
             //////Arme//////////
-            WEAPONS.put("GUN", ImageIO.read(TextureManager.class.getResource("/textures/weapon/weapon/Gun.png")));
-            WEAPONS.put("LockedGUN", ImageIO.read(TextureManager.class.getResource("/textures/weapon/lockedWeapon/Gun.png")));
-            WEAPONS.put("AmmoGUN", ImageIO.read(TextureManager.class.getResource("/textures/weapon/ammo/Gun.png")));
-
-            WEAPONS.put("BAZOOKA", ImageIO.read(TextureManager.class.getResource("/textures/weapon/weapon/Bazooka.png")));
-            WEAPONS.put("LockedBAZOOKA", ImageIO.read(TextureManager.class.getResource("/textures/weapon/lockedWeapon/Bazooka.png")));
-            WEAPONS.put("AmmoBAZOOKA", ImageIO.read(TextureManager.class.getResource("/textures/weapon/ammo/Bazooka.png")));
-
-            WEAPONS.put("HandGUN", ImageIO.read(TextureManager.class.getResource("/sprites/weapon/GunRight.png")));
-            WEAPONS.put("HandBAZOOKA", ImageIO.read(TextureManager.class.getResource("/sprites/weapon/BazookaRight2.png")));
+            for(WeaponId weapon: WeaponId.values()){
+                if(weapon != WeaponId.NONE){
+                    WEAPONS.put(weapon.toString(), ImageIO.read(TextureManager.class.getResource("/textures/weapon/weapon/"+weapon.toString()+".png")));
+                    WEAPONS.put("Locked"+weapon.toString(), ImageIO.read(TextureManager.class.getResource("/textures/weapon/lockedWeapon/"+weapon.toString()+".png")));
+                    WEAPONS.put("Ammo"+weapon.toString(), ImageIO.read(TextureManager.class.getResource("/textures/weapon/ammo/"+weapon.toString()+".png")));
+                    WEAPONS.put("Hand"+weapon.toString(), ImageIO.read(TextureManager.class.getResource("/sprites/weapon/"+weapon.toString()+"Right.png")));
+                }
+            }
 
             //////Outil//////////
             TOOLS.put("PARACHUTE", ImageIO.read(TextureManager.class.getResource("/textures/tool/tool/Parachute.png")));
