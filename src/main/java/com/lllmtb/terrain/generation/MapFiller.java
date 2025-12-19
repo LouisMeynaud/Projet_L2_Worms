@@ -26,16 +26,16 @@ public class MapFiller {
      * @param hightLine the top line of the map
      * @param lowLine   the bottom line of the map
      */
-    protected static void fillingDirt(Map map, int[] hightLine, int[] lowLine) {
+    protected static void fillingDirt(Map map, int[] hightLine, int[] lowLine,ConfigMap config) {
         for (int i = 0; i < map.getHeight(); i++) {
             for (int j = 0; j < map.getWidth(); j++) {
                 Position position = new Position(j, i);
                 if ((i == hightLine[j] && i > lowLine[j]) && !map.isTileAt(position, Tile.WATER)) {
-                    map.setTile(position, Tile.GRASS);
+                    map.setTile(position, config.getGameMode().getGrass());
                 } else if ((i < hightLine[j] && i == lowLine[j]) && !map.isTileAt(position, Tile.WATER)) {
-                    map.setTile(position, Tile.UNDERDIRT);
+                    map.setTile(position, config.getGameMode().getUnderDirt());
                 } else if ((i < hightLine[j] && i > lowLine[j]) && !map.isTileAt(position, Tile.WATER)) {
-                    map.setTile(position, Tile.DIRT);
+                    map.setTile(position, config.getGameMode().getDirt());
                 } else if (!map.isTileAt(position, Tile.WATER)) {
                     map.setTile(position, Tile.AIR);
                 }

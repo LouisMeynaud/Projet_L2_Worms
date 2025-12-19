@@ -45,6 +45,14 @@ public class TextureManager {
             TILES.put("ICE1".toString(), ImageIO.read(TextureManager.class.getResource("/textures/block/ICE1.png")));
             TILES.put("ICE2".toString(), ImageIO.read(TextureManager.class.getResource("/textures/block/ICE2.png")));
             TILES.put("ICE3".toString(), ImageIO.read(TextureManager.class.getResource("/textures/block/ICE3.png")));
+            TILES.put("SNOW0".toString(), ImageIO.read(TextureManager.class.getResource("/textures/block/SNOW0.png")));
+            TILES.put("SNOW1".toString(), ImageIO.read(TextureManager.class.getResource("/textures/block/SNOW1.png")));
+            TILES.put("SNOW2".toString(), ImageIO.read(TextureManager.class.getResource("/textures/block/SNOW2.png")));
+            TILES.put("SNOW3".toString(), ImageIO.read(TextureManager.class.getResource("/textures/block/SNOW3.png")));
+
+            TILES.put("MOONDIRT0".toString(), ImageIO.read(TextureManager.class.getResource("/textures/block/MOONDIRT0.png")));
+            TILES.put("MOONUNDERDIRT0".toString(), ImageIO.read(TextureManager.class.getResource("/textures/block/MOONUNDERDIRT0.png")));
+            TILES.put("MOONGRASS0".toString(), ImageIO.read(TextureManager.class.getResource("/textures/block/MOONGRASS0.png")));
            
 
             ///////ui-buttons/////////

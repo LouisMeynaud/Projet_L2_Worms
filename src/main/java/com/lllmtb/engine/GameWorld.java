@@ -53,7 +53,7 @@ public class GameWorld {
         }
         if (tmap == null) {
             System.out.println("Generating a new map...");
-            ConfigMap config = new ConfigMap(settings.widthMap, 4, 5, settings.floatingIsland, 17, settings.terrainType, settings.nbTeams, settings.nbWorms);
+            ConfigMap config = new ConfigMap(settings.widthMap, 4, 5, settings.floatingIsland, 17, settings.terrainType, settings.nbTeams, settings.nbWorms,settings.gameMode);
             tmap = GenerateMap.createMap(config);
         }
         this.map = tmap;
@@ -66,7 +66,7 @@ public class GameWorld {
         this.commandQueue = new LinkedBlockingQueue<>();
 
         // Init PhysicsEngine
-        this.physics = new PhysicsEngine(map, bus, settings.hasWind);
+        this.physics = new PhysicsEngine(map, bus, settings.hasWind,settings.gameMode);
 
         // Init Teams
         this.teams = new ArrayList<>();

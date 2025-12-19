@@ -1,5 +1,21 @@
 package com.lllmtb.physics;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import com.lllmtb.events.EventBus;
 import com.lllmtb.events.physics.PhysicsModifierAddedEvent;
 import com.lllmtb.events.physics.PhysicsModifierRemovedEvent;
@@ -12,17 +28,6 @@ import com.lllmtb.model.item.tool.ToolId;
 import com.lllmtb.model.item.weapon.WeaponId;
 import com.lllmtb.terrain.map.Map;
 import com.lllmtb.terrain.map.MapLoader;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicReference;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class PhysicsEngineTest {
     private Map map;
@@ -35,7 +40,7 @@ class PhysicsEngineTest {
     void setUp() {
         map = MapLoader.loadMatrix("mapTest");
         bus = new EventBus(4);
-        pE = new PhysicsEngine(map, bus, true);
+        pE = new PhysicsEngine(map, bus, true,GameMode.NORMAL);
         Position pw = new Position(4, 4);
         Worm w = new Worm("José", new Team("Team", 1, new Position[]{pw}));
         assertTrue(map.inMap(pw));
@@ -76,7 +81,7 @@ class PhysicsEngineTest {
 
     @Test
     void testChangeWind_whenNoWind() {
-        PhysicsEngine tpE = new PhysicsEngine(map, bus, false);
+        PhysicsEngine tpE = new PhysicsEngine(map, bus, false,GameMode.NORMAL);
         tpE.add(pBWorm);
 
         Vector before = tpE.getWind();
@@ -108,7 +113,7 @@ class PhysicsEngineTest {
     @Test
     void testNextStep_WhenNoCollisions() {
         double dt = 0;
-        PhysicsEngine tpE = new PhysicsEngine(map, bus, false);
+        PhysicsEngine tpE = new PhysicsEngine(map, bus, false,GameMode.NORMAL);
         tpE.add(pBBP);
         pBBP.setPos(new Position(0, 5));
         pBBP.setVector(new Vector(0, 0));
@@ -120,7 +125,7 @@ class PhysicsEngineTest {
     @Test
     void testNextStep_WhenDie() {
         double dt = 0.0167;
-        PhysicsEngine tpE = new PhysicsEngine(map, bus, false);
+        PhysicsEngine tpE = new PhysicsEngine(map, bus, false,GameMode.NORMAL);
         tpE.add(pBBP);
         pBBP.setPos(new Position(0, 5));
         pBBP.setVector(new Vector(-10, 0));
@@ -146,7 +151,7 @@ class PhysicsEngineTest {
     @Test
     void testNextStep_whenCollision() {
         double dt = 0.0167;
-        PhysicsEngine tpE = new PhysicsEngine(map, bus, false);
+        PhysicsEngine tpE = new PhysicsEngine(map, bus, false,GameMode.NORMAL);
         tpE.add(pBWorm);
         tpE.add(pBBP);
         tpE.nextStep(dt);
@@ -159,7 +164,7 @@ class PhysicsEngineTest {
     @Test
     void testNextStep_whenCollision2() {
         double dt = 0.0167;
-        PhysicsEngine tpE = new PhysicsEngine(map, bus, false);
+        PhysicsEngine tpE = new PhysicsEngine(map, bus, false,GameMode.NORMAL);
         pBWorm.setVector(new Vector(0, 0));
         pBWorm.setPos(new Position(2, 4));
         pBBP.setPos(new Position(1, 5));

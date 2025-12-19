@@ -8,11 +8,13 @@ import java.awt.Insets;
 
 import javax.swing.BorderFactory;
 import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
 
+import com.lllmtb.physics.GameMode;
 import com.lllmtb.ui.graphical.Utilitaire;
 
 
@@ -32,6 +34,7 @@ public class SettingGamePanel extends JPanel {
     public JSlider maxJumpSlider;
     public JSlider maxLifeSlider;
     public JTextField gameTitleField;
+    public JComboBox<GameMode> gameModeBox;
 
 
     /**
@@ -181,6 +184,16 @@ public class SettingGamePanel extends JPanel {
         contentGrid.add(maxJumpSlider, gbc);
         row++;
 
+        //gameMode
+        gbc.gridx = 0;
+        gbc.gridy = row;
+        JLabel gameModeLabel = new JLabel("Mode de jeu :");
+        contentGrid.add(gameModeLabel, gbc);
+
+        gbc.gridx = 1;
+        this.gameModeBox = new JComboBox<>(GameMode.values());
+        contentGrid.add(gameModeBox, gbc);
+        row++;
 
     }
 
@@ -262,5 +275,9 @@ public class SettingGamePanel extends JPanel {
      */
     public boolean getFriendlyFire() {
         return this.friendlyFireCheckBox.isSelected();
+    }
+
+    public GameMode getGameMode(){
+        return (GameMode) this.gameModeBox.getSelectedItem();
     }
 }

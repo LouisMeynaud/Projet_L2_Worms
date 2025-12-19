@@ -24,6 +24,7 @@ import com.lllmtb.engine.logger.Logger;
 import com.lllmtb.events.EventBus;
 import com.lllmtb.events.game.StartGameEvent;
 import com.lllmtb.events.game.WorldCreatedEvent;
+import com.lllmtb.physics.GameMode;
 import com.lllmtb.terrain.generation.LandScape;
 import com.lllmtb.terrain.map.MapLoader;
 
@@ -99,7 +100,7 @@ public class ConsoleUI implements UI {
             }
             terminal.writer().println("   Wind: " + (hasWind ? "ON" : "OFF"));
             terminal.writer().flush();
-            return new GameSettings("blabla", nbTeams, teamNames, nbWorms, maxHealth, turnDuration, hasWind, mapFileName, floatingIsland, size, landscape, 2);
+            return new GameSettings("blabla", nbTeams, teamNames, nbWorms, maxHealth, turnDuration, hasWind, mapFileName, floatingIsland, size, landscape, 2,GameMode.NORMAL);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

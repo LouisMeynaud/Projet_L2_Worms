@@ -81,12 +81,12 @@ public class PhysicsEngine {
      * @param bus     the global {@code EventBus} instance created upstream.
      * @param hasWind if wind should be simulated.
      */
-    public PhysicsEngine(Map map, EventBus bus, boolean hasWind) {
+    public PhysicsEngine(Map map, EventBus bus, boolean hasWind,GameMode gameMode) {
         this.bus = bus;
         this.bodies = new CopyOnWriteArrayList<>();
         this.modifiers = new ConcurrentHashMap<>();
         this.collision = new Collision(map, this.bodies);
-        this.gravity = new Vector(0, -9810);
+        this.gravity = gameMode.getGravity();
         this.hasWind = hasWind;
         this.wind = new Vector(0, 0);
     }

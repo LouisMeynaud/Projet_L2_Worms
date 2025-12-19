@@ -7,8 +7,12 @@ public enum Tile {
     CAVERN('C', '~', false, 1, 1.0),
     GRASS('G', '_', true, 2, 0.90),
     UNDERDIRT('U', '#', true, 1, 0.90),
-    ICE('I', '#', true, 4, 1.0),
-    LAVA('L', 'L', false, 4, 0.90);
+    ICE('I', '#', true, 4, 1),
+    SNOW('S', '#', true, 4, 1),
+    LAVA('L', 'L', false, 4, 0.90),
+    MOONGRASS('M', '#', true, 1, 0.90),
+    MOONDIRT('N', '#', true, 1, 0.90),
+    MOONUNDERDIRT('X', '#', true, 1, 0.90);
 
     private final char fileSymbol;
     private final char consoleSymbol;

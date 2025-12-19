@@ -3,6 +3,7 @@ package com.lllmtb.engine;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Test;
 
+import com.lllmtb.physics.GameMode;
 import com.lllmtb.terrain.generation.LandScape;
 public class GameSettingsTest
 {
@@ -15,7 +16,7 @@ public class GameSettingsTest
         String FileMapName = "tkt.txt";
         boolean GeneratedIsland = true;
         LandScape terrainType = LandScape.HILLY;
-        GameSettings settings = new GameSettings("blabla", nbTeams, TeamNames, numberWorms,100, 10000, hasWind, FileMapName, GeneratedIsland,370,LandScape.HILLY,2);
+        GameSettings settings = new GameSettings("blabla", nbTeams, TeamNames, numberWorms,100, 10000, hasWind, FileMapName, GeneratedIsland,370,LandScape.HILLY,2,GameMode.NORMAL);
         assertEquals(nbTeams, settings.nbTeams);
         assertEquals(TeamNames, settings.teamNames);
         assertEquals(numberWorms, settings.nbWorms);
