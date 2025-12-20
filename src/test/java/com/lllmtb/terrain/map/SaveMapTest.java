@@ -1,7 +1,6 @@
 package com.lllmtb.terrain.map;
 
-import static org.junit.jupiter.api.Assertions.*;
-
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Test;
 
 public class SaveMapTest {
@@ -22,7 +21,6 @@ public class SaveMapTest {
                              "WWWWW\n";
 
         Map mapObject = MapLoader.loadMatrix("mapTest");
-        System.out.println(mapObject);
         String resultat = SaveMap.mapToString(mapObject); 
         assertEquals(mapAttendue, resultat);
     }

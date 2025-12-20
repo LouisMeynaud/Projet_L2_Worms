@@ -15,12 +15,12 @@ public class ConfigMap {
     private boolean flyingIsland;   //true ifyou want a flying island
     private int plateauChance;      //the chance of having flat ground (which avoids terrain composed solely of "peaks")
     public static final double RATIOWIDTHHEIGHT = 0.5625; //for a rectangular world (0.5625 is the ratio between the width and heigth of a commun screen)
-    private int nbTeam;
-    private int nbWarms;
-    private GameMode gameMode;
+    private int nbTeam;             //the numbers of Teams.
+    private int nbWarms;            //the numbers of worls
+    private GameMode gameMode;      //the gameMode of the game.
 
     public ConfigMap(int width, int waterHeight, int thicknessMin,
-                     boolean flyingIsland, int heightStart, LandScape terrainType, int nbTeam, int nbWarms,GameMode gameMode) {
+                     boolean flyingIsland, int heightStart, LandScape terrainType, int nbTeam, int nbWarms, GameMode gameMode) {
         this.width = width;
         this.height = (int) (width * RATIOWIDTHHEIGHT); //for a rectangular world (0.5625 is the ratio between the width and heigth of a commun screen)
         this.waterHeight = waterHeight;
@@ -113,10 +113,10 @@ public class ConfigMap {
         return nbWarms;
     }
 
-    public GameMode getGameMode(){
+    public GameMode getGameMode() {
         return this.gameMode;
     }
-    
+
     public void setNbTeam(int nbTeam) {
         this.nbTeam = nbTeam;
     }

@@ -13,8 +13,8 @@ public class Animation {
 
     private boolean stopped;                // Is the animation stopped
 
-    private boolean playOnce = false;       
-    private boolean hasEnded = false;       
+    private boolean playOnce = false;
+    private boolean hasEnded = false;
 
     private List<Frame> frames = new ArrayList<Frame>();    // Arraylist of frames
 

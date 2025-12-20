@@ -87,14 +87,14 @@ public class SettingsStartPanel extends JPanel {
         GameMode gameMode = gameSettingsPanel.getGameMode();
         if (this.mapSettingPanel.loadMap) {
             String mapFileName = this.mapSettingPanel.panelListeMap.getFichierSelectionne().getName();
-            return new GameSettings(gameName, nbEquipes, nomsEquipes, nbVWorms, maxLife, turnDuration, wind, mapFileName, false, 0, null, maxJump,gameMode);
+            return new GameSettings(gameName, nbEquipes, nomsEquipes, nbVWorms, maxLife, turnDuration, wind, mapFileName, false, 0, null, maxJump, gameMode);
 
 
         } else {
             LandScape terrainType = this.mapSettingPanel.generateMapPanel.getReliefType();
             int widthMap = this.mapSettingPanel.generateMapPanel.getWidthMapSlider();
             boolean flightIsland = this.mapSettingPanel.generateMapPanel.getflightIsland();
-            return new GameSettings(gameName, nbEquipes, nomsEquipes, nbVWorms, maxLife, turnDuration, wind, null, flightIsland, widthMap, terrainType, maxJump,gameMode);
+            return new GameSettings(gameName, nbEquipes, nomsEquipes, nbVWorms, maxLife, turnDuration, wind, null, flightIsland, widthMap, terrainType, maxJump, gameMode);
 
 
         }

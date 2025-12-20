@@ -6,8 +6,8 @@ import com.lllmtb.terrain.map.SaveMap;
 
 
 public class GenerateMap {
-    public static ConfigMap world = new ConfigMap(100, 4, 5, false, 17, LandScape.HILLY, 1, 4,GameMode.NORMAL);
-    public static ConfigMap flyingWorld = new ConfigMap(100, 4, 5, true, 17, LandScape.HILLY, 1, 4,GameMode.NORMAL);
+    public static ConfigMap world = new ConfigMap(100, 4, 5, false, 17, LandScape.HILLY, 1, 4, GameMode.NORMAL);
+    public static ConfigMap flyingWorld = new ConfigMap(100, 4, 5, true, 17, LandScape.HILLY, 1, 4, GameMode.NORMAL);
 
 
     /**
@@ -35,7 +35,7 @@ public class GenerateMap {
         MapBalancer.leftRightBalancing(lowLine, hightLine, config.getHeight());
         MapBalancer.thicknessBalencer(config.getThicknessMin(), MapBalancer.averageThickness(lowLine, hightLine, 0, config.getWidth()), hightLine);
         MapFiller.fillingWater(map, config.getWaterHeight());
-        MapFiller.fillingDirt(map, hightLine, lowLine,config);
+        MapFiller.fillingDirt(map, hightLine, lowLine, config);
 
         return map;
     }

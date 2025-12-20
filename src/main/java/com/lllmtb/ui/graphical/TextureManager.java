@@ -28,12 +28,11 @@ public class TextureManager {
         try {
 
             ///////Blocs/////////
-            for(Tile tile : Tile.values()){
-                for(int i = 0;i<tile.getNbTexture();i++){
-                    TILES.put(tile.toString()+i, ImageIO.read(TextureManager.class.getResource("/textures/block/"+tile.toString()+i+".png")));
+            for (Tile tile : Tile.values()) {
+                for (int i = 0; i < tile.getNbTexture(); i++) {
+                    TILES.put(tile.toString() + i, ImageIO.read(TextureManager.class.getResource("/textures/block/" + tile.toString() + i + ".png")));
                 }
             }
-           
 
             ///////ui-buttons/////////
             UI.put("Pause", ImageIO.read(TextureManager.class.getResource("/textures/button/Pause.png")));
@@ -51,17 +50,17 @@ public class TextureManager {
             BACKGROUND.put("Background", ImageIO.read(TextureManager.class.getResource("/textures/Background.png")));
 
             //////Entities//////////
-            for(TeamColor color: TeamColor.values()){
-            ENTITIES.put("Worm"+color.toString(), ImageIO.read(TextureManager.class.getResource("/sprites/worm/WormRight"+color.toString()+".png")));
+            for (TeamColor color: TeamColor.values()) {
+            ENTITIES.put("Worm" + color.toString(), ImageIO.read(TextureManager.class.getResource("/sprites/worm/WormRight" + color.toString() + ".png")));
             }
 
             //////Arme//////////
-            for(WeaponId weapon: WeaponId.values()){
-                if(weapon != WeaponId.NONE){
-                    WEAPONS.put(weapon.toString(), ImageIO.read(TextureManager.class.getResource("/textures/weapon/weapon/"+weapon.toString()+".png")));
-                    WEAPONS.put("Locked"+weapon.toString(), ImageIO.read(TextureManager.class.getResource("/textures/weapon/lockedWeapon/"+weapon.toString()+".png")));
-                    WEAPONS.put("Ammo"+weapon.toString(), ImageIO.read(TextureManager.class.getResource("/textures/weapon/ammo/"+weapon.toString()+".png")));
-                    WEAPONS.put("Hand"+weapon.toString(), ImageIO.read(TextureManager.class.getResource("/sprites/weapon/"+weapon.toString()+"Right.png")));
+            for (WeaponId weapon: WeaponId.values()) {
+                if (weapon != WeaponId.NONE) {
+                    WEAPONS.put(weapon.toString(), ImageIO.read(TextureManager.class.getResource("/textures/weapon/weapon/" + weapon.toString() + ".png")));
+                    WEAPONS.put("Locked" + weapon.toString(), ImageIO.read(TextureManager.class.getResource("/textures/weapon/lockedWeapon/" + weapon.toString() + ".png")));
+                    WEAPONS.put("Ammo" + weapon.toString(), ImageIO.read(TextureManager.class.getResource("/textures/weapon/ammo/" + weapon.toString() + ".png")));
+                    WEAPONS.put("Hand" + weapon.toString(), ImageIO.read(TextureManager.class.getResource("/sprites/weapon/" + weapon.toString() + ".png")));
                 }
             }
 

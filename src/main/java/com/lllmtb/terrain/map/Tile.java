@@ -10,17 +10,17 @@ public enum Tile {
     ICE('I', '#', true, 4, 1),
     SNOW('S', '_', true, 4, 1),
     LAVA('L', 'L', false, 4, 0.90),
-    MOONGRASS('M', '_', true, 1, 0.90),
-    MOONDIRT('N', '#', true, 1, 0.90),
+    MOONGRASS('M', '_', true, 4, 0.90),
+    MOONDIRT('N', '#', true, 4, 0.90),
     MOONUNDERDIRT('X', '#', true, 1, 0.90);
 
-    private final char fileSymbol;
-    private final char consoleSymbol;
-    private final boolean solid;
-    private final int nbTexture;
-    private final double friction;
+    private final char fileSymbol; // symbole in the save file
+    private final char consoleSymbol; // symbole dans l'ui console
+    private final boolean solid; // true if the tile is solid
+    private final int nbTexture; // number of textures
+    private final double friction; // firction of Tile. 1.0 = no friction , 0.0 = full friction
 
-    Tile(char fileSymbol, char consoleSymbol, boolean solid, int nbTexture,double friction) {
+    Tile(char fileSymbol, char consoleSymbol, boolean solid, int nbTexture, double friction) {
         this.fileSymbol = fileSymbol;
         this.consoleSymbol = consoleSymbol;
         this.solid = solid;

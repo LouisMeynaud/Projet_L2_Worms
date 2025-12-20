@@ -8,6 +8,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import com.lllmtb.physics.Position;
+import com.lllmtb.terrain.generation.ConfigMap;
+import com.lllmtb.terrain.generation.LandScape;
 
 public class MapTest {
     private Map m;
@@ -93,8 +95,6 @@ public class MapTest {
                 "#oo##\n" +
                 "ooooo\n" +
                 "ooooo";
-        System.out.println(attentue);
-        System.out.println(m);
         assertEquals(attentue, m.toString());
     }
 
@@ -140,6 +140,20 @@ public class MapTest {
     public void getTile_inBounds_returnsCorrectTile() {
         Position position = new Position(2, 2);
         assertEquals(Tile.WATER, m.getTile(position));
+    }
+
+    @Test
+    void testSetAndGetNbTeam() {
+        ConfigMap config = new ConfigMap(100, 10, 10, false, 10, LandScape.FLAT, 0, 0, null);
+        config.setNbTeam(5);
+        assertEquals(5, config.getNbTeam());
+    }
+
+    @Test
+    void testSetAndGetNbWarms() {
+        ConfigMap config = new ConfigMap(100, 10, 10, false, 10, LandScape.FLAT, 0, 0, null);
+        config.setNbWarms(8);
+        assertEquals(8, config.getNbWarms());
     }
 
 }

@@ -37,6 +37,7 @@ import com.lllmtb.model.entity.projectile.Projectile;
 import com.lllmtb.model.entity.projectile.RocketProjectile;
 import com.lllmtb.model.entity.worm.Statistics;
 import com.lllmtb.model.entity.worm.Worm;
+import com.lllmtb.physics.GameMode;
 import com.lllmtb.physics.PhysicsBody;
 import com.lllmtb.physics.Position;
 import com.lllmtb.terrain.map.Tile;
@@ -53,7 +54,6 @@ public class GameWorldPanel extends JPanel {
     private final int tileSize = 12;
     private boolean shootMode;
     private final Set<Integer> pressedKeys = new HashSet<>();
-    
     private final List<VisualEffect> activeEffects = new ArrayList<>();
 
 
@@ -301,7 +301,7 @@ public class GameWorldPanel extends JPanel {
 
         world.getBus().subscribe(ExplosionEvent.class, event -> {
             Animation anim = AnimationManager.create(event.getAnimationKey(), 7);
-    
+
             if (anim != null) {
                 double size = event.getRadius() * 2.5;
                 activeEffects.add(new VisualEffect(event.getPosition(), anim, size, size));
@@ -378,13 +378,19 @@ public class GameWorldPanel extends JPanel {
 
         mapCache = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g2d = mapCache.createGraphics(); //cree un crayon dans mapCache
-
-        g2d.setColor(new Color(135, 206, 235));
+        Color skyColor;
+        if (world.getGameMode() == GameMode.MOON) {
+            skyColor = new Color(25, 10, 40); // Violet sombre
+        } else {
+            skyColor = new Color(135, 206, 235); // Bleu clair
+        }
+        g2d.setColor(skyColor);
         g2d.fillRect(0, 0, width, height);
 
         for (int y = 0; y < mapMatrix.length; y++) {
             for (int x = 0; x < mapMatrix[y].length; x++) {
                 String tileType = mapMatrix[y][x].toString();
+                if (mapMatrix[y][x] != Tile.AIR) {
                 BufferedImage texture;
                     tileType = tileType + Utilitaire.getHashId(x, y, mapMatrix[y][x].getNbTexture());
                     texture = TextureManager.TILES.get(tileType);
@@ -393,6 +399,7 @@ public class GameWorldPanel extends JPanel {
                     int screenX = x * tileSize;
                     int screenY = y * tileSize;
                     g2d.drawImage(texture, screenX, screenY, tileSize, tileSize, null);
+                    }
                 }
             }
         }

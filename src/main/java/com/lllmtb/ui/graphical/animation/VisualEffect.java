@@ -15,7 +15,7 @@ public class VisualEffect {
     public VisualEffect(Position position, Animation animation, double width, double height) {
         this.position = position;
         this.animation = animation;
-        this.animation.setPlayOnce(true); 
+        this.animation.setPlayOnce(true);
         this.animation.start();
         this.width = width;
         this.height = height;
@@ -36,8 +36,8 @@ public class VisualEffect {
         double effectHeightPx = height * tileSize;
 
         double xEcran = position.getX() * tileSize;
-        double yEcran = mapHeightPixels - (position.getY() * tileSize); 
-        
+        double yEcran = mapHeightPixels - (position.getY() * tileSize);
+
         double drawX = xEcran - (effectWidthPx / 2.0);
         double drawY = yEcran - (effectHeightPx / 2.0);
 

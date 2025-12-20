@@ -81,7 +81,7 @@ public class PhysicsEngine {
      * @param bus     the global {@code EventBus} instance created upstream.
      * @param hasWind if wind should be simulated.
      */
-    public PhysicsEngine(Map map, EventBus bus, boolean hasWind,GameMode gameMode) {
+    public PhysicsEngine(Map map, EventBus bus, boolean hasWind, GameMode gameMode) {
         this.bus = bus;
         this.bodies = new CopyOnWriteArrayList<>();
         this.modifiers = new ConcurrentHashMap<>();
@@ -354,7 +354,7 @@ public class PhysicsEngine {
                 if (body.getEntity() instanceof Projectile) {
                     ((Projectile) body.getEntity()).onImpact(this);
                 }
-                
+
                 switch (body.getEntity().getCollisionType()) {
                     // if body slides along cliffs (if the collision is with the ground)
                     case SLIDE -> collision.slide(body, impact, dt, bus);
@@ -435,9 +435,9 @@ public class PhysicsEngine {
     public void createExplosion(Projectile projectile, int rayonDegatMap, int rayonSuffle, int degats, double forceSuffle) {
         Position position = projectile.getBody().getPos();
         Explosion.explosionDamageEffect(position, rayonSuffle, degats, bodies);
-        Explosion.explosionMapEffect(position, rayonDegatMap,collision.getMap());
-        Explosion.explosionSuffleEffect(position, rayonSuffle, forceSuffle,collision.getMap(),bodies);
-        bus.postQueued(new ExplosionEvent(position, rayonSuffle,((ExplosiveProjectile) projectile).getExplosionTexture()));
+        Explosion.explosionMapEffect(position, rayonDegatMap, collision.getMap());
+        Explosion.explosionSuffleEffect(position, rayonSuffle, forceSuffle, collision.getMap(), bodies);
+        bus.postQueued(new ExplosionEvent(position, rayonSuffle, ((ExplosiveProjectile) projectile).getExplosionTexture()));
         bus.postQueued(new MapUpdateEvent());
         bodies.remove(projectile.getBody());
     }

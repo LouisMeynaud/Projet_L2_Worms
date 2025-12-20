@@ -11,12 +11,12 @@ public final class RocketProjectile extends Projectile implements ExplosiveProje
     private static final double mass   = 0.0045;
     private static final double height = 0.4;
     private static final double width  = 0.6;
-    
-    
+
+
     private static final int RAYON_DEGAT_MAP = 10;
     private static final int RAYON_SOUFFLE = 15;
-    private static final int DEGATS = 30;        
-    private static final double FORCE_SOUFFLE = 100; 
+    private static final int DEGATS = 30;
+    private static final double FORCE_SOUFFLE = 100;
     private static final String TEXTURE_KEY = "BazookaExplosion";
 
     public RocketProjectile(@NonNull UseParams params) {
@@ -30,9 +30,9 @@ public final class RocketProjectile extends Projectile implements ExplosiveProje
 
     @Override
     public void onImpact(PhysicsEngine engine) {
-        engine.createExplosion(this,RAYON_DEGAT_MAP, RAYON_SOUFFLE, DEGATS, FORCE_SOUFFLE);
+        engine.createExplosion(this, RAYON_DEGAT_MAP, RAYON_SOUFFLE, DEGATS, FORCE_SOUFFLE);
     }
-    
+
     @Override
     public int getExplosionRadius() {
         return RAYON_DEGAT_MAP;

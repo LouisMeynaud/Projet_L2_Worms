@@ -17,6 +17,7 @@ import com.lllmtb.events.game.GameStateUpdatedEvent;
 import com.lllmtb.model.entity.Entity;
 import com.lllmtb.model.entity.team.Team;
 import com.lllmtb.model.entity.worm.Worm;
+import com.lllmtb.physics.GameMode;
 import com.lllmtb.physics.Move;
 import com.lllmtb.physics.PhysicsEngine;
 import com.lllmtb.terrain.generation.ConfigMap;
@@ -34,6 +35,7 @@ public class GameWorld {
     private int indexTeam;
     private final TurnManager turnManager;
     private String gameName;
+    private GameMode gameMode;
     Thread loopThread;
 
     private final BlockingQueue<GameCommand> commandQueue;
@@ -53,7 +55,7 @@ public class GameWorld {
         }
         if (tmap == null) {
             System.out.println("Generating a new map...");
-            ConfigMap config = new ConfigMap(settings.widthMap, 4, 5, settings.floatingIsland, 17, settings.terrainType, settings.nbTeams, settings.nbWorms,settings.gameMode);
+            ConfigMap config = new ConfigMap(settings.widthMap, 4, 5, settings.floatingIsland, 17, settings.terrainType, settings.nbTeams, settings.nbWorms, settings.gameMode);
             tmap = GenerateMap.createMap(config);
         }
         this.map = tmap;
@@ -66,7 +68,7 @@ public class GameWorld {
         this.commandQueue = new LinkedBlockingQueue<>();
 
         // Init PhysicsEngine
-        this.physics = new PhysicsEngine(map, bus, settings.hasWind,settings.gameMode);
+        this.physics = new PhysicsEngine(map, bus, settings.hasWind, settings.gameMode);
 
         // Init Teams
         this.teams = new ArrayList<>();
@@ -89,6 +91,8 @@ public class GameWorld {
 
         //Init TurnManager
         this.turnManager = new TurnManager(this, settings.turnDuration);
+
+        this.gameMode = settings.gameMode;
     }
 
     public Map getMap() {
@@ -129,6 +133,10 @@ public class GameWorld {
 
     public String getGameName() {
         return gameName;
+    }
+
+    public GameMode getGameMode() {
+        return gameMode;
     }
 
     public void start() {

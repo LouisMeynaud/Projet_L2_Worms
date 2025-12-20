@@ -277,7 +277,7 @@ public class SettingGamePanel extends JPanel {
         return this.friendlyFireCheckBox.isSelected();
     }
 
-    public GameMode getGameMode(){
+    public GameMode getGameMode() {
         return (GameMode) this.gameModeBox.getSelectedItem();
     }
 }

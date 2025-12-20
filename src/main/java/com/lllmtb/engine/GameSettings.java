@@ -16,7 +16,6 @@ public final class GameSettings {
     public final String gameName;
     public final int maxJump;
     public final int maxHp;
-    public final boolean IceAge = true;
     public GameMode gameMode;
 
 
@@ -36,7 +35,7 @@ public final class GameSettings {
 
 
     public GameSettings(String gameName, int nbTeams, String[] teamNames, int nbWorms, int maxHp, long turnDuration, boolean hasWind, String mapFileName,
-        boolean floatingIsland, int widthMap, LandScape terrainType, int maxJump,GameMode gameMode) {
+        boolean floatingIsland, int widthMap, LandScape terrainType, int maxJump, GameMode gameMode) {
 
 
         this.nbTeams = nbTeams;

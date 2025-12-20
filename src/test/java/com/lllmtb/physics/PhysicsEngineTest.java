@@ -20,6 +20,7 @@ import com.lllmtb.events.EventBus;
 import com.lllmtb.events.physics.PhysicsModifierAddedEvent;
 import com.lllmtb.events.physics.PhysicsModifierRemovedEvent;
 import com.lllmtb.model.entity.projectile.BulletProjectile;
+import com.lllmtb.model.entity.projectile.RocketProjectile;
 import com.lllmtb.model.entity.team.Team;
 import com.lllmtb.model.entity.worm.Worm;
 import com.lllmtb.model.item.ItemId;
@@ -427,6 +428,19 @@ class PhysicsEngineTest {
         worm.damageWorm(worm.getStats().getHp());
         pE.actualizeBodies();
         assertEquals(pE.getBodies().size(), size-1);
+    }
+
+    @Test
+    void testCreateExplosion() {
+        
+
+        Worm owner = (Worm) pBWorm.getEntity(); 
+        Position pos = new Position(10, 10);
+        RocketProjectile rocket = new RocketProjectile(new UseParams(0, pos, owner));
+        pE.add(rocket.getBody());
+        pE.createExplosion(rocket, 10, 15, 30, 100);
+        assertFalse(pE.getBodies().contains(rocket.getBody()));
+        assertEquals(2, bus.queuedEventCount());//verifie que les event sont bien crée(explosion et mapUpdate)
     }
 }
 
