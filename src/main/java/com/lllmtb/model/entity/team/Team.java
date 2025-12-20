@@ -346,7 +346,7 @@ public class Team {
         this.index = (++this.index >= this.worms.size()) ? 0 : this.index;
         this.currentWorm = this.getIndexWorm(this.index);
     }
-    public TeamColor getTeamColor(){
+    public TeamColor getTeamColor() {
         return this.teamColor;
     }
 }

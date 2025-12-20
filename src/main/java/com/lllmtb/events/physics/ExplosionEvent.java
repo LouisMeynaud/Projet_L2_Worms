@@ -3,7 +3,7 @@ package com.lllmtb.events.physics;
 import com.lllmtb.events.Event;
 import com.lllmtb.physics.Position;
 
-public class ExplosionEvent implements Event{
+public class ExplosionEvent implements Event {
     private final Position position;
     private final int radius;
     private final String animationKey;
