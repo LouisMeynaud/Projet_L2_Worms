@@ -24,6 +24,9 @@ public class TextureManager {
     public static final Map<String, BufferedImage> EFFECT = new HashMap<>();
 
 
+    /**
+     * load every texture one time at the start (avoids lag in part)
+     */
     public static void load() {
         try {
 

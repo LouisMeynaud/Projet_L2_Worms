@@ -153,7 +153,8 @@ public class Utilitaire {
 
     public static BufferedImage[] cutSpriteSheet(BufferedImage sheet, int cols, int rows) {
         if (sheet == null) {
-            return new BufferedImage[0];}
+            return new BufferedImage[0];
+        }
 
         int frameWidth = sheet.getWidth() / cols;
         int frameHeight = sheet.getHeight() / rows;
