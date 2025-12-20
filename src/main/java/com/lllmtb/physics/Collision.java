@@ -170,7 +170,7 @@ public class Collision {
             for (int ty = minY; ty <= maxY; ty++) {
                 Position tilePos = new Position(tx, ty);
 
-                if ((this.map.inMap(tilePos) && !this.map.isSolid(tilePos))) {
+                if ((this.map.inMap(tilePos) && !this.map.isSolid(tilePos) && !this.map.isTileAt(new Position(tx, ty), Tile.WATER))) {
                     continue; // Skip non-solid tiles
                 }
 
