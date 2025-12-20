@@ -14,6 +14,7 @@ public class SoundManager {
 
     public static void  load() {
         soundMap.put("Explosion", createClip("Explosion"));
+        soundMap.put("MusiqueGame1", createClip("MusiqueGame1"));
     }
 
     private static Clip createClip(String nom) {

@@ -266,6 +266,7 @@ public class GameWorldPanel extends JPanel {
             this.mapMatrix = this.world.getMap().getMapMatrix();
             this.mapCache = null; //on efface l'ancienne image
             this.initialFitDone = false;
+            SoundPlayer.playMusique("MusiqueGame1");
             repaint();
         });
 
