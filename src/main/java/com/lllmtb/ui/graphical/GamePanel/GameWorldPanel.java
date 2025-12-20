@@ -41,6 +41,7 @@ import com.lllmtb.physics.GameMode;
 import com.lllmtb.physics.PhysicsBody;
 import com.lllmtb.physics.Position;
 import com.lllmtb.terrain.map.Tile;
+import com.lllmtb.ui.graphical.SoundPlayer;
 import com.lllmtb.ui.graphical.TextureManager;
 import com.lllmtb.ui.graphical.Utilitaire;
 import com.lllmtb.ui.graphical.animation.Animation;
@@ -306,7 +307,9 @@ public class GameWorldPanel extends JPanel {
                 double size = event.getRadius() * 2.5;
                 activeEffects.add(new VisualEffect(event.getPosition(), anim, size, size));
             }
+            SoundPlayer.playSound("Explosion");
         });
+
     }
 
 
@@ -435,6 +438,10 @@ public class GameWorldPanel extends JPanel {
         }
     }
 
+    /**
+     * Iterating through the list of effects to draw the effects,
+     * update them (move to the next frame and remove them from the list if they are finished)
+     */
     private void updateEffects() {
         for (int i = activeEffects.size() - 1; i >= 0; i--) {
             VisualEffect effect = activeEffects.get(i);
@@ -447,7 +454,7 @@ public class GameWorldPanel extends JPanel {
 
     private void drawEffects(Graphics2D g2d) {
         double hauteurMapPixels = world.getMap().getHeight() * this.tileSize;
-        for (VisualEffect effect : activeEffects) {
+        for (VisualEffect effect : this.activeEffects) {
             effect.draw(g2d, tileSize, hauteurMapPixels);
         }
     }

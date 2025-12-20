@@ -15,6 +15,7 @@ import com.lllmtb.events.game.WorldCreatedEvent;
 import com.lllmtb.ui.ConsoleUI;
 import com.lllmtb.ui.UI;
 import com.lllmtb.ui.graphical.GraphicalUI;
+import com.lllmtb.ui.graphical.SoundManager;
 import com.lllmtb.ui.graphical.TextureManager;
 import com.lllmtb.ui.graphical.animation.AnimationManager;
 
@@ -48,8 +49,9 @@ public class GameEngine {
         UI ui;
         if (graphique) {
             Logger.logger.info("Using graphical interface");
-            TextureManager.load(); // charge les textures
-            AnimationManager.load(); //charge les animation
+            TextureManager.load(); // load textures
+            AnimationManager.load(); //load animation
+            SoundManager.load(); //load sound effect
             ui = new GraphicalUI(systemBus);
         } else {
             Logger.logger.info("Using console interface");
