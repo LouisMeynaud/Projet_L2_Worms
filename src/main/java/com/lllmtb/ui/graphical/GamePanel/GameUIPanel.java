@@ -15,6 +15,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JSlider;
 import javax.swing.Timer;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
@@ -32,6 +33,7 @@ import com.lllmtb.events.ui.graphical.RequestFocus;
 import com.lllmtb.model.item.inventory.Inventory;
 import com.lllmtb.model.item.tool.ToolId;
 import com.lllmtb.model.item.weapon.WeaponId;
+import com.lllmtb.ui.graphical.SoundPlayer;
 import com.lllmtb.ui.graphical.TextureManager;
 import com.lllmtb.ui.graphical.Utilitaire;
 
@@ -173,20 +175,42 @@ public class GameUIPanel extends JPanel {
         JButton saveButton = new JButton("Save");
         JButton quitButton = new JButton("Quitter");
 
+        JLabel musiqueVolumeLabel = new JLabel("Volume de la musique");
+        JLabel sonorEffectVolumeLabel = new JLabel("Volume des effets sonores");
+        JSlider musiqueVolumeSlider = Utilitaire.createSlider(0, 100, SoundPlayer.getMusiqueVolume(), 50);
+        JSlider soundEffectVolumeSlider = Utilitaire.createSlider(0, 100, SoundPlayer.getSoundEffectVolume(), 50);
 
         resumeButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         saveButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         quitButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        musiqueVolumeLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        sonorEffectVolumeLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        musiqueVolumeSlider.setAlignmentX(Component.CENTER_ALIGNMENT);
+        soundEffectVolumeSlider.setAlignmentX(Component.CENTER_ALIGNMENT);
+        musiqueVolumeSlider.setSnapToTicks(false);
+        musiqueVolumeSlider.setPaintTicks(false);
+        soundEffectVolumeSlider.setSnapToTicks(false);
+        soundEffectVolumeSlider.setPaintTicks(false);
+
 
         resumeButton.addActionListener(e -> pauseMenu(false));
         saveButton.addActionListener(e -> eventBus.postQueued(new SaveEvent()));
         quitButton.addActionListener(e -> System.exit(0));
+        musiqueVolumeSlider.addChangeListener(e ->  SoundPlayer.setMusiqueVolume(musiqueVolumeSlider.getValue()));
+        soundEffectVolumeSlider.addChangeListener(e -> SoundPlayer.setSoundEffectVolume(soundEffectVolumeSlider.getValue()));
 
         menuPanel.add(resumeButton);
         menuPanel.add(Box.createVerticalStrut(10));
         menuPanel.add(saveButton);
         menuPanel.add(Box.createVerticalStrut(10));
         menuPanel.add(quitButton);
+        menuPanel.add(Box.createVerticalStrut(10));
+        menuPanel.add(musiqueVolumeLabel);
+        menuPanel.add(musiqueVolumeSlider);
+        menuPanel.add(Box.createVerticalStrut(10));
+        menuPanel.add(sonorEffectVolumeLabel);
+        menuPanel.add(soundEffectVolumeSlider);
 
 
         this.pauseMenucontainer.add(menuPanel);

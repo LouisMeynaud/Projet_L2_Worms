@@ -37,6 +37,8 @@ import com.lllmtb.model.entity.projectile.Projectile;
 import com.lllmtb.model.entity.projectile.RocketProjectile;
 import com.lllmtb.model.entity.worm.Statistics;
 import com.lllmtb.model.entity.worm.Worm;
+import com.lllmtb.model.item.ItemId;
+import com.lllmtb.model.item.weapon.WeaponId;
 import com.lllmtb.physics.GameMode;
 import com.lllmtb.physics.PhysicsBody;
 import com.lllmtb.physics.Position;
@@ -124,11 +126,14 @@ public class GameWorldPanel extends JPanel {
             public void mouseReleased(MouseEvent e) {
                 int type = e.getButton();
                 long duration = System.currentTimeMillis() - pressStartTime;
-                // double worldX = (e.getX() - cameraOffsetX) / currentZoom;
-                // double worldY = (e.getY() - cameraOffsetY) / currentZoom;
 
                 if (type == MouseEvent.BUTTON1 && shootMode) {
                    Position worldPos = screenToWorld(e.getX(), e.getY());
+                   ItemId item = world.getPlayingTeam().getHand();
+                   if ((item != null && item instanceof WeaponId) && world.getTurnManager().getTurn().getTeam().getInventory().weapons.getAmmo(((WeaponId) item)) > 0) {
+                   String sound = world.getPlayingTeam().getHand().toString();
+                   SoundPlayer.playSound(sound + "Shot");
+                }
                     world.getBus().postQueued(new MouseInputEvent(worldPos, duration, Direction.Left));
                 }
 
