@@ -9,5 +9,6 @@ public final class WeaponRegistry extends ItemRegistry<WeaponId, Weapon> {
 
         this.register(WeaponId.GUN, new GunWeapon());
         this.register(WeaponId.BAZOOKA, new BazookaWeapon());
+        this.register(WeaponId.HEALINGBAZOOKA, new HealingBazookaWeapon());
     }
 }

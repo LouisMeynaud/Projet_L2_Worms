@@ -74,9 +74,11 @@ public class TextureManager {
             ///////////projectile//////////
             PROJECTILES.put("BulletProjectile", ImageIO.read(TextureManager.class.getResource("/sprites/weapon/BulletGun.png")));
             PROJECTILES.put("RocketProjectile", ImageIO.read(TextureManager.class.getResource("/sprites/weapon/BulletBazooka.png")));
+            PROJECTILES.put("HealingProjectile", ImageIO.read(TextureManager.class.getResource("/sprites/weapon/BulletHealingBazooka.png")));
 
             /////////////EFFECT/////////////////
             EFFECT.put("BazookaExplosion", ImageIO.read(TextureManager.class.getResource("/sprites/effect/BazookaExplosion.png")));
+            EFFECT.put("HealingBazookaExplosion", ImageIO.read(TextureManager.class.getResource("/sprites/effect/HealingBazookaExplosion.png")));
 
 
         } catch (IOException e) {

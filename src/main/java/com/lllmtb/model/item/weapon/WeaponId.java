@@ -5,5 +5,6 @@ import com.lllmtb.model.item.ItemId;
 public enum WeaponId implements ItemId {
     GUN,
     BAZOOKA,
+    HEALINGBAZOOKA,
     NONE
 }

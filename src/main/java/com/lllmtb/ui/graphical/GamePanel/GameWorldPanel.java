@@ -35,6 +35,7 @@ import com.lllmtb.events.ui.MoveEvent;
 import com.lllmtb.events.ui.ShootMode;
 import com.lllmtb.events.ui.graphical.RequestFocus;
 import com.lllmtb.model.entity.projectile.BulletProjectile;
+import com.lllmtb.model.entity.projectile.HealingProjectile;
 import com.lllmtb.model.entity.projectile.Projectile;
 import com.lllmtb.model.entity.projectile.RocketProjectile;
 import com.lllmtb.model.entity.team.TeamColor;
@@ -543,6 +544,8 @@ public class GameWorldPanel extends JPanel {
                         textureProjectile = TextureManager.PROJECTILES.get("BulletProjectile");
                     } else if (projectile.getEntity()  instanceof RocketProjectile) {
                         textureProjectile = TextureManager.PROJECTILES.get("RocketProjectile");
+                    } else if (projectile.getEntity()  instanceof HealingProjectile) {
+                        textureProjectile = TextureManager.PROJECTILES.get("HealingProjectile");
                     }
                     if (textureProjectile != null) {
                         double largeurProjPx = body.getWidth() * tileSize;

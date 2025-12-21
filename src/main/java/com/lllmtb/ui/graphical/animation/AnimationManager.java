@@ -38,6 +38,10 @@ public class AnimationManager {
         if (bazookaSheet != null) {
             FRAMES_MAP.put("BazookaExplosion", Utilitaire.cutSpriteSheet(bazookaSheet, 4, 4));
     }
+    BufferedImage healingBazookaSheet = TextureManager.EFFECT.get("HealingBazookaExplosion");
+        if (healingBazookaSheet != null) {
+            FRAMES_MAP.put("HealingBazookaExplosion", Utilitaire.cutSpriteSheet(healingBazookaSheet, 4, 4));
+    }
 
 
     }
