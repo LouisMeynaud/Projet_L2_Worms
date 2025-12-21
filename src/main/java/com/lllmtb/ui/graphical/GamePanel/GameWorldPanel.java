@@ -34,10 +34,7 @@ import com.lllmtb.events.physics.ExplosionEvent;
 import com.lllmtb.events.ui.MoveEvent;
 import com.lllmtb.events.ui.ShootMode;
 import com.lllmtb.events.ui.graphical.RequestFocus;
-import com.lllmtb.model.entity.projectile.BulletProjectile;
-import com.lllmtb.model.entity.projectile.HealingProjectile;
 import com.lllmtb.model.entity.projectile.Projectile;
-import com.lllmtb.model.entity.projectile.RocketProjectile;
 import com.lllmtb.model.entity.team.TeamColor;
 import com.lllmtb.model.entity.worm.Statistics;
 import com.lllmtb.model.entity.worm.Worm;
@@ -539,14 +536,7 @@ public class GameWorldPanel extends JPanel {
 
                  } else if (body.getEntity() instanceof Projectile) {
                     PhysicsBody projectile = body;
-                    BufferedImage textureProjectile = null;
-                    if (projectile.getEntity() instanceof BulletProjectile) {
-                        textureProjectile = TextureManager.PROJECTILES.get("BulletProjectile");
-                    } else if (projectile.getEntity()  instanceof RocketProjectile) {
-                        textureProjectile = TextureManager.PROJECTILES.get("RocketProjectile");
-                    } else if (projectile.getEntity()  instanceof HealingProjectile) {
-                        textureProjectile = TextureManager.PROJECTILES.get("HealingProjectile");
-                    }
+                    BufferedImage textureProjectile = TextureManager.PROJECTILES.get(projectile.getEntity().getClass().getSimpleName());
                     if (textureProjectile != null) {
                         double largeurProjPx = body.getWidth() * tileSize;
                         double hauteurProjPx = body.getHeight() * tileSize;

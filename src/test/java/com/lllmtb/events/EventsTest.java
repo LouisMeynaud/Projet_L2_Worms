@@ -4,10 +4,6 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import com.lllmtb.events.physics.ActualizePhysicsEvent;
-import com.lllmtb.events.physics.PhysicsCollisionWithOtherEntityEvent;
-import com.lllmtb.model.entity.Entity;
 import org.junit.jupiter.api.Test;
 import static org.mockito.Mockito.mock;
 
@@ -24,6 +20,9 @@ import com.lllmtb.events.game.WeaponSelectedEvent;
 import com.lllmtb.events.game.WorldCreatedEvent;
 import com.lllmtb.events.move.MouseInputEvent;
 import com.lllmtb.events.move.MouseWheelMoveInputEvent;
+import com.lllmtb.events.physics.ActualizePhysicsEvent;
+import com.lllmtb.events.physics.ExplosionEvent;
+import com.lllmtb.events.physics.PhysicsCollisionWithOtherEntityEvent;
 import com.lllmtb.events.turn.TurnSkipEvent;
 import com.lllmtb.events.ui.MoveEvent;
 import com.lllmtb.events.ui.ShootMode;
@@ -34,6 +33,7 @@ import com.lllmtb.events.ui.graphical.ScreenLoadGame;
 import com.lllmtb.events.ui.graphical.ScreenLoadMap;
 import com.lllmtb.events.ui.graphical.ScreenNewOrLoadEvent;
 import com.lllmtb.events.ui.graphical.ScreenSettingsGame;
+import com.lllmtb.model.entity.Entity;
 import com.lllmtb.model.item.tool.ToolId;
 import com.lllmtb.model.item.weapon.WeaponId;
 import com.lllmtb.physics.Position;
@@ -120,6 +120,16 @@ public class EventsTest {
         LoadEvent event = new LoadEvent(nom);
         assertNotNull(event, "L'événement ne doit pas être null");
         assertEquals(nom, event.stringPath, "le stringpath doit etre: oui ");
+    }
+
+    @Test
+    public void testCreationExplosionEvent() {
+        Position position = new Position(10, 12);
+        ExplosionEvent event = new ExplosionEvent(position, 15, "BazookaExplosion");
+        assertNotNull(event, "L'événement ne doit pas être null");
+        assertEquals(15, event.getRadius());
+        assertEquals("BazookaExplosion", event.getAnimationKey());
+        assertEquals(position, event.getPosition());
     }
     @Test
     public void eventWithoutArgumentTest() {

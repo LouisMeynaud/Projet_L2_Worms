@@ -1,17 +1,23 @@
 package com.lllmtb.model.item;
 
-import com.lllmtb.model.item.weapon.WeaponId;
-import com.lllmtb.model.item.weapon.WeaponRegistry;
-import com.lllmtb.model.item.weapon.GunWeapon;
-import com.lllmtb.model.item.weapon.BazookaWeapon;
-import com.lllmtb.model.item.tool.ToolId;
-import com.lllmtb.model.item.tool.ToolRegistry;
+import java.util.Map;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.Map;
-
-import static org.junit.jupiter.api.Assertions.*;
+import com.lllmtb.model.item.tool.ToolId;
+import com.lllmtb.model.item.tool.ToolRegistry;
+import com.lllmtb.model.item.weapon.BazookaWeapon;
+import com.lllmtb.model.item.weapon.GunWeapon;
+import com.lllmtb.model.item.weapon.WeaponId;
+import com.lllmtb.model.item.weapon.WeaponRegistry;
 
 public class ItemRegistryTest {
 
@@ -54,6 +60,7 @@ public class ItemRegistryTest {
     public void contains_withValidWeaponId() {
         assertTrue(weaponRegistry.contains(WeaponId.GUN));
         assertTrue(weaponRegistry.contains(WeaponId.BAZOOKA));
+        assertTrue(weaponRegistry.contains(WeaponId.HEALINGBAZOOKA));
     }
 
     @Test
@@ -186,10 +193,12 @@ public class ItemRegistryTest {
     public void multipleItems_eachCanBeModified() {
         weaponRegistry.addAmmo(WeaponId.GUN, 10);
         weaponRegistry.addAmmo(WeaponId.BAZOOKA, 5);
+        weaponRegistry.addAmmo(WeaponId.HEALINGBAZOOKA, 3);
         weaponRegistry.addAmmo(WeaponId.GUN, -2);
         
         assertEquals(8, weaponRegistry.getAmmo(WeaponId.GUN));
         assertEquals(5, weaponRegistry.getAmmo(WeaponId.BAZOOKA));
+        assertEquals(3, weaponRegistry.getAmmo(WeaponId.HEALINGBAZOOKA));
     }
 }
 
