@@ -13,8 +13,10 @@ import java.awt.event.MouseWheelEvent;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.swing.JPanel;
@@ -35,6 +37,7 @@ import com.lllmtb.events.ui.graphical.RequestFocus;
 import com.lllmtb.model.entity.projectile.BulletProjectile;
 import com.lllmtb.model.entity.projectile.Projectile;
 import com.lllmtb.model.entity.projectile.RocketProjectile;
+import com.lllmtb.model.entity.team.TeamColor;
 import com.lllmtb.model.entity.worm.Statistics;
 import com.lllmtb.model.entity.worm.Worm;
 import com.lllmtb.model.item.ItemId;
@@ -59,6 +62,7 @@ public class GameWorldPanel extends JPanel {
     private final Set<Integer> pressedKeys = new HashSet<>();
     private final List<VisualEffect> activeEffects = new ArrayList<>();
 
+    private final Map<TeamColor, Animation> teamAnimations = new HashMap<>();
 
     private BufferedImage mapCache = null;
 
@@ -423,6 +427,21 @@ public class GameWorldPanel extends JPanel {
 
     //////////////dessins/////////////////////////////
 
+    private Animation getWormAnimation(Worm worm) {
+    TeamColor color = worm.getTeam().getTeamColor();
+    if (teamAnimations.containsKey(color)) {
+        return teamAnimations.get(color);
+    }
+    String key = "Worm" + color.toString();
+    Animation anim = AnimationManager.create(key, 12);
+
+    if (anim != null) {
+        anim.start();
+        teamAnimations.put(color, anim);
+    }
+    return anim;
+}
+
     /**
      * Update all worm animations.
      */
@@ -434,7 +453,7 @@ public class GameWorldPanel extends JPanel {
             Object entity = body.getEntity();
             if (entity instanceof Worm) {
                 Worm worm = (Worm) entity;
-                Animation anim = worm.getAnimation();
+                Animation anim = getWormAnimation(worm);
                 if (anim != null) {
                     anim.update();
                 }
@@ -482,7 +501,7 @@ public class GameWorldPanel extends JPanel {
                     double yEcran = hauteurMapPixels - yPhysique - hauteurVerPx; // -hauteurVerPx car dessin commence en haut a gauche
 
                     Worm wormEntity = (Worm) worm.getEntity();
-                    BufferedImage textureWorm = wormEntity.getAnimation().getSprite();
+                    BufferedImage textureWorm = getWormAnimation(wormEntity).getSprite();
 
                     AffineTransform tx = new AffineTransform();
                     tx.translate(xEcran - 2, yEcran - 12); // On place le crayon

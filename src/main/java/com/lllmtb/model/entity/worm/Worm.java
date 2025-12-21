@@ -10,8 +10,6 @@ import com.lllmtb.model.entity.team.Team;
 import com.lllmtb.physics.PhysicsBody;
 import com.lllmtb.physics.Position;
 import com.lllmtb.physics.Vector;
-import com.lllmtb.ui.graphical.animation.Animation;
-import com.lllmtb.ui.graphical.animation.AnimationManager;
 
 /**
  * Represents a single worm entity in the game.
@@ -50,11 +48,6 @@ public class Worm extends Entity {
     private final CollisionType collisionType = CollisionType.SLIDE;
 
     /**
-     * The current animation.
-     */
-    private transient Animation animation;
-
-    /**
      * Direction the worm is facing: 1 for right, -1 for left.
      */
     private int facingDirection = 1;
@@ -77,11 +70,6 @@ public class Worm extends Entity {
         this.stats = Objects.requireNonNull(stats);
         this.team = Objects.requireNonNull(team);
         this.team.addWorm(this);
-
-        this.animation = AnimationManager.create("Worm" + team.getTeamColor().toString(), 12);
-        if (this.animation != null) {
-            this.animation.start();
-        }
     }
 
     /**
@@ -125,14 +113,6 @@ public class Worm extends Entity {
     @Override
     public CollisionType getCollisionType() {
         return this.collisionType;
-    }
-
-    /**
-     * Returns the current animation of the worm.
-     * @return the {@link Animation} of the worm
-     */
-    public Animation getAnimation() {
-        return this.animation;
     }
 
     /**
