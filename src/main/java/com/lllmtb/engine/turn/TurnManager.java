@@ -74,6 +74,7 @@ public final class TurnManager {
     }
 
     private void endTurn() {
+        this.turn.getTeam().emptyHand();
         this.turn.end();
         Logger.logger.info("End turn - switch Team\n");
         world.getBus().postQueued(new TurnEndEvent());

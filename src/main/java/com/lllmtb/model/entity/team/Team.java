@@ -283,7 +283,7 @@ public class Team {
     /**
      * Sets the currently selected item to null
      */
-    private void emptyHand() {
+    public void emptyHand() {
         this.selectedItem = null;
     }
 
