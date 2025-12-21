@@ -39,4 +39,5 @@ public abstract class Projectile extends Entity {
      * Called by collision detection when an impact is detected.
      */
     public abstract void onImpact(PhysicsEngine engine);
+    public abstract int getDamage();
 }

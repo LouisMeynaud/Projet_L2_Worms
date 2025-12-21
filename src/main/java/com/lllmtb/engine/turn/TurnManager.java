@@ -1,6 +1,7 @@
 package com.lllmtb.engine.turn;
 
 import java.util.Objects;
+
 import com.lllmtb.engine.GameWorld;
 import com.lllmtb.engine.logger.Logger;
 import com.lllmtb.events.EventListener;
@@ -135,7 +136,7 @@ public final class TurnManager {
             if (event.getMovingBody() instanceof Projectile) {
                 if (event.getHitBody() != null && event.getHitBody() instanceof Worm worm) {
                     Projectile bullet = (Projectile) event.getMovingBody();
-                    worm.damageWorm(20);
+                    worm.damageWorm(bullet.getDamage());
                 }
             }
             world.getBus().postQueued(new ActualizePhysicsEvent());

@@ -11,6 +11,7 @@ public final class HealingProjectile extends Projectile implements ExplosiveProj
     private static final double mass   = 0.0045;
     private static final double height = 0.4;
     private static final double width  = 0.6;
+    private static final int damage = -20;
 
 
     private static final int RAYON_DEGAT_MAP = 0;
@@ -56,5 +57,10 @@ public final class HealingProjectile extends Projectile implements ExplosiveProj
     @Override
     public String getExplosionTexture() {
         return TEXTURE_KEY;
+    }
+
+    @Override
+    public int getDamage() {
+        return damage;
     }
 }

@@ -11,6 +11,7 @@ public final class BulletProjectile extends Projectile {
     private static final double mass   = 0.003;
     private static final double height = 1;
     private static final double width  = 1;
+    private static final int damage = 20;
 
     public BulletProjectile(@NonNull UseParams params) {
         super(params, force, mass, height, width);
@@ -24,5 +25,10 @@ public final class BulletProjectile extends Projectile {
     @Override
     public void onImpact(PhysicsEngine engine) {
         // trigger the reaction chain (explosion, events...)
+    }
+
+    @Override
+    public int getDamage() {
+        return damage;
     }
 }

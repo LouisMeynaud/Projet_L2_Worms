@@ -315,7 +315,8 @@ public class GameWorldPanel extends JPanel {
                 double size = event.getRadius() * 2.5;
                 activeEffects.add(new VisualEffect(event.getPosition(), anim, size, size));
             }
-            SoundPlayer.playSound("Explosion");
+            System.out.println(event.getAnimationKey());
+            SoundPlayer.playSound(event.getAnimationKey());
         });
 
     }

@@ -13,9 +13,11 @@ public class SoundManager {
     public static final Map<String, Clip> soundMap = new HashMap<>();
 
     public static void  load() {
-        soundMap.put("Explosion", createClip("Explosion"));
+        soundMap.put("BazookaExplosion", createClip("BazookaExplosion"));
+        soundMap.put("HealingBazookaExplosion", createClip("HealingBazookaExplosion"));
         soundMap.put("MusiqueGame1", createClip("MusiqueGame1"));
         soundMap.put("BAZOOKAShot", createClip("BAZOOKAShot"));
+        soundMap.put("HEALINGBAZOOKAShot", createClip("HEALINGBAZOOKAShot"));
         soundMap.put("GUNShot", createClip("GUNShot"));
 
     }
