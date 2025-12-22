@@ -61,6 +61,7 @@ public class ItemRegistryTest {
         assertTrue(weaponRegistry.contains(WeaponId.GUN));
         assertTrue(weaponRegistry.contains(WeaponId.BAZOOKA));
         assertTrue(weaponRegistry.contains(WeaponId.HEALINGBAZOOKA));
+        assertTrue(weaponRegistry.contains(WeaponId.SHOTGUN));
     }
 
     @Test
@@ -194,11 +195,13 @@ public class ItemRegistryTest {
         weaponRegistry.addAmmo(WeaponId.GUN, 10);
         weaponRegistry.addAmmo(WeaponId.BAZOOKA, 5);
         weaponRegistry.addAmmo(WeaponId.HEALINGBAZOOKA, 3);
+        weaponRegistry.addAmmo(WeaponId.SHOTGUN, 2);
         weaponRegistry.addAmmo(WeaponId.GUN, -2);
         
         assertEquals(8, weaponRegistry.getAmmo(WeaponId.GUN));
         assertEquals(5, weaponRegistry.getAmmo(WeaponId.BAZOOKA));
         assertEquals(3, weaponRegistry.getAmmo(WeaponId.HEALINGBAZOOKA));
+        assertEquals(2, weaponRegistry.getAmmo(WeaponId.SHOTGUN));
     }
 }
 

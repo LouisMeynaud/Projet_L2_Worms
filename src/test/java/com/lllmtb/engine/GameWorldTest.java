@@ -216,7 +216,7 @@ public class GameWorldTest {
 
     @Test
     void pauseAndResume_togglesGameLoopPauseState() throws Exception {
-        GameSettings settings = new GameSettings("blabla", 1, new String[]{"Team1"}, 1, 10,100, false, null, false, 370, LandScape.HILLY, 2,GameMode.NORMAL);
+        GameSettings settings = new GameSettings("blabla", 1, new String[]{"Team1"}, 1, 100,100, false, null, false, 370, LandScape.HILLY, 2,GameMode.NORMAL);
         EventBus eventBus = new EventBus();
         GameWorld gw = new GameWorld(settings, eventBus);
 
@@ -244,7 +244,7 @@ public class GameWorldTest {
 
     @Test
     void getTurnManager() {
-        GameSettings settings = new GameSettings("blabla", 0, new String[]{}, 0, 10,100, false, null, false,370,LandScape.HILLY,2,GameMode.NORMAL);
+        GameSettings settings = new GameSettings("blabla", 0, new String[]{}, 0, 100, 100, false, null, false, 370, LandScape.HILLY, 2, GameMode.NORMAL);
         EventBus eventBus = new EventBus();
         GameWorld gw = new GameWorld(settings, eventBus);
 
