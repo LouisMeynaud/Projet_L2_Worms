@@ -52,7 +52,7 @@ import com.lllmtb.ui.graphical.animation.AnimationManager;
 import com.lllmtb.ui.graphical.animation.VisualEffect;
 
 public class GameWorldPanel extends JPanel {
-    private EventBus eventBus;  // system bus
+    private EventBus eventBus; // system bus
     private GameWorld world;
     private Tile[][] mapMatrix;
     private final int tileSize = 12;
@@ -130,12 +130,12 @@ public class GameWorldPanel extends JPanel {
                 long duration = System.currentTimeMillis() - pressStartTime;
 
                 if (type == MouseEvent.BUTTON1 && shootMode) {
-                   Position worldPos = screenToWorld(e.getX(), e.getY());
-                   ItemId item = world.getPlayingTeam().getHand();
-                   if ((item != null && item instanceof WeaponId) && world.getTurnManager().getTurn().getTeam().getInventory().weapons.getAmmo(((WeaponId) item)) > 0) {
-                   String sound = world.getPlayingTeam().getHand().toString();
-                   SoundPlayer.playSound(sound + "Shot");
-                }
+                    Position worldPos = screenToWorld(e.getX(), e.getY());
+                    ItemId item = world.getPlayingTeam().getHand();
+                    if ((item != null && item instanceof WeaponId) && world.getTurnManager().getTurn().getTeam().getInventory().weapons.getAmmo(((WeaponId) item)) > 0) {
+                        String sound = world.getPlayingTeam().getHand().toString();
+                        SoundPlayer.playSound(sound + "Shot");
+                    }
                     world.getBus().postQueued(new MouseInputEvent(worldPos, duration, Direction.Left));
                 }
 
@@ -152,10 +152,7 @@ public class GameWorldPanel extends JPanel {
             @Override
             public void mouseDragged(MouseEvent e) {
                 if (isCameraMode) {
-                    currentMouseX = e.getX();
-                    currentMouseY = e.getY();
-                    mouseWorldX = (currentMouseX - cameraOffsetX) / currentZoom;
-                    mouseWorldY = (currentMouseY - cameraOffsetY) / currentZoom;
+                    updateMouseWorldPosition(e.getX(), e.getY());
 
                     double dx = currentMouseX - lastMouseX;
                     double dy = currentMouseY - lastMouseY;
@@ -188,13 +185,7 @@ public class GameWorldPanel extends JPanel {
                         currentZoom -= zoomSpeed;
                     }
 
-                    double minZoom = Math.max(getWidth() / mapWidth(), getHeight() / mapHeight());
-                    if (currentZoom < minZoom) {
-                        currentZoom = minZoom;
-                    }
-                    if (currentZoom > 8.0) {
-                        currentZoom = 8.0;
-                    }
+                    validateZoom();
 
                     cameraOffsetX = centerX - (mapPointX * currentZoom);
                     cameraOffsetY = centerY - (mapPointY * currentZoom);
@@ -213,12 +204,8 @@ public class GameWorldPanel extends JPanel {
 
             @Override
             public void mouseMoved(MouseEvent e) {
-                currentMouseX = e.getX();
-                currentMouseY = e.getY();
-                mouseWorldX = (currentMouseX - cameraOffsetX) / currentZoom;
-                mouseWorldY = (currentMouseY - cameraOffsetY) / currentZoom;
+                updateMouseWorldPosition(e.getX(), e.getY());
                 repaint();
-
             }
         };
 
@@ -230,18 +217,52 @@ public class GameWorldPanel extends JPanel {
 
     //////////////////utilitaire//////////////////:
 
-   private Position screenToWorld(int screenX, int screenY) {
-    double pixelX = (screenX - cameraOffsetX) / currentZoom;
-    double pixelY = (screenY - cameraOffsetY) / currentZoom;
+    private Position screenToWorld(int screenX, int screenY) {
+        double pixelX = (screenX - cameraOffsetX) / currentZoom;
+        double pixelY = (screenY - cameraOffsetY) / currentZoom;
 
-    double tileX = pixelX / tileSize;
-    double tileYRaw = pixelY / tileSize;
+        double tileX = pixelX / tileSize;
+        double tileYRaw = pixelY / tileSize;
 
-    double mapHeightTiles = world.getMap().getHeight();
-    double tileY = mapHeightTiles - tileYRaw;
+        double mapHeightTiles = world.getMap().getHeight();
+        double tileY = mapHeightTiles - tileYRaw;
 
-    return new Position(tileX, tileY);
-}
+        return new Position(tileX, tileY);
+    }
+
+    private double[] getScreenBounds(PhysicsBody body) {
+        double largeurPx = body.getWidth() * tileSize;
+        double hauteurPx = body.getHeight() * tileSize;
+
+        double xEcran = body.getPos().getX() * tileSize;
+        double yPhysique = body.getPos().getY() * tileSize;
+
+        double hauteurMapPixels = world.getMap().getHeight() * this.tileSize;
+        double yEcran = hauteurMapPixels - yPhysique - hauteurPx;
+
+        return new double[] {xEcran, yEcran, largeurPx, hauteurPx };
+    }
+
+    private void validateZoom() {
+        double screenWidth = getWidth();
+        double screenHeight = getHeight();
+
+        double minZoom = Math.max(screenWidth / mapWidth(), screenHeight / mapHeight());
+        if (currentZoom < minZoom) {
+            currentZoom = minZoom;
+        }
+        if (currentZoom > 8.0) {
+            currentZoom = 8.0;
+        }
+    }
+
+    private void updateMouseWorldPosition(int screenX, int screenY) {
+        this.currentMouseX = screenX;
+        this.currentMouseY = screenY;
+        this.mouseWorldX = (currentMouseX - cameraOffsetX) / currentZoom;
+        this.mouseWorldY = (currentMouseY - cameraOffsetY) / currentZoom;
+    }
+
     private int mapWidth() {
         return world.getMap().getWidth() * tileSize;
     }
@@ -331,7 +352,6 @@ public class GameWorldPanel extends JPanel {
         double mapW = mapWidth();
         double mapH = mapHeight();
 
-
         this.currentZoom = screenWidth / mapW;
 
         double zoomedH = mapH * currentZoom;
@@ -356,14 +376,7 @@ public class GameWorldPanel extends JPanel {
 
         double mapRealWidth = mapWidth();
         double mapRealHeight = mapHeight();
-
-        double minZoom = Math.max(screenWidth / mapRealWidth, screenHeight / mapRealHeight);
-        if (currentZoom < minZoom) {
-            currentZoom = minZoom;
-        }
-        if (currentZoom > 8.0) {
-            currentZoom = 8.0;
-        }
+        validateZoom();
 
         double zoomedWidth = mapRealWidth * currentZoom;
         double zoomedHeigth = mapRealHeight * currentZoom;
@@ -403,14 +416,14 @@ public class GameWorldPanel extends JPanel {
             for (int x = 0; x < mapMatrix[y].length; x++) {
                 String tileType = mapMatrix[y][x].toString();
                 if (mapMatrix[y][x] != Tile.AIR) {
-                BufferedImage texture;
+                    BufferedImage texture;
                     tileType = tileType + Utilitaire.getHashId(x, y, mapMatrix[y][x].getNbTexture());
                     texture = TextureManager.TILES.get(tileType);
 
-                if (texture != null) {
-                    int screenX = x * tileSize;
-                    int screenY = y * tileSize;
-                    g2d.drawImage(texture, screenX, screenY, tileSize, tileSize, null);
+                    if (texture != null) {
+                        int screenX = x * tileSize;
+                        int screenY = y * tileSize;
+                        g2d.drawImage(texture, screenX, screenY, tileSize, tileSize, null);
                     }
                 }
             }
@@ -423,23 +436,22 @@ public class GameWorldPanel extends JPanel {
         checkCameraBounds();
     }
 
-
     //////////////dessins/////////////////////////////
 
     private Animation getWormAnimation(Worm worm) {
-    TeamColor color = worm.getTeam().getTeamColor();
-    if (teamAnimations.containsKey(color)) {
-        return teamAnimations.get(color);
-    }
-    String key = "Worm" + color.toString();
-    Animation anim = AnimationManager.create(key, 12);
+        TeamColor color = worm.getTeam().getTeamColor();
+        if (teamAnimations.containsKey(color)) {
+            return teamAnimations.get(color);
+        }
+        String key = "Worm" + color.toString();
+        Animation anim = AnimationManager.create(key, 12);
 
-    if (anim != null) {
-        anim.start();
-        teamAnimations.put(color, anim);
+        if (anim != null) {
+            anim.start();
+            teamAnimations.put(color, anim);
+        }
+        return anim;
     }
-    return anim;
-}
 
     /**
      * Update all worm animations.
@@ -483,76 +495,75 @@ public class GameWorldPanel extends JPanel {
         }
     }
 
+    private void drawWorm(Graphics2D g2d, PhysicsBody worm, Worm activeWorm) {
+        double[] bounds = getScreenBounds(worm);
+        double xEcran = bounds[0];
+        double yEcran = bounds[1];
+        double largeurVerPx = bounds[2];
+        double hauteurVerPx = bounds[3];
+        Worm wormEntity = (Worm) worm.getEntity();
+        BufferedImage textureWorm = getWormAnimation(wormEntity).getSprite();
+
+        AffineTransform tx = new AffineTransform();
+        tx.translate(xEcran - 2, yEcran - 12); // On place le crayon
+
+        // Scale l'image du worms pour qu'elle soit a la bonne taille
+        double echelleX = 1.875 * largeurVerPx / textureWorm.getWidth();
+        double echelleY = 1.5 * hauteurVerPx / textureWorm.getHeight();
+        tx.scale(echelleX, echelleY);
+
+        // Flip l'image si le ver fait face a gauche
+        int facingDir = wormEntity.getFacingDirection();
+        if (facingDir == -1) {
+            double spriteWidthScaled = textureWorm.getWidth() * echelleX;
+            tx.translate(spriteWidthScaled / 2, 0);
+            tx.scale(-1, 1);
+            tx.translate(-spriteWidthScaled / 2, 0);
+        }
+
+        g2d.drawImage(textureWorm, tx, null);
+
+        paintHealthBar(g2d, (Worm) worm.getEntity(), xEcran, yEcran, largeurVerPx);
+
+        if (worm.getEntity() == activeWorm) {
+            double xCenter = xEcran + (largeurVerPx / 2.0);
+            double yCenter = yEcran + (hauteurVerPx / 2.0);
+            paintCurrentWorsArrow(g2d, xEcran, yEcran, largeurVerPx);
+            paintWeapon(g2d, xCenter, yCenter);
+            paintAim(g2d, xCenter, yCenter);
+        }
+    }
+
+    private void drawProjectile(Graphics2D g2d, PhysicsBody projectile) {
+
+        double[] bounds = getScreenBounds(projectile);
+        double xEcran = bounds[0];
+        double yEcran = bounds[1];
+        double largeurProjPx = bounds[2];
+        double hauteurProjPx = bounds[3];
+
+        BufferedImage textureProjectile = TextureManager.PROJECTILES.get(projectile.getEntity().getClass().getSimpleName());
+        if (textureProjectile != null) {
+            AffineTransform tx = new AffineTransform();
+
+            tx.translate(xEcran, yEcran);
+            double echelleX = largeurProjPx / textureProjectile.getWidth();
+            double echelleY = hauteurProjPx / textureProjectile.getHeight();
+            tx.scale(echelleX, echelleY);
+
+            g2d.drawImage(textureProjectile, tx, null);
+        }
+    }
+
     private void paintEntity(Graphics2D g2d) {
-        double hauteurMapPixels = world.getMap().getHeight() * this.tileSize;
         Worm activeWorm = world.getTurnManager().getTurn().getWormPlayable();
 
         if (world.getPhysics() != null && world.getPhysics().getBodies() != null) {
             for (PhysicsBody body : world.getPhysics().getBodies()) {
-                 if (body.getEntity() instanceof Worm) {
-                    PhysicsBody worm = body;
-
-                    double largeurVerPx = worm.getWidth() * tileSize;
-                    double hauteurVerPx = worm.getHeight() * tileSize;
-
-                    double xEcran = worm.getPos().getX() * tileSize;
-                    double yPhysique = worm.getPos().getY() * tileSize;
-                    double yEcran = hauteurMapPixels - yPhysique - hauteurVerPx; // -hauteurVerPx car dessin commence en haut a gauche
-
-                    Worm wormEntity = (Worm) worm.getEntity();
-                    BufferedImage textureWorm = getWormAnimation(wormEntity).getSprite();
-
-                    AffineTransform tx = new AffineTransform();
-                    tx.translate(xEcran - 2, yEcran - 12); // On place le crayon
-
-                     // Scale l'image du worms pour qu'elle soit a la bonne taille
-                     double echelleX = 1.875 * largeurVerPx / textureWorm.getWidth();
-                     double echelleY = 1.5 * hauteurVerPx / textureWorm.getHeight();
-                     tx.scale(echelleX, echelleY);
-
-                     // Flip l'image si le ver fait face a gauche
-                     int facingDir = wormEntity.getFacingDirection();
-                     if (facingDir == -1) {
-                         double spriteWidthScaled = textureWorm.getWidth() * echelleX;
-                         tx.translate(spriteWidthScaled / 2, 0);
-                         tx.scale(-1, 1);
-                         tx.translate(-spriteWidthScaled / 2, 0);
-                     }
-
-                     g2d.drawImage(textureWorm, tx, null);
-
-
-
-
-                    paintHealthBar(g2d, (Worm) worm.getEntity(), xEcran, yEcran, largeurVerPx);
-
-
-                        if (worm.getEntity() == activeWorm) {
-                            double xCenter = xEcran + (largeurVerPx / 2.0);
-                            double yCenter = yEcran + (hauteurVerPx / 2.0);
-                            paintCurrentWorsArrow(g2d, xEcran, yEcran, largeurVerPx);
-                            paintWeapon(g2d, xCenter, yCenter);
-                            paintAim(g2d, xCenter, yCenter);
-                        }
-
-                 } else if (body.getEntity() instanceof Projectile) {
-                    PhysicsBody projectile = body;
-                    BufferedImage textureProjectile = TextureManager.PROJECTILES.get(projectile.getEntity().getClass().getSimpleName());
-                    if (textureProjectile != null) {
-                        double largeurProjPx = body.getWidth() * tileSize;
-                        double hauteurProjPx = body.getHeight() * tileSize;
-
-                        double xEcran = body.getPos().getX() * tileSize;
-                        double yEcran = hauteurMapPixels - (body.getPos().getY() * tileSize) - hauteurProjPx;
-                        AffineTransform tx = new AffineTransform();
-
-                        tx.translate(xEcran, yEcran);
-                        double echelleX = largeurProjPx / textureProjectile.getWidth();
-                        double echelleY = hauteurProjPx / textureProjectile.getHeight();
-                        tx.scale(echelleX, echelleY);
-
-                        g2d.drawImage(textureProjectile, tx, null);
-                    }
+                if (body.getEntity() instanceof Worm) {
+                    drawWorm(g2d, body, activeWorm);
+                } else if (body.getEntity() instanceof Projectile) {
+                    drawProjectile(g2d, body);
                 }
             }
         }
@@ -562,7 +573,6 @@ public class GameWorldPanel extends JPanel {
 
         double offsetAnimation = Math.sin(world.getGameLoop().getTicks() / 10) * 5;
         int centerX = (int) (x + (width / 2.0));
-
 
         int bottomY = (int) (y - 35 + offsetAnimation);
 
@@ -611,24 +621,21 @@ public class GameWorldPanel extends JPanel {
     private void paintAim(Graphics2D g2d, double xCenter, double yCenter) {
         Worm currentWorm = world.getTurnManager().getTurn().getWormPlayable();
         if (currentWorm != null && shootMode) {
-        g2d.setColor(Color.RED);
-        g2d.setStroke(new BasicStroke(3)); // epaisseur du trait
+            g2d.setColor(Color.RED);
+            g2d.setStroke(new BasicStroke(3)); // epaisseur du trait
 
+            double vecX = mouseWorldX - xCenter;
+            double vecY = mouseWorldY - yCenter;
 
-        double vecX = mouseWorldX - xCenter;
-        double vecY = mouseWorldY - yCenter;
+            double distance = Math.sqrt(vecX * vecX + vecY * vecY);
+            double maxLen = 100.0;
 
-        double distance = Math.sqrt(vecX * vecX + vecY * vecY);
-        double maxLen = 100.0;
-
-        if (distance > maxLen) {
-            double ratio = maxLen / distance;
-            vecX = vecX * ratio;
-            vecY = vecY * ratio;
-        }
-        g2d.drawLine((int) xCenter, (int) yCenter, (int) (xCenter + vecX), (int) (yCenter + vecY));
-
-
+            if (distance > maxLen) {
+                double ratio = maxLen / distance;
+                vecX = vecX * ratio;
+                vecY = vecY * ratio;
+            }
+            g2d.drawLine((int) xCenter, (int) yCenter, (int) (xCenter + vecX), (int) (yCenter + vecY));
         }
     }
 
@@ -679,11 +686,6 @@ public class GameWorldPanel extends JPanel {
         }
     }
 
-
-
-
-
-
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g); //efface l'ecran
@@ -698,10 +700,9 @@ public class GameWorldPanel extends JPanel {
 
         g2d.scale(currentZoom, currentZoom);
 
-
         paintMap(g2d);
         paintEntity(g2d);
         drawEffects(g2d);
 
-            }
-        }
+    }
+}
