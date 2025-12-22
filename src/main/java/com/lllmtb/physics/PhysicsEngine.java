@@ -12,7 +12,6 @@ import com.lllmtb.events.physics.*;
 import com.lllmtb.model.entity.CollisionType;
 import org.eclipse.jdt.annotation.NonNull;
 
-import com.lllmtb.events.EventBus;
 import com.lllmtb.events.physics.PhysicsModifierAddedEvent;
 import com.lllmtb.events.physics.PhysicsModifierRemovedEvent;
 import com.lllmtb.model.entity.projectile.Projectile;
@@ -363,7 +362,7 @@ public class PhysicsEngine {
                 if (impact.die) {
                     remove(body);
                     Logger.logger.debug("Entity out of map");
-                    if(body.getEntity() instanceof Worm worm){
+                    if (body.getEntity() instanceof Worm worm) {
                         worm.damageWorm(worm.getStats().getHp());
                         world.getTurnManager().endTurn();
                     }
@@ -371,13 +370,13 @@ public class PhysicsEngine {
                 } else {
                     if (impact.hitBody == null) {
                         //Collision with ground/Map
-                        if(body.getEntity() instanceof Projectile && (body.getEntity().getCollisionType() != CollisionType.BOUNCE)){
+                        if (body.getEntity() instanceof Projectile && (body.getEntity().getCollisionType() != CollisionType.BOUNCE)) {
                             remove(body);
 
                         }
                     } else {
                         // Collision wih another entity impactEntity and currentBody
-                        if(body.getEntity() instanceof Projectile proj){
+                        if (body.getEntity() instanceof Projectile proj) {
                             world.queueCommands(proj.onImpact(impact.hitBody.getEntity()));
                         }
                     }

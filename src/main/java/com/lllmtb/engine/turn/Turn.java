@@ -23,7 +23,7 @@ public class Turn {
         do {
             this.team.nextWorm();
         }
-        while(!this.getWormPlayable().isAlive());
+        while (!this.getWormPlayable().isAlive());
     }
 
     public boolean getIsEnd() {

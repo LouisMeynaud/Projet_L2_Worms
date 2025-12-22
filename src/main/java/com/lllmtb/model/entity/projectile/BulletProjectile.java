@@ -3,7 +3,6 @@ package com.lllmtb.model.entity.projectile;
 import com.lllmtb.engine.commands.GameCommand;
 import com.lllmtb.model.entity.CollisionType;
 import com.lllmtb.model.entity.Entity;
-import com.lllmtb.model.entity.worm.Worm;
 import com.lllmtb.model.item.UseParams;
 import org.eclipse.jdt.annotation.NonNull;
 

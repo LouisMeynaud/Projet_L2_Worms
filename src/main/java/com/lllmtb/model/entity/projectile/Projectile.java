@@ -41,11 +41,11 @@ public abstract class Projectile extends Entity {
      */
     public abstract List<GameCommand> onImpact(Entity entity);
 
-    protected void hitWorm(List<GameCommand> list, Entity entity, int damage){
+    protected void hitWorm(List<GameCommand> list, Entity entity, int damage) {
         list.add(world -> world.getPhysics().remove(this.getBody()));
-        if (entity instanceof Worm worm){
+        if (entity instanceof Worm worm) {
             worm.damageWorm(damage);
-            if(!worm.isAlive()){
+            if (!worm.isAlive()) {
                 list.add(world -> world.getPhysics().remove(worm.getBody()));
             }
         }
