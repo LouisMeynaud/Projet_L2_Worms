@@ -6,5 +6,6 @@ public enum WeaponId implements ItemId {
     GUN,
     BAZOOKA,
     HEALINGBAZOOKA,
+    SHOTGUN,
     NONE
 }

@@ -61,7 +61,9 @@ public class TextureManager {
             for (WeaponId weapon: WeaponId.values()) {
                 if (weapon != WeaponId.NONE) {
                     WEAPONS.put(weapon.toString(), ImageIO.read(TextureManager.class.getResource("/textures/weapon/weapon/" + weapon.toString() + ".png")));
+                    System.out.println(weapon.toString());
                     WEAPONS.put("Locked" + weapon.toString(), ImageIO.read(TextureManager.class.getResource("/textures/weapon/lockedWeapon/" + weapon.toString() + ".png")));
+                    System.out.println(weapon.toString());
                     WEAPONS.put("Ammo" + weapon.toString(), ImageIO.read(TextureManager.class.getResource("/textures/weapon/ammo/" + weapon.toString() + ".png")));
                     WEAPONS.put("Hand" + weapon.toString(), ImageIO.read(TextureManager.class.getResource("/sprites/weapon/" + weapon.toString() + ".png")));
                 }
@@ -75,6 +77,7 @@ public class TextureManager {
             PROJECTILES.put("BulletProjectile", ImageIO.read(TextureManager.class.getResource("/sprites/weapon/BulletGun.png")));
             PROJECTILES.put("RocketProjectile", ImageIO.read(TextureManager.class.getResource("/sprites/weapon/BulletBazooka.png")));
             PROJECTILES.put("HealingProjectile", ImageIO.read(TextureManager.class.getResource("/sprites/weapon/BulletHealingBazooka.png")));
+            PROJECTILES.put("ShotGunProjectile", ImageIO.read(TextureManager.class.getResource("/sprites/weapon/ShotGunProjectile.png")));
 
             /////////////EFFECT/////////////////
             EFFECT.put("BazookaExplosion", ImageIO.read(TextureManager.class.getResource("/sprites/effect/BazookaExplosion.png")));
