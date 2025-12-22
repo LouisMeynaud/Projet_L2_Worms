@@ -369,7 +369,7 @@ public class GameWorldPanel extends JPanel {
                 String tileType = mapMatrix[y][x].toString();
                 BufferedImage texture;
                     tileType = tileType + Utilitaire.getHashId(x, y, mapMatrix[y][x].getNbTexture());
-                    System.out.println(tileType);
+                    //System.out.println(tileType);
                     texture = TextureManager.TILES.get(tileType);
 
                 if (texture != null) {
