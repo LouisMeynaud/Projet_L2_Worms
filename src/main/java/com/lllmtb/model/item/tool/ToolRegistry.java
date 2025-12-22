@@ -8,5 +8,6 @@ public final class ToolRegistry extends ItemRegistry<ToolId, Tool> {
         super(ToolId.class);
 
         this.register(ToolId.PARACHUTE, new ParachuteTool());
+        this.register(ToolId.JETPACK, new JetpackTool());
     }
 }
