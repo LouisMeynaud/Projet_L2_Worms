@@ -61,9 +61,7 @@ public class TextureManager {
             for (WeaponId weapon: WeaponId.values()) {
                 if (weapon != WeaponId.NONE) {
                     WEAPONS.put(weapon.toString(), ImageIO.read(TextureManager.class.getResource("/textures/weapon/weapon/" + weapon.toString() + ".png")));
-                    System.out.println(weapon.toString());
                     WEAPONS.put("Locked" + weapon.toString(), ImageIO.read(TextureManager.class.getResource("/textures/weapon/lockedWeapon/" + weapon.toString() + ".png")));
-                    System.out.println(weapon.toString());
                     WEAPONS.put("Ammo" + weapon.toString(), ImageIO.read(TextureManager.class.getResource("/textures/weapon/ammo/" + weapon.toString() + ".png")));
                     WEAPONS.put("Hand" + weapon.toString(), ImageIO.read(TextureManager.class.getResource("/sprites/weapon/" + weapon.toString() + ".png")));
                 }

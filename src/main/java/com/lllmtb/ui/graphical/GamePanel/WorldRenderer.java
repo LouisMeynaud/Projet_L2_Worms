@@ -24,21 +24,40 @@ import com.lllmtb.ui.graphical.animation.Animation;
 import com.lllmtb.ui.graphical.animation.AnimationManager;
 import com.lllmtb.ui.graphical.animation.VisualEffect;
 
+/**
+ * Classe responsable du rendu graphique de la partit.
+ *
+ * elle gere le dessin de la carte (terrain), des entité(worms/projectile)
+ * et des effet visuel(animation , barre de vie, current worms etc)
+ */
 public class WorldRenderer {
     private final GameWorldPanel panel;
     private final GameWorld world;
-    private final List<VisualEffect> activeEffects = new ArrayList<>();
-    private final Map<TeamColor, Animation> teamAnimations = new HashMap<>();
+    private final List<VisualEffect> activeEffects = new ArrayList<>(); //le tableau stockant les effet en cours de dessinage.
+    private final Map<TeamColor, Animation> teamAnimations = new HashMap<>(); //le tableau stockant les animation des worms
     private BufferedImage mapCache = null;
+
 
     public WorldRenderer(GameWorldPanel panel, GameWorld world) {
         this.panel = panel;
         this.world = world;
     }
+
+    /**
+     * vide l'image de fond.
+     *
+     */
     public void clearMapCache() {
         this.mapCache = null;
     }
-    
+
+   /**
+    *  ajoute un effet a dessinée dans activeEffects.
+    *
+    * @param animationKey la clé de l'animation chercher/a crée dans l'AnimationManager
+    * @param radius la taille du dessin
+    * @param pos la position de l'animation dans le monde physique
+    */
     public void addEffect(String animationKey, double radius, com.lllmtb.physics.Position pos) {
         Animation anim = AnimationManager.create(animationKey, 7);
         if (anim != null) {
@@ -46,6 +65,11 @@ public class WorldRenderer {
             activeEffects.add(new VisualEffect(pos, anim, size, size));
         }
     }
+
+    /**
+     * Met a jour l'image de fond de la carte.
+     * dessine les ciel et les tuiles de terrain dans un bufferedImage
+     */
     protected void updateMapCache() {
         int width = panel.mapWidth();
         int height = panel.mapHeight();
@@ -59,16 +83,17 @@ public class WorldRenderer {
             skyColor = new Color(135, 206, 235); // Bleu clair
         }
         g2d.setColor(skyColor);
-        g2d.fillRect(0, 0, width, height);
+        g2d.fillRect(0, 0, width, height); //dessine tout le fond de la couleur du ciel
 
         Tile[][] mapMatrix = world.getMap().getMapMatrix();
 
+        //desinne les tuiles.
         for (int y = 0; y < mapMatrix.length; y++) {
             for (int x = 0; x < mapMatrix[y].length; x++) {
                 String tileType = mapMatrix[y][x].toString();
                 if (mapMatrix[y][x] != Tile.AIR) {
                     BufferedImage texture;
-                    tileType = tileType + Utilitaire.getHashId(x, y, mapMatrix[y][x].getNbTexture());
+                    tileType = tileType + Utilitaire.getHashId(x, y, mapMatrix[y][x].getNbTexture()); //trouve quel texture du bloc appliquer
                     texture = TextureManager.TILES.get(tileType);
 
                     if (texture != null) {
@@ -87,8 +112,14 @@ public class WorldRenderer {
         panel.checkCameraBounds();
     }
 
-    //////////////dessins/////////////////////////////
+    //////////////Animation and effect/////////////////////////////
 
+    /**
+     * recupere l'animation correspondante a la couleurs d'un vers.
+     *
+     * @param worm le worms duquel on veux l'animation
+     * @return l'animation du worms
+     */
     private Animation getWormAnimation(Worm worm) {
         TeamColor color = worm.getTeam().getTeamColor();
         if (teamAnimations.containsKey(color)) {
@@ -126,7 +157,7 @@ public class WorldRenderer {
     }
 
     /**
-     * Iterating through the list of effects to draw the effects,
+     * Iterating through the list of effects to draw the effects.
      * update them (move to the next frame and remove them from the list if they are finished)
      */
     protected void updateEffects() {
@@ -139,6 +170,12 @@ public class WorldRenderer {
         }
     }
 
+    //////////////drawing/////////////////////////////
+
+    /**
+     * dessine tout les effets present dans activeEffects.
+     * @param g2d le pinceaux
+     */
     private void drawEffects(Graphics2D g2d) {
         double hauteurMapPixels = world.getMap().getHeight() * panel.tileSize;
         for (VisualEffect effect : this.activeEffects) {
@@ -146,14 +183,20 @@ public class WorldRenderer {
         }
     }
 
+    /**
+     * dessine un worms.
+     * @param g2d le pinceaux
+     * @param worm le worms que l'on souhaite dessiner
+     * @param activeWorm le worms que qui est entrain de jouer (pour dessiner les arme/la fleche sur lui)
+     */
     private void drawWorm(Graphics2D g2d, PhysicsBody worm, Worm activeWorm) {
-        double[] bounds = panel.getScreenBounds(worm);
+        double[] bounds = panel.getScreenBounds(worm); //calcule la position souhaite a l'ecran
         double xEcran = bounds[0];
         double yEcran = bounds[1];
         double largeurVerPx = bounds[2];
         double hauteurVerPx = bounds[3];
         Worm wormEntity = (Worm) worm.getEntity();
-        BufferedImage textureWorm = getWormAnimation(wormEntity).getSprite();
+        BufferedImage textureWorm = getWormAnimation(wormEntity).getSprite(); //get la texture
 
         AffineTransform tx = new AffineTransform();
         tx.translate(xEcran - 2, yEcran - 12); // On place le crayon
@@ -185,9 +228,15 @@ public class WorldRenderer {
         }
     }
 
+    /**
+     * dessine un projectile.
+     *
+     * @param g2d le pinceaux
+     * @param projectile le projectile que l'on souhaite dessiner
+     */
     private void drawProjectile(Graphics2D g2d, PhysicsBody projectile) {
 
-        double[] bounds = panel.getScreenBounds(projectile);
+        double[] bounds = panel.getScreenBounds(projectile); //calcule la position souhaite a l'ecran
         double xEcran = bounds[0];
         double yEcran = bounds[1];
         double largeurProjPx = bounds[2];
@@ -206,6 +255,11 @@ public class WorldRenderer {
         }
     }
 
+    /**
+     * parcours la liste des physique body delegue le dessins de chaque entité au methode correspondanteZ.
+     *
+     * @param g2d pinceaux
+     */
     private void paintEntity(Graphics2D g2d) {
         Worm activeWorm = world.getTurnManager().getTurn().getWormPlayable();
 
@@ -220,28 +274,41 @@ public class WorldRenderer {
         }
     }
 
+    /**
+     * dessine un fleche au dessus du worms qui joue.
+     *
+     * @param g2d le pinceaux
+     * @param x la position x du worms a l'ecran
+     * @param y la position y du worms a l'ecran
+     * @param width la largeur du worms a l'ecran
+     */
     private void paintCurrentWorsArrow(Graphics2D g2d, double x, double y, double width) {
 
-        double offsetAnimation = Math.sin(world.getGameLoop().getTicks() / 10) * 5;
+        double offsetAnimation = Math.sin(world.getGameLoop().getTicks() / 10) * 5; //fonction sinuosidale , (qui monte et descend)
         int centerX = (int) (x + (width / 2.0));
-
         int bottomY = (int) (y - 35 + offsetAnimation);
-
         int size = 12;
 
         int[] xPoints = {centerX - size, centerX + size, centerX };
         int[] yPoints = {bottomY - size, bottomY - size, bottomY };
 
         g2d.setColor(Color.YELLOW);
-        g2d.fillPolygon(xPoints, yPoints, 3);
+        g2d.fillPolygon(xPoints, yPoints, 3); //dessine le triange remplie
 
         g2d.setColor(Color.BLACK);
         g2d.setStroke(new BasicStroke(1));
-        g2d.drawPolygon(xPoints, yPoints, 3);
+        g2d.drawPolygon(xPoints, yPoints, 3); //dessine les contour
     }
 
 
-
+    /**
+     *
+     * @param g2d le pinceaux
+     * @param worm le worms au dessus duquel on dessine la barre de vie
+     * @param x la position x a l'ecran
+     * @param y la position y a l'ecran
+     * @param width la largeur du worms a l'ecran
+     */
     private void paintHealthBar(Graphics2D g2d, Worm worm, double x, double y, double width) {
 
         int maxHp = Statistics.getMaxHp();
@@ -269,6 +336,13 @@ public class WorldRenderer {
     }
 
 
+    /**
+     * peint la barre rouge entre le worm et la souris qui fait office de viseur.
+     *
+     * @param g2d le pinceaux
+     * @param xCenter le centre du vers a l'ecran
+     * @param yCenter le centre du vers a l'ecran
+     */
     private void paintAim(Graphics2D g2d, double xCenter, double yCenter) {
         Worm currentWorm = world.getTurnManager().getTurn().getWormPlayable();
         if (currentWorm != null && panel.shootMode) {
@@ -291,6 +365,12 @@ public class WorldRenderer {
     }
 
 
+    /**
+     *
+     * @param g2d le pinceaux
+     * @param xCenter le centre du vers a l'ecran
+     * @param yCenter le centre du vers a l'ecran
+     */
     private void paintWeapon(Graphics2D g2d, double xCenter, double yCenter) {
         Worm activeWorm = world.getTurnManager().getTurn().getWormPlayable();
         if (activeWorm == null) {
@@ -315,7 +395,7 @@ public class WorldRenderer {
         double angle = Math.atan2(panel.mouseWorldY - yCenter, panel.mouseWorldX - xCenter); // permet a partir d'une distance y et x entre worm et point de trouver un angle.
         tx.rotate(angle);
 
-        if (Math.abs(angle) > Math.PI / 2) {
+        if (Math.abs(angle) > Math.PI / 2) { // pour retourner l'image quand on regarde de l'autre coter.
             tx.scale(1, -1);
         }
 
@@ -323,6 +403,10 @@ public class WorldRenderer {
         g2d.drawImage(texture, tx, null);
     }
 
+    /**
+     * appelle les methode pour re/crée l'image de fond si besoin puis dessine l'image de fond sur notre image a l'ecran.
+     * @param g2d le pinceaux
+     */
     private void paintMap(Graphics2D  g2d) {
         if (!panel.initialFitDone && panel.getWidth() > 0) {
             panel.fitMapToScreen();
@@ -335,9 +419,12 @@ public class WorldRenderer {
         }
     }
 
+    /**
+     * la methode qui est appel par gameWorldPanel pour appel toute les methode necessaire au dessin.
+     * @param g2d le pinceaux
+     */
     public void render(Graphics2D g2d) {
         g2d.translate(panel.cameraOffsetX, panel.cameraOffsetY); //decalle le pinceau en fonction de la position camera (si negatif le dessin est deplacer vers la gauche)
-
         g2d.scale(panel.currentZoom, panel.currentZoom);
 
         paintMap(g2d);

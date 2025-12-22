@@ -3,11 +3,23 @@ package com.lllmtb.ui.graphical;
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.FloatControl;
 
-public class SoundPlayer {
-    private static Clip currentMusic;
-    private static int musiqueVolume = 25;
-    private static int soundEffectVolume = 75;
 
+/**
+ * gestionnaire de son pour le jeu.
+ *
+ * cette classe permet de jouer des bruitage et de la musique de fond
+ */
+public class SoundPlayer {
+    private static Clip currentMusic; // la musique de fond en cours
+    private static int musiqueVolume = 25; //le volume de la musique
+    private static int soundEffectVolume = 75; // le volume des effet sonor
+
+    /**
+     * permet de jouer des effet sonor.
+     * coupe l'effet precedent si on nouveaux est fait pour evitée la saturation
+     *
+     * @param key la cle du son que l'on veux jouer dans le soundManager
+     */
     public static void playSound(String key) {
         Clip clip = SoundManager.soundMap.get(key);
         if (clip == null) return;
@@ -19,6 +31,12 @@ public class SoundPlayer {
         clip.start();
     }
 
+    /**
+     * permet de jouer une musique de fond.
+     * couple la precedente
+     *
+     * @param key la cle de la musique a joeur dans soundManager
+     */
     public static void playMusique(String key) {
         if (currentMusic != null) {
             currentMusic.stop();
@@ -52,13 +70,18 @@ public class SoundPlayer {
         soundEffectVolume = volume;
     }
 
+    /**
+     *
+     * @param clip le sont sur lequel on vas faire le changement de volume
+     * @param volumePercent le pourcentage de sont voulu
+     */
     private static void applyVolumeToClip(Clip clip, int volumePercent) {
 
         FloatControl controlSound = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
         if (volumePercent <= 0) {
                 controlSound.setValue(-80.0f);
             } else {
-        controlSound.setValue(40.0f * (volumePercent / 100.0f) - 40.0f);
+        controlSound.setValue(40.0f * (volumePercent / 100.0f) - 40.0f); // marche avec des decibel
     }
     }
 }

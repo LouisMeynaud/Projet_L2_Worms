@@ -7,13 +7,20 @@ import java.util.Map;
 import com.lllmtb.ui.graphical.TextureManager;
 import com.lllmtb.ui.graphical.Utilitaire;
 
+/**
+ * gestionnaire des animation du jeu
+ *
+ * cette classe charge et stocke les animation dans un map.
+ */
 public class AnimationManager {
 
 
-    private static final Map<String, BufferedImage[]> FRAMES_MAP = new HashMap<>();
+   private static final Map<String, BufferedImage[]> FRAMES_MAP = new HashMap<>(); // le map contenant les tablea de frame pour les animation
 
-    public static void load() {
-
+    /**
+     * charge les animation au demarage et les ajoute au FRAMES_MAP
+     */
+   public static void load() {
 
         //WORM
         BufferedImage wormGREEN = TextureManager.ENTITIES.get("WormGREEN");
@@ -46,7 +53,12 @@ public class AnimationManager {
 
     }
 
-
+    /**
+     * cree un nouvelle instance d'animation
+     * @param key la cle de l'animation
+     * @param speed la vitesse a laquelle on lit les frame
+     * @return une nouvelle instancer d'animation prete a etre jouer
+     */
     public static Animation create(String key, int speed) {
         BufferedImage[] frames = FRAMES_MAP.get(key);
         if (frames == null) {

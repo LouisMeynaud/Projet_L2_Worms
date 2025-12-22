@@ -12,6 +12,9 @@ import com.lllmtb.engine.logger.Logger;
 public class SoundManager {
     public static final Map<String, Clip> soundMap = new HashMap<>();
 
+    /**
+     * place dans le sound map les different son du jeu a charger.
+     */
     public static void  load() {
         soundMap.put("BazookaExplosion", createClip("BazookaExplosion"));
         soundMap.put("HealingBazookaExplosion", createClip("HealingBazookaExplosion"));
@@ -22,6 +25,15 @@ public class SoundManager {
 
     }
 
+    /**
+     * methode permetant de crée a partir d'un fichier un clip.
+     * 1: recuperation du sons depuis un dossier
+     * 2 : creation d'un conteneur vide (le clip)
+     * 3 : placement du sont dans le conteneur
+     *
+     * @param nom nom du fichier de la musique a ajouter
+     * @return le clip de la musique
+     */
     private static Clip createClip(String nom) {
         try {
             AudioInputStream sound = AudioSystem.getAudioInputStream(SoundManager.class.getResource("/sound/" + nom + ".wav")); //lie le fichier audio (ouvre un "flux")

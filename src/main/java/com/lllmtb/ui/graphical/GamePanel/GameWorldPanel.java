@@ -34,35 +34,39 @@ import com.lllmtb.ui.graphical.SoundPlayer;
 
 public class GameWorldPanel extends JPanel {
     private EventBus eventBus; // system bus
-    protected GameWorld world;
-    private WorldRenderer renderer;
+    protected GameWorld world; //le jeux
+    private WorldRenderer renderer; //la classe qui s'occupe des dessins
     protected final int tileSize = 12;
-    protected boolean shootMode;
     protected final Set<Integer> pressedKeys = new HashSet<>();
-    protected boolean isCameraMode = false;
-    protected boolean hasDraggedCamera = false;
-    protected boolean initialFitDone = false;
-    protected double currentZoom = 1.0;
-    protected double zoomSpeed = 0.2;
+     protected boolean shootMode;
 
-    protected double cameraOffsetX = 0;
-    protected double cameraOffsetY = 0;
-    private int lastMouseX = 0;
-    private int lastMouseY = 0;
-    protected int currentMouseX = 0;
-    protected int currentMouseY = 0;
-    protected double mouseWorldX = 0;
-    protected double mouseWorldY = 0;
+    protected boolean isCameraMode = false; //indique si l'utilisateur est entrain de bouger la camera (clique droit maintenue)
+    protected boolean hasDraggedCamera = false; //indique si la camera a ete deplacer depuis le dernier clique
+    protected boolean initialFitDone = false; //indique si le premier ajustement de la camera une fois la map faite a été fait
+    protected double currentZoom = 1.0; //le zoom
+    protected double zoomSpeed = 0.2; //la force de zoom
+
+    protected double cameraOffsetX = 0; //decallage horizontale de la camera
+    protected double cameraOffsetY = 0; //decallage verticale de la camera
+    private int lastMouseX = 0; //ancienne position X de la souris
+    private int lastMouseY = 0; //ancienne position Y de la souris
+    protected int currentMouseX = 0; //position X de la souris
+    protected int currentMouseY = 0; //position Y de la souris
+    protected double mouseWorldX = 0; //position X de la souris en coordonée physique
+    protected double mouseWorldY = 0; //position Y de la souris en coordonnée physique
 
 
-
+    /**
+     * initialise les listenner d'evenement et d'input
+     * @param eventBus le bus systeme
+     */
     public GameWorldPanel(EventBus eventBus) {
         this.eventBus = eventBus;
         setFocusable(true);
         subscribeToSystemEvents();
 
 
-        //////////imput////////////////
+        //////////////////imput///////////////////////
 
         addHierarchyListener(e -> {
             if (e.getChangeFlags() == HierarchyEvent.SHOWING_CHANGED && isShowing()) {
@@ -190,8 +194,14 @@ public class GameWorldPanel extends JPanel {
     }
 
 
-    //////////////////utilitaire//////////////////:
+    //////////////////utilitaire////////////////////
 
+    /**
+     * convertit les coordonée a l'ecran en coordonée physique
+     * @param screenX coordonée X a l'ecran
+     * @param screenY coordonée Y a l'ecran
+     * @return la position correspondante en coordonée physique
+     */
     protected Position screenToWorld(int screenX, int screenY) {
         double pixelX = (screenX - cameraOffsetX) / currentZoom;
         double pixelY = (screenY - cameraOffsetY) / currentZoom;
@@ -205,6 +215,12 @@ public class GameWorldPanel extends JPanel {
         return new Position(tileX, tileY);
     }
 
+    /**
+     * calcule les coordonnées d'affichage et la taille a l'ecran d'un element physique
+     * convertit mes coordonée physique en coordonée a l'ecran
+     * @param body le body d'on on veut calculer les coordonée
+     * @return un tableau contenant [xEcran , yEcran , largeurPx , Hauteur Px]
+     */
     protected double[] getScreenBounds(PhysicsBody body) {
         double largeurPx = body.getWidth() * tileSize;
         double hauteurPx = body.getHeight() * tileSize;
@@ -218,6 +234,9 @@ public class GameWorldPanel extends JPanel {
         return new double[] {xEcran, yEcran, largeurPx, hauteurPx };
     }
 
+    /**
+     * verifie que l'on essaye pas de trop zoomer/dezoomer et si c'est le cas on replace au zoomMax/minim
+     */
     protected void validateZoom() {
         double screenWidth = getWidth();
         double screenHeight = getHeight();
@@ -231,6 +250,11 @@ public class GameWorldPanel extends JPanel {
         }
     }
 
+    /**
+     * met a jour les coordonee de position de la souris (ecran et monde)
+     * @param screenX la coordonne X a l'ecran
+     * @param screenY la coordonne Y a l'ecran
+     */
     protected void updateMouseWorldPosition(int screenX, int screenY) {
         this.currentMouseX = screenX;
         this.currentMouseY = screenY;
@@ -238,10 +262,16 @@ public class GameWorldPanel extends JPanel {
         this.mouseWorldY = (currentMouseY - cameraOffsetY) / currentZoom;
     }
 
+    /**
+     * retourne la largeur de la map multiplier par la taille d'une tuile
+     */
     protected int mapWidth() {
         return world.getMap().getWidth() * tileSize;
     }
 
+    /**
+     * retourne la huateur de la map multiplier par la taille d'une tuile
+     */
     protected int mapHeight() {
         return world.getMap().getHeight() * tileSize;
     }
@@ -262,6 +292,9 @@ public class GameWorldPanel extends JPanel {
         }
     }
 
+    /**
+     * s'abonne au evenement du jeu (mise a jour map , créeation monde etc...)
+     */
     public void subscribeToSystemEvents() {
         eventBus.subscribe(WorldCreatedEvent.class, event -> {
             this.world = event.getWorld();
@@ -314,6 +347,10 @@ public class GameWorldPanel extends JPanel {
 
     }
 
+    /**
+     * ajuste la position de la camera pour que la carte tienne entiere dans l'ecran lors du premier affichage
+     * appelee a l'initialisation
+     */
     protected void fitMapToScreen() {
         double screenWidth = getWidth();
         double screenHeight = getHeight();
@@ -333,6 +370,10 @@ public class GameWorldPanel extends JPanel {
 
         this.initialFitDone = true;
     }
+
+    /**
+     * verifie et corrige la position de la camera pour qu'elle ne sorte pas de la map (pour eviter de voir des bord blanc)
+     */
      protected void checkCameraBounds() {
         double screenWidth = getWidth();
         double screenHeight = getHeight();
@@ -361,6 +402,9 @@ public class GameWorldPanel extends JPanel {
         }
     }
 
+    /**
+     * appelle le render de WorldRender pour tout dessiner
+     */
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g); //efface l'ecran
