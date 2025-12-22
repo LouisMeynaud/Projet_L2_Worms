@@ -42,7 +42,7 @@ public class GameLoop implements Runnable {
                 // System.out.println("Bodies : " + Arrays.toString(world.getPhysics().getBodies().toArray()));
 
                 // 0) Signal input processing to allow UI components to send input events
-                world.getBus().postQueued(new ProcessInputsEvent());
+                world.getBus().postSync(new ProcessInputsEvent());
 
                 // 1) process queued external events (eg. input)
                 world.getBus().processQueued();
