@@ -1,5 +1,6 @@
 package com.lllmtb.model.entity.team;
 
+import java.lang.reflect.Field;
 import java.util.*;
 
 import com.lllmtb.engine.commands.GameCommand;
@@ -134,6 +135,16 @@ public class Team {
         this.currentWorm = teamSave.team.worms.get(teamSave.team.index);
         this.selectedItem = null;
         this.teamColor = teamSave.team.teamColor;
+        // use reflexion to recreate worm instance with correct PhysicsBody
+        for (Worm worm : this.worms) {
+                try {
+                    Field teamField = Worm.class.getDeclaredField("team");
+                    teamField.setAccessible(true);
+                    teamField.set(worm, this);
+                } catch (NoSuchFieldException | IllegalAccessException e) {
+                    throw new RuntimeException(e);
+                }
+            }
     }
 
     /**
@@ -295,7 +306,7 @@ public class Team {
      */
     public List<GameCommand> use(@NonNull UseParams useParams) {
         Objects.requireNonNull(useParams);
-        if (this.selectedItem == null) return null;
+        if (this.selectedItem == null) {System.out.println("Arme null"); return null;}
         if (this.selectedItem instanceof WeaponId) return this.inventory.fire((WeaponId) this.selectedItem, useParams);
         if (this.selectedItem instanceof ToolId) return this.inventory.use((ToolId) this.selectedItem, useParams);
         throw new UnknownItemException(this.selectedItem);
@@ -339,6 +350,7 @@ public class Team {
             throw new UnusableWeaponException(id, this);
         }
         selectItem(id);
+        System.out.println("Item Select" + this.selectedItem);
     }
 
     /**

@@ -12,9 +12,9 @@ import static com.lllmtb.engine.save.Save.gameWorld;
 
 public class LoadTest{
     public static void main(String[] args) throws FileNotFoundException {
-        GameSave gameSave = Load.loadGameSave("titouan_save");
+        GameSave gameSave = Load.loadGameSave("e_save");
         Load.reforgeGameSave(gameSave);
-        Map map = MapLoader.loadMatrix("titouan_save");
+        Map map = MapLoader.loadMatrix("e_save");
 
         for (PhysicsBodySave physicsBodySave : gameSave.entities){
             System.out.println(physicsBodySave.entity);
@@ -24,6 +24,6 @@ public class LoadTest{
         for (PhysicsBody physicsBody: gameWorld.getPhysics().getBodies()){
             System.out.println(physicsBody.getEntity().toString());
         }
-
+        System.out.println(gameWorld.getTeams().get(0).getInventory().toString());
     }
 }

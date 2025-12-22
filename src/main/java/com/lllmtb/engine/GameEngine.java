@@ -2,6 +2,9 @@ package com.lllmtb.engine;
 
 import java.util.Objects;
 import java.io.IOException;
+
+import com.lllmtb.events.Event;
+import com.lllmtb.events.move.MouseInputEvent;
 import org.eclipse.jdt.annotation.NonNull;
 
 import com.lllmtb.engine.logger.Logger;
@@ -81,7 +84,7 @@ public class GameEngine {
     private static void start(@NonNull GameWorld world) {
         Objects.requireNonNull(world);
         // Uncomment to log all world events for debugging
-        //world.getBus().subscribe(Event.class, e -> Logger.logger.info("[EVENT/world]: {}", e.getClass().getSimpleName()));
+        world.getBus().subscribe(MouseInputEvent.class, e -> Logger.logger.info("[EVENT/world]: {}", e.getClass().getSimpleName()));
         Save.setGameWorld(world);
         systemBus.postSync(new WorldCreatedEvent(world));
         systemBus.subscribe(SaveEvent.class, e -> {
