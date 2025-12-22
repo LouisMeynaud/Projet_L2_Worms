@@ -12,7 +12,7 @@ import com.lllmtb.engine.GameSettings;
 import com.lllmtb.engine.GameWorld;
 import com.lllmtb.events.EventBus;
 import com.lllmtb.events.turn.TurnEndEvent;
-import com.lllmtb.events.turn.TurnStarEvent;
+import com.lllmtb.events.turn.TurnStartEvent;
 import com.lllmtb.events.turn.TurnStopEvent;
 import com.lllmtb.events.turn.WormPlayable;
 import com.lllmtb.physics.GameMode;
@@ -45,7 +45,7 @@ public class TurnManagerTest {
     @Test
     void testStartTurnStarEvent(){
         AtomicBoolean event1 = new AtomicBoolean(false);
-        this.gw.getBus().subscribe(TurnStarEvent.class, event -> {
+        this.gw.getBus().subscribe(TurnStartEvent.class, event -> {
             event1.set(true);});
         gw.getBus().postQueued(new TurnStopEvent());
         try {

@@ -112,6 +112,8 @@ public class GameWorld {
     }
 
     public Team getPlayingTeam() {
+        if (teams.isEmpty()) return null;
+        if (indexTeam < 0) return teams.get(0);
         return teams.get(indexTeam);
     }
 
@@ -143,7 +145,8 @@ public class GameWorld {
         if (loopThread != null && loopThread.isAlive()) return;
         Logger.logger.debug("Starting the game loop...");
         loopThread = new Thread(gameLoop, "gameloop");
-        this.startTeamTurn();
+        indexTeam = -1;
+        nextTeamTurn();
         loopThread.start();
     }
 
@@ -178,20 +181,13 @@ public class GameWorld {
         bus.postQueued(new GameStateUpdatedEvent());
     }
 
-    // TODO - find out why startTurn is called on the main engine-loop thread at the start
-    public void startTeamTurn() {
-        if (!teams.isEmpty()) {
-            this.turnManager.startTurn(teams.get(indexTeam));
-        }
-    }
-
     public void nextTeamTurn() {
-        if (!teams.isEmpty()) {
-            this.turnManager.startTurn(teams.get(indexTeam++));
-            if (indexTeam >= teams.size()) {
-                indexTeam = 0;
-            }
+        if (teams.isEmpty()) {
+            Logger.logger.warn("No teams available to take a turn.");
+            return;
         }
+        indexTeam = (indexTeam + 1) % teams.size();
+        this.turnManager.startTurn(teams.get(indexTeam));
     }
 
     /**

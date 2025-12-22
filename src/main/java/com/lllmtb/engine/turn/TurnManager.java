@@ -14,7 +14,7 @@ import com.lllmtb.events.physics.PhysicsCollisionWithWaterOrExitMapEvent;
 import com.lllmtb.events.physics.RemoveWormOfTeam;
 import com.lllmtb.events.turn.TurnEndEvent;
 import com.lllmtb.events.turn.TurnSkipEvent;
-import com.lllmtb.events.turn.TurnStarEvent;
+import com.lllmtb.events.turn.TurnStartEvent;
 import com.lllmtb.events.turn.TurnStopEvent;
 import com.lllmtb.events.turn.WormPlayable;
 import com.lllmtb.events.ui.MoveEvent;
@@ -60,7 +60,7 @@ public final class TurnManager {
     public void startTurn(Team team) {
         this.remainingTimeInMs = turnDurationInMs;
         this.turn = new Turn(team);
-        world.getBus().postQueued(new TurnStarEvent(team));
+        world.getBus().postQueued(new TurnStartEvent(team));
         Logger.logger.info("Start turn for the team {}\n", team.name);
         world.getBus().postQueued(new WormPlayable(turn.getWormPlayable()));
     }
@@ -75,11 +75,11 @@ public final class TurnManager {
     }
 
     private void endTurn() {
+        this.turn.getTeam().emptyHand();
         this.turn.end();
         Logger.logger.info("End turn - switch Team\n");
         world.getBus().postQueued(new TurnEndEvent());
         world.nextTeamTurn();
-
     }
 
     public Turn getTurn() {
@@ -112,12 +112,6 @@ public final class TurnManager {
 
         EventListener<WeaponSelectedEvent> weaponSelectedEventEventListener = event -> {
             turn.getTeam().selectWeapon(event.getWeaponId());
-        };
-
-        groundCollisionListener = event -> {
-            if (turn.getWormPlayable().uuid == event.worm.uuid) {
-                Move.jumpToMax();
-            }
         };
 
         EventListener<PhysicsCollisionWithWaterOrExitMapEvent> waterExitCollision = event -> {
