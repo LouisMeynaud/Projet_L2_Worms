@@ -4,6 +4,7 @@ import java.util.Objects;
 import com.lllmtb.engine.GameWorld;
 import com.lllmtb.engine.logger.Logger;
 import com.lllmtb.events.EventListener;
+import com.lllmtb.events.game.ToolSelectedEvent;
 import com.lllmtb.events.game.WeaponSelectedEvent;
 import com.lllmtb.events.move.GroundCheckCollision;
 import com.lllmtb.events.move.MouseInputEvent;
@@ -113,6 +114,10 @@ public final class TurnManager {
             turn.getTeam().selectWeapon(event.getWeaponId());
         };
 
+        EventListener<ToolSelectedEvent> toolSelectedEventEventListener = event -> {
+            turn.getTeam().selectTool(event.getToolId());
+        };
+
         EventListener<PhysicsCollisionWithWaterOrExitMapEvent> waterExitCollision = event -> {
             if (event.getMovingBody() instanceof Worm) {
                 Worm worm = (Worm) event.getMovingBody();
@@ -165,6 +170,7 @@ public final class TurnManager {
             Position spawnBullet = new Position(spawnX, spawnY);
             UseParams params = new UseParams(angle, spawnBullet, Objects.requireNonNull(turn.getWormPlayable()));
 
+            System.out.println(turn.getTeam().getHand());
             world.queueCommands(turn.getTeam().use(params));
         };
 
@@ -174,6 +180,7 @@ public final class TurnManager {
         world.getBus().subscribe(MoveEvent.class, moveListener);
         world.getBus().subscribe(GroundCheckCollision.class, groundCollisionListener);
         world.getBus().subscribe(WeaponSelectedEvent.class, weaponSelectedEventEventListener);
+        world.getBus().subscribe(ToolSelectedEvent.class, toolSelectedEventEventListener);
         world.getBus().subscribe(MouseInputEvent.class, mouseInputEventListener);
         world.getBus().subscribe(PhysicsCollisionWithWaterOrExitMapEvent.class, waterExitCollision);
         world.getBus().subscribe(ActualizePhysicsEvent.class, actualizePhysicsBodies);
