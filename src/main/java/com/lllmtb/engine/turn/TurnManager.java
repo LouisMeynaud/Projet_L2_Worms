@@ -5,8 +5,8 @@ import com.lllmtb.engine.GameWorld;
 import com.lllmtb.engine.logger.Logger;
 import com.lllmtb.events.EventListener;
 import com.lllmtb.events.game.WeaponSelectedEvent;
-import com.lllmtb.events.move.GroundCheckCollision;
-import com.lllmtb.events.move.MouseInputEvent;
+import com.lllmtb.events.physics.GroundCheckCollision;
+import com.lllmtb.events.input.UseInputEvent;
 import com.lllmtb.events.physics.ActualizePhysicsEvent;
 import com.lllmtb.events.physics.PhysicsCollisionWithOtherEntityEvent;
 import com.lllmtb.events.physics.PhysicsCollisionWithWaterOrExitMapEvent;
@@ -16,7 +16,7 @@ import com.lllmtb.events.turn.TurnSkipEvent;
 import com.lllmtb.events.turn.TurnStartEvent;
 import com.lllmtb.events.turn.TurnStopEvent;
 import com.lllmtb.events.turn.WormPlayable;
-import com.lllmtb.events.ui.MoveEvent;
+import com.lllmtb.events.input.MoveInputEvent;
 import com.lllmtb.model.entity.projectile.Projectile;
 import com.lllmtb.model.entity.team.Team;
 import com.lllmtb.model.entity.worm.Worm;
@@ -99,12 +99,12 @@ public final class TurnManager {
             }
         };
 
-        EventListener<MoveEvent> moveListener = event -> {
-            world.queueCommand(move(this.turn.getWormPlayable(), event.direction));
+        EventListener<MoveInputEvent> moveListener = event -> {
+            world.queueCommand(move(this.turn.getWormPlayable(), event.direction()));
         };
 
         EventListener<GroundCheckCollision> groundCollisionListener = event -> {
-            if (turn.getWormPlayable().uuid == event.worm.uuid) {
+            if (turn.getWormPlayable().uuid == event.worm().uuid) {
                 Move.jumpToMax();
             }
         };
@@ -144,11 +144,11 @@ public final class TurnManager {
             worm.getTeam().removeWorm(worm);
         };
 
-        EventListener<MouseInputEvent> mouseInputEventListener = event -> {
+        EventListener<UseInputEvent> useInputEventListener = event -> {
             PhysicsBody wormBody = turn.getWormPlayable().getBody();
 
-            double mouseX = event.getPos().getX();
-            double mouseY = event.getPos().getY();
+            double mouseX = event.pos().getX();
+            double mouseY = event.pos().getY();
             double wormX = wormBody.getPos().getX();
             double wormY = wormBody.getPos().getY();
 
@@ -171,10 +171,10 @@ public final class TurnManager {
         world.getBus().subscribe(TurnStopEvent.class, turnStopListener);
         world.getBus().subscribe(TurnSkipEvent.class, turnskipEventListener);
 
-        world.getBus().subscribe(MoveEvent.class, moveListener);
+        world.getBus().subscribe(MoveInputEvent.class, moveListener);
         world.getBus().subscribe(GroundCheckCollision.class, groundCollisionListener);
         world.getBus().subscribe(WeaponSelectedEvent.class, weaponSelectedEventEventListener);
-        world.getBus().subscribe(MouseInputEvent.class, mouseInputEventListener);
+        world.getBus().subscribe(UseInputEvent.class, useInputEventListener);
         world.getBus().subscribe(PhysicsCollisionWithWaterOrExitMapEvent.class, waterExitCollision);
         world.getBus().subscribe(ActualizePhysicsEvent.class, actualizePhysicsBodies);
         world.getBus().subscribe(PhysicsCollisionWithOtherEntityEvent.class, hitCollision);

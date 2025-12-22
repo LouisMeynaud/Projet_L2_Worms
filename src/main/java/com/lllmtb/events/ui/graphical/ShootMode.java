@@ -1,4 +1,4 @@
-package com.lllmtb.events.ui;
+package com.lllmtb.events.ui.graphical;
 
 import com.lllmtb.events.Event;
 

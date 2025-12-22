@@ -24,10 +24,10 @@ import com.lllmtb.events.game.GameStateUpdatedEvent;
 import com.lllmtb.events.game.MapUpdateEvent;
 import com.lllmtb.events.game.WorldCreatedEvent;
 import com.lllmtb.events.input.ProcessInputsEvent;
-import com.lllmtb.events.move.MouseInputEvent;
-import com.lllmtb.events.move.MouseWheelMoveInputEvent;
-import com.lllmtb.events.ui.MoveEvent;
-import com.lllmtb.events.ui.ShootMode;
+import com.lllmtb.events.input.UseInputEvent;
+import com.lllmtb.events.ui.graphical.MouseWheelMoveInputEvent;
+import com.lllmtb.events.input.MoveInputEvent;
+import com.lllmtb.events.ui.graphical.ShootMode;
 import com.lllmtb.events.ui.graphical.RequestFocus;
 import com.lllmtb.model.entity.projectile.BulletProjectile;
 import com.lllmtb.model.entity.projectile.Projectile;
@@ -87,7 +87,7 @@ public class GameWorldPanel extends JPanel {
             public void keyPressed(KeyEvent e) {
                 pressedKeys.add(e.getKeyCode());
                 if (pressedKeys.contains(KeyEvent.VK_UP)) {
-                    world.getBus().postQueued(new MoveEvent(Direction.Up));
+                    world.getBus().postQueued(new MoveInputEvent(Direction.Up));
                 }
             }
 
@@ -121,14 +121,14 @@ public class GameWorldPanel extends JPanel {
 
                 if (type == MouseEvent.BUTTON1 && shootMode) {
                    Position worldPos = screenToWorld(e.getX(), e.getY());
-                    world.getBus().postQueued(new MouseInputEvent(worldPos, duration, Direction.Left));
+                    world.getBus().postQueued(new UseInputEvent(worldPos, duration));
                 }
 
                 if (type == MouseEvent.BUTTON3) {
                     isCameraMode = false;
                     if (!hasDraggedCamera) {
                         int a = 0; //suprimer une fois l'implementation du else faite
-                        //world.getBus().postQueued(new MouseInputEvent(new Position(worldX, worldY),duration, Direction.Right));
+                        //world.getBus().postQueued(new UseInputEvent(new Position(worldX, worldY),duration, Direction.Right));
 
                     }
                 }
@@ -241,13 +241,13 @@ public class GameWorldPanel extends JPanel {
      */
     public void processInputs() {
         if (pressedKeys.contains(KeyEvent.VK_DOWN)) {
-            world.getBus().postQueued(new MoveEvent(Direction.Down));
+            world.getBus().postQueued(new MoveInputEvent(Direction.Down));
         }
         if (pressedKeys.contains(KeyEvent.VK_LEFT)) {
-            world.getBus().postQueued(new MoveEvent(Direction.Left));
+            world.getBus().postQueued(new MoveInputEvent(Direction.Left));
         }
         if (pressedKeys.contains(KeyEvent.VK_RIGHT)) {
-            world.getBus().postQueued(new MoveEvent(Direction.Right));
+            world.getBus().postQueued(new MoveInputEvent(Direction.Right));
         }
     }
 

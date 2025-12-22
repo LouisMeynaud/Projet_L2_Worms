@@ -3,7 +3,7 @@ package com.lllmtb.physics;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import com.lllmtb.events.EventBus;
-import com.lllmtb.events.move.GroundCheckCollision;
+import com.lllmtb.events.physics.GroundCheckCollision;
 import com.lllmtb.model.entity.worm.Worm;
 import com.lllmtb.terrain.map.Map;
 import com.lllmtb.terrain.map.Tile;

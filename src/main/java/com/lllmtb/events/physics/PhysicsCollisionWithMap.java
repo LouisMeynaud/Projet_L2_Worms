@@ -1,8 +1,9 @@
 package com.lllmtb.events.physics;
 
-public class PhysicsCollisionWithMap extends PhysicsCollisionEvent {
+import com.lllmtb.model.entity.Entity;
 
-    public PhysicsCollisionWithMap(com.lllmtb.model.entity.Entity movingBody) {
+public class PhysicsCollisionWithMap extends PhysicsCollisionEvent {
+    public PhysicsCollisionWithMap(Entity movingBody) {
         super(movingBody);
     }
 }

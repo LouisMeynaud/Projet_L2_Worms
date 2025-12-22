@@ -1,10 +1,12 @@
 package com.lllmtb.events;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import com.lllmtb.events.input.UseInputEvent;
 import com.lllmtb.events.physics.ActualizePhysicsEvent;
 import com.lllmtb.events.physics.PhysicsCollisionWithOtherEntityEvent;
 import com.lllmtb.model.entity.Entity;
@@ -22,11 +24,10 @@ import com.lllmtb.events.game.StartGameEvent;
 import com.lllmtb.events.game.ToolSelectedEvent;
 import com.lllmtb.events.game.WeaponSelectedEvent;
 import com.lllmtb.events.game.WorldCreatedEvent;
-import com.lllmtb.events.move.MouseInputEvent;
-import com.lllmtb.events.move.MouseWheelMoveInputEvent;
+import com.lllmtb.events.ui.graphical.MouseWheelMoveInputEvent;
 import com.lllmtb.events.turn.TurnSkipEvent;
-import com.lllmtb.events.ui.MoveEvent;
-import com.lllmtb.events.ui.ShootMode;
+import com.lllmtb.events.input.MoveInputEvent;
+import com.lllmtb.events.ui.graphical.ShootMode;
 import com.lllmtb.events.ui.graphical.RequestFocus;
 import com.lllmtb.events.ui.graphical.ScreenGenerateMap;
 import com.lllmtb.events.ui.graphical.ScreenHomeEvent;
@@ -39,14 +40,10 @@ import com.lllmtb.model.item.weapon.WeaponId;
 import com.lllmtb.physics.Position;
 import com.lllmtb.ui.graphical.GamePanel.Direction;
 
-
 public class EventsTest {
-
-  
 
     @Test
     public void GamePauseEventTest() {
-        
         GamePauseEvent eventTrue = new GamePauseEvent(true);
         assertTrue(eventTrue.isPaused, "devrait stocker true");
         GamePauseEvent eventFalse = new GamePauseEvent(false);
@@ -71,15 +68,12 @@ public class EventsTest {
 
     @Test
     public void testCreationMouseInputEvent() {
-        
         Position positionMock = mock(Position.class);
         double tempsTest = 1.5;
-        Direction directionTest = Direction.Left;
-        MouseInputEvent event = new MouseInputEvent(positionMock, tempsTest, directionTest);
+        UseInputEvent event = new UseInputEvent(positionMock, tempsTest);
         assertNotNull(event, "L'événement ne doit pas être null");
-        assertSame(positionMock, event.getPos(), "La position stockée doit être celle donnée");
-        assertEquals(tempsTest, event.getTime(), "Le temps stocké doit être 1.5");
-        assertEquals(directionTest, event.getBouton(), "La direction stockée doit être Left");
+        assertSame(positionMock, event.pos(), "La position stockée doit être celle donnée");
+        assertEquals(tempsTest, event.time(), "Le temps stocké doit être 1.5");
     }
 
    @Test
@@ -93,9 +87,9 @@ public class EventsTest {
     @Test
     public void testCreationMoveEvent() {
         Direction directionTest = Direction.Right;
-        MoveEvent event = new MoveEvent(directionTest);
+        MoveInputEvent event = new MoveInputEvent(directionTest);
         assertNotNull(event, "L'événement ne doit pas être null");
-        assertEquals(directionTest, event.direction, "La direction doit être 'Right'");
+        assertEquals(directionTest, event.direction(), "La direction doit être 'Right'");
     }
 
     @Test
@@ -121,6 +115,7 @@ public class EventsTest {
         assertNotNull(event, "L'événement ne doit pas être null");
         assertEquals(nom, event.stringPath, "le stringpath doit etre: oui ");
     }
+
     @Test
     public void eventWithoutArgumentTest() {
         eventWithoutArgument(new GameStateUpdatedEvent());
@@ -136,7 +131,6 @@ public class EventsTest {
         eventWithoutArgument(new TurnSkipEvent());
         eventWithoutArgument(new ScreenLoadGame());
     }
-
 
     private void eventWithoutArgument(Event event) {
         assertNotNull(event);
