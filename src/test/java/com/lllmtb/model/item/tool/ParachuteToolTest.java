@@ -28,10 +28,11 @@ public class ParachuteToolTest {
         Worm w = new Worm("José", mock(Team.class));
         UseParams up = new UseParams(w);
 
-        // Check that the use method returns the correct command
+        // Check that the use method returns the correct commands
         List<GameCommand> cmds = parachute.use(up);
-        assertEquals(1, cmds.size());
+        assertEquals(2, cmds.size());
 
+        // First command should be AddPhysicsModifierCommand
         GameCommand cmd = cmds.get(0);
         assertInstanceOf(AddPhysicsModifierCommand.class, cmd);
 
@@ -51,5 +52,9 @@ public class ParachuteToolTest {
 
         Vector v2 = new Vector(0, 5);
         assertEquals(5.0, m.transform.apply(v2).getY());
+
+        // Second command should be the listener registration command
+        GameCommand listenerCmd = cmds.get(1);
+        assertNotNull(listenerCmd);
     }
 }
