@@ -34,6 +34,12 @@ public class TurnTest {
         Worm worm1 = turn2.getWormPlayable();
         turn2.end();
         assertNotSame(turn2.getWormPlayable(), worm1);
+        Worm worm2 = turn2.getWormPlayable();
+
+        //One Worm alive
+        worm1.damageWorm(100);
+        turn2.end();
+        assertSame(worm2,turn2.getWormPlayable());
     }
 
     @Test

@@ -1,12 +1,18 @@
 package com.lllmtb.model.entity.projectile;
 
+import com.lllmtb.engine.commands.GameCommand;
+import com.lllmtb.model.entity.CollisionType;
 import com.lllmtb.model.entity.team.Team;
 import com.lllmtb.model.entity.worm.Worm;
 import com.lllmtb.model.item.UseParams;
 import com.lllmtb.physics.Position;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+
 import java.lang.reflect.Field;
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ProjectileTest {
@@ -31,6 +37,13 @@ public class ProjectileTest {
     }
 
     @Test
+    void getCollisionRocket(){
+        RocketProjectile rp = new RocketProjectile(params);
+        assertEquals(CollisionType.TOUCH, rp.getCollisionType());
+
+    }
+
+    @Test
     public void forceField_isSubclassSpecific() throws Exception {
         BulletProjectile bullet = new BulletProjectile(params);
 
@@ -45,9 +58,13 @@ public class ProjectileTest {
 
     @Test
     public void onImpact_doesNotThrow() {
-        // TODO
         BulletProjectile bullet = new BulletProjectile(params);
-
         RocketProjectile rocket = new RocketProjectile(params);
+        Team t = Mockito.mock(Team.class);
+        Worm worm = new Worm("Test", t);
+
+        List<GameCommand> list = rocket.onImpact(worm);
+        assertFalse(list.isEmpty());
+
     }
 }

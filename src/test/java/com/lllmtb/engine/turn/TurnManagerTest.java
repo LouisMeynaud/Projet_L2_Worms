@@ -3,6 +3,8 @@ package com.lllmtb.engine.turn;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.junit.jupiter.api.AfterEach;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
@@ -88,6 +90,19 @@ public class TurnManagerTest {
             Thread.sleep(200);
         } catch (InterruptedException ignored) {}
         assertTrue(eventEnd.get());
+    }
 
+    @Test
+    void testEndWithOneTeamAlive(){
+        GameSettings settings = new GameSettings("blabla", 1, new String[]{"TeamTest1", "TeamTest2"}, 1, 100, 1, false, null, false, 370, LandScape.HILLY, 2);
+        EventBus eventBus = new EventBus();
+        GameWorld gw2 = new GameWorld(settings, eventBus);
+        gw2.start();
+        int lastIndex = gw2.getIndexTeam();
+        gw2.getBus().postQueued(new TurnStopEvent());
+        try {
+            Thread.sleep(50);
+        } catch (InterruptedException ignored) {}
+        assertEquals(lastIndex, gw2.getIndexTeam());
     }
 }
