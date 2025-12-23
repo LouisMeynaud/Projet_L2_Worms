@@ -10,6 +10,7 @@ import com.lllmtb.engine.commands.GameCommand;
 import com.lllmtb.engine.commands.RegisterProjectileCommand;
 import com.lllmtb.model.entity.projectile.ShotGunProjectile;
 import com.lllmtb.model.item.UseParams;
+import com.lllmtb.physics.Position;
 
 public final class ShotGunWeapon extends Weapon {
 
@@ -23,7 +24,7 @@ public final class ShotGunWeapon extends Weapon {
         Objects.requireNonNull(params);
         List<GameCommand> commands = new ArrayList<>();
         for (double i = -0.2; i <= 0.2; i += 0.1) {
-            UseParams param = new UseParams(params.angleRadians + i, params.pos, params.owner);
+            UseParams param = new UseParams(params.angleRadians + i, new Position(params.pos.getX(), params.pos.getY() + i * 2), params.owner);
             GameCommand commande = new RegisterProjectileCommand(new ShotGunProjectile(param), params.owner);
             commands.add(commande);
         }

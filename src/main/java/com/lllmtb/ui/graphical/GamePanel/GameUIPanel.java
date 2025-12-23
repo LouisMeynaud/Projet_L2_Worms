@@ -16,6 +16,7 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
+import javax.swing.Timer;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 
@@ -56,6 +57,7 @@ public class GameUIPanel extends JPanel {
     private JPanel weaponGrid; // la grille d'arme dans l'inventaire
     private JPanel toolGrid; // la grille d'outil dans l'inventaire
     private JLabel timerLabel; // le label du timer
+    private Timer uiRefreshTimer; //timer swing pour raffraichir le timer
 
     /**
      * constructeur : initialise la disposition , les conteneurs , le HUD et les listenneur.
@@ -70,6 +72,8 @@ public class GameUIPanel extends JPanel {
         createInventoryContainer();
         setupHUD();
         subscribeToSystemEvents();
+        this.uiRefreshTimer = new Timer(100, e -> updateTimerDisplay());
+        this.uiRefreshTimer.start();
     }
 
     /**
@@ -136,6 +140,7 @@ public class GameUIPanel extends JPanel {
 
         eventBus.subscribe(WorldCreatedEvent.class, event -> {
             this.world = event.getWorld();
+            updateTimerDisplay();
         });
 
         eventBus.subscribe(GameStateUpdatedEvent.class, event -> {
@@ -146,10 +151,12 @@ public class GameUIPanel extends JPanel {
     ////////////Timer/////////////////
 
     /**
-     * met a jour l'affichage du timer ( texte et couleur).
+     * met a jour l'affichage du timer (texte et couleur).
      */
     private void updateTimerDisplay() {
-        if (this.world == null || this.world.getPlayingTeam() == null) {
+        if (this.world == null) return;
+        if (this.world.getPlayingTeam() == null) {
+            this.timerLabel.setText("--:--");
             return;
         }
 
@@ -163,15 +170,17 @@ public class GameUIPanel extends JPanel {
         String teamName = this.world.getPlayingTeam().name;
         String timeString = String.format("%02d:%02d", timeLeft / 60, timeLeft % 60);
         this.timerLabel.setText(teamName + " : " + timeString);
+        this.timerLabel.repaint();
     }
 
     /**
-     * crée le label timer.
+     * cree le label timer.
      * @return le label timer
      */
     private JLabel createTimerLabel() {
-        JLabel label = new JLabel();
+        JLabel label = new JLabel("--:--");
         label.setFont(new Font("Arial", Font.BOLD, 20));
+        label.setForeground(Color.WHITE);
         label.setOpaque(false);
         return label;
     }
