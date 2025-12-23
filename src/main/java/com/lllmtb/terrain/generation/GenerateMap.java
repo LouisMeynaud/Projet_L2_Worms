@@ -36,7 +36,7 @@ public class GenerateMap {
         int currentAvgThickness = MapBalancer.averageThickness(lowLine, hightLine, 0, config.getWidth());
 
         MapBalancer.thicknessBalencer(config.getThicknessMin(), currentAvgThickness, hightLine, config.getHeight());
-        if(!config.isFlyingIsland()){
+        if (!config.isFlyingIsland()) {
         applyIslandBorders(hightLine, lowLine, config.getWidth(), config.getWaterHeight());
         }
         applyTopSafety(hightLine, config.getHeight());
@@ -84,7 +84,7 @@ public class GenerateMap {
 
     private static void applyTopSafety(int[] hightLine, int mapHeight) {
         // limite de hauteur (pour pas etre trop proche du plafond et etre coincee)
-        int limit = mapHeight - 8; 
+        int limit = mapHeight - 8;
 
         for (int i = 0; i < hightLine.length; i++) {
             if (hightLine[i] > limit) {
