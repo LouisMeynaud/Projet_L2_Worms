@@ -19,7 +19,7 @@ public class LineGenerator {
                     slope = random.nextInt(config.getMaxSlope() - (-config.getMaxSlope()) + 1) + (-config.getMaxSlope());
                 }
                 length = random.nextInt(config.getMaxLength() + 1);
-            } while (lineHeight + slope * length > config.getHeight() || lineHeight + slope * length < 0);
+            } while (lineHeight + slope * length >= config.getHeight() || lineHeight + slope * length < 0);
             for (int i = 0; i < length && x < config.getWidth(); i++) {
                 line[x] = lineHeight;
                 lineHeight += slope;
