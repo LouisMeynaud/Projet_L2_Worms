@@ -9,8 +9,8 @@ import com.lllmtb.physics.PhysicsEngine;
 public final class RocketProjectile extends Projectile implements ExplosiveProjectile {
     private static final double force  = 50.0;
     private static final double mass   = 0.0045;
-    private static final double height = 0.4;
-    private static final double width  = 0.6;
+    private static final double height = 1;
+    private static final double width  = 1;
     private static final int damage = 40;
 
 

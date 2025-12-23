@@ -24,7 +24,7 @@ public final class ShotGunWeapon extends Weapon {
         Objects.requireNonNull(params);
         List<GameCommand> commands = new ArrayList<>();
         for (double i = -0.2; i <= 0.2; i += 0.1) {
-            UseParams param = new UseParams(params.angleRadians + i, new Position(params.pos.getX(), params.pos.getY() + i * 2), params.owner);
+            UseParams param = new UseParams(params.angleRadians + i, new Position(params.pos.getX(), params.pos.getY() + i * 10), params.owner);
             GameCommand commande = new RegisterProjectileCommand(new ShotGunProjectile(param), params.owner);
             commands.add(commande);
         }
