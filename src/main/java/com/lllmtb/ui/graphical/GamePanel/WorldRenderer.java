@@ -146,13 +146,12 @@ public class WorldRenderer {
             Object entity = body.getEntity();
             if (entity instanceof Worm) {
                 Worm worm = (Worm) entity;
-                Animation anim = getWormAnimation(worm);
-                if (anim != null) {
-                    anim.update();
-                }
-                // Update facing direction based on velocity
+                getWormAnimation(worm);
                 worm.updateFacingDirection();
             }
+        }
+        for (Animation anim : teamAnimations.values()) {
+            anim.update();
         }
     }
 
