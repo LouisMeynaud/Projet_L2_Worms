@@ -3,7 +3,6 @@ package com.lllmtb.engine;
 import java.util.Objects;
 import java.io.IOException;
 
-import com.lllmtb.events.Event;
 import com.lllmtb.events.move.MouseInputEvent;
 import org.eclipse.jdt.annotation.NonNull;
 
