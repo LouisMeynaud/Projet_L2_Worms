@@ -9,6 +9,7 @@ import java.awt.GridLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.SwingConstants;
 
 import com.lllmtb.engine.GameSettings;
@@ -59,8 +60,15 @@ public class SettingsStartPanel extends JPanel {
         this.mapSettingPanel = new SettingMapPanel(eventBus);
         this.gameSettingsPanel = new SettingGamePanel();
 
-        panelCentre.add(mapSettingPanel);
-        panelCentre.add(gameSettingsPanel);
+        JScrollPane mapScrollPanel = new JScrollPane(this.mapSettingPanel);
+        mapScrollPanel.setBorder(null);
+        mapScrollPanel.getVerticalScrollBar().setUnitIncrement(16);
+        JScrollPane gameScrollPanel = new JScrollPane(this.gameSettingsPanel);
+        gameScrollPanel.setBorder(null);
+        gameScrollPanel.getVerticalScrollBar().setUnitIncrement(16);
+
+        panelCentre.add(mapScrollPanel);
+        panelCentre.add(gameScrollPanel);
         this.add(panelCentre, BorderLayout.CENTER);
 
 

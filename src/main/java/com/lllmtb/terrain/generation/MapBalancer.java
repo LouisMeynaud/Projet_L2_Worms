@@ -28,7 +28,7 @@ public class MapBalancer {
             // Parameter to change: the larger the difference, the less likely the terrain is to be balanced.
             // Left side thicker, balance by increasing the right side.
             for (int x = mid; x < width; x++) {
-                double ratio = (x - mid) / (width - mid);  // permet d'evité d'avoir un grand mur au milieu ,plus on se rapproche du centre , moin on ajoute de bloc.
+                double ratio = (double) (x - mid) / (width - mid);  // permet d'evité d'avoir un grand mur au milieu ,plus on se rapproche du centre , moin on ajoute de bloc.
                 int adjust = (int) (diff * ratio);
                 if (hightLine[x] + adjust < height) {
                     hightLine[x] += adjust;
