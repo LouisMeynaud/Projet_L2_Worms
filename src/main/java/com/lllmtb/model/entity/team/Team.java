@@ -132,7 +132,6 @@ public class Team {
         for (Worm worm: teamSave.team.getTeamWorms()) {
             this.worms.add(worm);
         }
-        this.currentWorm = teamSave.team.worms.get(teamSave.team.index);
         this.selectedItem = null;
         this.teamColor = teamSave.team.teamColor;
         // use reflexion to recreate worm instance with correct PhysicsBody
@@ -145,6 +144,8 @@ public class Team {
                     throw new RuntimeException(e);
                 }
             }
+        this.index = teamSave.team.index;
+        this.currentWorm = this.worms.get(this.index);
     }
 
     /**
@@ -307,7 +308,8 @@ public class Team {
     public List<GameCommand> use(@NonNull UseParams useParams) {
         Objects.requireNonNull(useParams);
         if (this.selectedItem == null) {System.out.println("Arme null"); return null;}
-        if (this.selectedItem instanceof WeaponId) return this.inventory.fire((WeaponId) this.selectedItem, useParams);
+        if (this.selectedItem instanceof WeaponId) {
+            System.out.println("Arme utilisé"); this.inventory.fire((WeaponId) this.selectedItem, useParams);}
         if (this.selectedItem instanceof ToolId) return this.inventory.use((ToolId) this.selectedItem, useParams);
         throw new UnknownItemException(this.selectedItem);
     }

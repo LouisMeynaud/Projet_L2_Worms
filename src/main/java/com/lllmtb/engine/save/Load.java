@@ -87,15 +87,8 @@ public class Load {
             for (TeamSave teamSave : gameSave.teams) {
                 for (Worm worm : teamSave.team.getTeamWorms()) {
                     if (worm.uuid == saveBody.uuid) {
-                        try {
-                            Field teamField = Worm.class.getDeclaredField("team");
-                            teamField.setAccessible(true);
-                            Worm wormBody = (Worm) saveBody.entity;
-                            teamField.set(wormBody, teamSave.team);
                             saveBody.physicsBody =  worm.getBody();
-                        } catch (NoSuchFieldException | IllegalAccessException e) {
-                            throw new RuntimeException(e);
-                        }
+                            saveBody.entity = worm;
                     }
                 }
             }
