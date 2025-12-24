@@ -17,6 +17,7 @@ public class GenerateMap {
      */
     public static Map createMap(ConfigMap config) {
         Map map = new Map(config.getHeight(), config.getWidth(), SaveMap.newMapSaveFile());
+        map.initializeHeightWater();
         int[] lowLine;
 
         int[] hightLine = LineGenerator.createLine(config);

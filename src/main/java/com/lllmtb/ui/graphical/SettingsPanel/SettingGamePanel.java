@@ -106,7 +106,7 @@ public class SettingGamePanel extends JPanel {
             contentGrid.add(labelEquipe, gbc);
 
             gbc.gridx = 1;
-            champsNomsEquipes[i] = new JTextField("Équipe " + (i + 1), 15);
+            champsNomsEquipes[i] = new JTextField("" + (i+1), 15);
             contentGrid.add(champsNomsEquipes[i], gbc);
             row++;
         }

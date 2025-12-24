@@ -169,7 +169,7 @@ public class GameUIPanel extends JPanel {
 
         String teamName = this.world.getPlayingTeam().name;
         String timeString = String.format("%02d:%02d", timeLeft / 60, timeLeft % 60);
-        this.timerLabel.setText(teamName + " : " + timeString);
+        this.timerLabel.setText("tour : " + world.getTurnManager().getNbTurn() + ", team : " + teamName + " , time : " + timeString);
         this.timerLabel.repaint();
     }
 

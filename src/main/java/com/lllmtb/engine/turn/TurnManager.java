@@ -5,6 +5,7 @@ import java.util.Objects;
 import com.lllmtb.engine.GameWorld;
 import com.lllmtb.engine.logger.Logger;
 import com.lllmtb.events.EventListener;
+import com.lllmtb.events.game.MapUpdateEvent;
 import com.lllmtb.events.game.WeaponSelectedEvent;
 import com.lllmtb.events.move.GroundCheckCollision;
 import com.lllmtb.events.move.MouseInputEvent;
@@ -34,6 +35,7 @@ public final class TurnManager {
 
     private final long turnDurationInMs;
     private long remainingTimeInMs;
+    private int nbTurn;
 
     public TurnManager(GameWorld world, long turnDuration) {
         this.world = world;
@@ -60,9 +62,17 @@ public final class TurnManager {
     public void startTurn(Team team) {
         this.remainingTimeInMs = turnDurationInMs;
         this.turn = new Turn(team);
+        this.nbTurn += 1;
         world.getBus().postQueued(new TurnStartEvent(team));
         Logger.logger.info("Start turn for the team {}\n", team.name);
         world.getBus().postQueued(new WormPlayable(turn.getWormPlayable()));
+        System.out.println("test");
+        if(this.nbTurn > world.getTeams().size() * 4){
+            System.out.println(world.getMap().getHeightWater());
+            if(world.getMap().risingWater()){
+                world.getBus().postQueued(new MapUpdateEvent());
+            }
+        }
     }
 
     public void updateTurn(double elapsedTime) {
@@ -84,6 +94,10 @@ public final class TurnManager {
 
     public Turn getTurn() {
         return turn;
+    }
+
+    public int getNbTurn(){
+        return this.nbTurn;
     }
 
     private void setupEvents() {

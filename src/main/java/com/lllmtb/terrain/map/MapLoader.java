@@ -31,6 +31,7 @@ public class MapLoader {
                         tileMatrix.getMapMatrix()[i][j] = Tile.getByFileSymbol(row[i].charAt(j));
                     }
                 }
+            tileMatrix.initializeHeightWater();
             return tileMatrix;
 
         } catch (IOException e) { // we should propagate the exception instead so GameWorld can catch and respond accordingly
