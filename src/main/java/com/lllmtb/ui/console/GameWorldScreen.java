@@ -10,6 +10,7 @@ import com.lllmtb.events.input.ProcessInputsEvent;
 import com.lllmtb.events.physics.GroundCheckCollision;
 import com.lllmtb.events.physics.PhysicsCollisionWithMap;
 import com.lllmtb.model.entity.projectile.Projectile;
+import com.lllmtb.model.entity.team.Team;
 import com.lllmtb.model.entity.team.TeamColor;
 import com.lllmtb.model.entity.worm.Worm;
 import com.lllmtb.physics.PhysicsBody;
@@ -311,7 +312,7 @@ public class GameWorldScreen implements Runnable {
 
         // Info panel
         if (row < infoPanelHeight) {
-            renderEmptyPanelRow(sb);
+            renderInfoPanelRow(sb, row);
             return;
         }
         currentRow += infoPanelHeight;
@@ -363,6 +364,46 @@ public class GameWorldScreen implements Runnable {
 
     private void renderEmptyPanelRow(StringBuilder sb) {
         sb.append(" ".repeat(sidePanelWidth));
+    }
+
+    private void renderInfoPanelRow(StringBuilder sb, int row) {
+        String line = "";
+
+        switch (row) {
+            case 0 -> line = "\033[1m" + centerText("=== INFO ===", sidePanelWidth) + "\033[0m";
+            case 1 -> {
+                if (world != null && world.getPlayingTeam() != null) {
+                    Team team = world.getPlayingTeam();
+                    int color = TEAM_COLORS.getOrDefault(team.teamColor, 255);
+                    line = String.format(" Team: \033[38;5;%dm%s\033[0m", color, team.name);
+                } else {
+                    line = " Team: ---";
+                }
+            }
+            case 2 -> {
+                if (world != null && world.getPlayingTeam() != null) {
+                    Worm worm = world.getPlayingTeam().getCurrentWorm();
+                    if (worm != null) {
+                        line = String.format(" Worm: %s (HP: %d)", worm.name, worm.getStats().getHp());
+                    }
+                } else {
+                    line = " Worm: ---";
+                }
+            }
+            case 3 -> {
+                if (world != null && world.getTurnManager() != null) {
+                    long time = world.getTurnManager().getRemainingTime() / 1000;
+                    String timeStr = String.format("%02d:%02d", time / 60, time % 60);
+                    String color = time < 5 ? "\033[31m" : "\033[32m";
+                    line = String.format(" Time: %s%s\033[0m", color, timeStr);
+                } else {
+                    line = " Time: --:--";
+                }
+            }
+            case 4 -> line = "";
+        }
+
+        sb.append(padRight(line, sidePanelWidth));
     }
 
     private void renderLogPanelRow(StringBuilder sb, int row, String title, Deque<String> logs) {
