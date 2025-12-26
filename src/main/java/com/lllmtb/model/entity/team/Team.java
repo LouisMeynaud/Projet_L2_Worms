@@ -308,7 +308,7 @@ public class Team {
     public List<GameCommand> use(@NonNull UseParams useParams) {
         Objects.requireNonNull(useParams);
         if (this.selectedItem == null) return null;
-        if (this.selectedItem instanceof WeaponId) this.inventory.fire((WeaponId) this.selectedItem, useParams);
+        if (this.selectedItem instanceof WeaponId) return this.inventory.fire((WeaponId) this.selectedItem, useParams);
         if (this.selectedItem instanceof ToolId) return this.inventory.use((ToolId) this.selectedItem, useParams);
         throw new UnknownItemException(this.selectedItem);
     }
