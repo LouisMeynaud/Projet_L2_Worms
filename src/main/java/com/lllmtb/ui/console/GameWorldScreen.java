@@ -16,8 +16,8 @@ import com.lllmtb.model.entity.projectile.Projectile;
 import com.lllmtb.model.entity.team.Team;
 import com.lllmtb.model.entity.team.TeamColor;
 import com.lllmtb.model.entity.worm.Worm;
-import com.lllmtb.model.item.inventory.Inventory;
 import com.lllmtb.model.item.ItemId;
+import com.lllmtb.model.item.inventory.Inventory;
 import com.lllmtb.model.item.tool.ToolId;
 import com.lllmtb.model.item.weapon.WeaponId;
 import com.lllmtb.physics.PhysicsBody;
@@ -48,7 +48,10 @@ public class GameWorldScreen implements Runnable {
     // Viewport (camera)
     private int viewportX = 0;
     private int viewportY = 0;
+    private int cachedViewportX = -1;
+    private int cachedViewportY = -1;
 
+    // State
     private volatile boolean running = true;
 
     // Cached map rendering (only redrawn on map updates)
@@ -122,7 +125,12 @@ public class GameWorldScreen implements Runnable {
 
         EventBus worldBus = world.getBus();
 
-        // Trigger map redraw
+        // Center viewport on every game state update (every tick)
+        worldBus.subscribe(GameStateUpdatedEvent.class, e -> {
+            centerViewportOnCurrentWorm();
+        });
+
+        // Trigger full map redraw only when map is modified
         worldBus.subscribe(MapUpdateEvent.class, e -> {
             cachedMapRows = null;
         });
@@ -195,8 +203,13 @@ public class GameWorldScreen implements Runnable {
                     }
                 }
             }
+            if (cachedMapRows == null) return;
             cachedMapRows[row] = rowSb.toString();
         }
+
+        // Store the viewport position this cache is valid for
+        cachedViewportX = viewportX;
+        cachedViewportY = viewportY;
     }
 
     @Override
@@ -216,8 +229,17 @@ public class GameWorldScreen implements Runnable {
 
             // Main render loop
             while (running) {
-                renderFull();
+                if (!initialRenderDone) {
+                    renderFull();
+                    initialRenderDone = true;
+                } else {
+                    renderPartial();
+                }
+
+                Thread.sleep(8); // cap tick rate (~125 TPS)
             }
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
         } finally {
             // Show cursor
             terminal.writer().print("\033[?25h");
@@ -409,6 +431,25 @@ public class GameWorldScreen implements Runnable {
         terminal.writer().flush();
     }
 
+    private void renderPartial() {
+        StringBuilder sb = new StringBuilder();
+
+        // Re-render the main panel
+        for (int row = 0; row < termHeight; row++) {
+            sb.append(String.format("\033[%d;1H", row + 1));
+            renderMainPanelRow(sb, row);
+        }
+
+        // Re-render the side panels
+        for (int row = 0; row < termHeight; row++) {
+            sb.append(String.format("\033[%d;%dH", row + 1, mainPanelWidth + 2));
+            renderSidePanelRow(sb, row);
+        }
+
+        terminal.writer().print(sb);
+        terminal.writer().flush();
+    }
+
     private void renderFullRow(StringBuilder sb, int row) {
         // Main panel content (game world)
         renderMainPanelRow(sb, row);
@@ -425,6 +466,11 @@ public class GameWorldScreen implements Runnable {
             String msg = row == termHeight / 2 ? centerText("Waiting for game to start...", mainPanelWidth) : " ".repeat(mainPanelWidth);
             sb.append(msg);
             return;
+        }
+
+        // If viewport changed, invalidate cache
+        if (cachedMapRows != null && (cachedViewportX != viewportX || cachedViewportY != viewportY)) {
+            cachedMapRows = null;
         }
 
         // If no cache, build it
@@ -452,7 +498,7 @@ public class GameWorldScreen implements Runnable {
             // No entities, use cached row directly
             sb.append(cachedMapRows[row]);
         } else {
-            // Overlay entities on the cached map
+            // Overlay entities on top of the cached map
             Tile[][] mapMatrix = world.getMap().getMapMatrix();
             int mapWidth = world.getMap().getWidth();
 
