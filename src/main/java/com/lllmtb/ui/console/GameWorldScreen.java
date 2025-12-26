@@ -1,23 +1,33 @@
 package com.lllmtb.ui.console;
 
 import com.lllmtb.engine.GameWorld;
+import com.lllmtb.engine.logger.Logger;
 import com.lllmtb.events.Event;
 import com.lllmtb.events.EventBus;
-import com.lllmtb.events.game.GameStateUpdatedEvent;
-import com.lllmtb.events.game.MapUpdateEvent;
-import com.lllmtb.events.game.WorldCreatedEvent;
+import com.lllmtb.events.game.*;
 import com.lllmtb.events.input.ProcessInputsEvent;
 import com.lllmtb.events.physics.GroundCheckCollision;
 import com.lllmtb.events.physics.PhysicsCollisionWithMap;
+import com.lllmtb.events.turn.TurnSkipEvent;
+import com.lllmtb.events.turn.TurnStartEvent;
+import com.lllmtb.events.input.MoveInputEvent;
+import com.lllmtb.events.input.UseInputEvent;
 import com.lllmtb.model.entity.projectile.Projectile;
 import com.lllmtb.model.entity.team.Team;
 import com.lllmtb.model.entity.team.TeamColor;
 import com.lllmtb.model.entity.worm.Worm;
+import com.lllmtb.model.item.inventory.Inventory;
+import com.lllmtb.model.item.ItemId;
+import com.lllmtb.model.item.tool.ToolId;
+import com.lllmtb.model.item.weapon.WeaponId;
 import com.lllmtb.physics.PhysicsBody;
 import com.lllmtb.physics.Position;
 import com.lllmtb.terrain.map.Tile;
+import com.lllmtb.ui.graphical.GamePanel.Direction;
+
 import org.jline.terminal.Terminal;
 
+import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
@@ -35,10 +45,27 @@ public class GameWorldScreen implements Runnable {
     private int inventoryPanelHeight;
     private int logPanelHeight;
 
+    // Viewport (camera)
+    private int viewportX = 0;
+    private int viewportY = 0;
+
     private volatile boolean running = true;
 
     // Cached map rendering (only redrawn on map updates)
     private String[] cachedMapRows = null;
+    private boolean initialRenderDone = false;
+
+    // Shooting mode state
+    private boolean shootMode = false;
+    private double aimAngle = 0; // in degrees: 0 = right, 90 = up
+    private double aimPower = 50; // 0-100
+    private static final double ANGLE_STEP = 5;
+    private static final double POWER_STEP = 5;
+
+    // Inventory selection state
+    private boolean inventoryOpen = false;
+    private int inventorySelection = 0;
+    private final List<ItemId> inventoryItems = new ArrayList<>();
 
     // Event logs
     private final ConcurrentLinkedDeque<String> systemLogs = new ConcurrentLinkedDeque<>();
@@ -86,6 +113,7 @@ public class GameWorldScreen implements Runnable {
     private void onWorldCreated(WorldCreatedEvent event) {
         this.world = event.getWorld();
         subscribeToWorldEvents();
+        centerViewportOnCurrentWorm();
         cachedMapRows = null;
     }
 
@@ -97,6 +125,17 @@ public class GameWorldScreen implements Runnable {
         // Trigger map redraw
         worldBus.subscribe(MapUpdateEvent.class, e -> {
             cachedMapRows = null;
+        });
+
+        // Turn events - add ammo for testing purposes
+        worldBus.subscribe(TurnStartEvent.class, e -> {
+            centerViewportOnCurrentWorm();
+            world.getPlayingTeam().getInventory().unlock(WeaponId.GUN);
+            world.getPlayingTeam().getInventory().weapons.addAmmo(WeaponId.GUN, 10);
+            world.getPlayingTeam().getInventory().unlock(WeaponId.BAZOOKA);
+            world.getPlayingTeam().getInventory().weapons.addAmmo(WeaponId.BAZOOKA, 3);
+            shootMode = false;
+            inventoryOpen = false;
         });
 
         // Log all world bus events
@@ -133,13 +172,13 @@ public class GameWorldScreen implements Runnable {
 
         for (int row = 0; row < termHeight; row++) {
             StringBuilder rowSb = new StringBuilder();
-            int mapRow = row;
+            int mapRow = row + viewportY;
 
             if (mapRow < 0 || mapRow >= mapHeight) {
                 rowSb.append(" ".repeat(mainPanelWidth));
             } else {
                 for (int col = 0; col < mainPanelWidth; col++) {
-                    int mapCol = col;
+                    int mapCol = col + viewportX;
 
                     if (mapCol < 0 || mapCol >= mapWidth) {
                         rowSb.append(" ");
@@ -163,9 +202,17 @@ public class GameWorldScreen implements Runnable {
     @Override
     public void run() {
         try {
+            // Enter raw mode for immediate key processing
+            terminal.enterRawMode();
+
             // Hide cursor
             terminal.writer().print("\033[?25l");
             terminal.writer().flush();
+
+            // Start input reader thread
+            Thread inputThread = new Thread(this::readInputLoop, "console-input");
+            inputThread.setDaemon(true);
+            inputThread.start();
 
             // Main render loop
             while (running) {
@@ -176,6 +223,171 @@ public class GameWorldScreen implements Runnable {
             terminal.writer().print("\033[?25h");
             terminal.writer().flush();
         }
+    }
+
+    private void readInputLoop() {
+        try {
+            while (running) {
+                int ch = terminal.reader().read(50); // 50ms timeout
+                if (ch == -2) continue; // timeout
+                if (ch == -1) {
+                    running = false;
+                    break;
+                }
+                handleKeyPress(ch);
+            }
+        } catch (IOException e) {
+            Logger.logger.error("Error reading terminal input", e);
+        }
+    }
+
+    private void handleKeyPress(int ch) {
+        if (world == null) return;
+
+        // escape sequences for arrow keys
+        if (ch == 27) { // ESC
+            try {
+                int next = terminal.reader().read(50);
+                if (next == '[') {
+                    int arrow = terminal.reader().read(50);
+                    switch (arrow) {
+                        case 'A' -> handleArrowUp();
+                        case 'B' -> handleArrowDown();
+                        case 'C' -> handleArrowRight();
+                        case 'D' -> handleArrowLeft();
+                    }
+                } else if (next == -2) { // Just ESC
+                    if (shootMode) shootMode = false;
+                    else if (inventoryOpen) inventoryOpen = false;
+                }
+            } catch (IOException e) {
+                Logger.logger.error("Error reading escape sequence", e);
+            }
+            return;
+        }
+
+        switch (ch) {
+            // Shoot mode toggle
+            case ' ' -> { // Space
+                if (inventoryOpen) selectInventoryItem();
+                else shootMode = !shootMode;
+            }
+
+            // Fire in shoot mode
+            case '\r', '\n' -> { // Enter
+                if (inventoryOpen) selectInventoryItem();
+                else if (shootMode) fireWeapon();
+            }
+
+            // Inventory toggle
+            case 'i', 'I' -> {
+                inventoryOpen = !inventoryOpen;
+                if (inventoryOpen) {
+                    buildInventoryList();
+                    shootMode = false;
+                }
+            }
+
+            // Skip turn
+            case 't', 'T' -> world.getBus().postQueued(new TurnSkipEvent());
+
+            // Quit
+            case 'q', 'Q' -> running = false;
+
+            // Number keys for quick weapon selection
+            case '1', '2', '3', '4', '5', '6', '7', '8', '9' -> {
+                int index = ch - '1';
+                if (inventoryOpen && index < inventoryItems.size()) {
+                    inventorySelection = index;
+                    selectInventoryItem();
+                }
+            }
+        }
+    }
+
+    private void handleArrowUp() {
+        if (shootMode) aimAngle = Math.min(225, aimAngle + ANGLE_STEP);
+        else if (inventoryOpen) inventorySelection = Math.max(0, inventorySelection - 1);
+        else world.getBus().postQueued(new MoveInputEvent(Direction.Up));
+    }
+
+    private void handleArrowDown() {
+        if (shootMode) aimAngle = Math.max(-45, aimAngle - ANGLE_STEP);
+        else if (inventoryOpen) inventorySelection = Math.min(inventoryItems.size() - 1, inventorySelection + 1);
+        else world.getBus().postQueued(new MoveInputEvent(Direction.Down));
+    }
+
+    private void handleArrowLeft() {
+        if (shootMode) aimPower = Math.max(0, aimPower - POWER_STEP);
+        else if (!inventoryOpen) world.getBus().postQueued(new MoveInputEvent(Direction.Left));
+        // In inventory mode, left arrow does nothing
+    }
+
+    private void handleArrowRight() {
+        if (shootMode) aimPower = Math.min(100, aimPower + POWER_STEP);
+        else if (!inventoryOpen) world.getBus().postQueued(new MoveInputEvent(Direction.Right));
+        // In inventory mode, right arrow does nothing
+    }
+
+    private void fireWeapon() {
+        if (world == null) return;
+
+        Team team = world.getPlayingTeam();
+        if (team == null) return;
+
+        Worm worm = team.getCurrentWorm();
+        if (worm == null) return;
+
+        // Create a target position in front of the worm (i.e. mock the mouse click)
+        double angleRad = Math.toRadians(aimAngle);
+        Position wormPos = worm.getBody().getPos();
+        double distance = 5;
+        Position targetPos = new Position(
+                wormPos.getX() + Math.cos(angleRad) * distance * worm.getFacingDirection(),
+                wormPos.getY() + Math.sin(angleRad) * distance
+        );
+
+        world.getBus().postQueued(new UseInputEvent(targetPos, aimPower * 10));
+    }
+
+    private void buildInventoryList() {
+        inventoryItems.clear();
+        if (world == null || world.getPlayingTeam() == null) return;
+
+        inventoryItems.addAll(world.getPlayingTeam().getInventory().weapons.ammoSnapshot().keySet());
+        inventoryItems.addAll(world.getPlayingTeam().getInventory().tools.ammoSnapshot().keySet());
+
+        inventorySelection = Math.min(inventorySelection, Math.max(0, inventoryItems.size() - 1));
+    }
+
+    private void selectInventoryItem() {
+        if (inventoryItems.isEmpty() || world == null) return;
+
+        ItemId selected = inventoryItems.get(inventorySelection);
+        if (selected instanceof WeaponId weaponId) world.getBus().postQueued(new WeaponSelectedEvent(weaponId));
+        else if (selected instanceof ToolId toolId) world.getBus().postQueued(new ToolSelectedEvent(toolId));
+
+        inventoryOpen = false;
+        shootMode = true;
+    }
+
+    private void centerViewportOnCurrentWorm() {
+        if (world == null) return;
+        Team team = world.getPlayingTeam();
+        if (team == null) return;
+        Worm worm = team.getCurrentWorm();
+        if (worm == null) return;
+
+        Position pos = worm.getBody().getPos();
+        int mapHeight = world.getMap().getHeight();
+
+        // Center viewport on worm
+        viewportX = (int) pos.getX() - (mainPanelWidth - 2) / 2;
+        viewportY = (int) (mapHeight - pos.getY()) - (termHeight - 2) / 2;
+
+        // Clamp viewport
+        viewportX = Math.max(0, Math.min(viewportX, world.getMap().getWidth() - mainPanelWidth + 2));
+        viewportY = Math.max(0, Math.min(viewportY, mapHeight - termHeight + 2));
     }
 
     private void renderFull() {
@@ -226,7 +438,7 @@ public class GameWorldScreen implements Runnable {
         }
 
         int mapHeight = world.getMap().getHeight();
-        int mapRow = row;
+        int mapRow = row + viewportY;
 
         if (mapRow < 0 || mapRow >= mapHeight) {
             sb.append(" ".repeat(mainPanelWidth));
@@ -245,7 +457,7 @@ public class GameWorldScreen implements Runnable {
             int mapWidth = world.getMap().getWidth();
 
             for (int col = 0; col < mainPanelWidth; col++) {
-                int mapCol = col;
+                int mapCol = col + viewportX;
 
                 if (mapCol < 0 || mapCol >= mapWidth) {
                     sb.append(" ");
@@ -326,7 +538,7 @@ public class GameWorldScreen implements Runnable {
 
         // Inventory panel
         if (row < currentRow + inventoryPanelHeight) {
-            renderEmptyPanelRow(sb);
+            renderInventoryPanelRow(sb, row - currentRow);
             return;
         }
         currentRow += inventoryPanelHeight;
@@ -340,7 +552,7 @@ public class GameWorldScreen implements Runnable {
 
         // System log panel
         if (row < currentRow + logPanelHeight) {
-            renderLogPanelRow(sb, row, "System Events", systemLogs);
+            renderLogPanelRow(sb, row - currentRow, "System Events", systemLogs);
             return;
         }
         currentRow += logPanelHeight;
@@ -354,15 +566,11 @@ public class GameWorldScreen implements Runnable {
 
         // World log panel
         if (row < currentRow + logPanelHeight) {
-            renderLogPanelRow(sb, row, "World Events", worldLogs);
+            renderLogPanelRow(sb, row - currentRow, "World Events", worldLogs);
             return;
         }
 
         // = No panels left
-        sb.append(" ".repeat(sidePanelWidth));
-    }
-
-    private void renderEmptyPanelRow(StringBuilder sb) {
         sb.append(" ".repeat(sidePanelWidth));
     }
 
@@ -401,9 +609,74 @@ public class GameWorldScreen implements Runnable {
                 }
             }
             case 4 -> line = "";
+            case 5 -> {
+                if (shootMode) line = String.format(" \033[33m[SHOOT MODE]\033[0m Angle: %.0f°", aimAngle);
+                else if (inventoryOpen) line = " \033[36m[INVENTORY]\033[0m";
+                else line = " \033[32m[MOVE MODE]\033[0m";
+            }
+            case 6 -> {
+                if (shootMode) line = String.format(" Power: %.0f%% [◄/►]", aimPower);
+                else line = " [I]nventory [Space]Shoot";
+            }
+            case 7 -> {
+                if (shootMode) line = " [Enter]Fire [Esc]Cancel";
+                else line = " [T]Skip turn [Q]Quit";
+            }
         }
 
         sb.append(padRight(line, sidePanelWidth));
+    }
+
+    private void renderInventoryPanelRow(StringBuilder sb, int row) {
+        if (row == 0) {
+            sb.append("\033[1m").append(centerText("=== INVENTORY ===", sidePanelWidth)).append("\033[0m");
+            return;
+        }
+
+        if (!inventoryOpen || world == null || world.getPlayingTeam() == null) {
+            if (row == 1) sb.append(padRight(" Press [I] to open", sidePanelWidth));
+            else sb.append(" ".repeat(sidePanelWidth));
+            return;
+        }
+
+        int itemRow = row - 1;
+        if (itemRow < inventoryItems.size()) {
+            Object item = inventoryItems.get(itemRow);
+            Inventory inv = world.getPlayingTeam().getInventory();
+
+            String name;
+            int ammo;
+            boolean available;
+
+            if (item instanceof WeaponId wid) {
+                name = wid.name();
+                ammo = inv.weapons.getAmmo(wid);
+                available = inv.canFire(wid);
+            } else if (item instanceof ToolId tid) {
+                name = tid.name();
+                ammo = inv.tools.getAmmo(tid);
+                available = inv.canUse(tid);
+            } else {
+                name = "???";
+                ammo = 0;
+                available = false;
+            }
+
+            String prefix;
+            String suffix = "\033[0m";
+            if (itemRow == inventorySelection) prefix = "\033[7m>"; // Inverted colours for selection
+            else if (!available) prefix = "\033[90m "; // Gray for unavailable
+            else {
+                prefix = " ";
+                suffix = "";
+            }
+
+            String ammoStr = ammo > 0 ? String.format("x%d", ammo) : "---";
+            String line = String.format("%s%d. %s (%s)%s", prefix, itemRow + 1, name, ammoStr, suffix);
+            sb.append(padRight(line, sidePanelWidth));
+        } else {
+            sb.append(" ".repeat(sidePanelWidth));
+        }
     }
 
     private void renderLogPanelRow(StringBuilder sb, int row, String title, Deque<String> logs) {
