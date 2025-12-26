@@ -1,10 +1,11 @@
-package com.lllmtb.ui;
+package com.lllmtb.ui.console;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Map;
 
+import com.lllmtb.ui.UI;
 import org.jline.consoleui.elements.ConfirmChoice;
 import org.jline.consoleui.prompt.ConsolePrompt;
 import org.jline.consoleui.prompt.PromptResultItemIF;
@@ -19,11 +20,9 @@ import org.jline.utils.AttributedStyle;
 import org.jline.utils.InfoCmp;
 
 import com.lllmtb.engine.GameSettings;
-import com.lllmtb.engine.GameWorld;
 import com.lllmtb.engine.logger.Logger;
 import com.lllmtb.events.EventBus;
 import com.lllmtb.events.game.StartGameEvent;
-import com.lllmtb.events.game.WorldCreatedEvent;
 import com.lllmtb.terrain.generation.LandScape;
 import com.lllmtb.terrain.map.MapLoader;
 
@@ -37,7 +36,9 @@ import com.lllmtb.terrain.map.MapLoader;
 
 public class ConsoleUI implements UI {
     private Terminal terminal;
-    private EventBus eventBus;
+    private final EventBus eventBus;
+    private GameWorldScreen gameScreen;
+    private Thread gameScreenThread;
 
 
     public ConsoleUI(EventBus bus) {
@@ -283,11 +284,20 @@ public class ConsoleUI implements UI {
             if (ready) {
                 terminal.writer().println("Starting the game...");
                 terminal.writer().flush();
+
+                gameScreen = new GameWorldScreen(terminal, eventBus);
+                gameScreenThread = new Thread(gameScreen, "console-game-screen");
+                gameScreenThread.start();
+
+                // Create the world
                 this.eventBus.postQueued(new StartGameEvent(settings));
-                eventBus.subscribe(WorldCreatedEvent.class, e -> {
-                    GameWorld world = e.getWorld();
-                    System.out.println(world.getMap());
-                });
+
+                // Wait for the game screen to finish
+                try {
+                    gameScreenThread.join();
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
             }
         } catch (Exception e) {
             Logger.logger.error("An error occurred during configuration :");
@@ -298,6 +308,8 @@ public class ConsoleUI implements UI {
 
     public void close() {
         try {
+            if (gameScreen != null) gameScreen.stop();
+            if (gameScreenThread != null) gameScreenThread.interrupt();
             terminal.close();
         } catch (IOException e) {
             throw new RuntimeException(e);
