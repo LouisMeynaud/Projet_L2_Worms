@@ -1,8 +1,14 @@
 package com.lllmtb.ui.console;
 
 import com.lllmtb.engine.GameWorld;
+import com.lllmtb.events.Event;
 import com.lllmtb.events.EventBus;
+import com.lllmtb.events.game.GameStateUpdatedEvent;
+import com.lllmtb.events.game.MapUpdateEvent;
 import com.lllmtb.events.game.WorldCreatedEvent;
+import com.lllmtb.events.input.ProcessInputsEvent;
+import com.lllmtb.events.physics.GroundCheckCollision;
+import com.lllmtb.events.physics.PhysicsCollisionWithMap;
 import com.lllmtb.model.entity.projectile.Projectile;
 import com.lllmtb.model.entity.team.TeamColor;
 import com.lllmtb.model.entity.worm.Worm;
@@ -12,6 +18,7 @@ import com.lllmtb.terrain.map.Tile;
 import org.jline.terminal.Terminal;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentLinkedDeque;
 
 public class GameWorldScreen implements Runnable {
     private final Terminal terminal;
@@ -29,7 +36,13 @@ public class GameWorldScreen implements Runnable {
 
     private volatile boolean running = true;
 
+    // Cached map rendering (only redrawn on map updates)
     private String[] cachedMapRows = null;
+
+    // Event logs
+    private final ConcurrentLinkedDeque<String> systemLogs = new ConcurrentLinkedDeque<>();
+    private final ConcurrentLinkedDeque<String> worldLogs = new ConcurrentLinkedDeque<>();
+    private static final int MAX_LOG_ENTRIES = 50;
 
     // Team colors
     private static final Map<TeamColor, Integer> TEAM_COLORS = Map.of(
@@ -54,9 +67,13 @@ public class GameWorldScreen implements Runnable {
         this.systemBus = systemBus;
         calculatePanelDimensions();
 
-        // Subscribe to system events
+        // Handle gameworld creation
         systemBus.subscribe(WorldCreatedEvent.class, this::onWorldCreated);
 
+        // Log all system bus events
+        systemBus.subscribe(Event.class, event -> {
+            addSystemLog(event.getClass().getSimpleName());
+        });
 
         // Handle terminal resize
         terminal.handle(Terminal.Signal.WINCH, sig -> {
@@ -67,7 +84,25 @@ public class GameWorldScreen implements Runnable {
 
     private void onWorldCreated(WorldCreatedEvent event) {
         this.world = event.getWorld();
+        subscribeToWorldEvents();
         cachedMapRows = null;
+    }
+
+    private void subscribeToWorldEvents() {
+        if (world == null) return;
+
+        EventBus worldBus = world.getBus();
+
+        // Trigger map redraw
+        worldBus.subscribe(MapUpdateEvent.class, e -> {
+            cachedMapRows = null;
+        });
+
+        // Log all world bus events
+        worldBus.subscribe(Event.class, e -> {
+            if (!(e instanceof GroundCheckCollision || e instanceof PhysicsCollisionWithMap || e instanceof GameStateUpdatedEvent || e instanceof ProcessInputsEvent))
+                addWorldLog(e.getClass().getSimpleName());
+        });
     }
 
     private void calculatePanelDimensions() {
@@ -304,7 +339,7 @@ public class GameWorldScreen implements Runnable {
 
         // System log panel
         if (row < currentRow + logPanelHeight) {
-            renderEmptyPanelRow(sb);
+            renderLogPanelRow(sb, row, "System Events", systemLogs);
             return;
         }
         currentRow += logPanelHeight;
@@ -318,7 +353,7 @@ public class GameWorldScreen implements Runnable {
 
         // World log panel
         if (row < currentRow + logPanelHeight) {
-            renderEmptyPanelRow(sb);
+            renderLogPanelRow(sb, row, "World Events", worldLogs);
             return;
         }
 
@@ -330,12 +365,55 @@ public class GameWorldScreen implements Runnable {
         sb.append(" ".repeat(sidePanelWidth));
     }
 
+    private void renderLogPanelRow(StringBuilder sb, int row, String title, Deque<String> logs) {
+        if (row == 0) {
+            sb.append("\033[1m").append(centerText("=== " + title + " ===", sidePanelWidth)).append("\033[0m");
+            return;
+        }
+
+        int logIndex = row - 1;
+        List<String> logList = new ArrayList<>(logs);
+        Collections.reverse(logList); // Most recent first
+
+        if (logIndex < logList.size()) {
+            String entry = logList.get(logIndex);
+            if (entry.length() > sidePanelWidth - 1) {
+                entry = entry.substring(0, sidePanelWidth - 4) + "...";
+            }
+            sb.append(padRight(" " + entry, sidePanelWidth));
+        } else {
+            sb.append(" ".repeat(sidePanelWidth));
+        }
+    }
+
+    private void addSystemLog(String message) {
+        while (systemLogs.size() >= MAX_LOG_ENTRIES) {
+            systemLogs.pollFirst();
+        }
+        systemLogs.addLast(message);
+    }
+
+    private void addWorldLog(String message) {
+        while (worldLogs.size() >= MAX_LOG_ENTRIES) {
+            worldLogs.pollFirst();
+        }
+        worldLogs.addLast(message);
+    }
+
     private String centerText(String text, int width) {
         // Strip ANSI codes for length calculation
         String stripped = text.replaceAll("\033\\[[0-9;]*m", "");
         int padding = (width - stripped.length()) / 2;
         if (padding < 0) padding = 0;
         return " ".repeat(padding) + text + " ".repeat(width - padding - stripped.length());
+    }
+
+    private String padRight(String text, int width) {
+        // Strip ANSI codes for length calculation
+        String stripped = text.replaceAll("\033\\[[0-9;]*m", "");
+        int padding = width - stripped.length();
+        if (padding < 0) return text.substring(0, width); // truncate
+        return text + " ".repeat(padding);
     }
 
     public void stop() {
