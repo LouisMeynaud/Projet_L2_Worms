@@ -3,6 +3,7 @@ package com.lllmtb.engine.turn;
 import java.util.Objects;
 import com.lllmtb.engine.GameWorld;
 import com.lllmtb.engine.logger.Logger;
+import com.lllmtb.engine.save.Save;
 import com.lllmtb.events.EventListener;
 import com.lllmtb.events.game.WeaponSelectedEvent;
 import com.lllmtb.events.move.GroundCheckCollision;
@@ -78,6 +79,7 @@ public final class TurnManager {
         Logger.logger.info("End turn - switch Team\n");
         world.getBus().postQueued(new TurnEndEvent());
         world.nextTeamTurn();
+        Save.setGameWorld(world);
 
     }
 
