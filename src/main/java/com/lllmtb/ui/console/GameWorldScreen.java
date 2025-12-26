@@ -3,6 +3,11 @@ package com.lllmtb.ui.console;
 import com.lllmtb.engine.GameWorld;
 import com.lllmtb.events.EventBus;
 import com.lllmtb.events.game.WorldCreatedEvent;
+import com.lllmtb.model.entity.projectile.Projectile;
+import com.lllmtb.model.entity.team.TeamColor;
+import com.lllmtb.model.entity.worm.Worm;
+import com.lllmtb.physics.PhysicsBody;
+import com.lllmtb.physics.Position;
 import com.lllmtb.terrain.map.Tile;
 import org.jline.terminal.Terminal;
 
@@ -25,6 +30,14 @@ public class GameWorldScreen implements Runnable {
     private volatile boolean running = true;
 
     private String[] cachedMapRows = null;
+
+    // Team colors
+    private static final Map<TeamColor, Integer> TEAM_COLORS = Map.of(
+            TeamColor.RED, 196,
+            TeamColor.BLUE, 33,
+            TeamColor.GREEN, 46,
+            TeamColor.YELLOW, 226
+    );
 
     // Tile colors
     private static final Map<Tile, Integer> TILE_COLORS = Map.of(
@@ -135,6 +148,9 @@ public class GameWorldScreen implements Runnable {
         // Clear screen and move cursor to top-left
         sb.append("\033[2J\033[H");
 
+        // Rebuild and cache map rows
+        cacheMapRows();
+
         // Render each row
         for (int row = 0; row < termHeight; row++) {
             renderFullRow(sb, row);
@@ -181,7 +197,78 @@ public class GameWorldScreen implements Runnable {
             return;
         }
 
-        sb.append(cachedMapRows[row]);
+        // Get the entities on this row
+        Map<Integer, EntityRender> entityPositions = getEntityPositionsForRow(mapHeight - 1 - mapRow);
+
+        if (entityPositions.isEmpty()) {
+            // No entities, use cached row directly
+            sb.append(cachedMapRows[row]);
+        } else {
+            // Overlay entities on the cached map
+            Tile[][] mapMatrix = world.getMap().getMapMatrix();
+            int mapWidth = world.getMap().getWidth();
+
+            for (int col = 0; col < mainPanelWidth; col++) {
+                int mapCol = col;
+
+                if (mapCol < 0 || mapCol >= mapWidth) {
+                    sb.append(" ");
+                    continue;
+                }
+
+                if (entityPositions.containsKey(mapCol)) {
+                    EntityRender er = entityPositions.get(mapCol);
+                    sb.append(String.format("\033[38;5;%dm%c\033[0m", er.color, er.symbol));
+                } else {
+                    Tile tile = mapMatrix[mapRow][mapCol];
+                    int color = TILE_COLORS.getOrDefault(tile, 0);
+                    char symbol = tile.getConsoleSymbol();
+                    sb.append(tile == Tile.AIR ? " " : String.format("\033[38;5;%dm%c\033[0m", color, symbol));
+                }
+            }
+        }
+    }
+
+    private record EntityRender(char symbol, int color) {}
+
+    private Map<Integer, EntityRender> getEntityPositionsForRow(int mapY) {
+        Map<Integer, EntityRender> positions = new HashMap<>();
+        if (world == null) return positions;
+
+        for (PhysicsBody body : world.getPhysics().getBodies()) {
+            if (body == null || body.getEntity() == null) continue;
+            Position pos = body.getPos();
+
+            // (x, y) = bottom left corner
+            int baseX = (int) Math.round(pos.getX());
+            int baseY = (int) Math.round(pos.getY());
+            int bodyWidth = (int) Math.ceil(body.getWidth());
+            int bodyHeight = (int) Math.ceil(body.getHeight());
+
+            // a single entity might have to be rendered on multiple rows/columns (e.g. a worm is 1x2)
+            if (mapY >= baseY && mapY < baseY + bodyHeight) {
+                int color;
+                char symbol;
+
+                if (body.getEntity() instanceof Worm worm) {
+                    TeamColor tc = worm.getTeam().teamColor;
+                    color = TEAM_COLORS.getOrDefault(tc, 255);
+                    symbol = '@';
+                } else if (body.getEntity() instanceof Projectile proj) {
+                    TeamColor tc = proj.getOwner().getTeam().teamColor;
+                    color = TEAM_COLORS.getOrDefault(tc, 255);
+                    symbol = '*';
+                } else {
+                    continue;
+                }
+
+                for (int dx = 0; dx < bodyWidth; dx++) {
+                    positions.put(baseX + dx, new EntityRender(symbol, color));
+                }
+            }
+        }
+
+        return positions;
     }
 
     private void renderSidePanelRow(StringBuilder sb, int row) {
