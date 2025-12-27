@@ -171,7 +171,7 @@ public final class TurnManager {
             Position spawnBullet = new Position(spawnX, spawnY);
 
             if (turn.getTeam().getHand() == ToolId.CALLSTRIKE) {
-                spawnBullet = new Position(mouseX, world.getMap().getHeight()-1);
+                spawnBullet = new Position(mouseX, world.getMap().getHeight() - 1);
                 angle = -Math.PI / 2;
             }
 

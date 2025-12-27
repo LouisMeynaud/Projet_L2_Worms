@@ -583,7 +583,7 @@ public class GameWorldPanel extends JPanel {
         if (handItem == null) return;
 
         String textureName = "Hand" + handItem;
-        BufferedImage texture = handItem instanceof WeaponId ? TextureManager.WEAPONS.get(textureName) : TextureManager.TOOLS.get(textureName);;
+        BufferedImage texture = handItem instanceof WeaponId ? TextureManager.WEAPONS.get(textureName) : TextureManager.TOOLS.get(textureName);
         if (texture == null) return;
 
         AffineTransform tx = new AffineTransform();
