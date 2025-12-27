@@ -1,34 +1,22 @@
 package com.lllmtb.model.entity.worm;
 
-import com.lllmtb.model.entity.Entity;
-import com.lllmtb.model.entity.team.Team;
-import com.lllmtb.model.entity.CollisionType;
-import com.lllmtb.physics.PhysicsBody;
-import com.lllmtb.physics.Position;
-import com.lllmtb.physics.Vector;
-import com.lllmtb.ui.graphical.animation.*;
-import java.awt.image.BufferedImage;
-
+import com.lllmtb.engine.logger.Logger;
+import java.util.Objects;
 
 import org.eclipse.jdt.annotation.NonNull;
 
-import java.util.Objects;
+import com.lllmtb.model.entity.CollisionType;
+import com.lllmtb.model.entity.Entity;
+import com.lllmtb.model.entity.team.Team;
+import com.lllmtb.physics.PhysicsBody;
+import com.lllmtb.physics.Position;
+import com.lllmtb.physics.Vector;
 
 /**
  * Represents a single worm entity in the game.
  * <p>A worm belongs to a {@link Team} and has its own {@link PhysicsBody} and {@link Statistics}.</p>
  */
 public class Worm extends Entity {
-
-    public static final BufferedImage[] standing = {SpriteWorm.getSprite(0, 0),
-                                                    SpriteWorm.getSprite(1, 0),
-                                                    SpriteWorm.getSprite(0, 1),
-                                                    SpriteWorm.getSprite(1, 1),
-                                                    SpriteWorm.getSprite(0, 2),
-                                                    SpriteWorm.getSprite(0, 2),
-                                                    SpriteWorm.getSprite(1, 1),
-                                                    SpriteWorm.getSprite(0, 1),
-                                                    SpriteWorm.getSprite(1, 0)};
 
     /**
      * The physical body of the worm used for physics simulation and position tracking.
@@ -61,11 +49,6 @@ public class Worm extends Entity {
     private final CollisionType collisionType = CollisionType.SLIDE;
 
     /**
-     * The current animation.
-     */
-    private transient Animation animation;
-
-    /**
      * Direction the worm is facing: 1 for right, -1 for left.
      */
     private int facingDirection = 1;
@@ -88,8 +71,6 @@ public class Worm extends Entity {
         this.stats = Objects.requireNonNull(stats);
         this.team = Objects.requireNonNull(team);
         this.team.addWorm(this);
-        this.animation = new Animation(standing, 10);
-        this.animation.start();
     }
 
     /**
@@ -133,14 +114,6 @@ public class Worm extends Entity {
     @Override
     public CollisionType getCollisionType() {
         return this.collisionType;
-    }
-
-    /**
-     * Returns the current animation of the worm.
-     * @return the {@link Animation} of the worm
-     */
-    public Animation getAnimation() {
-        return this.animation;
     }
 
     /**
@@ -215,6 +188,7 @@ public class Worm extends Entity {
     private void setDeath() {
         if (!this.stats.isAlive()) {
             this.alive = false;
+            Logger.logger.debug("Worm {} from the team {} is dead", this.name, this.team.name);
         }
     }
 

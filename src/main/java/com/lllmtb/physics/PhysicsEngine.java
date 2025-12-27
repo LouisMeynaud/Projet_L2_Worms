@@ -1,22 +1,26 @@
 package com.lllmtb.physics;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import com.lllmtb.events.physics.*;
 import org.eclipse.jdt.annotation.NonNull;
 
-import com.lllmtb.events.EventBus;
+import com.lllmtb.engine.GameWorld;
+import com.lllmtb.engine.logger.Logger;
+import com.lllmtb.events.game.MapUpdateEvent;
+import com.lllmtb.events.physics.ExplosionEvent;
 import com.lllmtb.events.physics.PhysicsModifierAddedEvent;
 import com.lllmtb.events.physics.PhysicsModifierRemovedEvent;
-import com.lllmtb.events.physics.RemoveWormOfTeam;
+import com.lllmtb.model.entity.projectile.ExplosiveProjectile;
 import com.lllmtb.model.entity.projectile.Projectile;
 import com.lllmtb.model.entity.worm.Worm;
 import com.lllmtb.model.item.ItemId;
 import com.lllmtb.terrain.map.Map;
+import com.lllmtb.terrain.map.Tile;
 
 /**
  * The {@code PhysicsEngine} class manages and updates a collection of {@link PhysicsBody} objects
@@ -27,7 +31,7 @@ import com.lllmtb.terrain.map.Map;
  * </p>
  */
 public class PhysicsEngine {
-    private final EventBus bus;
+    private final GameWorld world;
 
     /**
      * The list of all physics bodies currently managed by this engine.
@@ -72,15 +76,15 @@ public class PhysicsEngine {
      * in meters per second squared.
      * </p>
      * @param map     the {@code Map} instance representing the environment for collision detection.
-     * @param bus     the global {@code EventBus} instance created upstream.
+     * @param world     the global {@code GameWorld} instance created upstream.
      * @param hasWind if wind should be simulated.
      */
-    public PhysicsEngine(Map map, EventBus bus, boolean hasWind) {
-        this.bus = bus;
+    public PhysicsEngine(Map map, GameWorld world, boolean hasWind, GameMode gameMode) {
+        this.world = world;
         this.bodies = new CopyOnWriteArrayList<>();
         this.modifiers = new ConcurrentHashMap<>();
         this.collision = new Collision(map, this.bodies);
-        this.gravity = new Vector(0, -9810);
+        this.gravity = gameMode.getGravity();
         this.hasWind = hasWind;
         this.wind = new Vector(0, 0);
     }
@@ -162,7 +166,7 @@ public class PhysicsEngine {
             if (body.getEntity() instanceof Worm worm) {
                 if (!(worm.isAlive())) {
                     bodies.remove(body);
-                    bus.postQueued(new RemoveWormOfTeam(worm));
+                    //TODO : Remove a worm from a team or maybe set a state for worm when is dead
                 }
             }
         }
@@ -199,7 +203,7 @@ public class PhysicsEngine {
         Objects.requireNonNull(body);
         Objects.requireNonNull(modifier);
         modifiers.computeIfAbsent(body, b -> new ArrayList<>()).add(modifier);
-        bus.postQueued(new PhysicsModifierAddedEvent(body, modifier));
+        world.getBus().postQueued(new PhysicsModifierAddedEvent(body, modifier));
     }
 
     /**
@@ -220,7 +224,7 @@ public class PhysicsEngine {
         }
 
         if (list.remove(modifier)) {
-            bus.postQueued(new PhysicsModifierRemovedEvent(body, modifier));
+            world.getBus().postQueued(new PhysicsModifierRemovedEvent(body, modifier));
         }
         if (list.isEmpty()) {
             modifiers.remove(body);
@@ -248,7 +252,7 @@ public class PhysicsEngine {
         for (PhysicsModifier m : new ArrayList<>(list)) {
             if (Objects.equals(m.source, source)) {
                 list.remove(m);
-                bus.postQueued(new PhysicsModifierRemovedEvent(body, m));
+                world.getBus().postQueued(new PhysicsModifierRemovedEvent(body, m));
             }
         }
         if (list.isEmpty()) {
@@ -344,9 +348,14 @@ public class PhysicsEngine {
             Collision.Impact impact = collision.move(body, nextPos);
             // if collision
             if (impact.collided) {
+//                //if the body is an explosive projectile
+//                if (body.getEntity() instanceof Projectile) {
+//                    ((Projectile) body.getEntity()).onImpact(this);
+//                }
+
                 switch (body.getEntity().getCollisionType()) {
                     // if body slides along cliffs (if the collision is with the ground)
-                    case SLIDE -> collision.slide(body, impact, dt, bus);
+                    case SLIDE -> collision.slide(body, impact, dt, world.getBus());
 
                     // if body bounces
                     case BOUNCE -> collision.bounce(body, impact, 0.5);
@@ -358,12 +367,26 @@ public class PhysicsEngine {
                     default -> collision.cross(body, nextPos);
                 }
                 if (impact.die) {
-                    bus.postQueued(new PhysicsCollisionWithWaterOrExitMapEvent(body.getEntity()));
+                    remove(body);
+                    Logger.logger.debug("Entity out of map");
+                    if (body.getEntity() instanceof Worm worm) {
+                        worm.damageWorm(worm.getStats().getHp());
+                        world.getTurnManager().endTurn();
+                    }
+
                 } else {
                     if (impact.hitBody == null) {
-                        bus.postQueued(new PhysicsCollisionWithMap(body.getEntity()));
+                        //Collision with ground/Map
+                        if (body.getEntity() instanceof Projectile) {
+                            if ((body.getEntity() instanceof Projectile proj)) {
+                                world.queueCommands(proj.onImpact(null));
+                            }
+                        }
                     } else {
-                        bus.postQueued(new PhysicsCollisionWithOtherEntityEvent(body.getEntity(), impact.hitBody.getEntity()));
+                        // Collision wih another entity impactEntity and currentBody
+                        if (body.getEntity() instanceof Projectile proj) {
+                            world.queueCommands(proj.onImpact(impact.hitBody.getEntity()));
+                        }
                     }
                 }
             } else {
@@ -381,7 +404,13 @@ public class PhysicsEngine {
 
                 if (worm.isOnGround()) {
                     if (Math.abs(currentVector.getY()) < 0.5) {
-                        newVelX *= GROUND_FRICTION;
+                        double friction = GROUND_FRICTION;
+                        Position checkPos = new Position(body.getPos().getX(), body.getPos().getY() - 2);
+                        if (collision.getMap().inMap(checkPos)) {
+                            Tile t = collision.getMap().getTile(checkPos);
+                            friction = t.getFriction();
+                        }
+                        newVelX *= friction;
                     }
                 } else {
                     newVelX *= AIR_RESISTANCE_X;
@@ -413,4 +442,29 @@ public class PhysicsEngine {
         }
         nextStep(ticktime / 1000.0);
     }
+
+    public void createExplosion(Projectile projectile, int rayonDegatMap, int rayonSuffle, int degats, double forceSuffle) {
+        Position position = projectile.getBody().getPos();
+        Explosion.explosionDamageEffect(position, rayonSuffle, degats, bodies);
+        Explosion.explosionMapEffect(position, rayonDegatMap, collision.getMap());
+        Explosion.explosionSuffleEffect(position, rayonSuffle, forceSuffle, collision.getMap(), bodies);
+        world.getBus().postQueued(new ExplosionEvent(position, rayonSuffle, ((ExplosiveProjectile) projectile).getExplosionTexture()));
+        world.getBus().postQueued(new MapUpdateEvent());
+    }
+
+    public Worm findClosestEnemyFromPosition(Position searchPos, Object ownerTeam, Worm wormToExclude) {
+    return bodies.stream()
+        .filter(b -> b.getEntity() instanceof Worm)
+        .map(b -> (Worm) b.getEntity())
+        .filter(w -> !Objects.equals(w.getTeam(), ownerTeam))
+        .filter(w -> w != wormToExclude)
+        .min(Comparator.comparingDouble(targetWorm -> {
+            Position p = targetWorm.getBody().getPos();
+            double dx = searchPos.getX() - p.getX();
+            double dy = searchPos.getY() - p.getY();
+            return (dx * dx) + (dy * dy);
+        }))
+        .orElse(null);
+}
+
 }
