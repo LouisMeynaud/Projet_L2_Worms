@@ -95,7 +95,7 @@ public class TurnManagerTest {
 
     @Test
     void testEndWithOneTeamAlive(){
-        GameSettings settings = new GameSettings("blabla", 1, new String[]{"TeamTest1", "TeamTest2"}, 1, 100, 1, false, null, false, 370, LandScape.HILLY, 2);
+        GameSettings settings = new GameSettings("blabla", 1, new String[]{"TeamTest1", "TeamTest2"}, 1, 100, 1, false, null, false, 370, LandScape.HILLY, 2, GameMode.NORMAL);
         EventBus eventBus = new EventBus();
         GameWorld gw2 = new GameWorld(settings, eventBus);
         gw2.start();

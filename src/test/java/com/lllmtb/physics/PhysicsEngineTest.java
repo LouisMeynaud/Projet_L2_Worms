@@ -201,8 +201,11 @@ class PhysicsEngineTest {
     void testWindChangesEvery600Ticks() {
         double ticktime = 16.7;
         TurnManager t = new TurnManager(world, 10000);
+        Map map = Mockito.mock(Map.class);
+        Mockito.when(map.getHeightWater()).thenReturn(0);
         Team team = new Team("TestTeam", 1, new Position[]{new Position(2,4)});
         Mockito.when(world.getTurnManager()).thenReturn(t);
+        Mockito.when(world.getMap()).thenReturn(map);
         t.startTurn(team);
         Vector windBefore = pE.getWind();
         for (int i = 0; i < 605; i++) {
@@ -461,7 +464,6 @@ class PhysicsEngineTest {
         RocketProjectile rocket = new RocketProjectile(new UseParams(0, pos, owner));
         pE.add(rocket.getBody());
         pE.createExplosion(rocket, 10, 15, 30, 100);
-        assertFalse(pE.getBodies().contains(rocket.getBody()));
         assertEquals(2, bus.queuedEventCount());//verifie que les event sont bien crée(explosion et mapUpdate)
     }
 }

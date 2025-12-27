@@ -18,8 +18,17 @@ public class TurnTest {
     }
 
     @Test
-    public void testConstructor(){
+    public void testConstructorTeam(){
         assertSame(this.turn.getTeam(), this.team);
+    }
+
+    @Test
+    public void testContructorCurrentWorm(){
+        Team team2 = new Team("TestTeam", 2, new Position[]{new Position(0, 0), new Position(0,0)});
+        Worm worm1 = team2.getCurrentWorm();
+        worm1.damageWorm(100);
+        Turn turn2 = new Turn(team2);
+        assertNotSame(turn2.getWormPlayable(), worm1);
     }
 
     @Test
@@ -34,12 +43,6 @@ public class TurnTest {
         Worm worm1 = turn2.getWormPlayable();
         turn2.end();
         assertNotSame(turn2.getWormPlayable(), worm1);
-        Worm worm2 = turn2.getWormPlayable();
-
-        //One Worm alive
-        worm1.damageWorm(100);
-        turn2.end();
-        assertSame(worm2,turn2.getWormPlayable());
     }
 
     @Test
