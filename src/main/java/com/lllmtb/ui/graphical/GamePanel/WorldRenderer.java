@@ -221,7 +221,7 @@ public class WorldRenderer {
         if (worm.getEntity() == activeWorm) {
             double xCenter = xEcran + (largeurVerPx / 2.0);
             double yCenter = yEcran + (hauteurVerPx / 2.0);
-            paintCurrentWorsArrow(g2d, xEcran, yEcran, largeurVerPx);
+            paintCurrentWormsArrow(g2d, xEcran, yEcran, largeurVerPx);
             paintWeapon(g2d, xCenter, yCenter);
             paintAim(g2d, xCenter, yCenter);
         }
@@ -281,7 +281,7 @@ public class WorldRenderer {
      * @param y la position y du worms a l'ecran
      * @param width la largeur du worms a l'ecran
      */
-    private void paintCurrentWorsArrow(Graphics2D g2d, double x, double y, double width) {
+    private void paintCurrentWormsArrow(Graphics2D g2d, double x, double y, double width) {
 
         double offsetAnimation = Math.sin(world.getGameLoop().getTicks() / 10) * 5; //fonction sinuosidale , (qui monte et descend)
         int centerX = (int) (x + (width / 2.0));
