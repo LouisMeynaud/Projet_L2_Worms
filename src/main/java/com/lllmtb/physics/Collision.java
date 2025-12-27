@@ -449,7 +449,7 @@ public class Collision {
         Impact i = move(body, nextPos);
 
         if (i.collided) {
-            safePos = new Position( i.collisionPos.getX() + i.normal.getX() * EPSILON, i.collisionPos.getY() + i.normal.getY() * EPSILON);
+            safePos = new Position(i.collisionPos.getX() + i.normal.getX() * EPSILON, i.collisionPos.getY() + i.normal.getY() * EPSILON);
             body.setPos(safePos);
             body.setVector(new Vector(body.getVector().getX(), 0));
 
