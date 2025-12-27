@@ -1,6 +1,7 @@
 package com.lllmtb.physics;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
@@ -441,4 +442,26 @@ public class PhysicsEngine {
         bus.postQueued(new MapUpdateEvent());
         bodies.remove(projectile.getBody());
     }
+
+    public Worm findClosestEnemyFromPosition(Position searchPos, Object ownerTeam) {
+    return bodies.stream()
+        .filter(b -> b.getEntity() instanceof Worm)
+        .map(b -> (Worm) b.getEntity())
+        .filter(w -> !Objects.equals(w.getTeam(), ownerTeam))
+        .filter(targetWorm -> {
+            Position p = targetWorm.getBody().getPos();
+            double dx = searchPos.getX() - p.getX();
+            double dy = searchPos.getY() - p.getY();
+            double distSq = (dx * dx) + (dy * dy);
+            return distSq > 2;
+        })
+        .min(Comparator.comparingDouble(targetWorm -> {
+            Position p = targetWorm.getBody().getPos();
+            double dx = searchPos.getX() - p.getX();
+            double dy = searchPos.getY() - p.getY();
+            return (dx * dx) + (dy * dy);
+        }))
+        .orElse(null);
+}
+
 }

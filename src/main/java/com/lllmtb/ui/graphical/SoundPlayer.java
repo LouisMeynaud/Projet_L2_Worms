@@ -11,7 +11,7 @@ import javax.sound.sampled.FloatControl;
  */
 public class SoundPlayer {
     private static Clip currentMusic; // la musique de fond en cours
-    private static int musiqueVolume = 25; //le volume de la musique
+    private static int musiqueVolume = 5; //le volume de la musique
     private static int soundEffectVolume = 75; // le volume des effet sonor
 
     /**

@@ -36,6 +36,7 @@ public class ItemRegistryTest {
     public void get_withValidWeaponId() {
         assertNotNull(weaponRegistry.get(WeaponId.GUN));
         assertNotNull(weaponRegistry.get(WeaponId.BAZOOKA));
+        assertNotNull(weaponRegistry.get(WeaponId.ELECTRONCANON));
     }
 
     @Test
@@ -62,6 +63,7 @@ public class ItemRegistryTest {
         assertTrue(weaponRegistry.contains(WeaponId.BAZOOKA));
         assertTrue(weaponRegistry.contains(WeaponId.HEALINGBAZOOKA));
         assertTrue(weaponRegistry.contains(WeaponId.SHOTGUN));
+        assertTrue(weaponRegistry.contains(WeaponId.ELECTRONCANON));
     }
 
     @Test
@@ -196,12 +198,14 @@ public class ItemRegistryTest {
         weaponRegistry.addAmmo(WeaponId.BAZOOKA, 5);
         weaponRegistry.addAmmo(WeaponId.HEALINGBAZOOKA, 3);
         weaponRegistry.addAmmo(WeaponId.SHOTGUN, 2);
+        weaponRegistry.addAmmo(WeaponId.ELECTRONCANON, 2);
         weaponRegistry.addAmmo(WeaponId.GUN, -2);
         
         assertEquals(8, weaponRegistry.getAmmo(WeaponId.GUN));
         assertEquals(5, weaponRegistry.getAmmo(WeaponId.BAZOOKA));
         assertEquals(3, weaponRegistry.getAmmo(WeaponId.HEALINGBAZOOKA));
         assertEquals(2, weaponRegistry.getAmmo(WeaponId.SHOTGUN));
+        assertEquals(2, weaponRegistry.getAmmo(WeaponId.ELECTRONCANON));
     }
 }
 
