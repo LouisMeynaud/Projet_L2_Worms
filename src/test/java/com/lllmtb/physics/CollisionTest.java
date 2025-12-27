@@ -34,7 +34,7 @@ public class CollisionTest {
     @BeforeEach
     void setUp() {
         map = MapLoader.loadMatrix("MapTestCollision");
-        Position posW1 = new Position(1, 14);
+        Position posW1 = new Position(0, 14);
         Position posW2 = new Position(14, 14);
         Position[] positions = {posW1, posW2};
         team = new Team("Jeff team", 2, positions);
@@ -81,8 +81,7 @@ public class CollisionTest {
         assertNull(impact.hitBody);
         assertEquals(14, impact.collisionPos.getX());
         assertEquals(14, impact.collisionPos.getY());
-        assertTrue(0.5 > impact.ti);
-        assertTrue(0.4 < impact.ti);
+        assertEquals(0.5, impact.ti);
         assertEquals(-1, impact.normal.getX());
         assertEquals(0, impact.normal.getY());
         assertTrue(impact.collided);
@@ -92,14 +91,13 @@ public class CollisionTest {
     @Test
     void Collision_whenWormHasCollisionWithMap2() {
         pBWorm1.setVector(new Vector(28, 0));
-        pBWorm1.setPos((new Position(1, 13)));
+        pBWorm1.setPos((new Position(0, 13)));
         Position posFinal = new Position(28, 13);
         Collision.Impact impact = collision.move(pBWorm1, posFinal);
         assertNull(impact.hitBody);
         assertEquals(14, impact.collisionPos.getX());
         assertEquals(13, impact.collisionPos.getY());
-        assertTrue(0.5 > impact.ti);
-        assertTrue(0.4 < impact.ti);
+        assertEquals(0.5, impact.ti);
         assertEquals(-1, impact.normal.getX());
         assertEquals(0, impact.normal.getY());
         assertTrue(impact.collided);
@@ -146,8 +144,7 @@ public class CollisionTest {
         assertEquals(pBBP1, impact.hitBody);
         assertEquals(14, impact.collisionPos.getX());
         assertEquals(16, impact.collisionPos.getY());
-        assertTrue(1.0 > impact.ti);
-        assertTrue(0.8 < impact.collisionPos.getY());
+        assertEquals(0.5, impact.ti);
         assertEquals(0, impact.normal.getX());
         assertEquals(-1, impact.normal.getY());
         assertTrue(impact.collided);
@@ -218,6 +215,7 @@ public class CollisionTest {
     @Test
     void TestSweptCircleTile_whenEndPosOutOfMap() {
         pBWorm1.setVector(new Vector(-10, 5));
+        pBWorm1.setPos(new Position(1, 14));
         Collision.Impact impact = collision.move(pBWorm1, new Position(-9, 19));
         assertNull(impact.hitBody);
         assertEquals(0.0, impact.collisionPos.getX());
@@ -301,7 +299,8 @@ public class CollisionTest {
         Position posFinal = new Position(28, 14);
         Collision.Impact impact = collision.move(pBWorm1, posFinal);
         collision.touch(pBWorm1, impact);
-        assertEquals(impact.collisionPos, pBWorm1.getPos());
+        assertEquals(13.998, pBWorm1.getPos().getX());
+        assertEquals(14.0, pBWorm1.getPos().getY());
         assertEquals(0, pBWorm1.getVector().getX());
         assertEquals(0, pBWorm1.getVector().getY());
     }

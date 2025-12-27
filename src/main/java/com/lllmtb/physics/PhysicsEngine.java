@@ -354,9 +354,8 @@ public class PhysicsEngine {
                     // if body sticks to what it has hit
                     case TOUCH -> collision.touch(body, impact);
 
-                    // if body crosses all (map and entities)
-                    case CROSS -> collision.cross(body, nextPos);
-                    default -> System.out.print(""); // TODO : Replace by another default case
+                    // else body crosses all (map and entities)
+                    default -> collision.cross(body, nextPos);
                 }
                 if (impact.die) {
                     bus.postQueued(new PhysicsCollisionWithWaterOrExitMapEvent(body.getEntity()));

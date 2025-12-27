@@ -60,9 +60,9 @@ public class Collision {
          * @param normal the normal {@link Vector} of the hit structure.
          * @param hitBody the {@link PhysicsBody} of the collided entity ({@code null} if it's the map).
          */
-        public Impact(double ti, PhysicsBody body, Vector normal, PhysicsBody hitBody, boolean die) {
+        public Impact(double ti, Vector vector, PhysicsBody body, Vector normal, PhysicsBody hitBody, boolean die) {
             this.hitBody = hitBody;
-            this.collisionPos = body.getVector().newPos(body.getPos(), ti);
+            this.collisionPos = vector.newPos(body.getPos(), ti);
             this.ti = ti;
             this.normal = normal;
             this.collided = true;
@@ -83,6 +83,7 @@ public class Collision {
      */
     public Impact move(PhysicsBody body, Position endPos) {
         Impact finalImpact = new Impact(endPos);
+        Vector vector = new Vector(endPos.getX() - body.getPos().getX(), endPos.getY() - body.getPos().getY());
 
         // if the body is a worm
         if (body.getEntity() instanceof Worm) {
@@ -91,8 +92,8 @@ public class Collision {
             Position wormHead = new Position(body.getPos().getX(), body.getPos().getY() + 1.0);
             Position endPos2 = new Position(endPos.getX(), endPos.getY() + 1.0);
             // test collision for the two circles of the worm
-            Impact mapImpact1 = this.testSweptCircleTile(body, body.getPos(), radius, endPos);
-            Impact mapImpact2 = this.testSweptCircleTile(body, wormHead, radius, endPos2);
+            Impact mapImpact1 = this.testSweptCircleTile(body, body.getPos(), radius, endPos, vector);
+            Impact mapImpact2 = this.testSweptCircleTile(body, wormHead, radius, endPos2, vector);
             if (mapImpact1.ti < finalImpact.ti) {
                 finalImpact = mapImpact1;
             }
@@ -104,11 +105,11 @@ public class Collision {
                 if ((body != other) && !(other.getEntity() instanceof Worm)) {
                     double radiusOther = other.getHeight() / 2;
                     Position otherPos = new Position(other.getPos().getX() + 0.5, other.getPos().getY() + 0.5);
-                    Impact bodyImpact = this.testSweptCircleCircle(body, body.getPos(), radius, other, otherPos, radiusOther, endPos);
+                    Impact bodyImpact = this.testSweptCircleCircle(body, body.getPos(), radius, other, otherPos, radiusOther, endPos, vector);
                     if (bodyImpact.ti < finalImpact.ti) {
                         finalImpact = bodyImpact;
                     }
-                    Impact bodyImpact2 = this.testSweptCircleCircle(body, wormHead, radius, other, otherPos, radiusOther, endPos2);
+                    Impact bodyImpact2 = this.testSweptCircleCircle(body, wormHead, radius, other, otherPos, radiusOther, endPos2, vector);
                     if (bodyImpact2.ti < finalImpact.ti) {
                         finalImpact = bodyImpact2;
                     }
@@ -118,7 +119,7 @@ public class Collision {
             // if the body is not a worm
             double radius = body.getHeight() / 2;
             // Entity-Map Test: searches for the earliest impact time
-            Impact mapImpact = this.testSweptCircleTile(body, body.getPos(), radius, endPos);
+            Impact mapImpact = this.testSweptCircleTile(body, body.getPos(), radius, endPos, vector);
             if (mapImpact.collided && mapImpact.ti < finalImpact.ti) {
                 finalImpact = mapImpact;
             }
@@ -128,13 +129,13 @@ public class Collision {
                 if (other != body) {
                     double radiusOther = other.getWidth() / 2;
                     Position otherPos = new Position(other.getPos().getX() + 0.5, other.getPos().getY() + 0.5);
-                    Impact bodyImpact = this.testSweptCircleCircle(body, body.getPos(), radius, other, otherPos, radiusOther, endPos);
+                    Impact bodyImpact = this.testSweptCircleCircle(body, body.getPos(), radius, other, otherPos, radiusOther, endPos, vector);
                     if (bodyImpact.ti < finalImpact.ti) {
                         finalImpact = bodyImpact;
                     }
                     if (other.getEntity() instanceof Worm) {
                         Position wormHead = new Position(other.getPos().getX() + 0.5, other.getPos().getY() + 1.5);
-                        bodyImpact = this.testSweptCircleCircle(body, body.getPos(), radius, other, wormHead, radiusOther, endPos);
+                        bodyImpact = this.testSweptCircleCircle(body, body.getPos(), radius, other, wormHead, radiusOther, endPos, vector);
                         if (bodyImpact.ti < finalImpact.ti) {
                             finalImpact = bodyImpact;
                         }
@@ -154,7 +155,7 @@ public class Collision {
      * @param endPos The target {@link Position}.
      * @return The nearest impact with a solid tile.
      */
-    private Impact testSweptCircleTile(PhysicsBody body, Position startPos, double radius, Position endPos) {
+    private Impact testSweptCircleTile(PhysicsBody body, Position startPos, double radius, Position endPos, Vector vector) {
         Position startPos2 = new Position(startPos.getX() + radius, startPos.getY() + radius);
         Vector displacement = body.getVector();
 
@@ -170,7 +171,7 @@ public class Collision {
             for (int ty = minY; ty <= maxY; ty++) {
                 Position tilePos = new Position(tx, ty);
 
-                if ((this.map.inMap(tilePos) && !this.map.isSolid(tilePos))) {
+                if ((this.map.inMap(tilePos) && !this.map.isSolid(tilePos) && !this.map.isTileAt(new Position(tx, ty), Tile.WATER))) {
                     continue; // Skip non-solid tiles
                 }
 
@@ -178,9 +179,9 @@ public class Collision {
                 if (isColliding(startPos2, radius, tilePos)) {
                     Vector normal = this.calculateTileNormal(startPos2, tilePos);
                     if ((this.map.isTileAt(new Position(tx, ty), Tile.WATER)) || !(this.map.inMap(new Position(tx, ty)))) {
-                        return new Impact(0.0, body, normal, null, true);
+                        return new Impact(0.0, vector, body, normal, null, true);
                     } else {
-                        return new Impact(0.0, body, normal, null, false);
+                        return new Impact(0.0, vector, body, normal, null, false);
                     }
                 }
 
@@ -191,9 +192,9 @@ public class Collision {
 
                 if (ti >= 0.0 && ti < 1.0 && ti < nearestImpact.ti) {
                     if ((this.map.isTileAt(new Position(tx, ty), Tile.WATER)) || !(this.map.inMap(new Position(tx, ty)))) {
-                        nearestImpact = new Impact(ti, body, normal, null, true);
+                        nearestImpact = new Impact(ti, vector, body, normal, null, true);
                     } else {
-                        nearestImpact = new Impact(ti, body, normal, null, false);
+                        nearestImpact = new Impact(ti, vector, body, normal, null, false);
                     }
                 }
             }
@@ -214,7 +215,8 @@ public class Collision {
      * @param endPos The target {@link Position} of body1.
      * @return The nearest impact with body2.
      */
-    private Impact testSweptCircleCircle(PhysicsBody body1, Position startPos1, double radius1, PhysicsBody body2, Position startPos2, double radius2, Position endPos) {
+    private Impact testSweptCircleCircle(PhysicsBody body1, Position startPos1,
+                                         double radius1, PhysicsBody body2, Position startPos2, double radius2, Position endPos, Vector vector) {
         Position startPos = new Position(startPos1.getX() + radius1, startPos1.getY() + radius1);
         Vector displacement = new Vector(endPos.getX() - startPos1.getX(), endPos.getY() - startPos1.getY());
 
@@ -225,14 +227,14 @@ public class Collision {
 
         if (ti >= 0.0 && ti < 1.0) {
             // Calculate the exact impact position
-            Position hitPos = body1.getVector().newPos(startPos1, ti);
+            Position hitPos = vector.newPos(startPos1, ti);
 
             // Calculate the normal vector: from body2's center to body1's center
             Vector normalVec = hitPos.sub(body2.getPos());
             double length = Math.sqrt(normalVec.getX() * normalVec.getX() + normalVec.getY() * normalVec.getY());
             Vector normal = normalVec.scale(1.0 / length);
 
-            return new Impact(ti, body1, normal, body2, false);
+            return new Impact(ti, vector, body1, normal, body2, false);
         }
 
         return new Impact(endPos);
@@ -423,7 +425,7 @@ public class Collision {
         // if the collision is with a wall
         if (impact.normal.getY() == 0) {
             body.setVector(new Vector(0, body.getVector().getY()));
-            // Mark worm as not on ground when hitting a wall
+            // Mark worm is not on ground when hitting a wall
             if (body.getEntity() instanceof Worm) {
                 ((Worm) body.getEntity()).setOnGround(false);
             }
@@ -442,19 +444,19 @@ public class Collision {
                 }
             }
         }
+        double ti = ticktime - (ticktime * impact.ti);
         // calculate the new position
-        Position nextPos = body.getVector().newPos(body.getPos(), ticktime);
+        Position nextPos = body.getVector().newPos(body.getPos(), ti);
         Impact i = move(body, nextPos);
 
         if (i.collided) {
-            if (i.normal.getY() != 0) {
-                body.setPos(i.collisionPos);
-                body.setVector(new Vector(body.getVector().getX(), 0));
+            safePos = new Position(i.collisionPos.getX() + i.normal.getX() * EPSILON, i.collisionPos.getY() + i.normal.getY() * EPSILON);
+            body.setPos(safePos);
+            body.setVector(new Vector(body.getVector().getX(), 0));
 
-                if (i.normal.getY() == 1 && body.getEntity() instanceof Worm) {
-                    ((Worm) body.getEntity()).setOnGround(true);
-                    bus.postQueued(new GroundCheckCollision(body.getEntity()));
-                }
+            if (i.normal.getY() == 1 && body.getEntity() instanceof Worm) {
+                ((Worm) body.getEntity()).setOnGround(true);
+                bus.postQueued(new GroundCheckCollision(body.getEntity()));
             }
         } else {
             body.setPos(nextPos);
@@ -493,7 +495,11 @@ public class Collision {
      * @param impact the {@link Impact} with collision's information
      */
     public void touch(PhysicsBody body, Impact impact) {
-        body.setPos(impact.collisionPos);
+        Position safePos = new Position(
+                impact.collisionPos.getX() + impact.normal.getX() * EPSILON,
+                impact.collisionPos.getY() + impact.normal.getY() * EPSILON
+        );
+        body.setPos(safePos);
         // body's vector set to (0, 0)
         body.setVector(new Vector(0, 0));
     }
