@@ -16,6 +16,7 @@ import com.lllmtb.events.turn.TurnStartEvent;
 import com.lllmtb.events.turn.TurnStopEvent;
 import com.lllmtb.events.turn.WormPlayable;
 import com.lllmtb.events.ui.MoveEvent;
+import com.lllmtb.model.entity.projectile.Projectile;
 import com.lllmtb.model.entity.team.Team;
 import com.lllmtb.model.item.UseParams;
 import com.lllmtb.physics.Move;
@@ -31,6 +32,7 @@ public final class TurnManager {
     private final long turnDurationInMs;
     private long remainingTimeInMs;
     private int nbTurn;
+    private boolean turnFinish = false;
 
     public TurnManager(GameWorld world, long turnDuration) {
         this.world = world;
@@ -58,6 +60,7 @@ public final class TurnManager {
         this.remainingTimeInMs = turnDurationInMs;
         this.turn = new Turn(team);
         this.nbTurn += 1;
+        this.turnFinish = false;
         world.getBus().postQueued(new TurnStartEvent(team));
         Logger.logger.info("Start turn for the team {}\n", team.name);
         world.getBus().postQueued(new WormPlayable(turn.getWormPlayable()));
@@ -71,18 +74,43 @@ public final class TurnManager {
 
     public void updateTurn(double elapsedTime) {
         this.remainingTimeInMs -= (long) elapsedTime;
-        if (remainingTimeInMs <= 0) {
-            endTurn();
-        } else if (this.turn.getIsEnd()) {
-            endTurn();
+        if (turnFinish){
+            if (cleanTurn()){
+                this.passNextTurn();
+                world.getGameLoop().setSpeedTurn(1);
+            }
+            else{
+                world.getGameLoop().setSpeedTurn(5);
+            }
+        }
+        else{
+            if (remainingTimeInMs <= 0) {
+                endTurn();
+            } else if (this.turn.getIsEnd()) {
+                endTurn();
+            }
         }
     }
 
     public void endTurn() {
         this.turn.getTeam().emptyHand();
-        this.turn.end();
         Logger.logger.info("End turn - switch Team\n");
         world.getBus().postQueued(new TurnEndEvent());
+        this.turnFinish = true;
+    }
+
+    private boolean cleanTurn(){
+        for(PhysicsBody body : world.getPhysics().getBodies()){
+            if(body.getEntity() instanceof Projectile){
+                //TODO : SPECIFY PROJECTILE HERE, which need to be wait and no
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private void passNextTurn(){
+        this.turn.end();
         world.nextTeamTurn();
     }
 

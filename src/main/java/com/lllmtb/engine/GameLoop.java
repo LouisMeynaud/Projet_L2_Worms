@@ -11,11 +11,12 @@ public class GameLoop implements Runnable {
     private final double ticktime = 8; // ~60Hz
     private boolean isPaused = false;
     private long totalTicks = 0;
+    private int speedTurn = 1;
 
     /**
      * Creates a new {@code GameLoop} instance.
      * @param world the game world to be updated by this game loop
-     * @throws NullPointerException if {@code world} is {@code null}
+     * @exception NullPointerException if {@code world} is {@code null}
      */
     public GameLoop(@NonNull GameWorld world) {
         this.world = Objects.requireNonNull(world);
@@ -47,7 +48,7 @@ public class GameLoop implements Runnable {
                 world.getBus().processQueued();
 
                 // 2) update physics + TurnManager
-                world.update(elapsedMs);
+                world.update(elapsedMs * speedTurn);
 
                 // 3) process events generated during physics (collisions, explosions...)
                 world.getBus().processQueued();
@@ -84,5 +85,9 @@ public class GameLoop implements Runnable {
 
     public long getTicks() {
         return this.totalTicks;
+    }
+
+    public void setSpeedTurn(int speedTurn) {
+        this.speedTurn = speedTurn;
     }
 }
