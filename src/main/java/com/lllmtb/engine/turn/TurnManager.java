@@ -74,16 +74,14 @@ public final class TurnManager {
 
     public void updateTurn(double elapsedTime) {
         this.remainingTimeInMs -= (long) elapsedTime;
-        if (turnFinish){
-            if (cleanTurn()){
+        if (turnFinish) {
+            if (cleanTurn()) {
                 this.passNextTurn();
                 world.getGameLoop().setSpeedTurn(1);
-            }
-            else{
+            } else {
                 world.getGameLoop().setSpeedTurn(5);
             }
-        }
-        else{
+        } else {
             if (remainingTimeInMs <= 0) {
                 endTurn();
             } else if (this.turn.getIsEnd()) {
@@ -99,9 +97,9 @@ public final class TurnManager {
         this.turnFinish = true;
     }
 
-    private boolean cleanTurn(){
-        for(PhysicsBody body : world.getPhysics().getBodies()){
-            if(body.getEntity() instanceof Projectile){
+    private boolean cleanTurn() {
+        for (PhysicsBody body : world.getPhysics().getBodies()) {
+            if (body.getEntity() instanceof Projectile) {
                 //TODO : SPECIFY PROJECTILE HERE, which need to be wait and no
                 return false;
             }
@@ -109,7 +107,7 @@ public final class TurnManager {
         return true;
     }
 
-    private void passNextTurn(){
+    private void passNextTurn() {
         this.turn.end();
         world.nextTeamTurn();
     }
