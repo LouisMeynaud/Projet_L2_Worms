@@ -12,6 +12,7 @@ import com.lllmtb.physics.PhysicsEngine;
 import com.lllmtb.physics.Position;
 import com.lllmtb.physics.Vector;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public final class ElectronProjectile extends Projectile {
@@ -20,6 +21,8 @@ public final class ElectronProjectile extends Projectile {
     private static final double height = 1;
     private static final double width  = 1;
     private static final int damage = 20;
+
+    private int rebounds = 5;
 
     public ElectronProjectile(@NonNull UseParams params) {
         super(params, force, mass, height, width);
@@ -32,21 +35,34 @@ public final class ElectronProjectile extends Projectile {
 
     @Override
     public List<GameCommand> onImpact(Entity entity) {
-        Position myPos = this.getBody().getPos();
-        Worm owner = this.getOwner();
-        Worm target = engine.findClosestEnemyFromPosition(myPos, owner.getTeam());
-        if (target != null) {
-            Position targetPos = target.getBody().getPos();
-            double dx = targetPos.getX() - myPos.getX();
-            double dy = targetPos.getY() - myPos.getY();
-            double angleVersEnnemi = Math.atan2(dy, dx);
-            Vector velocity = new Vector(Math.cos(angleVersEnnemi), Math.sin(angleVersEnnemi)).scale(force);
-            this.getBody().setVector(velocity);
+        List<GameCommand> list = new ArrayList<GameCommand>();
+        hitWorm(list, entity, damage);
+        list.add(specialAbility());
+        this.rebounds--;
+        //TODO : Collision with ground remove this projectile cause it detects more collision than one
+        if(this.rebounds <= 0){
+            list.add(removeProjectileBody());
         }
+        return list;
     }
 
     public GameCommand specialAbility(){
+        Position myPos = this.getBody().getPos();
+        Worm owner = this.getOwner();
+        GameCommand trackWorm = (world -> {
+            Worm target = world.getPhysics().findClosestEnemyFromPosition(myPos, owner.getTeam());
+            if (target != null) {
+                Position targetPos = target.getBody().getPos();
+                double dx = targetPos.getX() - myPos.getX();
+                double dy = targetPos.getY() - myPos.getY();
+                double angleVersEnnemi = Math.atan2(dy, dx);
+                Vector velocity = new Vector(Math.cos(angleVersEnnemi), Math.sin(angleVersEnnemi)).scale(force);
+                this.getBody().setVector(velocity);
 
+            }
+        });
+
+        return trackWorm;
     }
 
     @Override

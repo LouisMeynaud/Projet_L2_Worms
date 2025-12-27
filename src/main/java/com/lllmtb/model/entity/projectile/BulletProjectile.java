@@ -31,7 +31,7 @@ public final class BulletProjectile extends Projectile {
     public List<GameCommand> onImpact(Entity entity) {
         List<GameCommand> list = new ArrayList<GameCommand>();
         hitWorm(list, entity, damage);
-        // trigger the reaction chain (explosion, events...)
+        list.add(removeProjectileBody());
         return list;
     }
 

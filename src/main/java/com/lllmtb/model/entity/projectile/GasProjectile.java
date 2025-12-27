@@ -1,11 +1,16 @@
 package com.lllmtb.model.entity.projectile;
 
 
+import com.lllmtb.engine.commands.GameCommand;
+import com.lllmtb.model.entity.Entity;
 import org.eclipse.jdt.annotation.NonNull;
 
 import com.lllmtb.model.entity.CollisionType;
 import com.lllmtb.model.item.UseParams;
 import com.lllmtb.physics.PhysicsEngine;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public final class GasProjectile extends Projectile {
     private static final double force  = 5;
@@ -24,7 +29,11 @@ public final class GasProjectile extends Projectile {
     }
 
     @Override
-    public void onImpact(PhysicsEngine engine) {
+    public List<GameCommand> onImpact(Entity entity) {
+        List<GameCommand> list = new ArrayList<GameCommand>();
+        hitWorm(list, entity, damage);
+        list.add(removeProjectileBody());
+        return list;
     }
 
     @Override

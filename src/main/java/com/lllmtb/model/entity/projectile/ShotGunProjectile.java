@@ -7,6 +7,7 @@ import com.lllmtb.model.entity.CollisionType;
 import com.lllmtb.model.item.UseParams;
 import com.lllmtb.physics.PhysicsEngine;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public final class ShotGunProjectile extends Projectile {
@@ -27,9 +28,10 @@ public final class ShotGunProjectile extends Projectile {
 
     @Override
     public List<GameCommand> onImpact(Entity entity) {
-        // trigger the reaction chain (explosion, events...)
-        //TODO : Change value null
-        return null;
+        List<GameCommand> list = new ArrayList<GameCommand>();
+        hitWorm(list, entity, damage);
+        list.add(removeProjectileBody());
+        return list;
     }
 
     @Override

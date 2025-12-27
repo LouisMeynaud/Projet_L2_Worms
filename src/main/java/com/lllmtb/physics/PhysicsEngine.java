@@ -381,9 +381,10 @@ public class PhysicsEngine {
                 } else {
                     if (impact.hitBody == null) {
                         //Collision with ground/Map
-                        if (body.getEntity() instanceof Projectile && (body.getEntity().getCollisionType() == CollisionType.TOUCH)) {
-                            remove(body);
-
+                        if (body.getEntity() instanceof Projectile) {
+                            if((body.getEntity() instanceof Projectile proj) ){
+                                world.queueCommands(proj.onImpact(null));
+                            }
                         }
                     } else {
                         // Collision wih another entity impactEntity and currentBody
@@ -453,7 +454,6 @@ public class PhysicsEngine {
         Explosion.explosionSuffleEffect(position, rayonSuffle, forceSuffle, collision.getMap(), bodies);
         world.getBus().postQueued(new ExplosionEvent(position, rayonSuffle, ((ExplosiveProjectile) projectile).getExplosionTexture()));
         world.getBus().postQueued(new MapUpdateEvent());
-        bodies.remove(projectile.getBody());
     }
 
     public Worm findClosestEnemyFromPosition(Position searchPos, Object ownerTeam) {

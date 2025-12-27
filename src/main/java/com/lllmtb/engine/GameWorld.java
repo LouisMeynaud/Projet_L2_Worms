@@ -7,6 +7,7 @@ import java.util.Objects;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import com.lllmtb.events.turn.TurnFinishEvent;
 import org.eclipse.jdt.annotation.NonNull;
 
 import com.lllmtb.engine.commands.GameCommand;
@@ -67,6 +68,9 @@ public class GameWorld {
         // Init GameCommand queue
         this.commandQueue = new LinkedBlockingQueue<>();
 
+        //Init gameMode
+        this.gameMode = settings.gameMode;
+
         // Init PhysicsEngine
         this.physics = new PhysicsEngine(map, this, settings.hasWind, gameMode);
 
@@ -91,8 +95,6 @@ public class GameWorld {
 
         //Init TurnManager
         this.turnManager = new TurnManager(this, settings.turnDuration);
-
-        this.gameMode = settings.gameMode;
     }
 
     public Map getMap() {
@@ -192,6 +194,7 @@ public class GameWorld {
         } while (!teams.get(indexTeam).oneAlive());
         if (indexTeam == currentIndexTeam) {
             Logger.logger.info("The team {} wins !!", teams.get(indexTeam).name);
+            bus.postQueued(new TurnFinishEvent());
             //TODO : Event or GameCommand for tell the winnerTeam and the game has been finish
         } else {
             this.turnManager.startTurn(teams.get(indexTeam));

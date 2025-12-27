@@ -45,13 +45,15 @@ public abstract class Projectile extends Entity {
     public abstract int getDamage();
 
     protected void hitWorm(List<GameCommand> list, Entity entity, int damage) {
-        //TODO : Remove body after a specific thing so no always after hit body
-        list.add(world -> world.getPhysics().remove(this.getBody()));
         if (entity instanceof Worm worm) {
             worm.damageWorm(damage);
             if (!worm.isAlive()) {
                 list.add(world -> world.getPhysics().remove(worm.getBody()));
             }
         }
+    }
+
+    protected GameCommand removeProjectileBody(){
+        return (world -> world.getPhysics().remove(this.getBody()));
     }
 }

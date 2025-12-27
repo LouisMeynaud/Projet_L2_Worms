@@ -33,7 +33,7 @@ public class Explosion {
          * @param suffleRadius  the radius of the wind created by the explosion
          * @param explosionForce the force of the wind
          * @param map  the map
-         * @param Bodies the list of bodies in the game
+         * @param bodies the list of bodies in the game
          */
         public static void explosionSuffleEffect(Position position, int suffleRadius, double explosionForce, Map map, CopyOnWriteArrayList<PhysicsBody> bodies) {
         for (PhysicsBody body : bodies) {
@@ -70,7 +70,7 @@ public class Explosion {
      * @param position the position of the center of the explosion
      * @param damageRadius the radius within which the entity takes damage
      * @param maxDamage the maximun damage of the explosion (at the center)
-     * @param Bodies the list of bodies
+     * @param bodies the list of bodies
      */
     public static void explosionDamageEffect(Position position, int damageRadius, int maxDamage, CopyOnWriteArrayList<PhysicsBody> bodies) {
     for (PhysicsBody body : bodies) {

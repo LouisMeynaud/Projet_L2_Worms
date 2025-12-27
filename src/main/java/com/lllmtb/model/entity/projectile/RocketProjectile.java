@@ -38,8 +38,8 @@ public final class RocketProjectile extends Projectile implements ExplosiveProje
     public List<GameCommand> onImpact(Entity entity) {
         List<GameCommand> list = new ArrayList<GameCommand>();
         hitWorm(list, entity, damage);
-        engine.createExplosion(this, RAYON_DEGAT_MAP, RAYON_SOUFFLE, DEGATS, FORCE_SOUFFLE);
-        // trigger the reaction chain (explosion, events...)
+        list.add((world -> {world.getPhysics().createExplosion(this, RAYON_DEGAT_MAP, RAYON_SOUFFLE, DEGATS, FORCE_SOUFFLE);}));
+        list.add(removeProjectileBody());
         return list;
     }
 
