@@ -77,6 +77,7 @@ public class TextureManager {
             PROJECTILES.put("HealingProjectile", ImageIO.read(TextureManager.class.getResource("/sprites/weapon/BulletHealingBazooka.png")));
             PROJECTILES.put("ShotGunProjectile", ImageIO.read(TextureManager.class.getResource("/sprites/weapon/ShotGunProjectile.png")));
             PROJECTILES.put("ElectronProjectile", ImageIO.read(TextureManager.class.getResource("/sprites/weapon/ShotGunProjectile.png")));
+            PROJECTILES.put("GasProjectile", ImageIO.read(TextureManager.class.getResource("/sprites/weapon/GasProjectile.png")));
 
             /////////////EFFECT/////////////////
             EFFECT.put("BazookaExplosion", ImageIO.read(TextureManager.class.getResource("/sprites/effect/BazookaExplosion.png")));
@@ -87,6 +88,5 @@ public class TextureManager {
             Logger.logger.error("Error while loading textures : ", e);
         }
     }
-
 }
 

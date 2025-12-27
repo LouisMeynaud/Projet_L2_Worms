@@ -344,6 +344,8 @@ public class GameUIPanel extends JPanel {
             this.world.getTurnManager().getTurn().getTeam().getInventory().weapons.addAmmo(WeaponId.SHOTGUN, 10);
             this.world.getTurnManager().getTurn().getTeam().getInventory().unlock(WeaponId.ELECTRONCANON);
             this.world.getTurnManager().getTurn().getTeam().getInventory().weapons.addAmmo(WeaponId.ELECTRONCANON, 10);
+            this.world.getTurnManager().getTurn().getTeam().getInventory().unlock(WeaponId.GASGUN);
+            this.world.getTurnManager().getTurn().getTeam().getInventory().weapons.addAmmo(WeaponId.GASGUN, 10);
 
             createInventoryGrid();
             cardLayout.show(centerContainer, "INVENTORY");

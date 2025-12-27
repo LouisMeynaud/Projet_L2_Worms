@@ -199,6 +199,8 @@
                         <exclude>com/lllmtb/model/entity/projectile/ShotGunProjectile.class</exclude>
                         <exclude>com/lllmtb/model/entity/projectile/ElectronProjectile.class</exclude>
                         <exclude>com/lllmtb/model/item/weapon/ElectronCanonWeapon.class</exclude>
+                        <exclude>com/lllmtb/model/item/weapon/GasGunWeapon.class</exclude>
+                        <exclude>com/lllmtb/model/entity/projectile/GasProjectile.class</exclude>
                     </excludes>
                 </configuration>
             </plugin>
