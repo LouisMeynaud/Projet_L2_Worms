@@ -12,7 +12,6 @@ import com.lllmtb.events.physics.*;
 import org.eclipse.jdt.annotation.NonNull;
 
 import com.lllmtb.engine.GameWorld;
-import com.lllmtb.engine.logger.Logger;
 import com.lllmtb.events.game.MapUpdateEvent;
 import com.lllmtb.events.physics.ExplosionEvent;
 import com.lllmtb.events.physics.PhysicsModifierAddedEvent;
