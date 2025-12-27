@@ -1,9 +1,10 @@
 package com.lllmtb.model.entity.worm;
 
-import static org.junit.jupiter.api.Assertions.*;
-
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class StatisticsTest {
     Statistics stats;
@@ -18,6 +19,12 @@ public class StatisticsTest {
 
     @Test
     public void testGetHp(){
+        assertEquals(100, stats.getHp());
+    }
+
+    @Test
+    public void setHpsupMaxHp(){
+        stats.setHp(150);
         assertEquals(100, stats.getHp());
     }
 
@@ -73,8 +80,4 @@ public class StatisticsTest {
         stats.setHp(0);
         assertFalse(stats.isAlive());
     }
-
-
-
-    
 }

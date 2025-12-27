@@ -5,8 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import com.lllmtb.events.physics.ActualizePhysicsEvent;
-import com.lllmtb.events.physics.PhysicsCollisionWithOtherEntityEvent;
+import com.lllmtb.events.physics.ExplosionEvent;
 import com.lllmtb.model.entity.Entity;
 import org.junit.jupiter.api.Test;
 import static org.mockito.Mockito.mock;
@@ -121,6 +120,16 @@ public class EventsTest {
         assertNotNull(event, "L'événement ne doit pas être null");
         assertEquals(nom, event.stringPath, "le stringpath doit etre: oui ");
     }
+
+    @Test
+    public void testCreationExplosionEvent() {
+        Position position = new Position(10, 12);
+        ExplosionEvent event = new ExplosionEvent(position, 15, "BazookaExplosion");
+        assertNotNull(event, "L'événement ne doit pas être null");
+        assertEquals(15, event.getRadius());
+        assertEquals("BazookaExplosion", event.getAnimationKey());
+        assertEquals(position, event.getPosition());
+    }
     @Test
     public void eventWithoutArgumentTest() {
         eventWithoutArgument(new GameStateUpdatedEvent());
@@ -148,16 +157,11 @@ public class EventsTest {
         Entity movingBodyMock = mock(com.lllmtb.model.entity.Entity.class);
         Entity hitBodyMock = mock(com.lllmtb.model.entity.Entity.class);
 
-        PhysicsCollisionWithOtherEntityEvent event = new PhysicsCollisionWithOtherEntityEvent(movingBodyMock, hitBodyMock);
+        //TODO Collision with other entity maybe another form
 
-        assertNotNull(event);
-        assertSame(movingBodyMock, event.getMovingBody());
-        assertSame(hitBodyMock, event.getHitBody());
+//        assertNotNull(event);
+//        assertSame(movingBodyMock, event.getMovingBody());
+//        assertSame(hitBodyMock, event.getHitBody());
     }
 
-    @Test
-    void actualizePhysicsEventTest(){
-        ActualizePhysicsEvent ap = new ActualizePhysicsEvent();
-        assertNotNull(ap);
-    }
 }
