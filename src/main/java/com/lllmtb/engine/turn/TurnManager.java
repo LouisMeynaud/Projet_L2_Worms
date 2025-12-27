@@ -10,6 +10,7 @@ import com.lllmtb.events.game.WeaponSelectedEvent;
 import com.lllmtb.events.move.GroundCheckCollision;
 import com.lllmtb.events.move.MouseInputEvent;
 import com.lllmtb.events.turn.TurnEndEvent;
+import com.lllmtb.events.turn.TurnFinishEvent;
 import com.lllmtb.events.turn.TurnSkipEvent;
 import com.lllmtb.events.turn.TurnStartEvent;
 import com.lllmtb.events.turn.TurnStopEvent;
@@ -60,7 +61,6 @@ public final class TurnManager {
         world.getBus().postQueued(new TurnStartEvent(team));
         Logger.logger.info("Start turn for the team {}\n", team.name);
         world.getBus().postQueued(new WormPlayable(turn.getWormPlayable()));
-        System.out.println("test");
         if (this.nbTurn > world.getTeams().size() * 4) {
             System.out.println(world.getMap().getHeightWater());
             if (world.getMap().risingWater()) {
@@ -118,6 +118,12 @@ public final class TurnManager {
             }
         };
 
+        EventListener<TurnFinishEvent> turnFinishListener = event -> {
+            //TODO : Close the game properly
+            world.stop();
+
+        };
+
         EventListener<WeaponSelectedEvent> weaponSelectedEventEventListener = event -> {
             turn.getTeam().selectWeapon(event.getWeaponId());
         };
@@ -159,5 +165,6 @@ public final class TurnManager {
         world.getBus().subscribe(GroundCheckCollision.class, groundCollisionListener);
         world.getBus().subscribe(WeaponSelectedEvent.class, weaponSelectedEventEventListener);
         world.getBus().subscribe(MouseInputEvent.class, mouseInputEventListener);
+        world.getBus().subscribe(TurnFinishEvent.class, turnFinishListener);
     }
 }
