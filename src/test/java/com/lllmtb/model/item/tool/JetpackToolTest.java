@@ -51,7 +51,7 @@ public class JetpackToolTest {
         assertEquals(20.0, m.transform.apply(v1).getY());
 
         Vector v2 = new Vector(5, -10);
-        assertEquals(5.0, m.transform.apply(v2).getY()); // -10 + 15 = 5
+        assertEquals(10.0, m.transform.apply(v2).getY()); // -10 + 20 = 10
         assertEquals(5.0, m.transform.apply(v2).getX()); // X should be unchanged
 
         // Second command should be the listener registration command
