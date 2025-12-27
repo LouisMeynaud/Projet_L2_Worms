@@ -7,11 +7,10 @@ import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import com.lllmtb.engine.GameWorld;
-import com.lllmtb.engine.logger.Logger;
-import com.lllmtb.events.physics.*;
 import org.eclipse.jdt.annotation.NonNull;
 
+import com.lllmtb.engine.GameWorld;
+import com.lllmtb.engine.logger.Logger;
 import com.lllmtb.events.game.MapUpdateEvent;
 import com.lllmtb.events.physics.ExplosionEvent;
 import com.lllmtb.events.physics.PhysicsModifierAddedEvent;
@@ -454,18 +453,12 @@ public class PhysicsEngine {
         world.getBus().postQueued(new MapUpdateEvent());
     }
 
-    public Worm findClosestEnemyFromPosition(Position searchPos, Object ownerTeam) {
+    public Worm findClosestEnemyFromPosition(Position searchPos, Object ownerTeam, Worm wormToExclude) {
     return bodies.stream()
         .filter(b -> b.getEntity() instanceof Worm)
         .map(b -> (Worm) b.getEntity())
         .filter(w -> !Objects.equals(w.getTeam(), ownerTeam))
-        .filter(targetWorm -> {
-            Position p = targetWorm.getBody().getPos();
-            double dx = searchPos.getX() - p.getX();
-            double dy = searchPos.getY() - p.getY();
-            double distSq = (dx * dx) + (dy * dy);
-            return distSq > 2;
-        })
+        .filter(w -> w != wormToExclude)
         .min(Comparator.comparingDouble(targetWorm -> {
             Position p = targetWorm.getBody().getPos();
             double dx = searchPos.getX() - p.getX();

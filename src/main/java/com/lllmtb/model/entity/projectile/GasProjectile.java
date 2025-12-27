@@ -1,15 +1,15 @@
 package com.lllmtb.model.entity.projectile;
 
 
-import com.lllmtb.engine.commands.GameCommand;
-import com.lllmtb.model.entity.Entity;
-import org.eclipse.jdt.annotation.NonNull;
-
-import com.lllmtb.model.entity.CollisionType;
-import com.lllmtb.model.item.UseParams;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import org.eclipse.jdt.annotation.NonNull;
+
+import com.lllmtb.engine.commands.GameCommand;
+import com.lllmtb.model.entity.CollisionType;
+import com.lllmtb.model.entity.Entity;
+import com.lllmtb.model.item.UseParams;
 
 public final class GasProjectile extends Projectile {
     private static final double force  = 5;
@@ -31,7 +31,6 @@ public final class GasProjectile extends Projectile {
     public List<GameCommand> onImpact(Entity entity) {
         List<GameCommand> list = new ArrayList<GameCommand>();
         hitWorm(list, entity, damage);
-        list.add(removeProjectileBody());
         return list;
     }
 

@@ -1,18 +1,17 @@
 package com.lllmtb.model.entity.projectile;
 
 
-import com.lllmtb.engine.commands.GameCommand;
-import com.lllmtb.model.entity.Entity;
+import java.util.ArrayList;
+import java.util.List;
 import org.eclipse.jdt.annotation.NonNull;
 
+import com.lllmtb.engine.commands.GameCommand;
 import com.lllmtb.model.entity.CollisionType;
+import com.lllmtb.model.entity.Entity;
 import com.lllmtb.model.entity.worm.Worm;
 import com.lllmtb.model.item.UseParams;
 import com.lllmtb.physics.Position;
 import com.lllmtb.physics.Vector;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public final class ElectronProjectile extends Projectile {
     private static final double force  = 20;
@@ -34,26 +33,34 @@ public final class ElectronProjectile extends Projectile {
 
     @Override
     public List<GameCommand> onImpact(Entity entity) {
+        if (entity == null) {
+            return new ArrayList<>(); 
+        }
         List<GameCommand> list = new ArrayList<GameCommand>();
         hitWorm(list, entity, damage);
-        list.add(specialAbility());
+        Worm hitWorm = null;
+        if (entity instanceof Worm) {
+            hitWorm = (Worm) entity;
+        }
+        list.add(specialAbility(hitWorm));
         this.rebounds--;
-        //TODO : Collision with ground remove this projectile cause it detects more collision than one
         if (this.rebounds <= 0) {
             list.add(removeProjectileBody());
         }
         return list;
     }
 
-    public GameCommand specialAbility() {
+    public GameCommand specialAbility(Worm wormToExclude) {
         Position myPos = this.getBody().getPos();
         Worm owner = this.getOwner();
         GameCommand trackWorm = (world -> {
-            Worm target = world.getPhysics().findClosestEnemyFromPosition(myPos, owner.getTeam());
+            Worm target = world.getPhysics().findClosestEnemyFromPosition(myPos, owner.getTeam(), wormToExclude);
             if (target != null) {
                 Position targetPos = target.getBody().getPos();
-                double dx = targetPos.getX() - myPos.getX();
-                double dy = targetPos.getY() - myPos.getY();
+                double targetCenterX = targetPos.getX() + (target.getBody().getWidth() / 2.0);
+                double targetCenterY = targetPos.getY() + (target.getBody().getHeight() / 2.0);
+                double dx = targetCenterX - myPos.getX();
+                double dy = targetCenterY - myPos.getY();
                 double angleVersEnnemi = Math.atan2(dy, dx);
                 Vector velocity = new Vector(Math.cos(angleVersEnnemi), Math.sin(angleVersEnnemi)).scale(force);
                 this.getBody().setVector(velocity);

@@ -4,6 +4,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import com.lllmtb.events.EventBus;
 import com.lllmtb.events.move.GroundCheckCollision;
+import com.lllmtb.model.entity.CollisionType;
 import com.lllmtb.model.entity.worm.Worm;
 import com.lllmtb.terrain.map.Map;
 import com.lllmtb.terrain.map.Tile;
@@ -83,6 +84,7 @@ public class Collision {
      */
     public Impact move(PhysicsBody body, Position endPos) {
         Impact finalImpact = new Impact(endPos);
+        boolean isCross = body.getEntity().getCollisionType() == CollisionType.CROSS;
 
         // if the body is a worm
         if (body.getEntity() instanceof Worm) {
@@ -129,13 +131,13 @@ public class Collision {
                     double radiusOther = other.getWidth() / 2;
                     Position otherPos = new Position(other.getPos().getX() + 0.5, other.getPos().getY() + 0.5);
                     Impact bodyImpact = this.testSweptCircleCircle(body, body.getPos(), radius, other, otherPos, radiusOther, endPos);
-                    if (bodyImpact.ti < finalImpact.ti) {
+                    if (bodyImpact.ti < finalImpact.ti || (isCross && bodyImpact.collided)) {
                         finalImpact = bodyImpact;
                     }
                     if (other.getEntity() instanceof Worm) {
                         Position wormHead = new Position(other.getPos().getX() + 0.5, other.getPos().getY() + 1.5);
                         bodyImpact = this.testSweptCircleCircle(body, body.getPos(), radius, other, wormHead, radiusOther, endPos);
-                        if (bodyImpact.ti < finalImpact.ti) {
+                        if (bodyImpact.ti < finalImpact.ti || (isCross && bodyImpact.collided)) {
                             finalImpact = bodyImpact;
                         }
                     }

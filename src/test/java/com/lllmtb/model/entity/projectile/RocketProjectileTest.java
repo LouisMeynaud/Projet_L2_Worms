@@ -1,10 +1,18 @@
 package com.lllmtb.model.entity.projectile;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import org.junit.jupiter.api.Test;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
+import com.lllmtb.engine.GameWorld;
+import com.lllmtb.engine.commands.GameCommand;
 import com.lllmtb.model.entity.CollisionType;
 import com.lllmtb.model.entity.team.Team;
 import com.lllmtb.model.entity.worm.Worm;
@@ -32,18 +40,28 @@ class RocketProjectileTest {
         assertEquals("BazookaExplosion", rocket.getExplosionTexture());
     }
 
-//      TODO : Remake the test with the new implementation
-//    @Test
-//    void testOnImpact_CallCreateExplosion() {
-//        Position pos = new Position(0, 0);
-//        Team team = new Team("TeamTest", 1, new Position[]{pos});
-//        Worm worm = new Worm("WormTest", team) {};
-//        UseParams params = new UseParams(0.0, pos, worm);
-//
-//        RocketProjectile rocket = new RocketProjectile(params);
-//        PhysicsEngine engineMock = mock(PhysicsEngine.class);
-//
-//        rocket.onImpact(engineMock);
-//        verify(engineMock).createExplosion(rocket, 10, 15, 30, 100.0);//verifie qu'on appelle bien la methode
-//    }
+    @Test
+        void testOnImpact_ReturnsExplosionCommand() {
+            Position pos = new Position(0, 0);
+            Team team = new Team("TeamTest", 1, new Position[]{pos});
+            Worm worm = mock(Worm.class);
+            when(worm.getTeam()).thenReturn(team);
+
+            UseParams params = new UseParams(0.0, pos, worm);
+            RocketProjectile rocket = new RocketProjectile(params);
+
+            GameWorld worldMock = mock(GameWorld.class);
+            PhysicsEngine physicsMock = mock(PhysicsEngine.class);
+            when(worldMock.getPhysics()).thenReturn(physicsMock);
+
+            List<GameCommand> commands = rocket.onImpact(null);
+            assertNotNull(commands);
+            assertFalse(commands.isEmpty());
+
+            for (GameCommand cmd : commands) {
+                cmd.execute(worldMock);
+            }
+
+            verify(physicsMock).createExplosion(eq(rocket), eq(10), eq(15), eq(30), eq(100.0));
+        }
 }
