@@ -31,6 +31,7 @@ import com.lllmtb.events.ui.MoveEvent;
 import com.lllmtb.events.ui.ShootMode;
 import com.lllmtb.events.ui.graphical.RequestFocus;
 import com.lllmtb.model.entity.projectile.BulletProjectile;
+import com.lllmtb.model.entity.projectile.MissileProjectile;
 import com.lllmtb.model.entity.projectile.Projectile;
 import com.lllmtb.model.entity.projectile.RocketProjectile;
 import com.lllmtb.model.entity.worm.Statistics;
@@ -476,6 +477,8 @@ public class GameWorldPanel extends JPanel {
                         textureProjectile = TextureManager.PROJECTILES.get("BulletProjectile");
                     } else if (projectile.getEntity()  instanceof RocketProjectile) {
                         textureProjectile = TextureManager.PROJECTILES.get("RocketProjectile");
+                    } else if (projectile.getEntity()  instanceof MissileProjectile) {
+                        textureProjectile = TextureManager.PROJECTILES.get("MissileProjectile");
                     }
                     if (textureProjectile != null) {
                         double largeurProjPx = body.getWidth() * tileSize;

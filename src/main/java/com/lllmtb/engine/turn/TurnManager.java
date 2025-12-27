@@ -22,6 +22,7 @@ import com.lllmtb.model.entity.projectile.Projectile;
 import com.lllmtb.model.entity.team.Team;
 import com.lllmtb.model.entity.worm.Worm;
 import com.lllmtb.model.item.UseParams;
+import com.lllmtb.model.item.tool.ToolId;
 import com.lllmtb.physics.Move;
 import static com.lllmtb.physics.Move.move;
 import com.lllmtb.physics.PhysicsBody;
@@ -168,9 +169,14 @@ public final class TurnManager {
             double spawnY = centerY + (Math.sin(angle) * dist);
 
             Position spawnBullet = new Position(spawnX, spawnY);
+
+            if (turn.getTeam().getHand() == ToolId.CALLSTRIKE) {
+                spawnBullet = new Position(mouseX, world.getMap().getHeight()-1);
+                angle = -Math.PI / 2;
+            }
+
             UseParams params = new UseParams(angle, spawnBullet, Objects.requireNonNull(turn.getWormPlayable()));
 
-            System.out.println(turn.getTeam().getHand());
             world.queueCommands(turn.getTeam().use(params));
         };
 

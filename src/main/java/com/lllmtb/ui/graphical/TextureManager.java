@@ -67,6 +67,10 @@ public class TextureManager {
             TOOLS.put("PARACHUTE", ImageIO.read(TextureManager.class.getResource("/textures/tool/tool/Parachute.png")));
             TOOLS.put("AmmoPARACHUTE", ImageIO.read(TextureManager.class.getResource("/textures/tool/ammo/Parachute.png")));
 
+            TOOLS.put("CALLSTRIKE", ImageIO.read(TextureManager.class.getResource("/textures/tool/tool/CallStrike.png")));
+            TOOLS.put("AmmoCALLSTRIKE", ImageIO.read(TextureManager.class.getResource("/textures/tool/ammo/CallStrike.png")));
+            TOOLS.put("HandCALLSTRIKE", ImageIO.read(TextureManager.class.getResource("/sprites/tool/CallStrike.png")));
+
             TOOLS.put("JETPACK", ImageIO.read(TextureManager.class.getResource("/textures/tool/tool/Jetpack.png")));
             TOOLS.put("AmmoJETPACK", ImageIO.read(TextureManager.class.getResource("/textures/tool/ammo/Jetpack.png")));
             TOOLS.put("HandJETPACK", ImageIO.read(TextureManager.class.getResource("/sprites/tool/Jetpack.png")));
@@ -74,6 +78,7 @@ public class TextureManager {
             ///////////projectile//////////
             PROJECTILES.put("BulletProjectile", ImageIO.read(TextureManager.class.getResource("/sprites/weapon/BulletGun.png")));
             PROJECTILES.put("RocketProjectile", ImageIO.read(TextureManager.class.getResource("/sprites/weapon/BulletBazooka.png")));
+            PROJECTILES.put("MissileProjectile", ImageIO.read(TextureManager.class.getResource("/sprites/tool/Missile.png")));
 
 
 
