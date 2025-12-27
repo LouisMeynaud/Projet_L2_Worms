@@ -215,7 +215,8 @@ public class Collision {
      * @param endPos The target {@link Position} of body1.
      * @return The nearest impact with body2.
      */
-    private Impact testSweptCircleCircle(PhysicsBody body1, Position startPos1, double radius1, PhysicsBody body2, Position startPos2, double radius2, Position endPos, Vector vector) {
+    private Impact testSweptCircleCircle(PhysicsBody body1, Position startPos1,
+                                         double radius1, PhysicsBody body2, Position startPos2, double radius2, Position endPos, Vector vector) {
         Position startPos = new Position(startPos1.getX() + radius1, startPos1.getY() + radius1);
         Vector displacement = new Vector(endPos.getX() - startPos1.getX(), endPos.getY() - startPos1.getY());
 
