@@ -6,6 +6,7 @@ import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import com.lllmtb.engine.logger.Logger;
 import com.lllmtb.events.physics.*;
 import org.eclipse.jdt.annotation.NonNull;
 
@@ -413,5 +414,15 @@ public class PhysicsEngine {
             changeWind();
         }
         nextStep(ticktime / 1000.0);
+    }
+
+    public static void fallDamage(Worm worm) {
+        int seuil = -50;
+        double speedy = worm.getBody().getVector().getY();
+        if (speedy < seuil) {
+            int damage = (int) Math.ceil((speedy - seuil) * -0.5);
+            worm.damageWorm(damage);
+            Logger.logger.info("{} has fallen and lost {} health points!", worm.name, damage);
+        }
     }
 }

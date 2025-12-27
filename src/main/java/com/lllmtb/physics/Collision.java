@@ -428,6 +428,7 @@ public class Collision {
                 ((Worm) body.getEntity()).setOnGround(false);
             }
         } else {
+            PhysicsEngine.fallDamage((Worm) body.getEntity());
             body.setVector(new Vector(body.getVector().getX(), 0));
             // if the worm touch the ground, it can jump again
             if (impact.normal.getY() == 1) {
