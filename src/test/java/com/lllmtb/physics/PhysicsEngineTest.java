@@ -14,6 +14,7 @@ import com.lllmtb.terrain.map.Map;
 import com.lllmtb.terrain.map.MapLoader;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 import java.util.HashSet;
 import java.util.List;
@@ -422,6 +423,17 @@ class PhysicsEngineTest {
         worm.damageWorm(worm.getStats().getHp());
         pE.actualizeBodies();
         assertEquals(pE.getBodies().size(), size-1);
+    }
+
+    @Test
+    void fallDamageTest(){
+        Team team = Mockito.mock(Team.class);
+        Worm worm = new Worm("TestWorm", team);
+        worm.getBody().setVector(new Vector(0, -100));
+        PhysicsEngine.fallDamage(worm);
+        //Worm has 100 HP and check if it loses some
+        assertNotEquals(100, worm.getStats().getHp() );
+
     }
 }
 
