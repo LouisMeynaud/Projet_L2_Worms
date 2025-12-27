@@ -68,7 +68,7 @@ public class GameWorld {
         this.commandQueue = new LinkedBlockingQueue<>();
 
         // Init PhysicsEngine
-        this.physics = new PhysicsEngine(map, bus, settings.hasWind, settings.gameMode);
+        this.physics = new PhysicsEngine(map, this, settings.hasWind, gameMode);
 
         // Init Teams
         this.teams = new ArrayList<>();
@@ -186,8 +186,16 @@ public class GameWorld {
             Logger.logger.warn("No teams available to take a turn.");
             return;
         }
-        indexTeam = (indexTeam + 1) % teams.size();
-        this.turnManager.startTurn(teams.get(indexTeam));
+        int currentIndexTeam = indexTeam;
+        do {
+            indexTeam = (indexTeam + 1) % teams.size();
+        } while (!teams.get(indexTeam).oneAlive());
+        if (indexTeam == currentIndexTeam) {
+            Logger.logger.info("The team {} wins !!", teams.get(indexTeam).name);
+            //TODO : Event or GameCommand for tell the winnerTeam and the game has been finish
+        } else {
+            this.turnManager.startTurn(teams.get(indexTeam));
+        }
     }
 
     /**

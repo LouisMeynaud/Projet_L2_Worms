@@ -204,6 +204,15 @@ public class Team {
         this.numberOfWorms = this.worms.size();
     }
 
+    public boolean oneAlive() {
+        for (Worm worm : this.worms) {
+            if (worm.isAlive()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     /**
      * Randomly selects a color from the available team colors.
      * @return a random {@link TeamColor}

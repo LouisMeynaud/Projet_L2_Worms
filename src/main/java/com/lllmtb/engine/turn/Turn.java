@@ -20,7 +20,10 @@ public class Turn {
     }
 
     public void end() {
-        this.team.nextWorm();
+        do {
+            this.team.nextWorm();
+        }
+        while (!this.getWormPlayable().isAlive());
     }
 
     public boolean getIsEnd() {

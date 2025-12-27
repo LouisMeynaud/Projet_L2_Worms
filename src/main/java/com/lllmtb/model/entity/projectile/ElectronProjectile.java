@@ -1,6 +1,8 @@
 package com.lllmtb.model.entity.projectile;
 
 
+import com.lllmtb.engine.commands.GameCommand;
+import com.lllmtb.model.entity.Entity;
 import org.eclipse.jdt.annotation.NonNull;
 
 import com.lllmtb.model.entity.CollisionType;
@@ -9,6 +11,8 @@ import com.lllmtb.model.item.UseParams;
 import com.lllmtb.physics.PhysicsEngine;
 import com.lllmtb.physics.Position;
 import com.lllmtb.physics.Vector;
+
+import java.util.List;
 
 public final class ElectronProjectile extends Projectile {
     private static final double force  = 20;
@@ -27,7 +31,7 @@ public final class ElectronProjectile extends Projectile {
     }
 
     @Override
-    public void onImpact(PhysicsEngine engine) {
+    public List<GameCommand> onImpact(Entity entity) {
         Position myPos = this.getBody().getPos();
         Worm owner = this.getOwner();
         Worm target = engine.findClosestEnemyFromPosition(myPos, owner.getTeam());
@@ -39,6 +43,10 @@ public final class ElectronProjectile extends Projectile {
             Vector velocity = new Vector(Math.cos(angleVersEnnemi), Math.sin(angleVersEnnemi)).scale(force);
             this.getBody().setVector(velocity);
         }
+    }
+
+    public GameCommand specialAbility(){
+
     }
 
     @Override

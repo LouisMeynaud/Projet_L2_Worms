@@ -1,5 +1,6 @@
 package com.lllmtb.model.entity.worm;
 
+import com.lllmtb.engine.logger.Logger;
 import java.util.Objects;
 
 import org.eclipse.jdt.annotation.NonNull;
@@ -187,6 +188,7 @@ public class Worm extends Entity {
     private void setDeath() {
         if (!this.stats.isAlive()) {
             this.alive = false;
+            Logger.logger.debug("Worm {} from the team {} is dead", this.name, this.team.name);
         }
     }
 

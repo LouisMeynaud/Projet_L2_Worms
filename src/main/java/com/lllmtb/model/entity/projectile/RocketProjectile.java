@@ -2,9 +2,14 @@ package com.lllmtb.model.entity.projectile;
 
 import org.eclipse.jdt.annotation.NonNull;
 
+import com.lllmtb.engine.commands.GameCommand;
 import com.lllmtb.model.entity.CollisionType;
+import com.lllmtb.model.entity.Entity;
 import com.lllmtb.model.item.UseParams;
 import com.lllmtb.physics.PhysicsEngine;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public final class RocketProjectile extends Projectile implements ExplosiveProjectile {
     private static final double force  = 50.0;
@@ -30,8 +35,12 @@ public final class RocketProjectile extends Projectile implements ExplosiveProje
     }
 
     @Override
-    public void onImpact(PhysicsEngine engine) {
+    public List<GameCommand> onImpact(Entity entity) {
+        List<GameCommand> list = new ArrayList<GameCommand>();
+        hitWorm(list, entity, damage);
         engine.createExplosion(this, RAYON_DEGAT_MAP, RAYON_SOUFFLE, DEGATS, FORCE_SOUFFLE);
+        // trigger the reaction chain (explosion, events...)
+        return list;
     }
 
     @Override
@@ -43,7 +52,6 @@ public final class RocketProjectile extends Projectile implements ExplosiveProje
     public int getSuffleRadius() {
         return RAYON_SOUFFLE;
     }
-
     @Override
     public int getExplosionDamage() {
         return DEGATS;

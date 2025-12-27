@@ -73,14 +73,21 @@ public class GameWorldTest {
         PhysicsEngine physics = gw.getPhysics();
         assertNotNull(physics);
 
-        // getTeams should contain one team named TeamA
+        // getTeams should contain one team named TeamA and getPlayingTeam too, the index of the team A need to be 0
         List<Team> teams = gw.getTeams();
+        Team t = gw.getPlayingTeam();
         assertEquals(1, teams.size());
         assertEquals("TeamA", teams.get(0).name);
+        assertEquals("TeamA", t.name);
+        assertEquals(0, gw.getIndexTeam());
 
         // Physics engine should contain nbWorms bodies (the worms created during constructor)
         int bodies = physics.getBodies().size();
         assertEquals(2, bodies, "Physics engine should have 2 bodies (2 worms registered)");
+
+        //Game Name
+        assertEquals("blabla", gw.getGameName());
+
     }
 
     @Test

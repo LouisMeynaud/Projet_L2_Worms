@@ -1,19 +1,21 @@
 package com.lllmtb.model.entity.projectile;
 
-import java.util.Objects;
-
-import org.eclipse.jdt.annotation.NonNull;
-
+import com.lllmtb.engine.commands.GameCommand;
 import com.lllmtb.model.entity.Entity;
 import com.lllmtb.model.entity.worm.Worm;
 import com.lllmtb.model.item.UseParams;
 import com.lllmtb.physics.PhysicsBody;
 import com.lllmtb.physics.PhysicsEngine;
 import com.lllmtb.physics.Vector;
+import org.eclipse.jdt.annotation.NonNull;
+
+import java.util.List;
+import java.util.Objects;
 
 public abstract class Projectile extends Entity {
     private final PhysicsBody body;
     private final Worm owner;
+    private int damage = 0;
 
     /**
      * Create a new Projectile
@@ -38,6 +40,18 @@ public abstract class Projectile extends Entity {
     /**
      * Called by collision detection when an impact is detected.
      */
-    public abstract void onImpact(PhysicsEngine engine);
+    public abstract List<GameCommand> onImpact(Entity entity);
+
     public abstract int getDamage();
+
+    protected void hitWorm(List<GameCommand> list, Entity entity, int damage) {
+        //TODO : Remove body after a specific thing so no always after hit body
+        list.add(world -> world.getPhysics().remove(this.getBody()));
+        if (entity instanceof Worm worm) {
+            worm.damageWorm(damage);
+            if (!worm.isAlive()) {
+                list.add(world -> world.getPhysics().remove(worm.getBody()));
+            }
+        }
+    }
 }

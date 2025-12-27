@@ -16,6 +16,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import com.lllmtb.engine.GameSettings;
+import com.lllmtb.engine.GameWorld;
+import com.lllmtb.engine.turn.TurnManager;
 import com.lllmtb.events.EventBus;
 import com.lllmtb.events.physics.PhysicsModifierAddedEvent;
 import com.lllmtb.events.physics.PhysicsModifierRemovedEvent;
@@ -29,19 +32,34 @@ import com.lllmtb.model.item.tool.ToolId;
 import com.lllmtb.model.item.weapon.WeaponId;
 import com.lllmtb.terrain.map.Map;
 import com.lllmtb.terrain.map.MapLoader;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 class PhysicsEngineTest {
     private Map map;
-    private EventBus bus;
+    private GameWorld world;
     private PhysicsEngine pE;
     private PhysicsBody pBWorm;
     private PhysicsBody pBBP;
+    private EventBus bus;
 
     @BeforeEach
     void setUp() {
         map = MapLoader.loadMatrix("mapTest");
         bus = new EventBus(4);
-        pE = new PhysicsEngine(map, bus, true,GameMode.NORMAL);
+        world = Mockito.mock(GameWorld.class);
+        Mockito.when(world.getBus()).thenReturn(bus);
+        pE = new PhysicsEngine(map, world, true, GameMode.NORMAL);
         Position pw = new Position(4, 4);
         Worm w = new Worm("José", new Team("Team", 1, new Position[]{pw}));
         assertTrue(map.inMap(pw));
@@ -82,7 +100,7 @@ class PhysicsEngineTest {
 
     @Test
     void testChangeWind_whenNoWind() {
-        PhysicsEngine tpE = new PhysicsEngine(map, bus, false,GameMode.NORMAL);
+        PhysicsEngine tpE = new PhysicsEngine(map, world, false, GameMode.NORMAL);
         tpE.add(pBWorm);
 
         Vector before = tpE.getWind();
@@ -114,7 +132,7 @@ class PhysicsEngineTest {
     @Test
     void testNextStep_WhenNoCollisions() {
         double dt = 0;
-        PhysicsEngine tpE = new PhysicsEngine(map, bus, false,GameMode.NORMAL);
+        PhysicsEngine tpE = new PhysicsEngine(map, world, false,GameMode.NORMAL);
         tpE.add(pBBP);
         pBBP.setPos(new Position(0, 5));
         pBBP.setVector(new Vector(0, 0));
@@ -126,7 +144,7 @@ class PhysicsEngineTest {
     @Test
     void testNextStep_WhenDie() {
         double dt = 0.0167;
-        PhysicsEngine tpE = new PhysicsEngine(map, bus, false,GameMode.NORMAL);
+        PhysicsEngine tpE = new PhysicsEngine(map, world, false, GameMode.NORMAL);
         tpE.add(pBBP);
         pBBP.setPos(new Position(0, 5));
         pBBP.setVector(new Vector(-10, 0));
@@ -152,7 +170,7 @@ class PhysicsEngineTest {
     @Test
     void testNextStep_whenCollision() {
         double dt = 0.0167;
-        PhysicsEngine tpE = new PhysicsEngine(map, bus, false,GameMode.NORMAL);
+        PhysicsEngine tpE = new PhysicsEngine(map, world, false, GameMode.NORMAL);
         tpE.add(pBWorm);
         tpE.add(pBBP);
         tpE.nextStep(dt);
@@ -165,7 +183,7 @@ class PhysicsEngineTest {
     @Test
     void testNextStep_whenCollision2() {
         double dt = 0.0167;
-        PhysicsEngine tpE = new PhysicsEngine(map, bus, false,GameMode.NORMAL);
+        PhysicsEngine tpE = new PhysicsEngine(map, world, false, GameMode.NORMAL);
         pBWorm.setVector(new Vector(0, 0));
         pBWorm.setPos(new Position(2, 4));
         pBBP.setPos(new Position(1, 5));
@@ -182,6 +200,10 @@ class PhysicsEngineTest {
     @Test
     void testWindChangesEvery600Ticks() {
         double ticktime = 16.7;
+        TurnManager t = new TurnManager(world, 10000);
+        Team team = new Team("TestTeam", 1, new Position[]{new Position(2,4)});
+        Mockito.when(world.getTurnManager()).thenReturn(t);
+        t.startTurn(team);
         Vector windBefore = pE.getWind();
         for (int i = 0; i < 605; i++) {
             pE.next(ticktime);
@@ -432,9 +454,9 @@ class PhysicsEngineTest {
 
     @Test
     void testCreateExplosion() {
-        
 
-        Worm owner = (Worm) pBWorm.getEntity(); 
+
+        Worm owner = (Worm) pBWorm.getEntity();
         Position pos = new Position(10, 10);
         RocketProjectile rocket = new RocketProjectile(new UseParams(0, pos, owner));
         pE.add(rocket.getBody());
