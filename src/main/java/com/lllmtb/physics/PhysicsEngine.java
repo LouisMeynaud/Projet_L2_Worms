@@ -7,10 +7,11 @@ import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import com.lllmtb.engine.logger.Logger;
+import com.lllmtb.events.physics.*;
 import org.eclipse.jdt.annotation.NonNull;
 
 import com.lllmtb.engine.GameWorld;
-import com.lllmtb.engine.logger.Logger;
 import com.lllmtb.events.game.MapUpdateEvent;
 import com.lllmtb.events.physics.ExplosionEvent;
 import com.lllmtb.events.physics.PhysicsModifierAddedEvent;
@@ -348,10 +349,6 @@ public class PhysicsEngine {
             Collision.Impact impact = collision.move(body, nextPos);
             // if collision
             if (impact.collided) {
-//                //if the body is an explosive projectile
-//                if (body.getEntity() instanceof Projectile) {
-//                    ((Projectile) body.getEntity()).onImpact(this);
-//                }
 
                 switch (body.getEntity().getCollisionType()) {
                     // if body slides along cliffs (if the collision is with the ground)
@@ -467,4 +464,14 @@ public class PhysicsEngine {
         .orElse(null);
 }
 
+
+    public static void fallDamage(Worm worm) {
+        int seuil = -50;
+        double speedy = worm.getBody().getVector().getY();
+        if (speedy < seuil) {
+            int damage = (int) Math.ceil((speedy - seuil) * -0.5);
+            worm.damageWorm(damage);
+            Logger.logger.info("{} has fallen and lost {} health points!", worm.name, damage);
+        }
+    }
 }
