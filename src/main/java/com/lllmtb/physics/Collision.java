@@ -83,7 +83,7 @@ public class Collision {
      */
     public Impact move(PhysicsBody body, Position endPos) {
         Impact finalImpact = new Impact(endPos);
-        Vector vector = new Vector(body.getPos().getX() - endPos.getX(), body.getPos().getY() - endPos.getY());
+        Vector vector = new Vector(endPos.getX() - body.getPos().getX(), endPos.getY() - body.getPos().getY());
 
         // if the body is a worm
         if (body.getEntity() instanceof Worm) {
