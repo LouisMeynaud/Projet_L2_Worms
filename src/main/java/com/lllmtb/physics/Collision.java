@@ -226,7 +226,7 @@ public class Collision {
 
         if (ti >= 0.0 && ti < 1.0) {
             // Calculate the exact impact position
-            Position hitPos = body1.getVector().newPos(startPos1, ti);
+            Position hitPos = vector.newPos(startPos1, ti);
 
             // Calculate the normal vector: from body2's center to body1's center
             Vector normalVec = hitPos.sub(body2.getPos());
