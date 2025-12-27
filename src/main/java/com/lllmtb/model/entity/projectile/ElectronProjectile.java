@@ -3,6 +3,7 @@ package com.lllmtb.model.entity.projectile;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import org.eclipse.jdt.annotation.NonNull;
 
 import com.lllmtb.engine.commands.GameCommand;
@@ -34,7 +35,7 @@ public final class ElectronProjectile extends Projectile {
     @Override
     public List<GameCommand> onImpact(Entity entity) {
         if (entity == null) {
-            return new ArrayList<>(); 
+            return new ArrayList<>();
         }
         List<GameCommand> list = new ArrayList<GameCommand>();
         hitWorm(list, entity, damage);
