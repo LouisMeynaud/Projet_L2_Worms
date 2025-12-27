@@ -148,8 +148,9 @@ public class GameWorldScreen implements Runnable {
 
         // Log all world bus events
         worldBus.subscribe(Event.class, e -> {
-            if (!(e instanceof GroundCheckCollision || e instanceof PhysicsCollisionWithMap || e instanceof GameStateUpdatedEvent || e instanceof ProcessInputsEvent))
+            if (!(e instanceof GroundCheckCollision || e instanceof PhysicsCollisionWithMap || e instanceof GameStateUpdatedEvent || e instanceof ProcessInputsEvent)) {
                 addWorldLog(e.getClass().getSimpleName());
+            }
         });
     }
 
@@ -277,6 +278,8 @@ public class GameWorldScreen implements Runnable {
                         case 'B' -> handleArrowDown();
                         case 'C' -> handleArrowRight();
                         case 'D' -> handleArrowLeft();
+                        default -> {
+                        }
                     }
                 } else if (next == -2) { // Just ESC
                     if (shootMode) shootMode = false;
@@ -314,7 +317,9 @@ public class GameWorldScreen implements Runnable {
             case 't', 'T' -> world.getBus().postQueued(new TurnSkipEvent());
 
             // Quit
-            case 'q', 'Q' -> running = false;
+            case 'q', 'Q' -> {
+                running = false;
+            }
 
             // Number keys for quick weapon selection
             case '1', '2', '3', '4', '5', '6', '7', '8', '9' -> {
@@ -323,6 +328,9 @@ public class GameWorldScreen implements Runnable {
                     inventorySelection = index;
                     selectInventoryItem();
                 }
+            }
+
+            default -> {
             }
         }
     }
@@ -523,7 +531,8 @@ public class GameWorldScreen implements Runnable {
         }
     }
 
-    private record EntityRender(char symbol, int color) {}
+    private record EntityRender(char symbol, int color) {
+    }
 
     private Map<Integer, EntityRender> getEntityPositionsForRow(int mapY) {
         Map<Integer, EntityRender> positions = new HashMap<>();
@@ -624,7 +633,9 @@ public class GameWorldScreen implements Runnable {
         String line = "";
 
         switch (row) {
-            case 0 -> line = "\033[1m" + centerText("=== INFO ===", sidePanelWidth) + "\033[0m";
+            case 0 -> {
+                line = "\033[1m" + centerText("=== INFO ===", sidePanelWidth) + "\033[0m";
+            }
             case 1 -> {
                 if (world != null && world.getPlayingTeam() != null) {
                     Team team = world.getPlayingTeam();
@@ -654,7 +665,9 @@ public class GameWorldScreen implements Runnable {
                     line = " Time: --:--";
                 }
             }
-            case 4 -> line = "";
+            case 4 -> {
+                line = "";
+            }
             case 5 -> {
                 if (shootMode) line = String.format(" \033[33m[SHOOT MODE]\033[0m Angle: %.0f°", aimAngle);
                 else if (inventoryOpen) line = " \033[36m[INVENTORY]\033[0m";
@@ -667,6 +680,8 @@ public class GameWorldScreen implements Runnable {
             case 7 -> {
                 if (shootMode) line = " [Enter]Fire [Esc]Cancel";
                 else line = " [T]Skip turn [Q]Quit";
+            }
+            default -> {
             }
         }
 
