@@ -67,9 +67,9 @@ public final class TurnManager {
         Logger.logger.info("Start turn for the team {}\n", team.name);
         world.getBus().postQueued(new WormPlayable(turn.getWormPlayable()));
         System.out.println("test");
-        if(this.nbTurn > world.getTeams().size() * 4){
+        if (this.nbTurn > world.getTeams().size() * 4) {
             System.out.println(world.getMap().getHeightWater());
-            if(world.getMap().risingWater()){
+            if (world.getMap().risingWater()) {
                 world.getBus().postQueued(new MapUpdateEvent());
             }
         }
@@ -96,7 +96,7 @@ public final class TurnManager {
         return turn;
     }
 
-    public int getNbTurn(){
+    public int getNbTurn() {
         return this.nbTurn;
     }
 

@@ -100,6 +100,12 @@ public class Map {
 
     }
 
+
+
+    public void setHeightWater(int heightWater) {
+        this.heightWater = heightWater;
+    }
+
     /**
      *
      * @param position the checking position
@@ -130,27 +136,26 @@ public class Map {
     public int getHeightWater() {
         return heightWater;
     }
-    public void initializeHeightWater(){
+    public void initializeHeightWater() {
         boolean find = false;
         int i = 0;
-        while(!find){
-            if(!this.isTileAt(new Position(0, i), Tile.WATER)){
+        while (!find) {
+            if (!this.isTileAt(new Position(0, i), Tile.WATER)) {
                 find = true;
                 break;
             }
             i++;
-        }this.heightWater = i;
+        } this.heightWater = i;
     }
-    
-    public boolean risingWater(){
-        System.out.println(this.width);
-        if(this.heightWater < this.height){
-            for(int i = 1 ; i < this.width; i++ ){
+
+    public boolean risingWater() {
+        if (this.heightWater < this.height) {
+            for (int i = 0; i < this.width; i++) {
             this.setTile(new Position(i, this.heightWater), Tile.WATER);
             }
             this.heightWater++;
             return true;
         }
         return false;
-    } 
+    }
 }
