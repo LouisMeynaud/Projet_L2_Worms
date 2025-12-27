@@ -31,6 +31,7 @@ import com.lllmtb.events.game.WorldCreatedEvent;
 import com.lllmtb.events.turn.TurnSkipEvent;
 import com.lllmtb.events.ui.ShootMode;
 import com.lllmtb.events.ui.graphical.RequestFocus;
+import com.lllmtb.events.ui.graphical.ScreenHomeEvent;
 import com.lllmtb.model.item.inventory.Inventory;
 import com.lllmtb.model.item.tool.ToolId;
 import com.lllmtb.model.item.weapon.WeaponId;
@@ -229,7 +230,12 @@ public class GameUIPanel extends JPanel {
 
         resumeButton.addActionListener(e -> pauseMenu(false));
         saveButton.addActionListener(e -> eventBus.postQueued(new SaveEvent()));
-        quitButton.addActionListener(e -> System.exit(0));
+        quitButton.addActionListener(e -> {
+            eventBus.postQueued(new SaveEvent());
+            eventBus.postQueued(new ScreenHomeEvent());
+            this.world.stop();
+            SoundPlayer.stopMusic();
+         });
         musiqueVolumeSlider.addChangeListener(e ->  SoundPlayer.setMusiqueVolume(musiqueVolumeSlider.getValue()));
         soundEffectVolumeSlider.addChangeListener(e -> SoundPlayer.setSoundEffectVolume(soundEffectVolumeSlider.getValue()));
 

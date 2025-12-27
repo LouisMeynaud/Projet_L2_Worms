@@ -84,4 +84,10 @@ public class SoundPlayer {
         controlSound.setValue(40.0f * (volumePercent / 100.0f) - 40.0f); // marche avec des decibel
     }
     }
+
+    public static void stopMusic() {
+        if (currentMusic != null) {
+            currentMusic.stop();
+        }
+    }
 }
