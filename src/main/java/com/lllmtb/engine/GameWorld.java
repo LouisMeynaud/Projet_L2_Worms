@@ -199,9 +199,10 @@ public class GameWorld {
      * @param cmds list of GameCommands to queue
      * @return true if all commands were successfully queued, false otherwise
      */
-    public boolean queueCommands(@NonNull List<@NonNull GameCommand> cmds) {
+    public boolean queueCommands(List<GameCommand> cmds) {
+        if (cmds == null || cmds.isEmpty()) return false;
         boolean allQueued = true;
-        for (GameCommand cmd : Objects.requireNonNull(cmds)) {
+        for (GameCommand cmd : cmds) {
             if (!queueCommand(cmd)) allQueued = false;
         }
         return allQueued;
