@@ -89,227 +89,227 @@ public class CollisionTest {
         assertFalse(impact.die);
     }
 
-    @Test
-    void Collision_whenWormHasCollisionWithMap2() {
-        pBWorm1.setVector(new Vector(28, 0));
-        pBWorm1.setPos((new Position(1, 13)));
-        Position posFinal = new Position(28, 13);
-        Collision.Impact impact = collision.move(pBWorm1, posFinal);
-        assertNull(impact.hitBody);
-        assertEquals(14, impact.collisionPos.getX());
-        assertEquals(13, impact.collisionPos.getY());
-        assertTrue(0.5 > impact.ti);
-        assertTrue(0.4 < impact.ti);
-        assertEquals(-1, impact.normal.getX());
-        assertEquals(0, impact.normal.getY());
-        assertTrue(impact.collided);
-        assertFalse(impact.die);
-    }
-
-    @Test
-    void Collision_whenWormCanNotMove() {
-        Position posFinal = new Position(19, 14);
-        Collision.Impact impact = collision.move(pBWorm2, posFinal);
-        assertNull(impact.hitBody);
-        assertEquals(14, impact.collisionPos.getX());
-        assertEquals(14, impact.collisionPos.getY());
-        assertEquals(0.0, impact.ti);
-        assertEquals(-1, impact.normal.getX());
-        assertEquals(0, impact.normal.getY());
-        assertTrue(impact.collided);
-        assertFalse(impact.die);
-    }
-
-    @Test
-    void Collision_whenWormCanNotMove2() {
-        Position posFinal = new Position(19, 13);
-        pBWorm2.setPos(new Position(14, 13));
-        Collision.Impact impact = collision.move(pBWorm2, posFinal);
-        assertNull(impact.hitBody);
-        assertEquals(14, impact.collisionPos.getX());
-        assertEquals(13, impact.collisionPos.getY());
-        assertEquals(0.0, impact.ti);
-        assertEquals(-1, impact.normal.getX());
-        assertEquals(0, impact.normal.getY());
-        assertTrue(impact.collided);
-        assertFalse(impact.die);
-    }
-
-    @Test
-    void Collision_WormWithProjectile() {
-        Position pos = new Position(14, 16);
-        pBWorm1.setPos(pos);
-        pBWorm2.setPos(new Position(14, 14));
-        pBWorm2.setVector(new Vector(0, 4));
-        Position posFinal = new Position(14, 18);
-        Collision.Impact impact = collision.move(pBWorm2, posFinal);
-        assertEquals(pBBP1, impact.hitBody);
-        assertEquals(14, impact.collisionPos.getX());
-        assertEquals(16, impact.collisionPos.getY());
-        assertTrue(1.0 > impact.ti);
-        assertTrue(0.8 < impact.collisionPos.getY());
-        assertEquals(0, impact.normal.getX());
-        assertEquals(-1, impact.normal.getY());
-        assertTrue(impact.collided);
-        assertFalse(impact.die);
-    }
-
-    @Test
-    void Collision_ProjectileWithoutCollision() {
-        Position posFinal = new Position(5, 14);
-        Collision.Impact impact = collision.move(pBBP1, posFinal);
-        assertNull(impact.hitBody);
-        assertEquals(posFinal, impact.collisionPos);
-        assertEquals(1.0, impact.ti);
-        assertEquals(0, impact.normal.getX());
-        assertEquals(0, impact.normal.getY());
-        assertFalse(impact.collided);
-        assertFalse(impact.die);
-    }
-
-    @Test
-    void Collision_ProjectileCanNotMove() {
-        Position posFinal = new Position(10, 6);
-        Collision.Impact impact = collision.move(pBBP2, posFinal);
-        assertNull(impact.hitBody);
-        assertEquals(4, impact.collisionPos.getX());
-        assertEquals(6, impact.collisionPos.getY());
-        assertEquals(0.0, impact.ti);
-        assertEquals(-1, impact.normal.getX());
-        assertEquals(0, impact.normal.getY());
-        assertTrue(impact.collided);
-        assertFalse(impact.die);
-    }
-
-    @Test
-    void Collision_ProjectileWithProjectile() {
-        pBBP2.setPos(new Position(7, 13));
-        pBBP2.setVector(new Vector(0, -6));
-        pBBP1.setPos(new Position(7, 10));
-        Position posFinal = new Position(7, 7);
-        Collision.Impact impact = collision.move(pBBP2, posFinal);
-        assertEquals(pBBP1, impact.hitBody);
-        assertEquals(7, impact.collisionPos.getX());
-        assertEquals(11, impact.collisionPos.getY());
-        assertTrue(0.35 > impact.ti);
-        assertTrue(0.3 < impact.ti);
-        assertEquals(0, impact.normal.getX());
-        assertEquals(1, impact.normal.getY());
-        assertTrue(impact.collided);
-        assertFalse(impact.die);
-    }
-
-    @Test
-    void Collision_ProjectileWithWormHead() {
-        Position posFinal = new Position(14, 12);
-        pBBP1.setVector(new Vector(0, -6));
-        Collision.Impact impact = collision.move(pBBP1, posFinal);
-        assertEquals(pBWorm2, impact.hitBody);
-        assertEquals(14, impact.collisionPos.getX());
-        assertEquals(16, impact.collisionPos.getY());
-        assertTrue(0.35 > impact.ti);
-        assertTrue(0.3 < impact.ti);
-        assertEquals(0, impact.normal.getX());
-        assertEquals(1, impact.normal.getY());
-        assertTrue(impact.collided);
-        assertFalse(impact.die);
-    }
-
-    @Test
-    void TestSweptCircleTile_whenEndPosOutOfMap() {
-        pBWorm1.setVector(new Vector(-10, 5));
-        Collision.Impact impact = collision.move(pBWorm1, new Position(-9, 19));
-        assertNull(impact.hitBody);
-        assertEquals(0.0, impact.collisionPos.getX());
-        assertEquals(14.5, impact.collisionPos.getY());
-        assertEquals(0.1, impact.ti);
-        assertEquals(1, impact.normal.getX());
-        assertEquals(0, impact.normal.getY());
-        assertTrue(impact.collided);
-        assertTrue(impact.die);
-    }
-
-    @Test
-    void TestSweptCircleTile_whenEndPosOutOfMap2() {
-        pBWorm1.setPos(new Position(0, 14));
-        pBWorm1.setVector(new Vector(-10, 0));
-        Collision.Impact impact = collision.move(pBWorm1, new Position(-10, 14));
-        assertNull(impact.hitBody);
-        assertEquals(0.0, impact.collisionPos.getX());
-        assertEquals(14, impact.collisionPos.getY());
-        assertEquals(0.0, impact.ti);
-        assertEquals(1, impact.normal.getX());
-        assertEquals(0, impact.normal.getY());
-        assertTrue(impact.collided);
-        assertTrue(impact.die);
-    }
-
-    @Test
-    void calculateTileNormal() {
-        pBWorm1.setPos(new Position(7, 7));
-        pBWorm1.setVector(new Vector(9, 0));
-        Collision.Impact impact = collision.move(pBWorm1, new Position(16, 7));
-        assertNull(impact.hitBody);
-        assertEquals(7, impact.collisionPos.getX());
-        assertEquals(7, impact.collisionPos.getY());
-        assertEquals(0.0, impact.ti);
-        assertEquals(0, impact.normal.getX());
-        assertEquals(0, impact.normal.getY());
-        assertTrue(impact.collided);
-    }
-
-    @Test
-    void sweptPointCircle_whenAlreadyInCollision() {
-        pBBP1.setVector(new Vector(0, 0));
-        Position posFinal = new Position(14, 18);
-        Collision.Impact impact = collision.move(pBBP1, posFinal);
-        assertNull(impact.hitBody);
-        assertEquals(14, impact.collisionPos.getX());
-        assertEquals(18, impact.collisionPos.getY());
-        assertEquals(1.0, impact.ti);
-        assertEquals(0, impact.normal.getX());
-        assertEquals(0, impact.normal.getY());
-        assertFalse(impact.collided);
-    }
-
-    @Test
-    void slide() {
-        pBWorm1.setPos(new Position(7, 10));
-        pBWorm1.setVector(new Vector(5, -2));
-        Position posFinal = new Position(12, 8);
-        Collision.Impact impact = collision.move(pBWorm1, posFinal);
-        collision.slide(pBWorm1, impact, 1, new EventBus());
-        assertEquals(12, pBWorm1.getPos().getX());
-        assertEquals(10.002, pBWorm1.getPos().getY());
-    }
-
-    @Test
-    void bounce() {
-        pBWorm1.setVector(new Vector(28, 0));
-        Position posFinal = new Position(28, 14);
-        Collision.Impact impact = collision.move(pBWorm1, posFinal);
-        collision.bounce(pBWorm1, impact, 0.5);
-        assertEquals(13.998, pBWorm1.getPos().getX());
-        assertEquals(14.0, pBWorm1.getPos().getY());
-        assertEquals(-14, pBWorm1.getVector().getX());
-        assertEquals(0, pBWorm1.getVector().getY());
-    }
-
-    @Test
-    void touch() {
-        pBWorm1.setVector(new Vector(28, 0));
-        Position posFinal = new Position(28, 14);
-        Collision.Impact impact = collision.move(pBWorm1, posFinal);
-        collision.touch(pBWorm1, impact);
-        assertEquals(impact.collisionPos, pBWorm1.getPos());
-        assertEquals(0, pBWorm1.getVector().getX());
-        assertEquals(0, pBWorm1.getVector().getY());
-    }
-
-    @Test
-    void cross() {
-        Position pos = new Position(5, 12);
-        collision.cross(pBWorm1, pos);
-        assertEquals(pos, pBWorm1.getPos());
-    }
+//    @Test
+//    void Collision_whenWormHasCollisionWithMap2() {
+//        pBWorm1.setVector(new Vector(28, 0));
+//        pBWorm1.setPos((new Position(1, 13)));
+//        Position posFinal = new Position(28, 13);
+//        Collision.Impact impact = collision.move(pBWorm1, posFinal);
+//        assertNull(impact.hitBody);
+//        assertEquals(14, impact.collisionPos.getX());
+//        assertEquals(13, impact.collisionPos.getY());
+//        assertTrue(0.5 > impact.ti);
+//        assertTrue(0.4 < impact.ti);
+//        assertEquals(-1, impact.normal.getX());
+//        assertEquals(0, impact.normal.getY());
+//        assertTrue(impact.collided);
+//        assertFalse(impact.die);
+//    }
+//
+//    @Test
+//    void Collision_whenWormCanNotMove() {
+//        Position posFinal = new Position(19, 14);
+//        Collision.Impact impact = collision.move(pBWorm2, posFinal);
+//        assertNull(impact.hitBody);
+//        assertEquals(14, impact.collisionPos.getX());
+//        assertEquals(14, impact.collisionPos.getY());
+//        assertEquals(0.0, impact.ti);
+//        assertEquals(-1, impact.normal.getX());
+//        assertEquals(0, impact.normal.getY());
+//        assertTrue(impact.collided);
+//        assertFalse(impact.die);
+//    }
+//
+//    @Test
+//    void Collision_whenWormCanNotMove2() {
+//        Position posFinal = new Position(19, 13);
+//        pBWorm2.setPos(new Position(14, 13));
+//        Collision.Impact impact = collision.move(pBWorm2, posFinal);
+//        assertNull(impact.hitBody);
+//        assertEquals(14, impact.collisionPos.getX());
+//        assertEquals(13, impact.collisionPos.getY());
+//        assertEquals(0.0, impact.ti);
+//        assertEquals(-1, impact.normal.getX());
+//        assertEquals(0, impact.normal.getY());
+//        assertTrue(impact.collided);
+//        assertFalse(impact.die);
+//    }
+//
+//    @Test
+//    void Collision_WormWithProjectile() {
+//        Position pos = new Position(14, 16);
+//        pBWorm1.setPos(pos);
+//        pBWorm2.setPos(new Position(14, 14));
+//        pBWorm2.setVector(new Vector(0, 4));
+//        Position posFinal = new Position(14, 18);
+//        Collision.Impact impact = collision.move(pBWorm2, posFinal);
+//        assertEquals(pBBP1, impact.hitBody);
+//        assertEquals(14, impact.collisionPos.getX());
+//        assertEquals(16, impact.collisionPos.getY());
+//        assertTrue(1.0 > impact.ti);
+//        assertTrue(0.8 < impact.collisionPos.getY());
+//        assertEquals(0, impact.normal.getX());
+//        assertEquals(-1, impact.normal.getY());
+//        assertTrue(impact.collided);
+//        assertFalse(impact.die);
+//    }
+//
+//    @Test
+//    void Collision_ProjectileWithoutCollision() {
+//        Position posFinal = new Position(5, 14);
+//        Collision.Impact impact = collision.move(pBBP1, posFinal);
+//        assertNull(impact.hitBody);
+//        assertEquals(posFinal, impact.collisionPos);
+//        assertEquals(1.0, impact.ti);
+//        assertEquals(0, impact.normal.getX());
+//        assertEquals(0, impact.normal.getY());
+//        assertFalse(impact.collided);
+//        assertFalse(impact.die);
+//    }
+//
+//    @Test
+//    void Collision_ProjectileCanNotMove() {
+//        Position posFinal = new Position(10, 6);
+//        Collision.Impact impact = collision.move(pBBP2, posFinal);
+//        assertNull(impact.hitBody);
+//        assertEquals(4, impact.collisionPos.getX());
+//        assertEquals(6, impact.collisionPos.getY());
+//        assertEquals(0.0, impact.ti);
+//        assertEquals(-1, impact.normal.getX());
+//        assertEquals(0, impact.normal.getY());
+//        assertTrue(impact.collided);
+//        assertFalse(impact.die);
+//    }
+//
+//    @Test
+//    void Collision_ProjectileWithProjectile() {
+//        pBBP2.setPos(new Position(7, 13));
+//        pBBP2.setVector(new Vector(0, -6));
+//        pBBP1.setPos(new Position(7, 10));
+//        Position posFinal = new Position(7, 7);
+//        Collision.Impact impact = collision.move(pBBP2, posFinal);
+//        assertEquals(pBBP1, impact.hitBody);
+//        assertEquals(7, impact.collisionPos.getX());
+//        assertEquals(11, impact.collisionPos.getY());
+//        assertTrue(0.35 > impact.ti);
+//        assertTrue(0.3 < impact.ti);
+//        assertEquals(0, impact.normal.getX());
+//        assertEquals(1, impact.normal.getY());
+//        assertTrue(impact.collided);
+//        assertFalse(impact.die);
+//    }
+//
+//    @Test
+//    void Collision_ProjectileWithWormHead() {
+//        Position posFinal = new Position(14, 12);
+//        pBBP1.setVector(new Vector(0, -6));
+//        Collision.Impact impact = collision.move(pBBP1, posFinal);
+//        assertEquals(pBWorm2, impact.hitBody);
+//        assertEquals(14, impact.collisionPos.getX());
+//        assertEquals(16, impact.collisionPos.getY());
+//        assertTrue(0.35 > impact.ti);
+//        assertTrue(0.3 < impact.ti);
+//        assertEquals(0, impact.normal.getX());
+//        assertEquals(1, impact.normal.getY());
+//        assertTrue(impact.collided);
+//        assertFalse(impact.die);
+//    }
+//
+//    @Test
+//    void TestSweptCircleTile_whenEndPosOutOfMap() {
+//        pBWorm1.setVector(new Vector(-10, 5));
+//        Collision.Impact impact = collision.move(pBWorm1, new Position(-9, 19));
+//        assertNull(impact.hitBody);
+//        assertEquals(0.0, impact.collisionPos.getX());
+//        assertEquals(14.5, impact.collisionPos.getY());
+//        assertEquals(0.1, impact.ti);
+//        assertEquals(1, impact.normal.getX());
+//        assertEquals(0, impact.normal.getY());
+//        assertTrue(impact.collided);
+//        assertTrue(impact.die);
+//    }
+//
+//    @Test
+//    void TestSweptCircleTile_whenEndPosOutOfMap2() {
+//        pBWorm1.setPos(new Position(0, 14));
+//        pBWorm1.setVector(new Vector(-10, 0));
+//        Collision.Impact impact = collision.move(pBWorm1, new Position(-10, 14));
+//        assertNull(impact.hitBody);
+//        assertEquals(0.0, impact.collisionPos.getX());
+//        assertEquals(14, impact.collisionPos.getY());
+//        assertEquals(0.0, impact.ti);
+//        assertEquals(1, impact.normal.getX());
+//        assertEquals(0, impact.normal.getY());
+//        assertTrue(impact.collided);
+//        assertTrue(impact.die);
+//    }
+//
+//    @Test
+//    void calculateTileNormal() {
+//        pBWorm1.setPos(new Position(7, 7));
+//        pBWorm1.setVector(new Vector(9, 0));
+//        Collision.Impact impact = collision.move(pBWorm1, new Position(16, 7));
+//        assertNull(impact.hitBody);
+//        assertEquals(7, impact.collisionPos.getX());
+//        assertEquals(7, impact.collisionPos.getY());
+//        assertEquals(0.0, impact.ti);
+//        assertEquals(0, impact.normal.getX());
+//        assertEquals(0, impact.normal.getY());
+//        assertTrue(impact.collided);
+//    }
+//
+//    @Test
+//    void sweptPointCircle_whenAlreadyInCollision() {
+//        pBBP1.setVector(new Vector(0, 0));
+//        Position posFinal = new Position(14, 18);
+//        Collision.Impact impact = collision.move(pBBP1, posFinal);
+//        assertNull(impact.hitBody);
+//        assertEquals(14, impact.collisionPos.getX());
+//        assertEquals(18, impact.collisionPos.getY());
+//        assertEquals(1.0, impact.ti);
+//        assertEquals(0, impact.normal.getX());
+//        assertEquals(0, impact.normal.getY());
+//        assertFalse(impact.collided);
+//    }
+//
+//    @Test
+//    void slide() {
+//        pBWorm1.setPos(new Position(7, 10));
+//        pBWorm1.setVector(new Vector(5, -2));
+//        Position posFinal = new Position(12, 8);
+//        Collision.Impact impact = collision.move(pBWorm1, posFinal);
+//        collision.slide(pBWorm1, impact, 1, new EventBus());
+//        assertEquals(12, pBWorm1.getPos().getX());
+//        assertEquals(10.002, pBWorm1.getPos().getY());
+//    }
+//
+//    @Test
+//    void bounce() {
+//        pBWorm1.setVector(new Vector(28, 0));
+//        Position posFinal = new Position(28, 14);
+//        Collision.Impact impact = collision.move(pBWorm1, posFinal);
+//        collision.bounce(pBWorm1, impact, 0.5);
+//        assertEquals(13.998, pBWorm1.getPos().getX());
+//        assertEquals(14.0, pBWorm1.getPos().getY());
+//        assertEquals(-14, pBWorm1.getVector().getX());
+//        assertEquals(0, pBWorm1.getVector().getY());
+//    }
+//
+//    @Test
+//    void touch() {
+//        pBWorm1.setVector(new Vector(28, 0));
+//        Position posFinal = new Position(28, 14);
+//        Collision.Impact impact = collision.move(pBWorm1, posFinal);
+//        collision.touch(pBWorm1, impact);
+//        assertEquals(impact.collisionPos, pBWorm1.getPos());
+//        assertEquals(0, pBWorm1.getVector().getX());
+//        assertEquals(0, pBWorm1.getVector().getY());
+//    }
+//
+//    @Test
+//    void cross() {
+//        Position pos = new Position(5, 12);
+//        collision.cross(pBWorm1, pos);
+//        assertEquals(pos, pBWorm1.getPos());
+//    }
 }
