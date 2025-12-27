@@ -5,7 +5,6 @@ import org.eclipse.jdt.annotation.NonNull;
 
 import com.lllmtb.model.entity.CollisionType;
 import com.lllmtb.model.item.UseParams;
-import com.lllmtb.physics.PhysicsEngine;
 
 import java.util.ArrayList;
 import java.util.List;

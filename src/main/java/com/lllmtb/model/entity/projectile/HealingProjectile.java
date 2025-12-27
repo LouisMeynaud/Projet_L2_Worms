@@ -6,7 +6,6 @@ import org.eclipse.jdt.annotation.NonNull;
 
 import com.lllmtb.model.entity.CollisionType;
 import com.lllmtb.model.item.UseParams;
-import com.lllmtb.physics.PhysicsEngine;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,7 +37,9 @@ public final class HealingProjectile extends Projectile implements ExplosiveProj
     public List<GameCommand> onImpact(Entity entity) {
         List<GameCommand> list = new ArrayList<GameCommand>();
         hitWorm(list, entity, damage);
-        list.add((world -> {world.getPhysics().createExplosion(this, RAYON_DEGAT_MAP, RAYON_SOUFFLE, DEGATS, FORCE_SOUFFLE);}));
+        list.add((world -> {
+            world.getPhysics().createExplosion(this, RAYON_DEGAT_MAP, RAYON_SOUFFLE, DEGATS, FORCE_SOUFFLE);
+        }));
         list.add(removeProjectileBody());
         return list;
 

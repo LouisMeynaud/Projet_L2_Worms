@@ -10,10 +10,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import com.lllmtb.engine.GameWorld;
 import com.lllmtb.engine.logger.Logger;
 import com.lllmtb.events.physics.*;
-import com.lllmtb.model.entity.CollisionType;
 import org.eclipse.jdt.annotation.NonNull;
 
-import com.lllmtb.events.EventBus;
 import com.lllmtb.events.game.MapUpdateEvent;
 import com.lllmtb.events.physics.ExplosionEvent;
 import com.lllmtb.events.physics.PhysicsModifierAddedEvent;
@@ -382,7 +380,7 @@ public class PhysicsEngine {
                     if (impact.hitBody == null) {
                         //Collision with ground/Map
                         if (body.getEntity() instanceof Projectile) {
-                            if((body.getEntity() instanceof Projectile proj) ){
+                            if ((body.getEntity() instanceof Projectile proj)) {
                                 world.queueCommands(proj.onImpact(null));
                             }
                         }

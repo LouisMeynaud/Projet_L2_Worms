@@ -6,7 +6,6 @@ import com.lllmtb.engine.commands.GameCommand;
 import com.lllmtb.model.entity.CollisionType;
 import com.lllmtb.model.entity.Entity;
 import com.lllmtb.model.item.UseParams;
-import com.lllmtb.physics.PhysicsEngine;
 
 import java.util.ArrayList;
 import java.util.List;

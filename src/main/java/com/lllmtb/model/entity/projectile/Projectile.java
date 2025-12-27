@@ -5,7 +5,6 @@ import com.lllmtb.model.entity.Entity;
 import com.lllmtb.model.entity.worm.Worm;
 import com.lllmtb.model.item.UseParams;
 import com.lllmtb.physics.PhysicsBody;
-import com.lllmtb.physics.PhysicsEngine;
 import com.lllmtb.physics.Vector;
 import org.eclipse.jdt.annotation.NonNull;
 
@@ -53,7 +52,7 @@ public abstract class Projectile extends Entity {
         }
     }
 
-    protected GameCommand removeProjectileBody(){
+    protected GameCommand removeProjectileBody() {
         return (world -> world.getPhysics().remove(this.getBody()));
     }
 }

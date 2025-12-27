@@ -8,7 +8,6 @@ import org.eclipse.jdt.annotation.NonNull;
 import com.lllmtb.model.entity.CollisionType;
 import com.lllmtb.model.entity.worm.Worm;
 import com.lllmtb.model.item.UseParams;
-import com.lllmtb.physics.PhysicsEngine;
 import com.lllmtb.physics.Position;
 import com.lllmtb.physics.Vector;
 
@@ -40,13 +39,13 @@ public final class ElectronProjectile extends Projectile {
         list.add(specialAbility());
         this.rebounds--;
         //TODO : Collision with ground remove this projectile cause it detects more collision than one
-        if(this.rebounds <= 0){
+        if (this.rebounds <= 0) {
             list.add(removeProjectileBody());
         }
         return list;
     }
 
-    public GameCommand specialAbility(){
+    public GameCommand specialAbility() {
         Position myPos = this.getBody().getPos();
         Worm owner = this.getOwner();
         GameCommand trackWorm = (world -> {
