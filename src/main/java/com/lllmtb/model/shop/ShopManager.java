@@ -73,7 +73,7 @@ public class ShopManager {
             } else if (id instanceof ToolId) {
                 team.addAmmo((ToolId) id, itemBuy.ammoPackSize);
             }
-            
+
             Logger.logger.info("Achat ammo reussie : " + itemBuy.name);
 
         } else {

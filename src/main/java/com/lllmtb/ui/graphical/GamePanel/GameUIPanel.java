@@ -483,7 +483,7 @@ public class GameUIPanel extends JPanel {
                 WeaponId weaponId = (WeaponId) element.id;
 
                 if (!inventory.isUnlocked(weaponId)) {
-                    String text = element.unlockPrice+"$";
+                    String text = element.unlockPrice + "$";
                     BufferedImage img = TextureManager.WEAPONS.get(weaponId.toString());
                     boolean canBuy = currentMoney >= element.unlockPrice;
 
@@ -496,12 +496,9 @@ public class GameUIPanel extends JPanel {
                     });
 
                     this.shopWeaponGrid.add(buttonShop);
-                }
-
-
-                else {
-                    String text = element.ammoPrice + "$ (+"+element.ammoPackSize +")";
-                    BufferedImage imgAmmo = TextureManager.WEAPONS.get("Ammo" + weaponId.toString()); 
+                } else {
+                    String text = element.ammoPrice + "$ (+" + element.ammoPackSize + ")";
+                    BufferedImage imgAmmo = TextureManager.WEAPONS.get("Ammo" + weaponId.toString());
                     boolean canBuy = currentMoney >= element.ammoPrice;
 
                     JButton buttonShop = Utilitaire.createShopButton(imgAmmo, text, canBuy);
@@ -514,16 +511,13 @@ public class GameUIPanel extends JPanel {
 
                     this.shopAmmoGrid.add(buttonShop);
                 }
-            }
-
-
-            else if (element.id instanceof ToolId) {
+            } else if (element.id instanceof ToolId) {
                 ToolId tid = (ToolId) element.id;
-                String text = element.ammoPrice + "$ (+" +element.ammoPackSize +")"; 
+                String text = element.ammoPrice + "$ (+" + element.ammoPackSize + ")";
                 BufferedImage img = TextureManager.TOOLS.get(tid.toString());
                 boolean canBuy = currentMoney >= element.ammoPrice;
 
-                JButton btn = Utilitaire.createShopButton(img, text, canBuy); 
+                JButton btn = Utilitaire.createShopButton(img, text, canBuy);
 
 
                 btn.addActionListener(e -> {
