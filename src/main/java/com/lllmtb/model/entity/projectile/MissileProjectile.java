@@ -1,14 +1,26 @@
 package com.lllmtb.model.entity.projectile;
 
+import com.lllmtb.engine.commands.GameCommand;
 import com.lllmtb.model.entity.CollisionType;
+import com.lllmtb.model.entity.Entity;
 import com.lllmtb.model.item.UseParams;
 import org.eclipse.jdt.annotation.NonNull;
 
-public final class MissileProjectile extends Projectile {
-    private static final double force  = 150.0;
+import java.util.ArrayList;
+import java.util.List;
+
+public final class MissileProjectile extends Projectile implements ExplosiveProjectile {
+    private static final double force  = 100.0;
     private static final double mass   = 0.01;
     private static final double height = 1;
     private static final double width  = 1;
+    private static final int damage = 80;
+
+    private static final int RAYON_DEGAT_MAP = 15;
+    private static final int RAYON_SOUFFLE = 20;
+    private static final int DEGATS = 50;
+    private static final double FORCE_SOUFFLE = 150;
+    private static final String TEXTURE_KEY = "MissileExplosion";
 
     public MissileProjectile(@NonNull UseParams params) {
         super(params, force, mass, height, width);
@@ -20,7 +32,40 @@ public final class MissileProjectile extends Projectile {
     }
 
     @Override
-    public void onImpact() {
-        // trigger the reaction chain (explosion, events...)
+    public List<GameCommand> onImpact(Entity entity) {
+        List<GameCommand> list = new ArrayList<>();
+        handleHit(list, entity, damage);
+        list.add((world -> world.getPhysics().createExplosion(this, RAYON_DEGAT_MAP, RAYON_SOUFFLE, DEGATS, FORCE_SOUFFLE)));
+        list.add(delete());
+        return list;
+    }
+
+    @Override
+    public int getExplosionRadius() {
+        return RAYON_DEGAT_MAP;
+    }
+
+    @Override
+    public int getSuffleRadius() {
+        return RAYON_SOUFFLE;
+    }
+    @Override
+    public int getExplosionDamage() {
+        return DEGATS;
+    }
+
+    @Override
+    public double getExplosionForce() {
+        return FORCE_SOUFFLE;
+    }
+
+    @Override
+    public String getExplosionTexture() {
+        return TEXTURE_KEY;
+    }
+
+    @Override
+    public int getDamage() {
+        return damage;
     }
 }
