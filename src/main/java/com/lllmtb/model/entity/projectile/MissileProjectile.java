@@ -11,9 +11,9 @@ import java.util.List;
 
 public final class MissileProjectile extends Projectile implements ExplosiveProjectile {
     private static final double force  = 100.0;
-    private static final double mass   = 0.01;
-    private static final double height = 1;
-    private static final double width  = 1;
+    private static final double mass   = 0.001;
+    private static final double height = 4;
+    private static final double width  = 4;
     private static final int damage = 80;
 
     private static final int RAYON_DEGAT_MAP = 15;
