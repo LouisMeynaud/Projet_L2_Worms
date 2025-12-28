@@ -15,6 +15,8 @@ import com.lllmtb.model.entity.projectile.Projectile;
 import com.lllmtb.model.entity.team.TeamColor;
 import com.lllmtb.model.entity.worm.Statistics;
 import com.lllmtb.model.entity.worm.Worm;
+import com.lllmtb.model.item.ItemId;
+import com.lllmtb.model.item.weapon.WeaponId;
 import com.lllmtb.physics.GameMode;
 import com.lllmtb.physics.PhysicsBody;
 import com.lllmtb.terrain.map.Tile;
@@ -222,7 +224,7 @@ public class WorldRenderer {
             double xCenter = xEcran + (largeurVerPx / 2.0);
             double yCenter = yEcran + (hauteurVerPx / 2.0);
             paintCurrentWormsArrow(g2d, xEcran, yEcran, largeurVerPx);
-            paintWeapon(g2d, xCenter, yCenter);
+            paintItem(g2d, xCenter, yCenter);
             paintAim(g2d, xCenter, yCenter);
         }
     }
@@ -370,23 +372,16 @@ public class WorldRenderer {
      * @param xCenter le centre du vers a l'ecran
      * @param yCenter le centre du vers a l'ecran
      */
-    private void paintWeapon(Graphics2D g2d, double xCenter, double yCenter) {
+    private void paintItem(Graphics2D g2d, double xCenter, double yCenter) {
         Worm activeWorm = world.getTurnManager().getTurn().getWormPlayable();
-        if (activeWorm == null) {
-            return;
-        }
-        Object handItem = world.getTurnManager().getTurn().getTeam().getHand();
-        if (handItem == null) {
-            return;
+        if (activeWorm == null) return;
 
-        }
-        String textureName = "Hand" + handItem.toString();
-        BufferedImage texture = TextureManager.WEAPONS.get(textureName);
-        if (texture == null) {
-            return;
+        ItemId handItem = world.getTurnManager().getTurn().getTeam().getHand();
+        if (handItem == null) return;
 
-        }
-
+        String textureName = "Hand" + handItem;
+        BufferedImage texture = handItem instanceof WeaponId ? TextureManager.WEAPONS.get(textureName) : TextureManager.TOOLS.get(textureName);
+        if (texture == null) return;
 
         AffineTransform tx = new AffineTransform();
         tx.translate(xCenter, yCenter);
