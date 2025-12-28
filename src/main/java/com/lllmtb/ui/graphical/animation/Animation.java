@@ -13,6 +13,9 @@ public class Animation {
 
     private boolean stopped;                // Is the animation stopped
 
+    private boolean playOnce = false;
+    private boolean hasEnded = false;
+
     private List<Frame> frames = new ArrayList<Frame>();    // Arraylist of frames
 
     public Animation(BufferedImage[] frames, int frameDelay) {
@@ -57,12 +60,14 @@ public class Animation {
 
         stopped = false;
         currentFrame = 0;
+        hasEnded = false;
     }
 
     public void reset() {
         this.stopped = true;
         this.frameCount = 0;
         this.currentFrame = 0;
+        this.hasEnded = false;
     }
 
     private void addFrame(BufferedImage frame, int duration) {
@@ -80,7 +85,7 @@ public class Animation {
     }
 
     public void update() {
-        if (!stopped) {
+        if (!stopped && !hasEnded) {
             frameCount++;
 
             if (frameCount >= frameDelay) {
@@ -88,11 +93,24 @@ public class Animation {
                 currentFrame += 1;
 
                 if (currentFrame > totalFrames - 1) {
-                    currentFrame = 0;
+                    if (playOnce) {
+                        currentFrame = totalFrames - 1;
+                        hasEnded = true;
+                    } else {
+                        currentFrame = 0;
+                    }
                 }
             }
         }
 
+    }
+
+    public void setPlayOnce(boolean playOnce) {
+        this.playOnce = playOnce;
+    }
+
+    public boolean hasEnded() {
+        return hasEnded;
     }
 
 }

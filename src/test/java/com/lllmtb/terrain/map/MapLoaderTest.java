@@ -1,16 +1,14 @@
 package com.lllmtb.terrain.map;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.Arrays;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import com.lllmtb.terrain.map.MapLoader;
 
 public class MapLoaderTest {
     public static String mapText;
@@ -29,7 +27,6 @@ public class MapLoaderTest {
         // path = "src/main/resources/map/mapTest/map.txt";
         // mapText = Files.readString(Path.of(path));
         m = MapLoader.loadMatrix("mapTest");
-        System.out.println(m);
     }
 
     @Test

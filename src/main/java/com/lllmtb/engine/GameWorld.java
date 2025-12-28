@@ -7,6 +7,7 @@ import java.util.Objects;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import com.lllmtb.events.turn.TurnFinishEvent;
 import org.eclipse.jdt.annotation.NonNull;
 
 import com.lllmtb.engine.commands.GameCommand;
@@ -17,6 +18,7 @@ import com.lllmtb.events.game.GameStateUpdatedEvent;
 import com.lllmtb.model.entity.Entity;
 import com.lllmtb.model.entity.team.Team;
 import com.lllmtb.model.entity.worm.Worm;
+import com.lllmtb.physics.GameMode;
 import com.lllmtb.physics.Move;
 import com.lllmtb.physics.PhysicsEngine;
 import com.lllmtb.terrain.generation.ConfigMap;
@@ -34,6 +36,7 @@ public class GameWorld {
     private int indexTeam;
     private final TurnManager turnManager;
     private String gameName;
+    private GameMode gameMode;
     Thread loopThread;
 
     private final BlockingQueue<GameCommand> commandQueue;
@@ -53,7 +56,7 @@ public class GameWorld {
         }
         if (tmap == null) {
             System.out.println("Generating a new map...");
-            ConfigMap config = new ConfigMap(settings.widthMap, 4, 5, settings.floatingIsland, 17, settings.terrainType, settings.nbTeams, settings.nbWorms);
+            ConfigMap config = new ConfigMap(settings.widthMap, 4, 5, settings.floatingIsland, 17, settings.terrainType, settings.nbTeams, settings.nbWorms, settings.gameMode);
             tmap = GenerateMap.createMap(config);
         }
         this.map = tmap;
@@ -65,8 +68,11 @@ public class GameWorld {
         // Init GameCommand queue
         this.commandQueue = new LinkedBlockingQueue<>();
 
+        //Init gameMode
+        this.gameMode = settings.gameMode;
+
         // Init PhysicsEngine
-        this.physics = new PhysicsEngine(map, bus, settings.hasWind);
+        this.physics = new PhysicsEngine(map, this, settings.hasWind, gameMode);
 
         // Init Teams
         this.teams = new ArrayList<>();
@@ -133,6 +139,10 @@ public class GameWorld {
         return gameName;
     }
 
+    public GameMode getGameMode() {
+        return gameMode;
+    }
+
     public void start() {
         if (loopThread != null && loopThread.isAlive()) return;
         Logger.logger.debug("Starting the game loop...");
@@ -178,8 +188,17 @@ public class GameWorld {
             Logger.logger.warn("No teams available to take a turn.");
             return;
         }
-        indexTeam = (indexTeam + 1) % teams.size();
-        this.turnManager.startTurn(teams.get(indexTeam));
+        int currentIndexTeam = indexTeam;
+        do {
+            indexTeam = (indexTeam + 1) % teams.size();
+        } while (!teams.get(indexTeam).oneAlive());
+        if (indexTeam == currentIndexTeam) {
+            Logger.logger.info("The team {} wins !!", teams.get(indexTeam).name);
+            bus.postQueued(new TurnFinishEvent());
+            //TODO : Event or GameCommand for tell the winnerTeam and the game has been finish
+        } else {
+            this.turnManager.startTurn(teams.get(indexTeam));
+        }
     }
 
     /**

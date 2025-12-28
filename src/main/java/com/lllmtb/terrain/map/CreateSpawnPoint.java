@@ -6,52 +6,58 @@ import com.lllmtb.physics.Position;
 
 public class CreateSpawnPoint {
 
+    public static Position[][] createSpawnPoint(int nbTeams, int nbWorms, Map map) {
+        int nbSpawnPoint = nbTeams * nbWorms;
+        Position[] spawnPointPos = new Position[nbSpawnPoint];
+        int i = 0;
+        Random random = new Random();
 
+        int mapWidth = map.getWidth();
+        int mapHeight = map.getHeight();
+        int waterLevel = map.getHeightWater();
+        int minDistance = 5;
+        int attemptsForCurrentWorm = 0;
 
+        while (i < nbSpawnPoint) {
+            attemptsForCurrentWorm++;
 
-public static Position[][] createSpawnPoint(int nbTeams, int nbWorms, Map map) {
-    int nbSpawnPoint = nbTeams * nbWorms;
-    Position[] spawnPointPos = new Position[nbSpawnPoint];
-    int i = 0;
-    Random random = new Random();
+            if (attemptsForCurrentWorm % 10 == 0 && minDistance > 0) {
+                minDistance--;
+            }
 
-    int mapWidth = map.getWidth();
-    int mapHeight = map.getHeight();
-    int waterLevel = map.getHeightWater();
+            int x = random.nextInt(mapWidth);
+            boolean wormPlaced = false;
 
-    int attempts = 0;
-    int maxAttempts = nbSpawnPoint * 100;
+            for (int y = mapHeight - 1; y > waterLevel; y--) {
+                Position headPos = new Position(x, y);
 
-    while (i < nbSpawnPoint && attempts < maxAttempts) {
-        attempts++;
-        int x = random.nextInt(mapWidth);
-        boolean wormPlaced = false;
+                boolean headIsFree = !map.isSolid(new Position(x, y));
+                boolean feetAreSolid = map.isSolid(new Position(x, y - 2));
 
-
-        for (int y = mapHeight - 1; y > waterLevel; y--) {
-            Position headPos = new Position(x, y);
-
-            boolean headIsFree = !map.isSolid(new Position(x, y));
-            boolean feetAreSolid = map.isSolid(new Position(x, y - 2));
-
-            if (headIsFree && feetAreSolid) {
-                boolean occupied = false;
-                for (int j = 0; j < i; j++) {
-                    if (headPos.equals(spawnPointPos[j])) {
-                        occupied = true;
+                if (headIsFree && feetAreSolid) {
+                    boolean occupied = false;
+                    for (int j = 0; j < i; j++) {
+                        Position existingWorm = spawnPointPos[j];
+                        double diffX = Math.abs(headPos.getX() - existingWorm.getX());
+                        double diffY = Math.abs(headPos.getY() - existingWorm.getY());
+                        if (diffX <= minDistance && diffY <= minDistance) {
+                            occupied = true;
+                            break;
+                        }
                     }
-                }
 
-                if (!occupied && !wormPlaced) {
-                    spawnPointPos[i] = headPos;
-                    i++;
-                    wormPlaced = true;
+                    if (!occupied && !wormPlaced) {
+                        spawnPointPos[i] = headPos;
+                        i++;
+                        wormPlaced = true;
+                        minDistance = 5;
+                        attemptsForCurrentWorm = 0;
+                    }
                 }
             }
         }
+        return separateSpawnTeam(nbTeams, nbWorms, spawnPointPos);
     }
-    return separateSpawnTeam(nbTeams, nbWorms, spawnPointPos);
-}
 
     private static Position[][] separateSpawnTeam(int nbTeams, int nbWorms, Position[] spawnPointPos) {
         Position[][] teamSpawnPointPositions = new Position[nbTeams][nbWorms];

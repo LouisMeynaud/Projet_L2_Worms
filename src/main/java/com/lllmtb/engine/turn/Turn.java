@@ -9,6 +9,9 @@ public class Turn {
 
     public Turn(Team team) {
         this.team = team;
+        while (!this.getWormPlayable().isAlive()) {
+            this.team.nextWorm();
+        }
     }
 
     public Team getTeam() {

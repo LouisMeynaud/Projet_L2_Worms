@@ -24,6 +24,7 @@ import com.lllmtb.events.EventBus;
 import com.lllmtb.events.physics.ProjectileRegisteredEvent;
 import com.lllmtb.model.entity.Entity;
 import com.lllmtb.model.entity.projectile.Projectile;
+import com.lllmtb.physics.GameMode;
 import com.lllmtb.physics.PhysicsEngine;
 import com.lllmtb.physics.PhysicsModifier;
 import com.lllmtb.terrain.generation.LandScape;
@@ -37,7 +38,7 @@ public class GameCommandTest {
 
     @BeforeEach
     void setUp() throws Exception {
-        GameSettings settings = new GameSettings("blabla", 1, new String[]{"Team"}, 1, 100, 10, false, null, false, 200, LandScape.FLAT,2);
+        GameSettings settings = new GameSettings("blabla", 1, new String[]{"Team"}, 1, 100, 10, false, null, false, 200, LandScape.FLAT,2,GameMode.NORMAL);
         bus = mock(EventBus.class);
         world = new GameWorld(settings, bus);
 

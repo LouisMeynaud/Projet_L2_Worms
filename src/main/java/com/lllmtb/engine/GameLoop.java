@@ -34,7 +34,6 @@ public class GameLoop implements Runnable {
             last = now;
 
             if (!isPaused) {
-                System.out.print(""); // TODO : Replace by another line which will be always effective
                 // System.out.println("[" + String.format("%4d", totalTicks) + "] New tick " + elapsedMs + "ms");
                 // System.out.println("Entities in the game "
                 //         + world.getPhysics().getBodies().size() + " : "

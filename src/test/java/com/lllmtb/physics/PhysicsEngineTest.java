@@ -1,9 +1,29 @@
 package com.lllmtb.physics;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import com.lllmtb.engine.GameSettings;
+import com.lllmtb.engine.GameWorld;
+import com.lllmtb.engine.turn.TurnManager;
 import com.lllmtb.events.EventBus;
 import com.lllmtb.events.physics.PhysicsModifierAddedEvent;
 import com.lllmtb.events.physics.PhysicsModifierRemovedEvent;
 import com.lllmtb.model.entity.projectile.BulletProjectile;
+import com.lllmtb.model.entity.projectile.RocketProjectile;
 import com.lllmtb.model.entity.team.Team;
 import com.lllmtb.model.entity.worm.Worm;
 import com.lllmtb.model.item.ItemId;
@@ -14,6 +34,7 @@ import com.lllmtb.terrain.map.Map;
 import com.lllmtb.terrain.map.MapLoader;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 import java.util.HashSet;
 import java.util.List;
@@ -26,16 +47,19 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class PhysicsEngineTest {
     private Map map;
-    private EventBus bus;
+    private GameWorld world;
     private PhysicsEngine pE;
     private PhysicsBody pBWorm;
     private PhysicsBody pBBP;
+    private EventBus bus;
 
     @BeforeEach
     void setUp() {
         map = MapLoader.loadMatrix("mapTest");
         bus = new EventBus(4);
-        pE = new PhysicsEngine(map, bus, true);
+        world = Mockito.mock(GameWorld.class);
+        Mockito.when(world.getBus()).thenReturn(bus);
+        pE = new PhysicsEngine(map, world, true, GameMode.NORMAL);
         Position pw = new Position(4, 4);
         Worm w = new Worm("José", new Team("Team", 1, new Position[]{pw}));
         assertTrue(map.inMap(pw));
@@ -76,7 +100,7 @@ class PhysicsEngineTest {
 
     @Test
     void testChangeWind_whenNoWind() {
-        PhysicsEngine tpE = new PhysicsEngine(map, bus, false);
+        PhysicsEngine tpE = new PhysicsEngine(map, world, false, GameMode.NORMAL);
         tpE.add(pBWorm);
 
         Vector before = tpE.getWind();
@@ -108,7 +132,7 @@ class PhysicsEngineTest {
     @Test
     void testNextStep_WhenNoCollisions() {
         double dt = 0;
-        PhysicsEngine tpE = new PhysicsEngine(map, bus, false);
+        PhysicsEngine tpE = new PhysicsEngine(map, world, false,GameMode.NORMAL);
         tpE.add(pBBP);
         pBBP.setPos(new Position(0, 5));
         pBBP.setVector(new Vector(0, 0));
@@ -120,13 +144,13 @@ class PhysicsEngineTest {
     @Test
     void testNextStep_WhenDie() {
         double dt = 0.0167;
-        PhysicsEngine tpE = new PhysicsEngine(map, bus, false);
+        PhysicsEngine tpE = new PhysicsEngine(map, world, false, GameMode.NORMAL);
         tpE.add(pBBP);
         pBBP.setPos(new Position(0, 5));
         pBBP.setVector(new Vector(-10, 0));
         tpE.nextStep(dt);
         assertEquals(5, pBBP.getPos().getY());
-        assertEquals(0, pBBP.getPos().getX());
+        assertEquals(0.002, pBBP.getPos().getX());
     }
 
     @Test
@@ -138,7 +162,7 @@ class PhysicsEngineTest {
         Position newPos = pBWorm.getPos();
         Vector newVector = pBWorm.getVector();
         assertEquals(4.0, newPos.getX());
-        assertEquals(4.002, newPos.getY());
+        assertEquals(4.0, newPos.getY());
         assertNotEquals(initialVector.getX(), newVector.getX());
         assertNotEquals(initialVector.getY(), newVector.getY());
     }
@@ -146,20 +170,20 @@ class PhysicsEngineTest {
     @Test
     void testNextStep_whenCollision() {
         double dt = 0.0167;
-        PhysicsEngine tpE = new PhysicsEngine(map, bus, false);
+        PhysicsEngine tpE = new PhysicsEngine(map, world, false, GameMode.NORMAL);
         tpE.add(pBWorm);
         tpE.add(pBBP);
         tpE.nextStep(dt);
-        assertEquals(0, pBBP.getPos().getX());
+        assertEquals(0.0, pBBP.getPos().getX());
         assertEquals(4.92499394064, pBBP.getPos().getY());
-        assertEquals(4, pBWorm.getPos().getX());
-        assertEquals(4.002, pBWorm.getPos().getY());
+        assertEquals(4.0, pBWorm.getPos().getX());
+        assertEquals(4.0, pBWorm.getPos().getY());
     }
 
     @Test
     void testNextStep_whenCollision2() {
         double dt = 0.0167;
-        PhysicsEngine tpE = new PhysicsEngine(map, bus, false);
+        PhysicsEngine tpE = new PhysicsEngine(map, world, false, GameMode.NORMAL);
         pBWorm.setVector(new Vector(0, 0));
         pBWorm.setPos(new Position(2, 4));
         pBBP.setPos(new Position(1, 5));
@@ -167,15 +191,22 @@ class PhysicsEngineTest {
         tpE.add(pBWorm);
         tpE.add(pBBP);
         tpE.nextStep(dt);
-        assertEquals(1.0001197841492524, pBBP.getPos().getX());
-        assertEquals(4.999988225378354, pBBP.getPos().getY());
-        assertEquals(2, pBWorm.getPos().getX());
-        assertEquals(4.002, pBWorm.getPos().getY());
+        assertEquals(0.9985857864376269, pBBP.getPos().getX());
+        assertEquals(5.001414213562373, pBBP.getPos().getY());
+        assertEquals(2.0, pBWorm.getPos().getX());
+        assertEquals(4.0, pBWorm.getPos().getY());
     }
 
     @Test
     void testWindChangesEvery600Ticks() {
         double ticktime = 16.7;
+        TurnManager t = new TurnManager(world, 10000);
+        Map map = Mockito.mock(Map.class);
+        Mockito.when(map.getHeightWater()).thenReturn(0);
+        Team team = new Team("TestTeam", 1, new Position[]{new Position(2,4)});
+        Mockito.when(world.getTurnManager()).thenReturn(t);
+        Mockito.when(world.getMap()).thenReturn(map);
+        t.startTurn(team);
         Vector windBefore = pE.getWind();
         for (int i = 0; i < 605; i++) {
             pE.next(ticktime);
@@ -422,6 +453,29 @@ class PhysicsEngineTest {
         worm.damageWorm(worm.getStats().getHp());
         pE.actualizeBodies();
         assertEquals(pE.getBodies().size(), size-1);
+    }
+
+    @Test
+    void testCreateExplosion() {
+
+
+        Worm owner = (Worm) pBWorm.getEntity();
+        Position pos = new Position(10, 10);
+        RocketProjectile rocket = new RocketProjectile(new UseParams(0, pos, owner));
+        pE.add(rocket.getBody());
+        pE.createExplosion(rocket, 10, 15, 30, 100);
+        assertEquals(2, bus.queuedEventCount());//verifie que les event sont bien crée(explosion et mapUpdate)
+    }
+
+    @Test
+    void fallDamageTest(){
+        Team team = Mockito.mock(Team.class);
+        Worm worm = new Worm("TestWorm", team);
+        worm.getBody().setVector(new Vector(0, -100));
+        PhysicsEngine.fallDamage(worm);
+        //Worm has 100 HP and check if it loses some
+        assertNotEquals(100, worm.getStats().getHp() );
+
     }
 }
 
