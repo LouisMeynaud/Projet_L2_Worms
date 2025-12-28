@@ -46,7 +46,9 @@ public class JetpackTool extends Tool {
             @Override
             public void execute(GameWorld world) {
                 // Enable the jetpack when boost key is held
-                EventListener<JetpackBoostEvent> boostListener = event -> modifier.enabled = true;
+                EventListener<JetpackBoostEvent> boostListener = event -> {
+                    if (world.getPlayingTeam().getCurrentWorm().equals(params.owner)) modifier.enabled = true;
+                };
                 boostListenerRef.set(boostListener);
 
                 // Disable the jetpack at the start of each input cycle
