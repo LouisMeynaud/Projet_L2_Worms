@@ -290,6 +290,7 @@ public class WorldRenderer {
                     drawProjectile(g2d, body);
                 } else if (body.getEntity() instanceof Coin) {
                     drawCoin(g2d, body);
+                }
             }
         }
     }

@@ -1,18 +1,21 @@
 package com.lllmtb.physics;
 
+import java.util.concurrent.CopyOnWriteArrayList;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import com.lllmtb.events.EventBus;
 import com.lllmtb.model.entity.projectile.BulletProjectile;
-import com.lllmtb.model.entity.worm.Worm;
 import com.lllmtb.model.entity.team.Team;
+import com.lllmtb.model.entity.worm.Worm;
 import com.lllmtb.model.item.UseParams;
 import com.lllmtb.terrain.map.Map;
 import com.lllmtb.terrain.map.MapLoader;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import java.util.concurrent.CopyOnWriteArrayList;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 public class CollisionTest {
 
@@ -57,7 +60,7 @@ public class CollisionTest {
         bodies.add(pBWorm2);
         bodies.add(pBBP1);
         bodies.add(pBBP2);
-        collision = new Collision(map, bodies);
+        collision = new Collision(map, bodies, new EventBus());
     }
 
     @Test
