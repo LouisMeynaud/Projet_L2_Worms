@@ -62,12 +62,19 @@ public class ShopManager {
         if (id instanceof WeaponId) {
             if (!team.getInventory().isUnlocked((WeaponId) id)) {
                 Logger.logger.info("impossible arme non Unlock");
+                return;
             }
         }
         if (team.getCredits() >= itemBuy.ammoPrice) {
-                team.removeCredits(itemBuy.ammoPrice);
+            team.removeCredits(itemBuy.ammoPrice);
+
+            if (id instanceof WeaponId) {
                 team.addAmmo((WeaponId) id, itemBuy.ammoPackSize);
-                Logger.logger.info("Achat ammo reussie : " + itemBuy.name);
+            } else if (id instanceof ToolId) {
+                team.addAmmo((ToolId) id, itemBuy.ammoPackSize);
+            }
+            
+            Logger.logger.info("Achat ammo reussie : " + itemBuy.name);
 
         } else {
             Logger.logger.info("Achat rater pas assez d'argent");
