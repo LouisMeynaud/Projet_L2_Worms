@@ -173,6 +173,9 @@ public class GameUIPanel extends JPanel {
 
         eventBus.subscribe(GameStateUpdatedEvent.class, event -> {
             updateTimerDisplay();
+            if (this.shopContainer != null && this.shopContainer.isVisible()) {
+                refreshShopGrid();
+            }
         });
     }
 
@@ -361,21 +364,6 @@ public class GameUIPanel extends JPanel {
             this.world.getBus().postQueued(new RequestFocus());
 
         } else {
-            //ces 9 ligne sont pour tester que l'affichage s'adapte bien
-            this.world.getTurnManager().getTurn().getTeam().getInventory().unlock(WeaponId.GUN);
-            this.world.getTurnManager().getTurn().getTeam().getInventory().weapons.addAmmo(WeaponId.GUN, 10);
-            this.world.getTurnManager().getTurn().getTeam().getInventory().unlock(WeaponId.BAZOOKA);
-            this.world.getTurnManager().getTurn().getTeam().getInventory().weapons.addAmmo(WeaponId.BAZOOKA, 3);
-            this.world.getTurnManager().getTurn().getTeam().getInventory().tools.addAmmo(ToolId.PARACHUTE, 2);
-            this.world.getTurnManager().getTurn().getTeam().getInventory().unlock(WeaponId.HEALINGBAZOOKA);
-            this.world.getTurnManager().getTurn().getTeam().getInventory().weapons.addAmmo(WeaponId.HEALINGBAZOOKA, 10);
-            this.world.getTurnManager().getTurn().getTeam().getInventory().unlock(WeaponId.SHOTGUN);
-            this.world.getTurnManager().getTurn().getTeam().getInventory().weapons.addAmmo(WeaponId.SHOTGUN, 10);
-            this.world.getTurnManager().getTurn().getTeam().getInventory().unlock(WeaponId.ELECTRONCANON);
-            this.world.getTurnManager().getTurn().getTeam().getInventory().weapons.addAmmo(WeaponId.ELECTRONCANON, 10);
-            this.world.getTurnManager().getTurn().getTeam().getInventory().unlock(WeaponId.GASGUN);
-            this.world.getTurnManager().getTurn().getTeam().getInventory().weapons.addAmmo(WeaponId.GASGUN, 10);
-
             createInventoryGrid();
             cardLayout.show(centerContainer, "INVENTORY");
         }
@@ -475,6 +463,8 @@ public class GameUIPanel extends JPanel {
             refreshShopGrid();
             cardLayout.show(centerContainer, "SHOP");
         }
+        this.revalidate();
+        this.repaint();
     }
 
 
@@ -502,6 +492,7 @@ public class GameUIPanel extends JPanel {
 
                     buttonShop.addActionListener(e -> {
                         shopManager.buyItem(weaponId, world.getPlayingTeam());
+                        eventBus.postQueued(new GameStateUpdatedEvent());
                     });
 
                     this.shopWeaponGrid.add(buttonShop);
@@ -518,6 +509,7 @@ public class GameUIPanel extends JPanel {
 
                     buttonShop.addActionListener(e -> {
                         shopManager.buyAmmo(weaponId, world.getPlayingTeam());
+                        eventBus.postQueued(new GameStateUpdatedEvent());
                     });
 
                     this.shopAmmoGrid.add(buttonShop);
@@ -536,10 +528,17 @@ public class GameUIPanel extends JPanel {
 
                 btn.addActionListener(e -> {
                     shopManager.buyAmmo(tid, world.getPlayingTeam());
+                    eventBus.postQueued(new GameStateUpdatedEvent());
                 });
 
                 this.shopToolGrid.add(btn);
             }
         }
+        this.shopWeaponGrid.revalidate();
+        this.shopWeaponGrid.repaint();
+        this.shopAmmoGrid.revalidate();
+        this.shopAmmoGrid.repaint();
+        this.shopToolGrid.revalidate();
+        this.shopToolGrid.repaint();
     }
 }

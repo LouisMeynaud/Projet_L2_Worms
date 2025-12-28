@@ -45,10 +45,9 @@ public class ShopManager {
         if (team.getCredits() >= itemBuy.unlockPrice) {
                 team.removeCredits(itemBuy.unlockPrice);
                 team.unlockWeapon((WeaponId) id);
-                System.out.println("Achat arme reussie : " + itemBuy.name);
-            }
-        else{
-            System.out.println("Achat rater pas assez d'argent");
+                Logger.logger.info("Achat arme reussie : " + itemBuy.name);
+        } else {
+            Logger.logger.info("Achat rater pas assez d'argent");
         }
     }
 
@@ -62,7 +61,7 @@ public class ShopManager {
         }
         if (id instanceof WeaponId) {
             if (!team.getInventory().isUnlocked((WeaponId) id)) {
-                System.out.println("impossible arme non Unlock");
+                Logger.logger.info("impossible arme non Unlock");
             }
         }
         if (team.getCredits() >= itemBuy.ammoPrice) {

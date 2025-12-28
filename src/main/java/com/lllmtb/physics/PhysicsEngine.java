@@ -83,7 +83,7 @@ public class PhysicsEngine {
         this.world = world;
         this.bodies = new CopyOnWriteArrayList<>();
         this.modifiers = new ConcurrentHashMap<>();
-        this.collision = new Collision(map, this.bodies);
+        this.collision = new Collision(map, this.bodies, world.getBus());
         this.gravity = gameMode.getGravity();
         this.hasWind = hasWind;
         this.wind = new Vector(0, 0);

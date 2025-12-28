@@ -6,6 +6,7 @@ import java.util.Random;
 import com.lllmtb.engine.GameWorld;
 import com.lllmtb.engine.logger.Logger;
 import com.lllmtb.events.EventListener;
+import com.lllmtb.events.game.CoinCollisionEvent;
 import com.lllmtb.events.game.MapUpdateEvent;
 import com.lllmtb.events.game.WeaponSelectedEvent;
 import com.lllmtb.events.move.GroundCheckCollision;
@@ -17,6 +18,7 @@ import com.lllmtb.events.turn.TurnStartEvent;
 import com.lllmtb.events.turn.TurnStopEvent;
 import com.lllmtb.events.turn.WormPlayable;
 import com.lllmtb.events.ui.MoveEvent;
+import com.lllmtb.model.entity.Coin;
 import com.lllmtb.model.entity.team.Team;
 import com.lllmtb.model.item.UseParams;
 import com.lllmtb.physics.Move;
@@ -61,9 +63,10 @@ public final class TurnManager {
         this.nbTurn += 1;
 
         //economy passive income at the start of the turn
-        int passiveIncome = 50 + new Random().nextInt(51);
+        int passiveIncome = 150; //ajout de beaucoup d'argent pour pouvoir tester les arme et le shop
         team.addCredits(passiveIncome);
         System.out.println("l'equipe : " + team.name + "gagne :" + passiveIncome + "pour le debut du tour");
+        spawnCoins();
 
         world.getBus().postQueued(new TurnStartEvent(team));
         Logger.logger.info("Start turn for the team {}\n", team.name);
@@ -72,6 +75,27 @@ public final class TurnManager {
             System.out.println(world.getMap().getHeightWater());
             if (world.getMap().risingWater()) {
                 world.getBus().postQueued(new MapUpdateEvent());
+            }
+        }
+    }
+
+    private void spawnCoins() {
+        Random random = new Random();
+        int coinsToSpawn = 1 + random.nextInt(2);
+        int mapWidth = world.getMap().getWidth();
+        int mapHeight = world.getMap().getHeight();
+
+        for (int i = 0; i < coinsToSpawn; i++) {
+            boolean placed = false;
+            int x = random.nextInt(mapWidth);
+            for (int y = mapHeight - 1; y > 0; y--) {
+                if (world.getMap().isSolid(new Position(x, y))) {
+                    int coinY = y + 1;
+                    Coin coin = new Coin(new Position(x + 0.25, coinY), 50);
+                    world.getPhysics().getBodies().add(coin.getBody());
+                    placed = true;
+                    break;
+                }
             }
         }
     }
@@ -141,6 +165,14 @@ public final class TurnManager {
             }
         };
 
+        EventListener<CoinCollisionEvent> coinListener = event -> {
+            world.queueCommand(w -> {
+                Logger.logger.info("Piece ramasse ! + " + event.coin.value + "$");
+                event.team.addCredits(event.coin.value);
+               world.getPhysics().remove(event.coin.getBody());
+            });
+        };
+
         EventListener<MouseInputEvent> mouseInputEventListener = event -> {
             PhysicsBody wormBody = turn.getWormPlayable().getBody();
 
@@ -173,5 +205,6 @@ public final class TurnManager {
         world.getBus().subscribe(WeaponSelectedEvent.class, weaponSelectedEventEventListener);
         world.getBus().subscribe(MouseInputEvent.class, mouseInputEventListener);
         world.getBus().subscribe(TurnFinishEvent.class, turnFinishListener);
+        world.getBus().subscribe(CoinCollisionEvent.class, coinListener);
     }
 }
