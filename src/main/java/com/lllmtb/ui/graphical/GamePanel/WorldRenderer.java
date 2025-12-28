@@ -5,10 +5,8 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import com.lllmtb.engine.GameWorld;
 import com.lllmtb.model.entity.projectile.Projectile;
@@ -16,9 +14,11 @@ import com.lllmtb.model.entity.team.TeamColor;
 import com.lllmtb.model.entity.worm.Statistics;
 import com.lllmtb.model.entity.worm.Worm;
 import com.lllmtb.model.item.ItemId;
+import com.lllmtb.model.item.tool.ToolId;
 import com.lllmtb.model.item.weapon.WeaponId;
 import com.lllmtb.physics.GameMode;
 import com.lllmtb.physics.PhysicsBody;
+import com.lllmtb.physics.PhysicsModifier;
 import com.lllmtb.terrain.map.Tile;
 import com.lllmtb.ui.graphical.TextureManager;
 import com.lllmtb.ui.graphical.Utilitaire;
@@ -216,13 +216,15 @@ public class WorldRenderer {
             tx.translate(-spriteWidthScaled / 2, 0);
         }
 
-        g2d.drawImage(textureWorm, tx, null);
+        double xCenter = xEcran + (largeurVerPx / 2.0);
+        double yCenter = yEcran + (hauteurVerPx / 2.0);
+        paintEquipment(g2d, worm, xCenter, yCenter);
 
         paintHealthBar(g2d, (Worm) worm.getEntity(), xEcran, yEcran, largeurVerPx);
 
+        g2d.drawImage(textureWorm, tx, null);
+
         if (worm.getEntity() == activeWorm) {
-            double xCenter = xEcran + (largeurVerPx / 2.0);
-            double yCenter = yEcran + (hauteurVerPx / 2.0);
             paintCurrentWormsArrow(g2d, xEcran, yEcran, largeurVerPx);
             paintItem(g2d, xCenter, yCenter);
             paintAim(g2d, xCenter, yCenter);
@@ -395,6 +397,38 @@ public class WorldRenderer {
 
         tx.translate(-texture.getWidth() / 2.0, -texture.getHeight() / 2.0);
         g2d.drawImage(texture, tx, null);
+    }
+
+    /**
+     * Draws the active equipment on the worm (parachute, jetpack...)
+     *
+     * @param g2d the graphics context
+     * @param worm the physics body of the worm
+     * @param xCenter the x-coordinate of the worm's center on screen
+     * @param yCenter the y-coordinate of the worm's center on screen
+     */
+    private void paintEquipment(Graphics2D g2d, PhysicsBody worm, double xCenter, double yCenter) {
+        List<PhysicsModifier> modifiers = world.getPhysics().getModifiers().get(worm);
+        if (modifiers == null) return;
+
+        Set<ToolId> activeTools = modifiers.stream()
+                .filter(modifier -> modifier.source instanceof ToolId)
+                .map(modifier -> (ToolId) modifier.source)
+                .collect(Collectors.toSet());
+
+        for (ToolId tool : activeTools) {
+            String textureName = "Equipped" + tool;
+            BufferedImage texture = TextureManager.TOOLS.get(textureName);
+            if (texture == null) return;
+            AffineTransform tx = new AffineTransform();
+            tx.translate(-texture.getWidth() / 2.0, -texture.getHeight() / 2.0);
+
+            switch (tool) {
+                case PARACHUTE -> tx.translate(xCenter, yCenter - 20);
+                default -> tx.translate(xCenter, yCenter);
+            }
+            g2d.drawImage(texture, tx, null);
+        }
     }
 
     /**
