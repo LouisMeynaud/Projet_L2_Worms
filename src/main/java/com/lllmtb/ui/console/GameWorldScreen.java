@@ -69,6 +69,12 @@ public class GameWorldScreen implements Runnable {
     private int inventorySelection = 0;
     private final List<ItemId> inventoryItems = new ArrayList<>();
 
+    // Key state tracking for simultaneous key presses
+    private volatile boolean upPressed = false;
+    private volatile boolean downPressed = false;
+    private volatile boolean leftPressed = false;
+    private volatile boolean rightPressed = false;
+
     // Event logs
     private final ConcurrentLinkedDeque<String> systemLogs = new ConcurrentLinkedDeque<>();
     private final ConcurrentLinkedDeque<String> worldLogs = new ConcurrentLinkedDeque<>();
@@ -123,6 +129,9 @@ public class GameWorldScreen implements Runnable {
         if (world == null) return;
 
         EventBus worldBus = world.getBus();
+
+        // Process movement inputs every tick
+        worldBus.subscribe(ProcessInputsEvent.class, e -> processMoveInputs());
 
         // Center viewport on every game state update (every tick)
         worldBus.subscribe(GameStateUpdatedEvent.class, e -> {
@@ -337,25 +346,51 @@ public class GameWorldScreen implements Runnable {
     private void handleArrowUp() {
         if (shootMode) aimAngle = Math.min(225, aimAngle + ANGLE_STEP);
         else if (inventoryOpen) inventorySelection = Math.max(0, inventorySelection - 1);
-        else world.getBus().postQueued(new MoveInputEvent(Direction.Up));
+        else upPressed = true;
     }
 
     private void handleArrowDown() {
         if (shootMode) aimAngle = Math.max(-45, aimAngle - ANGLE_STEP);
         else if (inventoryOpen) inventorySelection = Math.min(inventoryItems.size() - 1, inventorySelection + 1);
-        else world.getBus().postQueued(new MoveInputEvent(Direction.Down));
+        else downPressed = true;
     }
 
     private void handleArrowLeft() {
         if (shootMode) aimPower = Math.max(0, aimPower - POWER_STEP);
-        else if (!inventoryOpen) world.getBus().postQueued(new MoveInputEvent(Direction.Left));
+        else if (!inventoryOpen) leftPressed = true;
         // In inventory mode, left arrow does nothing
     }
 
     private void handleArrowRight() {
         if (shootMode) aimPower = Math.min(100, aimPower + POWER_STEP);
-        else if (!inventoryOpen) world.getBus().postQueued(new MoveInputEvent(Direction.Right));
+        else if (!inventoryOpen) rightPressed = true;
         // In inventory mode, right arrow does nothing
+    }
+
+    /**
+     * Process movement inputs based on currently pressed keys.
+     *  /\ Note that due to terminal limitations, it is not possible to tell when a key is being held after a combo.
+     *  That means it is impossible to have smooth diagonal movement by holding two arrow keys at once.
+     */
+    private void processMoveInputs() {
+        if (world == null || shootMode || inventoryOpen) return;
+
+        if (upPressed) {
+            world.getBus().postQueued(new MoveInputEvent(Direction.Up));
+            upPressed = false;
+        }
+        if (downPressed) {
+            world.getBus().postQueued(new MoveInputEvent(Direction.Down));
+            downPressed = false;
+        }
+        if (leftPressed) {
+            world.getBus().postQueued(new MoveInputEvent(Direction.Left));
+            leftPressed = false;
+        }
+        if (rightPressed) {
+            world.getBus().postQueued(new MoveInputEvent(Direction.Right));
+            rightPressed = false;
+        }
     }
 
     private void fireWeapon() {
@@ -445,11 +480,7 @@ public class GameWorldScreen implements Runnable {
         for (int row = 0; row < termHeight; row++) {
             sb.append(String.format("\033[%d;1H", row + 1));
             renderMainPanelRow(sb, row);
-        }
-
-        // Re-render the side panels
-        for (int row = 0; row < termHeight; row++) {
-            sb.append(String.format("\033[%d;%dH", row + 1, mainPanelWidth + 2));
+            sb.append("\033[90m│\033[0m");
             renderSidePanelRow(sb, row);
         }
 

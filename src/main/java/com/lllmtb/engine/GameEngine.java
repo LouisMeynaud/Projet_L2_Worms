@@ -24,7 +24,7 @@ public class GameEngine {
     private static GameWorld world;
 
     public static void main(String[] args) {
-        boolean graphique = true;
+        boolean graphique = false;
         systemBus = new EventBus();
         // Uncomment to log all system events for debugging
         //systemBus.subscribe(Event.class, e -> Logger.logger.info("[EVENT/system]: {}", e.getClass().getSimpleName()));
