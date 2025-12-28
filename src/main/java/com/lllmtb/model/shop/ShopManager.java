@@ -2,6 +2,7 @@ package com.lllmtb.model.shop;
 
 import java.util.ArrayList;
 
+import com.lllmtb.engine.logger.Logger;
 import com.lllmtb.model.entity.team.Team;
 import com.lllmtb.model.item.ItemId;
 import com.lllmtb.model.item.tool.ToolId;
@@ -67,10 +68,10 @@ public class ShopManager {
         if (team.getCredits() >= itemBuy.ammoPrice) {
                 team.removeCredits(itemBuy.ammoPrice);
                 team.addAmmo((WeaponId) id, itemBuy.ammoPackSize);
-                System.out.println("Achat ammo reussie : " + itemBuy.name);
-            }
-        else{
-            System.out.println("Achat rater pas assez d'argent");
+                Logger.logger.info("Achat ammo reussie : " + itemBuy.name);
+
+        } else {
+            Logger.logger.info("Achat rater pas assez d'argent");
         }
     }
 }

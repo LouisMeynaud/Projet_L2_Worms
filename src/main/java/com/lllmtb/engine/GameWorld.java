@@ -7,7 +7,6 @@ import java.util.Objects;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
-import com.lllmtb.events.turn.TurnFinishEvent;
 import org.eclipse.jdt.annotation.NonNull;
 
 import com.lllmtb.engine.commands.GameCommand;
@@ -15,9 +14,11 @@ import com.lllmtb.engine.logger.Logger;
 import com.lllmtb.engine.turn.TurnManager;
 import com.lllmtb.events.EventBus;
 import com.lllmtb.events.game.GameStateUpdatedEvent;
+import com.lllmtb.events.turn.TurnFinishEvent;
 import com.lllmtb.model.entity.Entity;
 import com.lllmtb.model.entity.team.Team;
 import com.lllmtb.model.entity.worm.Worm;
+import com.lllmtb.model.shop.ShopManager;
 import com.lllmtb.physics.GameMode;
 import com.lllmtb.physics.Move;
 import com.lllmtb.physics.PhysicsEngine;
@@ -37,6 +38,7 @@ public class GameWorld {
     private final TurnManager turnManager;
     private String gameName;
     private GameMode gameMode;
+    private ShopManager shopManager;
     Thread loopThread;
 
     private final BlockingQueue<GameCommand> commandQueue;
@@ -95,6 +97,9 @@ public class GameWorld {
 
         //Init TurnManager
         this.turnManager = new TurnManager(this, settings.turnDuration);
+
+        //Init ShopManager
+        this.shopManager = new ShopManager();
     }
 
     public Map getMap() {
@@ -141,6 +146,10 @@ public class GameWorld {
 
     public GameMode getGameMode() {
         return gameMode;
+    }
+
+    public ShopManager getShopManager() {
+        return this.shopManager;
     }
 
     public void start() {

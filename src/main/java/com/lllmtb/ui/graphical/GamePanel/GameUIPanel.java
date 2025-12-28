@@ -38,6 +38,8 @@ import com.lllmtb.events.ui.graphical.ScreenHomeEvent;
 import com.lllmtb.model.item.inventory.Inventory;
 import com.lllmtb.model.item.tool.ToolId;
 import com.lllmtb.model.item.weapon.WeaponId;
+import com.lllmtb.model.shop.ShopElement;
+import com.lllmtb.model.shop.ShopManager;
 import com.lllmtb.ui.graphical.SoundPlayer;
 import com.lllmtb.ui.graphical.TextureManager;
 import com.lllmtb.ui.graphical.Utilitaire;
@@ -64,17 +66,25 @@ public class GameUIPanel extends JPanel {
     private JLabel moneyLabel; // le label de l'argent
     private Timer uiRefreshTimer; //timer swing pour raffraichir le timer
 
+    private JPanel shopContainer;
+    private JPanel shopWeaponGrid;
+    private JPanel shopAmmoGrid;
+    private JPanel shopToolGrid;
+    private ShopManager shopManager;
+
     /**
      * constructeur : initialise la disposition , les conteneurs , le HUD et les listenneur.
      * @param eventBus le system bus
      */
     public GameUIPanel(EventBus eventBus) {
         this.eventBus = eventBus;
+        this.shopManager = new ShopManager();
         setOpaque(false);
         setLayout(new BorderLayout());
         setupCenterContainer();
         createPauseMenu();
         createInventoryContainer();
+        createShopContainer();
         setupHUD();
         subscribeToSystemEvents();
         this.uiRefreshTimer = new Timer(100, e -> updateTimerDisplay());
@@ -110,12 +120,14 @@ public class GameUIPanel extends JPanel {
 
         JButton pauseButton = Utilitaire.createImageButton(TextureManager.UI, "Pause", 128, 128, 128, 128, "", "Arial", 16, Color.WHITE);
         JButton inventoryButton = Utilitaire.createImageButton(TextureManager.UI, "InventoryButton", 128, 128, 128, 128, "", "Arial", 16, Color.WHITE);
+        JButton shopButton = Utilitaire.createImageButton(TextureManager.UI, "ShopButton", 128, 128, 128, 128, "SHOP", "Arial", 12, Color.YELLOW);
         JButton shootModeButton = Utilitaire.createImageButton(TextureManager.UI, "ShootMode", 120, 120, 120, 120, "", "Arial", 16, Color.WHITE);
         JButton skipTurnButton = Utilitaire.createImageButton(TextureManager.UI, "SkipTurn", 128, 128, 128, 128, "", "Arial", 16, Color.WHITE);
 
         pauseButton.addActionListener(e -> pauseMenu(true));
         shootModeButton.addActionListener(e -> world.getBus().postQueued(new ShootMode()));
         inventoryButton.addActionListener(e -> openCloseInventory());
+        shopButton.addActionListener(e -> openCloseShop());
         skipTurnButton.addActionListener(e -> world.getBus().postQueued(new TurnSkipEvent()));
 
         JPanel buttonsPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
@@ -142,6 +154,7 @@ public class GameUIPanel extends JPanel {
         topBar.add(moneyPanel, BorderLayout.EAST);
 
         lowerBar.add(inventoryButton);
+        lowerBar.add(shopButton);
         lowerBar.add(shootModeButton);
 
         this.add(topBar, BorderLayout.NORTH);
@@ -422,5 +435,111 @@ public class GameUIPanel extends JPanel {
         }
     }
 
+    ///////////shop/////////////
 
+    private void createShopContainer() {
+        this.shopContainer = new JPanel();
+        this.shopContainer.setOpaque(false);
+        this.shopContainer.setLayout(new BoxLayout(this.shopContainer, BoxLayout.X_AXIS));
+
+        this.shopWeaponGrid = new JPanel(new GridLayout(0, 4, 10, 10));
+        this.shopAmmoGrid = new JPanel(new GridLayout(0, 4, 10, 10));
+        this.shopToolGrid = new JPanel(new GridLayout(0, 4, 10, 10));
+
+        this.shopWeaponGrid.setOpaque(false);
+        this.shopAmmoGrid.setOpaque(false);
+        this.shopToolGrid.setOpaque(false);
+
+        JPanel weaponContainer = createSectionPanel("armes", this.shopWeaponGrid);
+        JPanel ammoContainer = createSectionPanel("munitions", this.shopAmmoGrid);
+        JPanel toolContainer = createSectionPanel("outils", this.shopToolGrid);
+
+        weaponContainer.setAlignmentY(Component.TOP_ALIGNMENT);
+        ammoContainer.setAlignmentY(Component.TOP_ALIGNMENT);
+        toolContainer.setAlignmentY(Component.TOP_ALIGNMENT);
+
+        this.shopContainer.add(weaponContainer);
+        this.shopContainer.add(Box.createHorizontalStrut(10));
+        this.shopContainer.add(ammoContainer);
+        this.shopContainer.add(Box.createHorizontalStrut(10));
+        this.shopContainer.add(toolContainer);
+        this.centerContainer.add(this.shopContainer, "SHOP");
+    }
+
+    private void openCloseShop() {
+        boolean isOpen = this.shopContainer.isVisible();
+        if (isOpen) {
+            cardLayout.show(centerContainer, "EMPTY");
+            this.world.getBus().postQueued(new RequestFocus());
+        } else {
+            refreshShopGrid();
+            cardLayout.show(centerContainer, "SHOP");
+        }
+    }
+
+
+
+    private void refreshShopGrid() {
+        this.shopWeaponGrid.removeAll();
+        this.shopAmmoGrid.removeAll();
+        this.shopToolGrid.removeAll();
+
+        Inventory inventory = world.getPlayingTeam().getInventory();
+        int currentMoney = world.getPlayingTeam().getCredits();
+
+        for (ShopElement element : shopManager.getShopElements()) {
+
+            if (element.id instanceof WeaponId) {
+                WeaponId weaponId = (WeaponId) element.id;
+
+                if (!inventory.isUnlocked(weaponId)) {
+                    String text = element.unlockPrice+"$";
+                    BufferedImage img = TextureManager.WEAPONS.get(weaponId.toString());
+                    boolean canBuy = currentMoney >= element.unlockPrice;
+
+                    JButton buttonShop = Utilitaire.createShopButton(img, text, canBuy);
+
+
+                    buttonShop.addActionListener(e -> {
+                        shopManager.buyItem(weaponId, world.getPlayingTeam());
+                    });
+
+                    this.shopWeaponGrid.add(buttonShop);
+                }
+
+
+                else {
+                    String text = element.ammoPrice + "$ (+"+element.ammoPackSize +")";
+                    BufferedImage imgAmmo = TextureManager.WEAPONS.get("Ammo" + weaponId.toString()); 
+                    boolean canBuy = currentMoney >= element.ammoPrice;
+
+                    JButton buttonShop = Utilitaire.createShopButton(imgAmmo, text, canBuy);
+
+
+                    buttonShop.addActionListener(e -> {
+                        shopManager.buyAmmo(weaponId, world.getPlayingTeam());
+                    });
+
+                    this.shopAmmoGrid.add(buttonShop);
+                }
+            }
+
+
+            else if (element.id instanceof ToolId) {
+                ToolId tid = (ToolId) element.id;
+                String text = element.ammoPrice + "$ (+" +element.ammoPackSize +")"; 
+                BufferedImage img = TextureManager.TOOLS.get(tid.toString());
+                boolean canBuy = currentMoney >= element.ammoPrice;
+
+                JButton btn = Utilitaire.createShopButton(img, text, canBuy); 
+
+
+                btn.addActionListener(e -> {
+                    shopManager.buyAmmo(tid, world.getPlayingTeam());
+                });
+
+                this.shopToolGrid.add(btn);
+            }
+        }
+    }
 }
