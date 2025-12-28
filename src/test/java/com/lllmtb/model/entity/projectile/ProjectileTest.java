@@ -51,5 +51,8 @@ public class ProjectileTest {
 
         RocketProjectile rocket = new RocketProjectile(params);
         assertDoesNotThrow(rocket::onImpact);
+
+        MissileProjectile missile = new MissileProjectile(params);
+        assertDoesNotThrow(missile::onImpact);
     }
 }

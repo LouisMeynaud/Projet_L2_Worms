@@ -57,7 +57,6 @@ public class JetpackTool extends Tool {
                 // Clean up listeners when the modifier is removed (out of fuel...)
                 EventListener<PhysicsModifierRemovedEvent> removalListener = event -> {
                     if (event.modifier() == modifier && event.body().getEntity() == params.owner) {
-                        System.out.println("JETPACK MODIFIER REMOVED");
                         world.queueCommand(w -> {
                             w.getBus().unsubscribe(JetpackBoostEvent.class, boostListenerRef.get());
                             w.getBus().unsubscribe(ProcessInputsEvent.class, disableListenerRef.get());
