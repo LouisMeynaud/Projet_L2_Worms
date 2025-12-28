@@ -1,6 +1,7 @@
 package com.lllmtb.ui.graphical.SettingsPanel;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
@@ -8,14 +9,14 @@ import java.awt.GridLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.SwingConstants;
-
-import java.awt.Color;
 
 import com.lllmtb.engine.GameSettings;
 import com.lllmtb.events.EventBus;
 import com.lllmtb.events.game.StartGameEvent;
 import com.lllmtb.events.ui.graphical.ScreenNewOrLoadEvent;
+import com.lllmtb.physics.GameMode;
 import com.lllmtb.terrain.generation.LandScape;
 import com.lllmtb.ui.graphical.TextureManager;
 import com.lllmtb.ui.graphical.Utilitaire;
@@ -59,8 +60,15 @@ public class SettingsStartPanel extends JPanel {
         this.mapSettingPanel = new SettingMapPanel(eventBus);
         this.gameSettingsPanel = new SettingGamePanel();
 
-        panelCentre.add(mapSettingPanel);
-        panelCentre.add(gameSettingsPanel);
+        JScrollPane mapScrollPanel = new JScrollPane(this.mapSettingPanel);
+        mapScrollPanel.setBorder(null);
+        mapScrollPanel.getVerticalScrollBar().setUnitIncrement(16);
+        JScrollPane gameScrollPanel = new JScrollPane(this.gameSettingsPanel);
+        gameScrollPanel.setBorder(null);
+        gameScrollPanel.getVerticalScrollBar().setUnitIncrement(16);
+
+        panelCentre.add(mapScrollPanel);
+        panelCentre.add(gameScrollPanel);
         this.add(panelCentre, BorderLayout.CENTER);
 
 
@@ -84,16 +92,17 @@ public class SettingsStartPanel extends JPanel {
         int maxLife = gameSettingsPanel.getMaxLife();
         int maxJump = gameSettingsPanel.getMaxJumps();
         String gameName = gameSettingsPanel.getGameName();
+        GameMode gameMode = gameSettingsPanel.getGameMode();
         if (this.mapSettingPanel.loadMap) {
             String mapFileName = this.mapSettingPanel.panelListeMap.getFichierSelectionne().getName();
-            return new GameSettings(gameName, nbEquipes, nomsEquipes, nbVWorms, maxLife, turnDuration, wind, mapFileName, false, 0, null, maxJump);
+            return new GameSettings(gameName, nbEquipes, nomsEquipes, nbVWorms, maxLife, turnDuration, wind, mapFileName, false, 0, null, maxJump, gameMode);
 
 
         } else {
             LandScape terrainType = this.mapSettingPanel.generateMapPanel.getReliefType();
             int widthMap = this.mapSettingPanel.generateMapPanel.getWidthMapSlider();
             boolean flightIsland = this.mapSettingPanel.generateMapPanel.getflightIsland();
-            return new GameSettings(gameName, nbEquipes, nomsEquipes, nbVWorms, maxLife, turnDuration, wind, null, flightIsland, widthMap, terrainType, maxJump);
+            return new GameSettings(gameName, nbEquipes, nomsEquipes, nbVWorms, maxLife, turnDuration, wind, null, flightIsland, widthMap, terrainType, maxJump, gameMode);
 
 
         }

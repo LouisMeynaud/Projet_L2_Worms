@@ -22,7 +22,6 @@ public class MapLoader {
 
         try {
             String mapPath = path + mapName + "/map.txt";
-            System.out.println("TEST " + mapPath);
             String contentMap = Files.readString(Path.of(mapPath));
             String[] row = contentMap.split("\n");
             Map tileMatrix = new Map(row.length, row[0].length(), mapName + ".txt");
@@ -32,6 +31,7 @@ public class MapLoader {
                         tileMatrix.getMapMatrix()[i][j] = Tile.getByFileSymbol(row[i].charAt(j));
                     }
                 }
+            tileMatrix.initializeHeightWater();
             return tileMatrix;
 
         } catch (IOException e) { // we should propagate the exception instead so GameWorld can catch and respond accordingly

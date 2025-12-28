@@ -7,7 +7,6 @@ import com.lllmtb.events.EventBus;
 import com.lllmtb.events.game.*;
 import com.lllmtb.events.input.ProcessInputsEvent;
 import com.lllmtb.events.physics.GroundCheckCollision;
-import com.lllmtb.events.physics.PhysicsCollisionWithMap;
 import com.lllmtb.events.turn.TurnSkipEvent;
 import com.lllmtb.events.turn.TurnStartEvent;
 import com.lllmtb.events.input.MoveInputEvent;
@@ -148,7 +147,7 @@ public class GameWorldScreen implements Runnable {
 
         // Log all world bus events
         worldBus.subscribe(Event.class, e -> {
-            if (!(e instanceof GroundCheckCollision || e instanceof PhysicsCollisionWithMap || e instanceof GameStateUpdatedEvent || e instanceof ProcessInputsEvent)) {
+            if (!(e instanceof GroundCheckCollision || e instanceof GameStateUpdatedEvent || e instanceof ProcessInputsEvent)) {
                 addWorldLog(e.getClass().getSimpleName());
             }
         });

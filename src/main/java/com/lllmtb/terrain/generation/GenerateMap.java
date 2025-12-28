@@ -1,12 +1,13 @@
 package com.lllmtb.terrain.generation;
 
+import com.lllmtb.physics.GameMode;
 import com.lllmtb.terrain.map.Map;
 import com.lllmtb.terrain.map.SaveMap;
 
 
 public class GenerateMap {
-    public static ConfigMap world = new ConfigMap(100, 4, 5, false, 17, LandScape.HILLY, 1, 4);
-    public static ConfigMap flyingWorld = new ConfigMap(100, 4, 5, true, 17, LandScape.HILLY, 1, 4);
+    public static ConfigMap world = new ConfigMap(100, 4, 5, false, 17, LandScape.HILLY, 1, 4, GameMode.NORMAL);
+    public static ConfigMap flyingWorld = new ConfigMap(100, 4, 5, true, 17, LandScape.HILLY, 1, 4, GameMode.NORMAL);
 
 
     /**
@@ -16,6 +17,7 @@ public class GenerateMap {
      */
     public static Map createMap(ConfigMap config) {
         Map map = new Map(config.getHeight(), config.getWidth(), SaveMap.newMapSaveFile());
+        map.initializeHeightWater();
         int[] lowLine;
 
         int[] hightLine = LineGenerator.createLine(config);
@@ -32,9 +34,15 @@ public class GenerateMap {
 
 
         MapBalancer.leftRightBalancing(lowLine, hightLine, config.getHeight());
-        MapBalancer.thicknessBalencer(config.getThicknessMin(), MapBalancer.averageThickness(lowLine, hightLine, 0, config.getWidth()), hightLine);
+        int currentAvgThickness = MapBalancer.averageThickness(lowLine, hightLine, 0, config.getWidth());
+
+        MapBalancer.thicknessBalencer(config.getThicknessMin(), currentAvgThickness, hightLine, config.getHeight());
+        if (!config.isFlyingIsland()) {
+        applyIslandBorders(hightLine, lowLine, config.getWidth(), config.getWaterHeight());
+        }
+        applyTopSafety(hightLine, config.getHeight());
         MapFiller.fillingWater(map, config.getWaterHeight());
-        MapFiller.fillingDirt(map, hightLine, lowLine);
+        MapFiller.fillingDirt(map, hightLine, lowLine, config);
 
         return map;
     }
@@ -54,6 +62,35 @@ public class GenerateMap {
             }
         }
     }
-    // attention probleme, le right balence crée une pente enorme au mileu
 
+    // on descend les bord pour avoir un effet ile
+    private static void applyIslandBorders(int[] hightLine, int[] lowLine, int width, int waterLevel) {
+        int borderSize = 10;
+
+        for (int i = 0; i < width; i++) {
+            double factor = 1.0; // un factor (vaut 1 si ont est au bord , 0 si on est a borderSize du bord)
+            if (i < borderSize) {
+                factor = (double) i / borderSize; // calcule le % de diminution
+            } else if (i >= width - borderSize) {
+                factor = (double) (width - 1 - i) / borderSize; // calcul inverse
+            }
+
+            if (factor < 1.0) { // si on est sur une bordure , alors on baisse le terrain
+                hightLine[i] = (int) (hightLine[i] * factor);
+                if (factor < 0.2) hightLine[i] = Math.min(hightLine[i], waterLevel - 1); // si proche d'un bord , alors on eneleve le terrain
+                lowLine[i] = (int) (lowLine[i] * factor);
+            }
+        }
+    }
+
+    private static void applyTopSafety(int[] hightLine, int mapHeight) {
+        // limite de hauteur (pour pas etre trop proche du plafond et etre coincee)
+        int limit = mapHeight - 8;
+
+        for (int i = 0; i < hightLine.length; i++) {
+            if (hightLine[i] > limit) {
+                hightLine[i] = limit;
+            }
+        }
+    }
 }

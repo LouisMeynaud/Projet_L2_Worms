@@ -1,10 +1,12 @@
 package com.lllmtb.engine;
 
-import com.lllmtb.engine.logger.Logger;
-import com.lllmtb.engine.save.Save;
+import java.io.IOException;
 import java.util.Objects;
 
 import org.eclipse.jdt.annotation.NonNull;
+
+import com.lllmtb.engine.logger.Logger;
+import com.lllmtb.engine.save.Save;
 import com.lllmtb.events.EventBus;
 import com.lllmtb.events.game.GamePauseEvent;
 import com.lllmtb.events.game.SaveEvent;
@@ -13,8 +15,9 @@ import com.lllmtb.events.game.WorldCreatedEvent;
 import com.lllmtb.ui.console.ConsoleUI;
 import com.lllmtb.ui.UI;
 import com.lllmtb.ui.graphical.GraphicalUI;
-import java.io.IOException;
+import com.lllmtb.ui.graphical.SoundManager;
 import com.lllmtb.ui.graphical.TextureManager;
+import com.lllmtb.ui.graphical.animation.AnimationManager;
 
 public class GameEngine {
     private static EventBus systemBus;
@@ -46,7 +49,9 @@ public class GameEngine {
         UI ui;
         if (graphique) {
             Logger.logger.info("Using graphical interface");
-            TextureManager.load(); // charge les textures
+            TextureManager.load(); // load textures
+            AnimationManager.load(); //load animation
+            SoundManager.load(); //load sound effect
             ui = new GraphicalUI(systemBus);
         } else {
             Logger.logger.info("Using console interface");

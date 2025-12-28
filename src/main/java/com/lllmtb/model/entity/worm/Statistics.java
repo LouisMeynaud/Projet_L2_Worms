@@ -38,10 +38,12 @@ public class Statistics {
 
     //Setter
     public void setHp(int hp) {
-        if (hp >= 0) {
+        if (hp >= 0 && hp <= maxHp) {
             this.hp = hp;
-        } else {
+        } else if (hp < 0) {
             this.hp = 0;
+        } else if (hp > maxHp) {
+            this.hp = maxHp;
         }
     }
 
