@@ -2,6 +2,8 @@ package com.lllmtb.model.shop;
 
 import java.util.ArrayList;
 
+import com.lllmtb.model.entity.team.Team;
+import com.lllmtb.model.item.ItemId;
 import com.lllmtb.model.item.tool.ToolId;
 import com.lllmtb.model.item.weapon.WeaponId;
 
@@ -29,5 +31,46 @@ public class ShopManager {
 
     public ArrayList<ShopElement> getShopElements() {
         return items;
+    }
+
+    public void buyItem(ItemId id, Team team) {
+        ShopElement itemBuy = null;
+        for (ShopElement element : items) {
+            if (element.id == id) {
+                itemBuy = element;
+                break;
+            }
+        }
+        if (team.getCredits() >= itemBuy.unlockPrice) {
+                team.removeCredits(itemBuy.unlockPrice);
+                team.unlockWeapon((WeaponId) id);
+                System.out.println("Achat arme reussie : " + itemBuy.name);
+            }
+        else{
+            System.out.println("Achat rater pas assez d'argent");
+        }
+    }
+
+    public void buyAmmo(ItemId id, Team team) {
+        ShopElement itemBuy = null;
+        for (ShopElement element : items) {
+            if (element.id == id) {
+                itemBuy = element;
+                break;
+            }
+        }
+        if (id instanceof WeaponId) {
+            if (!team.getInventory().isUnlocked((WeaponId) id)) {
+                System.out.println("impossible arme non Unlock");
+            }
+        }
+        if (team.getCredits() >= itemBuy.ammoPrice) {
+                team.removeCredits(itemBuy.ammoPrice);
+                team.addAmmo((WeaponId) id, itemBuy.ammoPackSize);
+                System.out.println("Achat ammo reussie : " + itemBuy.name);
+            }
+        else{
+            System.out.println("Achat rater pas assez d'argent");
+        }
     }
 }
