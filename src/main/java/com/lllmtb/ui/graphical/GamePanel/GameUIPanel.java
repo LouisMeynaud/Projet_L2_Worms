@@ -8,10 +8,13 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.awt.Image;
+import java.awt.image.BufferedImage;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -58,6 +61,7 @@ public class GameUIPanel extends JPanel {
     private JPanel weaponGrid; // la grille d'arme dans l'inventaire
     private JPanel toolGrid; // la grille d'outil dans l'inventaire
     private JLabel timerLabel; // le label du timer
+    private JLabel moneyLabel; // le label de l'argent
     private Timer uiRefreshTimer; //timer swing pour raffraichir le timer
 
     /**
@@ -124,8 +128,18 @@ public class GameUIPanel extends JPanel {
         timerContner.setOpaque(false);
         timerContner.add(this.timerLabel);
 
-        topBar.add(timerContner, BorderLayout.CENTER);
+        JPanel moneyPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        moneyPanel.setOpaque(false);
+
+        this.moneyLabel = new JLabel("0 $");
+        this.moneyLabel.setFont(new Font("Arial", Font.BOLD, 22));
+        this.moneyLabel.setForeground(Color.YELLOW);
+        BufferedImage img = TextureManager.UI.get("moneyIcon");
+        this.moneyLabel.setIcon(new ImageIcon(img.getScaledInstance(40, 40, Image.SCALE_SMOOTH)));
+        moneyPanel.add(this.moneyLabel);
         topBar.add(buttonsPanel, BorderLayout.WEST);
+        topBar.add(timerContner, BorderLayout.CENTER);
+        topBar.add(moneyPanel, BorderLayout.EAST);
 
         lowerBar.add(inventoryButton);
         lowerBar.add(shootModeButton);
@@ -171,7 +185,9 @@ public class GameUIPanel extends JPanel {
         String teamName = this.world.getPlayingTeam().name;
         String timeString = String.format("%02d:%02d", timeLeft / 60, timeLeft % 60);
         this.timerLabel.setText("tour : " + world.getTurnManager().getNbTurn() + ", team : " + teamName + " , time : " + timeString);
+        this.moneyLabel.setText(this.world.getPlayingTeam().getCredits() + " $");
         this.timerLabel.repaint();
+        this.moneyLabel.repaint();
     }
 
     /**

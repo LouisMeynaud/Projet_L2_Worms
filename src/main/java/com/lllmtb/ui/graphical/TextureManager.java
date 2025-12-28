@@ -48,6 +48,7 @@ public class TextureManager {
             UI.put("ShootModeHover", ImageIO.read(TextureManager.class.getResource("/textures/button/ShootMode.png")));
             UI.put("Panel", ImageIO.read(TextureManager.class.getResource("/textures/button/Panel.png")));
             UI.put("PanelHover", ImageIO.read(TextureManager.class.getResource("/textures/button/Panel.png")));
+            UI.put("moneyIcon", ImageIO.read(TextureManager.class.getResource("/textures/moneyIcon.png")));
 
             ///////Background/////////
             BACKGROUND.put("Background", ImageIO.read(TextureManager.class.getResource("/textures/Background.png")));

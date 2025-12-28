@@ -1,6 +1,7 @@
 package com.lllmtb.engine.turn;
 
 import java.util.Objects;
+import java.util.Random;
 
 import com.lllmtb.engine.GameWorld;
 import com.lllmtb.engine.logger.Logger;
@@ -58,6 +59,12 @@ public final class TurnManager {
         this.remainingTimeInMs = turnDurationInMs;
         this.turn = new Turn(team);
         this.nbTurn += 1;
+
+        //economy passive income at the start of the turn
+        int passiveIncome = 50 + new Random().nextInt(51);
+        team.addCredits(passiveIncome);
+        System.out.println("l'equipe : " + team.name + "gagne :" + passiveIncome + "pour le debut du tour");
+
         world.getBus().postQueued(new TurnStartEvent(team));
         Logger.logger.info("Start turn for the team {}\n", team.name);
         world.getBus().postQueued(new WormPlayable(turn.getWormPlayable()));

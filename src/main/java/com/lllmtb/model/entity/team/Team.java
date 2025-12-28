@@ -9,6 +9,7 @@ import java.util.Random;
 import org.eclipse.jdt.annotation.NonNull;
 
 import com.lllmtb.engine.commands.GameCommand;
+import com.lllmtb.engine.logger.Logger;
 import com.lllmtb.model.entity.worm.Worm;
 import com.lllmtb.model.item.ItemId;
 import com.lllmtb.model.item.UnknownItemException;
@@ -90,6 +91,10 @@ public class Team {
     private static final List<TeamColor> possibleTeamColors = Arrays.asList(TeamColor.values());
     private static final ArrayList<TeamColor> chosenTeamColors = new ArrayList<>();
 
+    /**
+     * The amount of credits (in-game currency) the team has.
+     */
+    private int credits = 0;
 
     /**
      * Private constructor used to initialize a team with a given name, number of players, inventory, and spawn position.
@@ -356,5 +361,24 @@ public class Team {
     }
     public TeamColor getTeamColor() {
         return this.teamColor;
+    }
+
+
+    public int getCredits() {
+        return credits;
+    }
+
+    public void addCredits(int amount) {
+        if (amount > 0) {
+            this.credits += amount;
+            Logger.logger.info("$$$ [TEAM " + this.name + "] Gain de " + amount + " pieces. Total: " + this.credits);
+        }
+    }
+
+    public void removeCredits(int amount) {
+        if (amount > 0 && credits >= amount) {
+            this.credits -= amount;
+            Logger.logger.info("$$$ [TEAM " + this.name + "] achat/perte de " + amount + " pieces. Total: " + this.credits);
+        }
     }
 }
