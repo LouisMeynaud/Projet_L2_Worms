@@ -1,6 +1,7 @@
 package com.lllmtb.model.entity.projectile;
 
 import com.lllmtb.engine.commands.GameCommand;
+import com.lllmtb.engine.commands.RemoveEntityCommand;
 import com.lllmtb.model.entity.Entity;
 import com.lllmtb.model.entity.worm.Worm;
 import com.lllmtb.model.item.UseParams;
@@ -43,16 +44,22 @@ public abstract class Projectile extends Entity {
 
     public abstract int getDamage();
 
-    protected void hitWorm(List<GameCommand> list, Entity entity, int damage) {
+    /**
+     * Handle the hit on an entity, applying damage if it's a Worm.
+     * @param list the list of GameCommands to add to
+     * @param entity the entity that was hit
+     * @param damage the damage to apply
+     */
+    protected void handleHit(List<GameCommand> list, Entity entity, int damage) {
         if (entity instanceof Worm worm) {
             worm.damageWorm(damage);
             if (!worm.isAlive()) {
-                list.add(world -> world.getPhysics().remove(worm.getBody()));
+                list.add(new RemoveEntityCommand(worm));
             }
         }
     }
 
-    protected GameCommand removeProjectileBody() {
-        return (world -> world.getPhysics().remove(this.getBody()));
+    protected GameCommand delete() {
+        return new RemoveEntityCommand(this);
     }
 }

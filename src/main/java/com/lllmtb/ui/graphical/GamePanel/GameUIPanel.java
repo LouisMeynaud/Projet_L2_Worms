@@ -4,11 +4,14 @@ import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Image;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.awt.image.BufferedImage;
 
 import javax.swing.BorderFactory;
@@ -66,11 +69,16 @@ public class GameUIPanel extends JPanel {
     private JLabel moneyLabel; // le label de l'argent
     private Timer uiRefreshTimer; //timer swing pour raffraichir le timer
 
+
     private JPanel shopContainer;
     private JPanel shopWeaponGrid;
     private JPanel shopAmmoGrid;
     private JPanel shopToolGrid;
     private ShopManager shopManager;
+    private JButton pauseButton;
+    private JButton inventoryButton;
+    private JButton shootModeButton;
+    private JButton skipTurnButton;
 
     /**
      * constructeur : initialise la disposition , les conteneurs , le HUD et les listenneur.
@@ -89,6 +97,14 @@ public class GameUIPanel extends JPanel {
         subscribeToSystemEvents();
         this.uiRefreshTimer = new Timer(100, e -> updateTimerDisplay());
         this.uiRefreshTimer.start();
+
+
+        this.addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                resizeUI();
+            }
+        });
     }
 
     /**
@@ -118,11 +134,13 @@ public class GameUIPanel extends JPanel {
         JPanel lowerBar = new JPanel(new FlowLayout(FlowLayout.LEFT));
         lowerBar.setOpaque(false);
 
+
         JButton pauseButton = Utilitaire.createImageButton(TextureManager.UI, "Pause", 128, 128, 128, 128, "", "Arial", 16, Color.WHITE);
         JButton inventoryButton = Utilitaire.createImageButton(TextureManager.UI, "InventoryButton", 128, 128, 128, 128, "", "Arial", 16, Color.WHITE);
         JButton shopButton = Utilitaire.createImageButton(TextureManager.UI, "ShopButton", 128, 128, 128, 128, "SHOP", "Arial", 12, Color.YELLOW);
         JButton shootModeButton = Utilitaire.createImageButton(TextureManager.UI, "ShootMode", 120, 120, 120, 120, "", "Arial", 16, Color.WHITE);
         JButton skipTurnButton = Utilitaire.createImageButton(TextureManager.UI, "SkipTurn", 128, 128, 128, 128, "", "Arial", 16, Color.WHITE);
+
 
         pauseButton.addActionListener(e -> pauseMenu(true));
         shootModeButton.addActionListener(e -> world.getBus().postQueued(new ShootMode()));
@@ -423,6 +441,7 @@ public class GameUIPanel extends JPanel {
         }
     }
 
+
     ///////////shop/////////////
 
     private void createShopContainer() {
@@ -481,18 +500,19 @@ public class GameUIPanel extends JPanel {
 
             if (element.id instanceof WeaponId) {
                 WeaponId weaponId = (WeaponId) element.id;
-
                 if (!inventory.isUnlocked(weaponId)) {
+                    boolean canBuy = currentMoney >= element.unlockPrice;
                     String text = element.unlockPrice + "$";
                     BufferedImage img = TextureManager.WEAPONS.get(weaponId.toString());
-                    boolean canBuy = currentMoney >= element.unlockPrice;
 
                     JButton buttonShop = Utilitaire.createShopButton(img, text, canBuy);
 
 
                     buttonShop.addActionListener(e -> {
+                        if (canBuy) {
                         shopManager.buyItem(weaponId, world.getPlayingTeam());
                         eventBus.postQueued(new GameStateUpdatedEvent());
+                    }
                     });
 
                     this.shopWeaponGrid.add(buttonShop);
@@ -505,8 +525,10 @@ public class GameUIPanel extends JPanel {
 
 
                     buttonShop.addActionListener(e -> {
+                        if (canBuy) {
                         shopManager.buyAmmo(weaponId, world.getPlayingTeam());
                         eventBus.postQueued(new GameStateUpdatedEvent());
+                        }
                     });
 
                     this.shopAmmoGrid.add(buttonShop);
@@ -534,5 +556,41 @@ public class GameUIPanel extends JPanel {
         this.shopAmmoGrid.repaint();
         this.shopToolGrid.revalidate();
         this.shopToolGrid.repaint();
+    }
+
+/////////////resize bouton et timer/////////////
+    private void resizeUI() {
+        int height = getHeight();
+        if (height == 0) return;
+
+        int size = (int) (height * 0.12); // 12% de la hauteur
+        size = Math.max(40, Math.min(128, size));
+
+        updateButtonIcon(pauseButton, "Pause", size);
+        updateButtonIcon(inventoryButton, "InventoryButton", size);
+        updateButtonIcon(shootModeButton, "ShootMode", size);
+        updateButtonIcon(skipTurnButton, "SkipTurn", size);
+
+        if (timerLabel != null) {
+            int fontSize = Math.max(12, size / 4);
+            timerLabel.setFont(new Font("Arial", Font.BOLD, fontSize));
+        }
+    }
+
+    private void updateButtonIcon(JButton btn, String name, int size) {
+        if (btn == null) return;
+
+        BufferedImage img = TextureManager.UI.get(name);
+        if (img != null) {
+            Image scaled = img.getScaledInstance(size, size, Image.SCALE_SMOOTH);
+            btn.setIcon(new ImageIcon(scaled));
+            btn.setPreferredSize(new Dimension(size, size));
+        }
+
+        BufferedImage imgHover = TextureManager.UI.get(name + "Hover");
+        if (imgHover != null) {
+            Image scaledHover = imgHover.getScaledInstance(size, size, Image.SCALE_SMOOTH);
+            btn.setRolloverIcon(new ImageIcon(scaledHover));
+        }
     }
 }

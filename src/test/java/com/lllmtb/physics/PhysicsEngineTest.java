@@ -455,5 +455,16 @@ class PhysicsEngineTest {
         pE.createExplosion(rocket, 10, 15, 30, 100);
         assertEquals(2, bus.queuedEventCount());//verifie que les event sont bien crée(explosion et mapUpdate)
     }
+
+    @Test
+    void fallDamageTest(){
+        Team team = Mockito.mock(Team.class);
+        Worm worm = new Worm("TestWorm", team);
+        worm.getBody().setVector(new Vector(0, -100));
+        PhysicsEngine.fallDamage(worm);
+        //Worm has 100 HP and check if it loses some
+        assertNotEquals(100, worm.getStats().getHp() );
+
+    }
 }
 

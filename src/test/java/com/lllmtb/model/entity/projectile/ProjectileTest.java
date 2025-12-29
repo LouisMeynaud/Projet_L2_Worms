@@ -61,14 +61,20 @@ public class ProjectileTest {
 
     @Test
     public void onImpact_doesNotThrow() {
-        BulletProjectile bullet = new BulletProjectile(params);
-        RocketProjectile rocket = new RocketProjectile(params);
         Team t = Mockito.mock(Team.class);
         Worm worm = new Worm("Test", t);
 
-        List<GameCommand> list = rocket.onImpact(worm);
-        assertFalse(list.isEmpty());
+        BulletProjectile bullet = new BulletProjectile(params);
+        List<GameCommand> lbullet = bullet.onImpact(worm);
+        assertFalse(lbullet.isEmpty());
 
+        RocketProjectile rocket = new RocketProjectile(params);
+        List<GameCommand> lrocket = rocket.onImpact(worm);
+        assertFalse(lrocket.isEmpty());
+
+        MissileProjectile missile = new MissileProjectile(params);
+        List<GameCommand> lmissile = missile.onImpact(worm);
+        assertFalse(lmissile.isEmpty());
     }
 
     @Test

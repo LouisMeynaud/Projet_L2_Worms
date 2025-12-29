@@ -240,7 +240,7 @@ public class Utilitaire {
         JButton button = new JButton();
         button.setLayout(new BorderLayout());
         button.setPreferredSize(new Dimension(80, 80));
-        button.setBackground(Color.DARK_GRAY);
+        button.setBackground(Color.LIGHT_GRAY);
         button.setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
 
         if (img != null) {
@@ -252,13 +252,13 @@ public class Utilitaire {
         button.setFont(new Font("Arial", Font.BOLD, 12));
         if (canBuy) {
             button.setForeground(Color.BLUE);
+            button.setBackground(Color.LIGHT_GRAY);
         } else {
             button.setForeground(Color.RED);
+            button.setBackground(Color.DARK_GRAY);
         }
         button.setVerticalTextPosition(SwingConstants.BOTTOM);
         button.setHorizontalTextPosition(SwingConstants.CENTER);
-
-        if (!canBuy) button.setEnabled(false);
         return button;
     }
 
