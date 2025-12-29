@@ -27,8 +27,9 @@ public class ShopManager {
         items.add(new ShopElement(WeaponId.ELECTRONCANON, "ELECTRONCANON", 250, 70, 1));
         items.add(new ShopElement(WeaponId.HEALINGBAZOOKA, "HEALINGBAZOOKA", 100, 40, 1));
         items.add(new ShopElement(ToolId.JETPACK, "JETPACK", 150, 90, 1));
-        items.add(new ShopElement(ToolId.CALLSTRIKE, "CALLSTRIKE", 150, 90, 1));
-        items.add(new ShopElement(ToolId.PARACHUTE, "Parachute", 50, 20, 1));
+        items.add(new ShopElement(ToolId.CALLSTRIKE, "CALLSTRIKE", 150, 300, 1));
+        items.add(new ShopElement(ToolId.PARACHUTE, "PARACHUTE", 50, 20, 1));
+        items.add(new ShopElement(ToolId.MINE, "MINE", 100, 100, 1));
     }
 
     public ArrayList<ShopElement> getShopElements() {

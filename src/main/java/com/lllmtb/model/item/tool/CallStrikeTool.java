@@ -9,7 +9,7 @@ import org.eclipse.jdt.annotation.NonNull;
 import java.util.List;
 import java.util.Objects;
 
-public final class CallStrikeTool extends Tool {
+public class CallStrikeTool extends Tool {
 
     @Override
     public ToolId id() {

@@ -6,5 +6,6 @@ public enum ToolId implements ItemId {
     PARACHUTE,
     JETPACK,
     CALLSTRIKE,
+    MINE,
     NONE
 }
