@@ -2,6 +2,7 @@ package com.lllmtb.physics;
 
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import com.lllmtb.engine.commands.GameCommand;
 import com.lllmtb.model.entity.worm.Worm;
 import com.lllmtb.terrain.map.Map;
 import com.lllmtb.terrain.map.Tile;
@@ -69,11 +70,12 @@ public class Explosion {
      *
      * @param position the position of the center of the explosion
      * @param damageRadius the radius within which the entity takes damage
-     * @param maxDamage the maximun damage of the explosion (at the center)
+     * @param maxDamage the maximun damage to the explosion (at the center)
      * @param bodies the list of bodies
      */
-    public static void explosionDamageEffect(Position position, int damageRadius, int maxDamage, CopyOnWriteArrayList<PhysicsBody> bodies) {
-    for (PhysicsBody body : bodies) {
+    public static GameCommand explosionDamageEffect(Position position, int damageRadius, int maxDamage, CopyOnWriteArrayList<PhysicsBody> bodies) {
+        GameCommand death = null;
+        for (PhysicsBody body : bodies) {
         Position bodyPos = body.getPos();
         double dx = bodyPos.getX() - position.getX();
         double dy = bodyPos.getY() - position.getY();
@@ -82,10 +84,11 @@ public class Explosion {
         if (distance <= damageRadius) {
             double ratio = 1 - (distance / damageRadius);
             int actualDamage = (int) (maxDamage * ratio);
-            if (body.getEntity() instanceof Worm) {
-                ((Worm) body.getEntity()).damageWorm(actualDamage);
+            if (body.getEntity() instanceof Worm worm) {
+                death = worm.damageWorm(actualDamage);
             }
         }
     }
+    return death;
 }
 }

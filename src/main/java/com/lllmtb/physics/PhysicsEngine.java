@@ -7,6 +7,7 @@ import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import com.lllmtb.engine.commands.GameCommand;
 import com.lllmtb.engine.logger.Logger;
 import com.lllmtb.events.physics.*;
 import org.eclipse.jdt.annotation.NonNull;
@@ -352,7 +353,7 @@ public class PhysicsEngine {
 
                 switch (body.getEntity().getCollisionType()) {
                     // if body slides along cliffs (if the collision is with the ground)
-                    case SLIDE -> collision.slide(body, impact, dt, world.getBus());
+                    case SLIDE -> collision.slide(body, impact, dt, world);
 
                     // if body bounces
                     case BOUNCE -> collision.bounce(body, impact, 0.5);
@@ -442,7 +443,10 @@ public class PhysicsEngine {
 
     public void createExplosion(Projectile projectile, int rayonDegatMap, int rayonSuffle, int degats, double forceSuffle) {
         Position position = projectile.getBody().getPos();
-        Explosion.explosionDamageEffect(position, rayonSuffle, degats, bodies);
+        GameCommand death = Explosion.explosionDamageEffect(position, rayonSuffle, degats, bodies);
+        if (death != null) {
+            world.queueCommand(death);
+        }
         Explosion.explosionMapEffect(position, rayonDegatMap, collision.getMap());
         Explosion.explosionSuffleEffect(position, rayonSuffle, forceSuffle, collision.getMap(), bodies);
         world.getBus().postQueued(new ExplosionEvent(position, rayonSuffle, ((ExplosiveProjectile) projectile).getExplosionTexture()));
@@ -465,13 +469,15 @@ public class PhysicsEngine {
 }
 
 
-    public static void fallDamage(Worm worm) {
+    public static GameCommand fallDamage(Worm worm) {
         int seuil = -50;
+        GameCommand death = null;
         double speedy = worm.getBody().getVector().getY();
         if (speedy < seuil) {
             int damage = (int) Math.ceil((speedy - seuil) * -0.5);
-            worm.damageWorm(damage);
+            death = worm.damageWorm(damage);
             Logger.logger.info("{} has fallen and lost {} health points!", worm.name, damage);
         }
+        return death;
     }
 }
