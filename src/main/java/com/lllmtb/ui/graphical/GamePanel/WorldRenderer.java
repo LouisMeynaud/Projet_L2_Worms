@@ -372,20 +372,28 @@ public class WorldRenderer {
         Worm currentWorm = world.getTurnManager().getTurn().getWormPlayable();
         if (currentWorm != null && panel.shootMode) {
             g2d.setColor(Color.RED);
-            g2d.setStroke(new BasicStroke(3)); // epaisseur du trait
 
-            double vecX = panel.mouseWorldX - xCenter;
-            double vecY = panel.mouseWorldY - yCenter;
-
-            double distance = Math.sqrt(vecX * vecX + vecY * vecY);
-            double maxLen = 100.0;
-
-            if (distance > maxLen) {
-                double ratio = maxLen / distance;
-                vecX = vecX * ratio;
-                vecY = vecY * ratio;
+            ItemId handItem = world.getPlayingTeam().getHand();
+            if (handItem != null && handItem.usesCrosshair()) {
+                int crosshairSize = 15;
+                int mouseX = (int) panel.mouseWorldX;
+                int mouseY = (int) panel.mouseWorldY;
+                g2d.setStroke(new BasicStroke(3)); // epaisseur du trait
+                g2d.drawLine(mouseX - crosshairSize, mouseY, mouseX + crosshairSize, mouseY);
+                g2d.drawLine(mouseX, mouseY - crosshairSize, mouseX, mouseY + crosshairSize);
+            } else {
+                double vecX = panel.mouseWorldX - xCenter;
+                double vecY = panel.mouseWorldY - yCenter;
+                double distance = Math.sqrt(vecX * vecX + vecY * vecY);
+                double maxLen = 100.0;
+                if (distance > maxLen) {
+                    double ratio = maxLen / distance;
+                    vecX = vecX * ratio;
+                    vecY = vecY * ratio;
+                }
+                g2d.setStroke(new BasicStroke(3)); // epaisseur du trait
+                g2d.drawLine((int) xCenter, (int) yCenter, (int) (xCenter + vecX), (int) (yCenter + vecY));
             }
-            g2d.drawLine((int) xCenter, (int) yCenter, (int) (xCenter + vecX), (int) (yCenter + vecY));
         }
     }
 
