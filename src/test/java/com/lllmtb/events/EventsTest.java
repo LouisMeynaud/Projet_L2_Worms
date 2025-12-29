@@ -6,12 +6,11 @@ import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 
 import com.lllmtb.engine.GameSettings;
 import com.lllmtb.engine.GameWorld;
-import com.lllmtb.events.game.ChangeWormsEvent;
+import com.lllmtb.events.turn.ChangeWormsEvent;
 import com.lllmtb.events.game.CoinCollisionEvent;
 import com.lllmtb.events.game.GamePauseEvent;
 import com.lllmtb.events.game.GameStateUpdatedEvent;

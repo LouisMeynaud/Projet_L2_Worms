@@ -28,7 +28,7 @@ import javax.swing.border.TitledBorder;
 
 import com.lllmtb.engine.GameWorld;
 import com.lllmtb.events.EventBus;
-import com.lllmtb.events.game.ChangeWormsEvent;
+import com.lllmtb.events.turn.ChangeWormsEvent;
 import com.lllmtb.events.game.GamePauseEvent;
 import com.lllmtb.events.game.GameStateUpdatedEvent;
 import com.lllmtb.events.game.SaveEvent;

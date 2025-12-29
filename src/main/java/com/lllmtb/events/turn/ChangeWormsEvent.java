@@ -1,4 +1,4 @@
-package com.lllmtb.events.game;
+package com.lllmtb.events.turn;
 
 import com.lllmtb.events.Event;
 

@@ -12,6 +12,7 @@ import com.lllmtb.events.game.ToolSelectedEvent;
 import com.lllmtb.events.game.WeaponSelectedEvent;
 import com.lllmtb.events.move.GroundCheckCollision;
 import com.lllmtb.events.move.MouseInputEvent;
+import com.lllmtb.events.turn.ChangeWormsEvent;
 import com.lllmtb.events.turn.TurnEndEvent;
 import com.lllmtb.events.turn.TurnFinishEvent;
 import com.lllmtb.events.turn.TurnSkipEvent;
@@ -67,14 +68,14 @@ public final class TurnManager {
         //economy passive income at the start of the turn
         int passiveIncome = 150; //ajout de beaucoup d'argent pour pouvoir tester les arme et le shop
         team.addCredits(passiveIncome);
-        System.out.println("l'equipe : " + team.name + "gagne :" + passiveIncome + "pour le debut du tour");
+        Logger.logger.info("l'equipe : " + team.name + "gagne :" + passiveIncome + "pour le debut du tour");
         spawnCoins();
 
         world.getBus().postQueued(new TurnStartEvent(team));
         Logger.logger.info("Start turn for the team {}\n", team.name);
         world.getBus().postQueued(new WormPlayable(turn.getWormPlayable()));
         if (this.nbTurn > world.getTeams().size() * 4) {
-            System.out.println(world.getMap().getHeightWater());
+            Logger.logger.info("Level of the water : {}", world.getMap().getHeightWater());
             if (world.getMap().risingWater()) {
                 world.getBus().postQueued(new MapUpdateEvent());
             }
@@ -173,6 +174,12 @@ public final class TurnManager {
             });
         };
 
+        EventListener<ChangeWormsEvent> changeWormDuringTurn = event -> {
+            turn.nextWormPlayable();
+            Logger.logger.info("Change worm playable");
+            //TODO : PASS IT TO DEBUG
+        };
+
         EventListener<MouseInputEvent> mouseInputEventListener = event -> {
             PhysicsBody wormBody = turn.getWormPlayable().getBody();
 
@@ -213,5 +220,6 @@ public final class TurnManager {
         world.getBus().subscribe(MouseInputEvent.class, mouseInputEventListener);
         world.getBus().subscribe(TurnFinishEvent.class, turnFinishListener);
         world.getBus().subscribe(CoinCollisionEvent.class, coinListener);
+        world.getBus().subscribe(ChangeWormsEvent.class, changeWormDuringTurn);
     }
 }
