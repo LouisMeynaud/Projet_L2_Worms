@@ -88,6 +88,8 @@ public class ConsoleUI implements UI {
 
             boolean hasWind = promptHasWind();
 
+            boolean friendlyfire = promptFriendlyFire();
+
             // Print a recap of the configured settings
             terminal.writer().println();
             terminal.writer().println();
@@ -101,7 +103,7 @@ public class ConsoleUI implements UI {
             }
             terminal.writer().println("   Wind: " + (hasWind ? "ON" : "OFF"));
             terminal.writer().flush();
-            return new GameSettings("blabla", nbTeams, teamNames, nbWorms, maxHealth, turnDuration, hasWind, mapFileName, floatingIsland, size, landscape, 2, GameMode.NORMAL);
+            return new GameSettings("blabla", nbTeams, teamNames, nbWorms, maxHealth, turnDuration, hasWind, mapFileName, floatingIsland, size, landscape, 2, GameMode.NORMAL, friendlyfire);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -268,6 +270,17 @@ public class ConsoleUI implements UI {
         return result.get("hasWind").getResult().equals(ConfirmChoice.ConfirmationValue.YES.toString());
     }
 
+    private boolean promptFriendlyFire() throws IOException {
+        ConsolePrompt prompt = new ConsolePrompt(terminal);
+        PromptBuilder builder = prompt.getPromptBuilder();
+        builder.createConfirmPromp()
+                .name("friendlyFire")
+                .message("Do you want to turn the friendly fire?")
+                .defaultValue(ConfirmChoice.ConfirmationValue.YES)
+                .addPrompt();
+        Map<String, PromptResultItemIF> result = prompt.prompt(builder.build());
+        return result.get("friendlyFire").getResult().equals(ConfirmChoice.ConfirmationValue.YES.toString());
+    }
 
     public boolean readyToPlay() {
 
