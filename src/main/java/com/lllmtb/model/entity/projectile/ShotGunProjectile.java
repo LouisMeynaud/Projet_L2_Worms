@@ -28,8 +28,8 @@ public final class ShotGunProjectile extends Projectile {
     @Override
     public List<GameCommand> onImpact(Entity entity) {
         List<GameCommand> list = new ArrayList<GameCommand>();
-        hitWorm(list, entity, damage);
-        list.add(removeProjectileBody());
+        handleHit(list, entity, damage);
+        list.add(delete());
         return list;
     }
 

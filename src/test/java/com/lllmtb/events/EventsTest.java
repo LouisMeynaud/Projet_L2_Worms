@@ -1,12 +1,8 @@
 package com.lllmtb.events;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 
 import com.lllmtb.engine.GameSettings;
@@ -33,6 +29,7 @@ import com.lllmtb.events.ui.graphical.ScreenLoadGame;
 import com.lllmtb.events.ui.graphical.ScreenLoadMap;
 import com.lllmtb.events.ui.graphical.ScreenNewOrLoadEvent;
 import com.lllmtb.events.ui.graphical.ScreenSettingsGame;
+import com.lllmtb.events.input.JetpackBoostInputEvent;
 import com.lllmtb.model.entity.Entity;
 import com.lllmtb.model.item.tool.ToolId;
 import com.lllmtb.model.item.weapon.WeaponId;
@@ -126,24 +123,20 @@ public class EventsTest {
     }
 
     @Test
-    public void eventWithoutArgumentTest() {
-        eventWithoutArgument(new GameStateUpdatedEvent());
-        eventWithoutArgument(new ScreenGenerateMap());
-        eventWithoutArgument(new ScreenHomeEvent());
-        eventWithoutArgument(new ScreenLoadMap());
-        eventWithoutArgument(new ScreenNewOrLoadEvent());
-        eventWithoutArgument(new ScreenSettingsGame());
-        eventWithoutArgument(new MapUpdateEvent());
-        eventWithoutArgument(new SaveEvent());
-        eventWithoutArgument(new RequestFocus());
-        eventWithoutArgument(new ShootMode());
-        eventWithoutArgument(new TurnSkipEvent());
-        eventWithoutArgument(new ScreenLoadGame());
-    }
-
-    private void eventWithoutArgument(Event event) {
-        assertNotNull(event);
-        assertTrue(event instanceof Event);
+    public void eventsWithoutArgumentsTest() { // for JaCoCo - these events are just empty triggers
+        new GameStateUpdatedEvent();
+        new ScreenGenerateMap();
+        new ScreenHomeEvent();
+        new ScreenLoadMap();
+        new ScreenNewOrLoadEvent();
+        new ScreenSettingsGame();
+        new MapUpdateEvent();
+        new SaveEvent();
+        new RequestFocus();
+        new ShootMode();
+        new TurnSkipEvent();
+        new ScreenLoadGame();
+        new JetpackBoostInputEvent();
     }
 
     @Test

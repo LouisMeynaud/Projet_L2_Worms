@@ -17,7 +17,6 @@ public final class HealingProjectile extends Projectile implements ExplosiveProj
     private static final double width  = 1;
     private static final int damage = -20;
 
-
     private static final int RAYON_DEGAT_MAP = 0;
     private static final int RAYON_SOUFFLE = 15;
     private static final int DEGATS = -20;
@@ -36,11 +35,11 @@ public final class HealingProjectile extends Projectile implements ExplosiveProj
     @Override
     public List<GameCommand> onImpact(Entity entity) {
         List<GameCommand> list = new ArrayList<GameCommand>();
-        hitWorm(list, entity, damage);
+        handleHit(list, entity, damage);
         list.add((world -> {
             world.getPhysics().createExplosion(this, RAYON_DEGAT_MAP, RAYON_SOUFFLE, DEGATS, FORCE_SOUFFLE);
         }));
-        list.add(removeProjectileBody());
+        list.add(delete());
         return list;
 
     }
