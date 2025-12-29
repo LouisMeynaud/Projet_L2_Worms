@@ -7,6 +7,7 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.Graphics;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Image;
@@ -68,6 +69,7 @@ public class GameUIPanel extends JPanel {
     private JLabel timerLabel; // le label du timer
     private JLabel moneyLabel; // le label de l'argent
     private Timer uiRefreshTimer; //timer swing pour raffraichir le timer
+    private JPanel timerContainer; // le contneur de couleur pour le timer
 
 
     private JPanel shopContainer;
@@ -155,9 +157,23 @@ public class GameUIPanel extends JPanel {
         buttonsPanel.add(skipTurnButton);
 
         this.timerLabel = createTimerLabel();
-        JPanel timerContner = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        timerContner.setOpaque(false);
-        timerContner.add(this.timerLabel);
+        this.timerContainer = new JPanel(new FlowLayout(FlowLayout.CENTER)) {
+        @Override
+        protected void paintComponent(Graphics g) {
+            g.setColor(getBackground());
+            g.fillRoundRect(0, 0, getWidth(), getHeight(), 30, 30);
+            super.paintComponent(g);
+            }
+        };
+        this.timerContainer.setOpaque(false);
+        this.timerContainer.setBorder(new EmptyBorder(5, 20, 5, 20));
+        this.timerContainer.add(this.timerLabel);
+
+
+        JPanel timerContainerContainer = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 0));
+        timerContainerContainer.setOpaque(false);
+        timerContainerContainer.setBorder(new EmptyBorder(15, 0, 0, 0));
+        timerContainerContainer.add(this.timerContainer);
 
         JPanel moneyPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         moneyPanel.setOpaque(false);
@@ -169,7 +185,7 @@ public class GameUIPanel extends JPanel {
         this.moneyLabel.setIcon(new ImageIcon(img.getScaledInstance(40, 40, Image.SCALE_SMOOTH)));
         moneyPanel.add(this.moneyLabel);
         topBar.add(buttonsPanel, BorderLayout.WEST);
-        topBar.add(timerContner, BorderLayout.CENTER);
+        topBar.add(timerContainerContainer, BorderLayout.CENTER);
         topBar.add(moneyPanel, BorderLayout.EAST);
 
         lowerBar.add(inventoryButton);
@@ -218,6 +234,17 @@ public class GameUIPanel extends JPanel {
         }
 
         String teamName = this.world.getPlayingTeam().name;
+        Color baseColor;
+        switch (this.world.getPlayingTeam().getTeamColor()) {
+            case RED: baseColor = Color.RED; break;
+            case BLUE: baseColor = Color.BLUE; break;
+            case GREEN: baseColor = Color.GREEN; break;
+            case YELLOW: baseColor = Color.YELLOW; break;
+            default : baseColor = Color.BLACK;
+        }
+        Color color = new Color(baseColor.getRed(), baseColor.getGreen(), baseColor.getBlue(), 100);
+
+        this.timerContainer.setBackground(color);
         String timeString = String.format("%02d:%02d", timeLeft / 60, timeLeft % 60);
         this.timerLabel.setText("tour : " + world.getTurnManager().getNbTurn() + "| team : " + teamName + "| time : " + timeString);
         this.moneyLabel.setText(this.world.getPlayingTeam().getCredits() + " $");
