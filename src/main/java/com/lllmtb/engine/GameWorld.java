@@ -194,7 +194,7 @@ public class GameWorld {
         } while (!teams.get(indexTeam).oneAlive());
         if (indexTeam == currentIndexTeam) {
             Logger.logger.info("The team {} wins !!", teams.get(indexTeam).name);
-            bus.postQueued(new TurnFinishEvent());
+            bus.postQueued(new TurnFinishEvent(teams.get(indexTeam)));
             //TODO : Event or GameCommand for tell the winnerTeam and the game has been finish
         } else {
             this.turnManager.startTurn(teams.get(indexTeam));
