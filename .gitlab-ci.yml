@@ -56,7 +56,7 @@ package:
   artifacts:
     when: on_success
     paths:
-      - target/*.jar
+      - target/*-fat.jar
     expire_in: 1 week
   only:
     - main

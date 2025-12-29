@@ -221,6 +221,13 @@ public class TeamTest {
         assertEquals(worm0, team3.getCurrentWorm());
     }
 
+    @Test
+    void testSetCurrentWormNull(){
+        assertNotNull(team.getCurrentWorm());
+        team.setCurrentWormNull();
+        assertNull(team.getCurrentWorm());
+    }
+
     // ==================== Weapon Management Tests ====================
 
     @Test
