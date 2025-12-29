@@ -95,6 +95,7 @@ public final class TurnManager {
         Logger.logger.info("End turn - switch Team\n");
         world.getBus().postQueued(new TurnEndEvent());
         this.turnFinish = true;
+        this.turn.getTeam().setCurrentWormNull();
     }
 
     private boolean cleanTurn() {
