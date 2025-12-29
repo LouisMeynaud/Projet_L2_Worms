@@ -18,10 +18,9 @@ public final class BowProjectile extends Projectile {
     private int damage = 10;
 
     public BowProjectile(@NonNull UseParams params) {
-        super(params, force * Math.min(params.duration / 100, 5), mass, height, width);
-        this.damage = (int) (damage * Math.min(params.duration / 100, 5));
-        System.out.println(params.duration);
-        System.out.println("tire a l'arc");
+        super(params, force * Math.min(params.duration / 100, 5) / 2, mass, height, width);
+        this.damage = (int) (damage * Math.min(params.duration / 100, 5) / 2);
+
     }
 
     @Override
@@ -34,7 +33,6 @@ public final class BowProjectile extends Projectile {
         List<GameCommand> list = new ArrayList<GameCommand>();
         handleHit(list, entity, damage);
         list.add(delete());
-        System.out.println("impacttttttttttttttt");
         return list;
     }
 
