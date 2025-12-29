@@ -356,7 +356,6 @@ public class GameUIPanel extends JPanel {
             this.world.getTurnManager().getTurn().getTeam().getInventory().weapons.addAmmo(WeaponId.GUN, 10);
             this.world.getTurnManager().getTurn().getTeam().getInventory().unlock(WeaponId.BAZOOKA);
             this.world.getTurnManager().getTurn().getTeam().getInventory().weapons.addAmmo(WeaponId.BAZOOKA, 3);
-            this.world.getTurnManager().getTurn().getTeam().getInventory().tools.addAmmo(ToolId.PARACHUTE, 2);
             this.world.getTurnManager().getTurn().getTeam().getInventory().unlock(WeaponId.HEALINGBAZOOKA);
             this.world.getTurnManager().getTurn().getTeam().getInventory().weapons.addAmmo(WeaponId.HEALINGBAZOOKA, 10);
             this.world.getTurnManager().getTurn().getTeam().getInventory().unlock(WeaponId.SHOTGUN);
@@ -365,6 +364,9 @@ public class GameUIPanel extends JPanel {
             this.world.getTurnManager().getTurn().getTeam().getInventory().weapons.addAmmo(WeaponId.ELECTRONCANON, 10);
             this.world.getTurnManager().getTurn().getTeam().getInventory().unlock(WeaponId.GASGUN);
             this.world.getTurnManager().getTurn().getTeam().getInventory().weapons.addAmmo(WeaponId.GASGUN, 10);
+            this.world.getTurnManager().getTurn().getTeam().getInventory().tools.addAmmo(ToolId.PARACHUTE, 2);
+            this.world.getTurnManager().getTurn().getTeam().getInventory().tools.addAmmo(ToolId.JETPACK, 2);
+            this.world.getTurnManager().getTurn().getTeam().getInventory().tools.addAmmo(ToolId.CALLSTRIKE, 2);
 
             createInventoryGrid();
             cardLayout.show(centerContainer, "INVENTORY");

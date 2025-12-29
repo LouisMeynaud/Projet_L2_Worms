@@ -24,6 +24,7 @@ import com.lllmtb.events.game.WorldCreatedEvent;
 import com.lllmtb.events.input.ProcessInputsEvent;
 import com.lllmtb.events.move.MouseInputEvent;
 import com.lllmtb.events.move.MouseWheelMoveInputEvent;
+import com.lllmtb.events.move.JetpackBoostEvent;
 import com.lllmtb.events.physics.ExplosionEvent;
 import com.lllmtb.events.ui.MoveEvent;
 import com.lllmtb.events.ui.ShootMode;
@@ -300,6 +301,9 @@ public class GameWorldPanel extends JPanel {
      * This method should be called every game tick for smooth continuous movement.
      */
     public void processInputs() {
+        if (pressedKeys.contains(KeyEvent.VK_UP)) {
+            world.getBus().postQueued(new JetpackBoostEvent());
+        }
         if (pressedKeys.contains(KeyEvent.VK_DOWN)) {
             world.getBus().postQueued(new MoveEvent(Direction.Down));
         }
