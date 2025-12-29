@@ -5,6 +5,7 @@ import com.lllmtb.engine.logger.Logger;
 import com.lllmtb.events.Event;
 import com.lllmtb.events.EventBus;
 import com.lllmtb.events.game.*;
+import com.lllmtb.events.input.JetpackBoostInputEvent;
 import com.lllmtb.events.input.ProcessInputsEvent;
 import com.lllmtb.events.physics.GroundCheckCollision;
 import com.lllmtb.events.turn.TurnSkipEvent;
@@ -150,6 +151,9 @@ public class GameWorldScreen implements Runnable {
             world.getPlayingTeam().getInventory().weapons.addAmmo(WeaponId.GUN, 10);
             world.getPlayingTeam().getInventory().unlock(WeaponId.BAZOOKA);
             world.getPlayingTeam().getInventory().weapons.addAmmo(WeaponId.BAZOOKA, 3);
+            world.getPlayingTeam().getInventory().tools.addAmmo(ToolId.PARACHUTE, 5);
+            world.getPlayingTeam().getInventory().tools.addAmmo(ToolId.JETPACK, 2);
+            world.getPlayingTeam().getInventory().tools.addAmmo(ToolId.CALLSTRIKE, 1);
             shootMode = false;
             inventoryOpen = false;
         });
@@ -309,7 +313,10 @@ public class GameWorldScreen implements Runnable {
             // Fire in shoot mode
             case '\r', '\n' -> { // Enter
                 if (inventoryOpen) selectInventoryItem();
-                else if (shootMode) fireWeapon();
+                else if (shootMode) {
+                    useItem();
+                    if (world.getPlayingTeam().getHand() instanceof ToolId) shootMode = false;
+                }
             }
 
             // Inventory toggle
@@ -377,6 +384,7 @@ public class GameWorldScreen implements Runnable {
 
         if (upPressed) {
             world.getBus().postQueued(new MoveInputEvent(Direction.Up));
+            world.getBus().postQueued(new JetpackBoostInputEvent());
             upPressed = false;
         }
         if (downPressed) {
@@ -393,7 +401,7 @@ public class GameWorldScreen implements Runnable {
         }
     }
 
-    private void fireWeapon() {
+    private void useItem() {
         if (world == null) return;
 
         Team team = world.getPlayingTeam();
