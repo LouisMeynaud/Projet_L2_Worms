@@ -423,6 +423,7 @@ public class WorldRenderer {
      * @param g2d le pinceaux
      */
     public void render(Graphics2D g2d) {
+        panel.checkCameraBounds();
         g2d.translate(panel.cameraOffsetX, panel.cameraOffsetY); //decalle le pinceau en fonction de la position camera (si negatif le dessin est deplacer vers la gauche)
         g2d.scale(panel.currentZoom, panel.currentZoom);
 

@@ -2,6 +2,8 @@ package com.lllmtb.ui.graphical.GamePanel;
 
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.awt.event.HierarchyEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
@@ -67,6 +69,23 @@ public class GameWorldPanel extends JPanel {
 
 
         //////////////////imput///////////////////////
+        //pour redessiner le monde apres un changement de taille d'ecran
+        addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                if (world != null && world.getMap() != null) {
+                    fitMapToScreen();
+                    repaint();
+                }
+            }
+        });
+
+        //pour eviter de devoir cliquer sur la fenetre pour prendre le focus apres un rezise
+        addHierarchyListener(e -> {
+            if (e.getChangeFlags() == HierarchyEvent.SHOWING_CHANGED && isShowing()) {
+                requestFocusInWindow();
+            }
+        });
 
         addHierarchyListener(e -> {
             if (e.getChangeFlags() == HierarchyEvent.SHOWING_CHANGED && isShowing()) {

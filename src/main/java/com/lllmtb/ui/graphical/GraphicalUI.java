@@ -1,6 +1,7 @@
 package com.lllmtb.ui.graphical;
 
 import java.awt.CardLayout;
+import java.awt.Dimension;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -56,7 +57,8 @@ public class GraphicalUI implements UI {
         windows.setTitle("Worms-MI4");
         windows.setExtendedState(JFrame.MAXIMIZED_BOTH); //sets the window to the maximum screen size
         windows.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        windows.setResizable(false);
+        windows.setResizable(true);
+        windows.setMinimumSize(new Dimension(800,400));
 
         cardLayout = new CardLayout();
         mainPanel = new JPanel(cardLayout);
