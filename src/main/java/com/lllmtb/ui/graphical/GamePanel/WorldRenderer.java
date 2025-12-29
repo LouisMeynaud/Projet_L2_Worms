@@ -359,8 +359,7 @@ public class WorldRenderer {
                 g2d.setStroke(new BasicStroke(3)); // epaisseur du trait
                 g2d.drawLine(mouseX - crosshairSize, mouseY, mouseX + crosshairSize, mouseY);
                 g2d.drawLine(mouseX, mouseY - crosshairSize, mouseX, mouseY + crosshairSize);
-            }
-            else {
+            } else {
                 double vecX = panel.mouseWorldX - xCenter;
                 double vecY = panel.mouseWorldY - yCenter;
                 double distance = Math.sqrt(vecX * vecX + vecY * vecY);
