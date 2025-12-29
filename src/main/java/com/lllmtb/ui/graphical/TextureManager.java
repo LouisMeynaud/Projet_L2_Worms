@@ -51,6 +51,9 @@ public class TextureManager {
             UI.put("PanelHover", ImageIO.read(TextureManager.class.getResource("/textures/button/Panel.png")));
             UI.put("moneyIcon", ImageIO.read(TextureManager.class.getResource("/textures/moneyIcon.png")));
             UI.put("ShopButton", ImageIO.read(TextureManager.class.getResource("/textures/button/ShopPanel.png")));
+            UI.put("ChangeWorms", ImageIO.read(TextureManager.class.getResource("/textures/button/changeWorms.png")));
+            UI.put("ChangeWormsHover", ImageIO.read(TextureManager.class.getResource("/textures/button/changeWorms.png")));
+
             ///////Background/////////
             BACKGROUND.put("Background", ImageIO.read(TextureManager.class.getResource("/textures/Background.png")));
 
