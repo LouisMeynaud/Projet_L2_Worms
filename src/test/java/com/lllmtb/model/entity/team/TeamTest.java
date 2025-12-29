@@ -1,19 +1,26 @@
 package com.lllmtb.model.entity.team;
 
-import com.lllmtb.model.entity.worm.Worm;
-import com.lllmtb.model.item.UseParams;
-import com.lllmtb.model.item.weapon.WeaponId;
-import com.lllmtb.model.item.weapon.UnknownWeaponException;
-import com.lllmtb.model.item.weapon.LockedWeaponException;
-import com.lllmtb.model.item.weapon.UnusableWeaponException;
-import com.lllmtb.model.item.tool.ToolId;
-import com.lllmtb.model.item.tool.UnknownToolException;
-import com.lllmtb.model.item.tool.UnusableToolException;
-import com.lllmtb.physics.Position;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import com.lllmtb.model.entity.worm.Worm;
+import com.lllmtb.model.item.UseParams;
+import com.lllmtb.model.item.tool.ToolId;
+import com.lllmtb.model.item.tool.UnknownToolException;
+import com.lllmtb.model.item.tool.UnusableToolException;
+import com.lllmtb.model.item.weapon.LockedWeaponException;
+import com.lllmtb.model.item.weapon.UnknownWeaponException;
+import com.lllmtb.model.item.weapon.UnusableWeaponException;
+import com.lllmtb.model.item.weapon.WeaponId;
+import com.lllmtb.physics.Position;
 
 public class TeamTest {
     private Team team;
@@ -432,5 +439,49 @@ public class TeamTest {
     @Test
     public void getHand_initiallyNull() {
         assertNull(team.getHand());
+    }
+
+    @Test
+    public void getTeamColor_returnsAssignedColor() {
+        assertEquals(team.teamColor, team.getTeamColor());
+    }
+
+    @Test
+    public void getCredits_initiallyZero() {
+        assertEquals(0, team.getCredits());
+    }
+
+    @Test
+    public void addCredits_increasesBalance() {
+        team.addCredits(100);
+        assertEquals(100, team.getCredits());
+    }
+
+    @Test
+    public void addCredits_NegativeAmount() {
+        team.addCredits(50);
+        team.addCredits(-10);
+        assertEquals(50, team.getCredits());
+    }
+
+    @Test
+    public void removeCredits_WhenSufficientFunds() {
+        team.addCredits(100);
+        team.removeCredits(40);
+        assertEquals(60, team.getCredits());
+    }
+
+    @Test
+    public void removeCredits_WhenInsufficientFunds() {
+        team.addCredits(50);
+        team.removeCredits(100);
+        assertEquals(50, team.getCredits());
+    }
+
+    @Test
+    public void removeCredits_WhenNegativeAmount() {
+        team.addCredits(100);
+        team.removeCredits(-20);
+        assertEquals(100, team.getCredits());
     }
 }

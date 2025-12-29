@@ -1,22 +1,25 @@
 package com.lllmtb.physics;
 
+
+import java.util.concurrent.CopyOnWriteArrayList;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import com.lllmtb.engine.GameSettings;
 import com.lllmtb.engine.GameWorld;
 import com.lllmtb.events.EventBus;
 import com.lllmtb.model.entity.projectile.BulletProjectile;
-import com.lllmtb.model.entity.worm.Worm;
 import com.lllmtb.model.entity.team.Team;
+import com.lllmtb.model.entity.worm.Worm;
 import com.lllmtb.model.item.UseParams;
 import com.lllmtb.terrain.generation.LandScape;
 import com.lllmtb.terrain.map.Map;
 import com.lllmtb.terrain.map.MapLoader;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
-
-import java.util.concurrent.CopyOnWriteArrayList;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 public class CollisionTest {
@@ -62,7 +65,7 @@ public class CollisionTest {
         bodies.add(pBWorm2);
         bodies.add(pBBP1);
         bodies.add(pBBP2);
-        collision = new Collision(map, bodies);
+        collision = new Collision(map, bodies, new EventBus());
     }
 
     @Test
@@ -281,7 +284,7 @@ public class CollisionTest {
         pBWorm1.setVector(new Vector(5, -2));
         GameSettings settings = new GameSettings("blabla", 1, new String[]{}, 1,100, 10, true, "mapTest", false,370, LandScape.HILLY,2,GameMode.NORMAL);
         EventBus eventBus = new EventBus();
-        GameWorld gw = new GameWorld(settings,eventBus);
+        GameWorld gw = new GameWorld(settings, eventBus);
         Position posFinal = new Position(12, 8);
         Collision.Impact impact = collision.move(pBWorm1, posFinal);
         collision.slide(pBWorm1, impact, 1, gw);

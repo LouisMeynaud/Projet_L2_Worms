@@ -34,6 +34,10 @@ public class HomeScreenPanel extends JPanel {
         playButton.addActionListener(e -> {
             eventBus.postQueued(new ScreenNewOrLoadEvent());
         });
+
+        closeButton.addActionListener(e -> {
+            System.exit(0);
+        });
         gbc.gridy = 0;
         this.add(playButton, gbc);
         gbc.gridy = 1;

@@ -3,7 +3,10 @@ package com.lllmtb.physics;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import com.lllmtb.engine.GameWorld;
+import com.lllmtb.events.EventBus;
+import com.lllmtb.events.game.CoinCollisionEvent;
 import com.lllmtb.events.move.GroundCheckCollision;
+import com.lllmtb.model.entity.Coin;
 import com.lllmtb.model.entity.CollisionType;
 import com.lllmtb.model.entity.worm.Worm;
 import com.lllmtb.terrain.map.Map;
@@ -18,6 +21,7 @@ public class Collision {
 
     private final Map map;
     private final CopyOnWriteArrayList<PhysicsBody> bodies;
+    private final EventBus eventBus;
     private static final double EPSILON = 0.002;
 
     /**
@@ -25,9 +29,10 @@ public class Collision {
      * @param m the {@link Map} of the game
      * @param b the {@link CopyOnWriteArrayList} containing active Entity's {@link PhysicsBody}.
      */
-    public Collision(Map m, CopyOnWriteArrayList<PhysicsBody> b) {
+    public Collision(Map m, CopyOnWriteArrayList<PhysicsBody> b, EventBus eventBus) {
         this.map = m;
         this.bodies = b;
+        this.eventBus = eventBus;
     }
 
     /**
@@ -106,6 +111,17 @@ public class Collision {
             // test with other bodies on the map without other worms
             for (PhysicsBody other : this.bodies) {
                 if ((body != other) && !(other.getEntity() instanceof Worm)) {
+
+                    // Special case for coins
+                    if (other.getEntity() instanceof Coin) {
+                        double radiusOther = other.getWidth() / 2;
+                        Position otherPos = new Position(other.getPos().getX() + 0.5, other.getPos().getY() + 0.5);
+                        Impact coinImpact = this.testSweptCircleCircle(body, body.getPos(), radius, other, otherPos, radiusOther, endPos, vector);
+                        if (coinImpact.ti < finalImpact.ti) { // Collision with coin
+                             eventBus.postQueued(new CoinCollisionEvent((Coin) other.getEntity(), ((Worm) body.getEntity()).getTeam()));
+                        }
+                        continue;
+                    }
                     double radiusOther = other.getHeight() / 2;
                     Position otherPos = new Position(other.getPos().getX() + 0.5, other.getPos().getY() + 0.5);
                     Impact bodyImpact = this.testSweptCircleCircle(body, body.getPos(), radius, other, otherPos, radiusOther, endPos, vector);
@@ -129,7 +145,7 @@ public class Collision {
 
             // Entity-Entity Test: iterates over all other bodies to find the earliest impact time
             for (PhysicsBody other : this.bodies) {
-                if (other != body) {
+                if (other != body && !(other.getEntity() instanceof Coin)) {
                     double radiusOther = other.getWidth() / 2;
                     Position otherPos = new Position(other.getPos().getX() + 0.5, other.getPos().getY() + 0.5);
 

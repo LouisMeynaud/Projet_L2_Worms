@@ -1,8 +1,9 @@
 package com.lllmtb.events;
-
-import com.lllmtb.events.move.JetpackBoostEvent;
-import com.lllmtb.events.physics.ExplosionEvent;
-import com.lllmtb.model.entity.Entity;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -10,6 +11,7 @@ import static org.mockito.Mockito.mock;
 
 import com.lllmtb.engine.GameSettings;
 import com.lllmtb.engine.GameWorld;
+import com.lllmtb.events.game.CoinCollisionEvent;
 import com.lllmtb.events.game.GamePauseEvent;
 import com.lllmtb.events.game.GameStateUpdatedEvent;
 import com.lllmtb.events.game.LoadEvent;
@@ -19,8 +21,10 @@ import com.lllmtb.events.game.StartGameEvent;
 import com.lllmtb.events.game.ToolSelectedEvent;
 import com.lllmtb.events.game.WeaponSelectedEvent;
 import com.lllmtb.events.game.WorldCreatedEvent;
+import com.lllmtb.events.move.JetpackBoostEvent;
 import com.lllmtb.events.move.MouseInputEvent;
 import com.lllmtb.events.move.MouseWheelMoveInputEvent;
+import com.lllmtb.events.physics.ExplosionEvent;
 import com.lllmtb.events.turn.TurnSkipEvent;
 import com.lllmtb.events.ui.MoveEvent;
 import com.lllmtb.events.ui.ShootMode;
@@ -31,6 +35,9 @@ import com.lllmtb.events.ui.graphical.ScreenLoadGame;
 import com.lllmtb.events.ui.graphical.ScreenLoadMap;
 import com.lllmtb.events.ui.graphical.ScreenNewOrLoadEvent;
 import com.lllmtb.events.ui.graphical.ScreenSettingsGame;
+import com.lllmtb.model.entity.Coin;
+import com.lllmtb.model.entity.Entity;
+import com.lllmtb.model.entity.team.Team;
 import com.lllmtb.model.item.tool.ToolId;
 import com.lllmtb.model.item.weapon.WeaponId;
 import com.lllmtb.physics.Position;
@@ -125,6 +132,18 @@ public class EventsTest {
         assertEquals(15, event.getRadius());
         assertEquals("BazookaExplosion", event.getAnimationKey());
         assertEquals(position, event.getPosition());
+    }
+
+    @Test
+    public void CoinCollisionEventTest() {
+        Coin mockCoin = mock(Coin.class);
+        Team mockTeam = mock(Team.class);
+        CoinCollisionEvent event = new CoinCollisionEvent(mockCoin, mockTeam);
+
+        // On vérifie que tout est bien stocké
+        assertNotNull(event, "L'événement ne doit pas être null");
+        assertEquals(mockCoin, event.coin);
+        assertEquals(mockTeam, event.team);
     }
 
     @Test
