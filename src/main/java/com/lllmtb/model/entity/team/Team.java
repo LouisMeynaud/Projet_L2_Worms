@@ -357,6 +357,17 @@ public class Team {
         this.index = (++this.index >= this.worms.size()) ? 0 : this.index;
         this.currentWorm = this.getIndexWorm(this.index);
     }
+
+    /**
+     * Set currentWorm of the team to null
+     */
+    public void setCurrentWormNull() {
+        this.currentWorm = null;
+    }
+
+    /**
+     * @return the {@link TeamColor} of the team
+     */
     public TeamColor getTeamColor() {
         return this.teamColor;
     }
