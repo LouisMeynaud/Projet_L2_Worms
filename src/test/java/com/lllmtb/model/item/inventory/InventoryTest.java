@@ -102,20 +102,20 @@ public class InventoryTest {
 
     @Test
     public void fire_throwsExceptionForUnknownWeapon() {
-        UseParams params = new UseParams(0, testPosition, testWorm);
+        UseParams params = new UseParams(0, testPosition, testWorm, 0);
         assertThrows(UnknownWeaponException.class, () -> inventory.fire(WeaponId.NONE, params));
     }
 
     @Test
     public void fire_throwsExceptionWhenWeaponIsLocked() {
-        UseParams params = new UseParams(0, testPosition, testWorm);
+        UseParams params = new UseParams(0, testPosition, testWorm, 0);
         assertThrows(UnusableWeaponException.class, () -> inventory.fire(WeaponId.GUN, params));
     }
 
     @Test
     public void fire_throwsExceptionWhenNoAmmo() {
         inventory.unlock(WeaponId.GUN);
-        UseParams params = new UseParams(0, testPosition, testWorm);
+        UseParams params = new UseParams(0, testPosition, testWorm, 0);
         assertThrows(UnusableWeaponException.class, () -> inventory.fire(WeaponId.GUN, params));
     }
 
@@ -123,7 +123,7 @@ public class InventoryTest {
     public void fire_successfullyFires() {
         inventory.unlock(WeaponId.GUN);
         inventory.weapons.addAmmo(WeaponId.GUN, 10);
-        UseParams params = new UseParams(0, testPosition, testWorm);
+        UseParams params = new UseParams(0, testPosition, testWorm, 0);
         
         assertDoesNotThrow(() -> inventory.fire(WeaponId.GUN, params));
     }
@@ -132,7 +132,7 @@ public class InventoryTest {
     public void fire_consumesAmmo() {
         inventory.unlock(WeaponId.GUN);
         inventory.weapons.addAmmo(WeaponId.GUN, 10);
-        UseParams params = new UseParams(0, testPosition, testWorm);
+        UseParams params = new UseParams(0, testPosition, testWorm, 0);
         
         inventory.fire(WeaponId.GUN, params);
         assertEquals(9, inventory.weapons.getAmmo(WeaponId.GUN));
@@ -142,7 +142,7 @@ public class InventoryTest {
     public void fire_consumesMultipleAmmo() {
         inventory.unlock(WeaponId.GUN);
         inventory.weapons.addAmmo(WeaponId.GUN, 10);
-        UseParams params = new UseParams(0, testPosition, testWorm);
+        UseParams params = new UseParams(0, testPosition, testWorm, 0);
         
         inventory.fire(WeaponId.GUN, params);
         inventory.fire(WeaponId.GUN, params);
@@ -153,7 +153,7 @@ public class InventoryTest {
     public void fire_returnsGameCommands() {
         inventory.unlock(WeaponId.GUN);
         inventory.weapons.addAmmo(WeaponId.GUN, 10);
-        UseParams params = new UseParams(0, testPosition, testWorm);
+        UseParams params = new UseParams(0, testPosition, testWorm, 0);
         
         var result = inventory.fire(WeaponId.GUN, params);
         assertNotNull(result);
@@ -296,7 +296,7 @@ public class InventoryTest {
         inventory.weapons.addAmmo(WeaponId.GUN, 10);
         inventory.tools.addAmmo(ToolId.PARACHUTE, 5);
         
-        UseParams useParams = new UseParams(0, testPosition, testWorm);
+        UseParams useParams = new UseParams(0, testPosition, testWorm, 0);
         UseParams toolParams = new UseParams(testWorm);
         
         assertDoesNotThrow(() -> inventory.fire(WeaponId.GUN, useParams));

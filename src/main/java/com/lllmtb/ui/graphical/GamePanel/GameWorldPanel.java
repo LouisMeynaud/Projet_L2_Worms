@@ -87,12 +87,6 @@ public class GameWorldPanel extends JPanel {
                 requestFocusInWindow();
             }
         });
-
-        addHierarchyListener(e -> {
-            if (e.getChangeFlags() == HierarchyEvent.SHOWING_CHANGED && isShowing()) {
-                requestFocusInWindow();
-            }
-        });
         addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {

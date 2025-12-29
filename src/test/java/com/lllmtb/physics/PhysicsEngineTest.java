@@ -52,7 +52,7 @@ class PhysicsEngineTest {
         Worm w = new Worm("José", new Team("Team", 1, new Position[]{pw}));
         assertTrue(map.inMap(pw));
         Position pBP = new Position(0, 5);
-        BulletProjectile bP = new BulletProjectile(new UseParams(0, pBP, w));
+        BulletProjectile bP = new BulletProjectile(new UseParams(0, pBP, w, 0));
         assertTrue(map.inMap(pw));
         pBWorm = w.getBody();
         pBBP = bP.getBody();
@@ -450,7 +450,7 @@ class PhysicsEngineTest {
 
         Worm owner = (Worm) pBWorm.getEntity();
         Position pos = new Position(10, 10);
-        RocketProjectile rocket = new RocketProjectile(new UseParams(0, pos, owner));
+        RocketProjectile rocket = new RocketProjectile(new UseParams(0, pos, owner, 0));
         pE.add(rocket.getBody());
         pE.createExplosion(rocket, 10, 15, 30, 100);
         assertEquals(2, bus.queuedEventCount());//verifie que les event sont bien crée(explosion et mapUpdate)

@@ -318,7 +318,7 @@ public class TeamTest {
         team.addAmmo(WeaponId.GUN, 10);
         team.selectWeapon(WeaponId.GUN);
         
-        UseParams params = new UseParams(0, new Position(0, 0), team.getCurrentWorm());
+        UseParams params = new UseParams(0, new Position(0, 0), team.getCurrentWorm(),0);
         assertDoesNotThrow(() -> team.use(params));
     }
 
@@ -328,7 +328,7 @@ public class TeamTest {
         team.addAmmo(WeaponId.GUN, 10);
         team.selectWeapon(WeaponId.GUN);
         
-        UseParams params = new UseParams(0, new Position(0, 0), team.getCurrentWorm());
+        UseParams params = new UseParams(0, new Position(0, 0), team.getCurrentWorm(),0);
         team.use(params);
         
         assertEquals(9, team.getInventory().weapons.getAmmo(WeaponId.GUN));
@@ -340,7 +340,7 @@ public class TeamTest {
         team.addAmmo(WeaponId.GUN, 10);
         team.selectWeapon(WeaponId.GUN);
         
-        UseParams params = new UseParams(0, new Position(0, 0), team.getCurrentWorm());
+        UseParams params = new UseParams(0, new Position(0, 0), team.getCurrentWorm(), 0);
         var result = team.use(params);
         
         assertNotNull(result);

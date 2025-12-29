@@ -53,11 +53,11 @@ public class CollisionTest {
         pBWorm1 = new PhysicsBody(worm1, posW1, new Vector(5, 0), 1, 2, 1);
         pBWorm2 = new PhysicsBody(worm2, posW2, new Vector(5, 0), 1, 2, 1);
         Position posBP1 = new Position(14, 18);
-        fP1 = new UseParams(0, posBP1, worm1);
+        fP1 = new UseParams(0, posBP1, worm1, 0);
         bP1 = new BulletProjectile(fP1);
         pBBP1 = new PhysicsBody(bP1, posBP1, new Vector(0,0), 1, 1, 1);
         Position posBP2 = new Position(4, 6);
-        fP2 = new UseParams(0, posBP2, worm2);
+        fP2 = new UseParams(0, posBP2, worm2, 0);
         bP2 = new BulletProjectile(fP2);
         pBBP2 = new PhysicsBody(bP2, posBP2, new Vector(1, 0), 1, 1, 1);
         bodies = new CopyOnWriteArrayList<>();

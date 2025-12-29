@@ -226,7 +226,7 @@ public final class TurnManager {
                 angle = -Math.PI / 2;
             }
 
-            UseParams params = new UseParams(angle, spawnBullet, Objects.requireNonNull(turn.getWormPlayable()));
+            UseParams params = new UseParams(angle, spawnBullet, Objects.requireNonNull(turn.getWormPlayable()), event.time());
 
             world.queueCommands(turn.getTeam().use(params));
         };

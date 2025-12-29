@@ -316,7 +316,6 @@ public class WorldRenderer {
 
         int[] xPoints = {centerX - size, centerX + size, centerX };
         int[] yPoints = {bottomY - size, bottomY - size, bottomY };
-
         g2d.setColor(Color.YELLOW);
         g2d.fillPolygon(xPoints, yPoints, 3); //dessine le triange remplie
 

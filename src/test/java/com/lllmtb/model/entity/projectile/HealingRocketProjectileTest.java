@@ -29,7 +29,7 @@ class HealingRocketProjectileTest {
         Position pos = new Position(0, 0);
         Team team = new Team("TeamTest", 1, new Position[]{pos});
         Worm worm = new Worm("WormTest", team) {};
-        UseParams params = new UseParams(0.0, pos, worm);
+        UseParams params = new UseParams(0.0, pos, worm, 0);
         HealingProjectile healing = new HealingProjectile(params);
 
 
@@ -49,7 +49,7 @@ class HealingRocketProjectileTest {
         Worm worm = mock(Worm.class);
         when(worm.getTeam()).thenReturn(team);
 
-        UseParams params = new UseParams(0.0, pos, worm);
+        UseParams params = new UseParams(0.0, pos, worm, 0);
         HealingProjectile healing = new HealingProjectile(params);
 
         GameWorld worldMock = mock(GameWorld.class);
