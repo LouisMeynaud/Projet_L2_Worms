@@ -58,7 +58,7 @@ public class GraphicalUI implements UI {
         windows.setExtendedState(JFrame.MAXIMIZED_BOTH); //sets the window to the maximum screen size
         windows.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         windows.setResizable(true);
-        windows.setMinimumSize(new Dimension(800,400));
+        windows.setMinimumSize(new Dimension(800, 400));
 
         cardLayout = new CardLayout();
         mainPanel = new JPanel(cardLayout);

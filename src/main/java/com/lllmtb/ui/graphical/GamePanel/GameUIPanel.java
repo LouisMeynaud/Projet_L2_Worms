@@ -87,7 +87,7 @@ public class GameUIPanel extends JPanel {
         this.uiRefreshTimer = new Timer(100, e -> updateTimerDisplay());
         this.uiRefreshTimer.start();
 
-        
+
         this.addComponentListener(new ComponentAdapter() {
             @Override
             public void componentResized(ComponentEvent e) {
@@ -446,7 +446,7 @@ public class GameUIPanel extends JPanel {
 
     private void updateButtonIcon(JButton btn, String name, int size) {
         if (btn == null) return;
-        
+
         BufferedImage img = TextureManager.UI.get(name);
         if (img != null) {
             Image scaled = img.getScaledInstance(size, size, Image.SCALE_SMOOTH);
