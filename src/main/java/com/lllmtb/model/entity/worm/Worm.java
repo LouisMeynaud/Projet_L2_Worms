@@ -1,6 +1,7 @@
 package com.lllmtb.model.entity.worm;
 
 import com.lllmtb.engine.commands.GameCommand;
+import com.lllmtb.engine.commands.RemoveEntityCommand;
 import com.lllmtb.engine.logger.Logger;
 import java.util.Objects;
 
@@ -190,7 +191,7 @@ public class Worm extends Entity {
         if (!this.stats.isAlive()) {
             this.alive = false;
             Logger.logger.debug("Worm {} from the team {} is dead", this.name, this.team.name);
-            return (world -> world.getPhysics().remove(this.getBody()));
+            return new RemoveEntityCommand(this);
         }
         return null;
     }
