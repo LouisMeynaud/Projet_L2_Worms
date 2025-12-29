@@ -9,5 +9,20 @@ public enum WeaponId implements ItemId {
     SHOTGUN,
     ELECTRONCANON,
     GASGUN,
-    NONE
+    NONE;
+
+    private final boolean usesCrosshair;
+
+    WeaponId(boolean usesCrosshair) {
+        this.usesCrosshair = usesCrosshair;
+    }
+
+    WeaponId() {
+        this(false);
+    }
+
+    @Override
+    public boolean usesCrosshair() {
+        return usesCrosshair;
+    }
 }
