@@ -236,4 +236,30 @@ public class Utilitaire {
         return sprites;
     }
 
+    public static JButton createShopButton(BufferedImage img, String text, boolean canBuy) {
+        JButton button = new JButton();
+        button.setLayout(new BorderLayout());
+        button.setPreferredSize(new Dimension(80, 80));
+        button.setBackground(Color.LIGHT_GRAY);
+        button.setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
+
+        if (img != null) {
+            Image scaled = img.getScaledInstance(48, 48, Image.SCALE_REPLICATE);
+            button.setIcon(new ImageIcon(scaled));
+        }
+
+        button.setText(text);
+        button.setFont(new Font("Arial", Font.BOLD, 12));
+        if (canBuy) {
+            button.setForeground(Color.BLUE);
+            button.setBackground(Color.LIGHT_GRAY);
+        } else {
+            button.setForeground(Color.RED);
+            button.setBackground(Color.DARK_GRAY);
+        }
+        button.setVerticalTextPosition(SwingConstants.BOTTOM);
+        button.setHorizontalTextPosition(SwingConstants.CENTER);
+        return button;
+    }
+
 }

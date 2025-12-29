@@ -15,8 +15,8 @@ import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
-import com.lllmtb.engine.GameSettings;
 import com.lllmtb.engine.GameWorld;
 import com.lllmtb.engine.turn.TurnManager;
 import com.lllmtb.events.EventBus;
@@ -32,18 +32,6 @@ import com.lllmtb.model.item.tool.ToolId;
 import com.lllmtb.model.item.weapon.WeaponId;
 import com.lllmtb.terrain.map.Map;
 import com.lllmtb.terrain.map.MapLoader;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
-
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicReference;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class PhysicsEngineTest {
     private Map map;
@@ -202,6 +190,7 @@ class PhysicsEngineTest {
         double ticktime = 16.7;
         TurnManager t = new TurnManager(world, 10000);
         Map map = Mockito.mock(Map.class);
+        Mockito.when(map.getWidth()).thenReturn(100);
         Mockito.when(map.getHeightWater()).thenReturn(0);
         Team team = new Team("TestTeam", 1, new Position[]{new Position(2,4)});
         Mockito.when(world.getTurnManager()).thenReturn(t);

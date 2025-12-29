@@ -113,6 +113,8 @@ public class GraphicalUI implements UI {
         });
     }
 
+
+
     /**
      * makes the page visible.
      */
@@ -123,6 +125,7 @@ public class GraphicalUI implements UI {
 
     @Override
     public void close() {
+        System.exit(0);
     }
 
 }
