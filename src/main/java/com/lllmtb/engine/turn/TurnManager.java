@@ -6,6 +6,7 @@ import com.lllmtb.engine.GameWorld;
 import com.lllmtb.engine.logger.Logger;
 import com.lllmtb.events.EventListener;
 import com.lllmtb.events.game.MapUpdateEvent;
+import com.lllmtb.events.game.ToolSelectedEvent;
 import com.lllmtb.events.game.WeaponSelectedEvent;
 import com.lllmtb.events.move.GroundCheckCollision;
 import com.lllmtb.events.move.MouseInputEvent;
@@ -18,6 +19,7 @@ import com.lllmtb.events.turn.WormPlayable;
 import com.lllmtb.events.ui.MoveEvent;
 import com.lllmtb.model.entity.team.Team;
 import com.lllmtb.model.item.UseParams;
+import com.lllmtb.model.item.tool.ToolId;
 import com.lllmtb.physics.Move;
 import static com.lllmtb.physics.Move.move;
 import com.lllmtb.physics.PhysicsBody;
@@ -128,10 +130,8 @@ public final class TurnManager {
             turn.getTeam().selectWeapon(event.getWeaponId());
         };
 
-        groundCollisionListener = event -> {
-            if (turn.getWormPlayable().uuid == event.worm.uuid) {
-                Move.jumpToMax();
-            }
+        EventListener<ToolSelectedEvent> toolSelectedEventEventListener = event -> {
+            turn.getTeam().selectTool(event.getToolId());
         };
 
         EventListener<MouseInputEvent> mouseInputEventListener = event -> {
@@ -153,6 +153,12 @@ public final class TurnManager {
             double spawnY = centerY + (Math.sin(angle) * dist);
 
             Position spawnBullet = new Position(spawnX, spawnY);
+
+            if (turn.getTeam().getHand() == ToolId.CALLSTRIKE) {
+                spawnBullet = new Position(mouseX, world.getMap().getHeight() - 1);
+                angle = -Math.PI / 2;
+            }
+
             UseParams params = new UseParams(angle, spawnBullet, Objects.requireNonNull(turn.getWormPlayable()));
 
             world.queueCommands(turn.getTeam().use(params));
@@ -164,6 +170,7 @@ public final class TurnManager {
         world.getBus().subscribe(MoveEvent.class, moveListener);
         world.getBus().subscribe(GroundCheckCollision.class, groundCollisionListener);
         world.getBus().subscribe(WeaponSelectedEvent.class, weaponSelectedEventEventListener);
+        world.getBus().subscribe(ToolSelectedEvent.class, toolSelectedEventEventListener);
         world.getBus().subscribe(MouseInputEvent.class, mouseInputEventListener);
         world.getBus().subscribe(TurnFinishEvent.class, turnFinishListener);
     }

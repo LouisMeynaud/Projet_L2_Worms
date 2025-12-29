@@ -2,6 +2,8 @@ package com.lllmtb.ui.graphical.GamePanel;
 
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.awt.event.HierarchyEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
@@ -22,6 +24,7 @@ import com.lllmtb.events.game.WorldCreatedEvent;
 import com.lllmtb.events.input.ProcessInputsEvent;
 import com.lllmtb.events.move.MouseInputEvent;
 import com.lllmtb.events.move.MouseWheelMoveInputEvent;
+import com.lllmtb.events.move.JetpackBoostEvent;
 import com.lllmtb.events.physics.ExplosionEvent;
 import com.lllmtb.events.ui.MoveEvent;
 import com.lllmtb.events.ui.ShootMode;
@@ -67,6 +70,23 @@ public class GameWorldPanel extends JPanel {
 
 
         //////////////////imput///////////////////////
+        //pour redessiner le monde apres un changement de taille d'ecran
+        addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                if (world != null && world.getMap() != null) {
+                    fitMapToScreen();
+                    repaint();
+                }
+            }
+        });
+
+        //pour eviter de devoir cliquer sur la fenetre pour prendre le focus apres un rezise
+        addHierarchyListener(e -> {
+            if (e.getChangeFlags() == HierarchyEvent.SHOWING_CHANGED && isShowing()) {
+                requestFocusInWindow();
+            }
+        });
 
         addHierarchyListener(e -> {
             if (e.getChangeFlags() == HierarchyEvent.SHOWING_CHANGED && isShowing()) {
@@ -281,6 +301,9 @@ public class GameWorldPanel extends JPanel {
      * This method should be called every game tick for smooth continuous movement.
      */
     public void processInputs() {
+        if (pressedKeys.contains(KeyEvent.VK_UP)) {
+            world.getBus().postQueued(new JetpackBoostEvent());
+        }
         if (pressedKeys.contains(KeyEvent.VK_DOWN)) {
             world.getBus().postQueued(new MoveEvent(Direction.Down));
         }

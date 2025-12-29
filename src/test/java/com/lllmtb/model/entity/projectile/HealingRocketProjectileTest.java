@@ -5,6 +5,8 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+import com.lllmtb.events.EventBus;
 import org.junit.jupiter.api.Test;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
@@ -53,6 +55,9 @@ class HealingRocketProjectileTest {
         GameWorld worldMock = mock(GameWorld.class);
         PhysicsEngine physicsMock = mock(PhysicsEngine.class);
         when(worldMock.getPhysics()).thenReturn(physicsMock);
+        EventBus busMock = mock(EventBus.class);
+        when(worldMock.getBus()).thenReturn(busMock);
+
         List<GameCommand> commands = healing.onImpact(null);
         assertNotNull(commands);
         assertFalse(commands.isEmpty());

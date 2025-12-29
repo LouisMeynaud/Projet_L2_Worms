@@ -3,11 +3,9 @@ package com.lllmtb.model.item.tool;
 import java.lang.reflect.Field;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertInstanceOf;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -37,10 +35,11 @@ public class ParachuteToolTest {
         
         UseParams up = new UseParams(w);
 
-        // Check that the use method returns the correct command
+        // Check that the use method returns the correct commands
         List<GameCommand> cmds = parachute.use(up);
-        assertEquals(1, cmds.size());
+        assertEquals(2, cmds.size());
 
+        // First command should be AddPhysicsModifierCommand
         GameCommand cmd = cmds.get(0);
         assertInstanceOf(AddPhysicsModifierCommand.class, cmd);
 
@@ -60,5 +59,9 @@ public class ParachuteToolTest {
 
         Vector v2 = new Vector(0, 5);
         assertEquals(5.0, m.transform.apply(v2).getY());
+
+        // Second command should be the listener registration command
+        GameCommand listenerCmd = cmds.get(1);
+        assertNotNull(listenerCmd);
     }
 }

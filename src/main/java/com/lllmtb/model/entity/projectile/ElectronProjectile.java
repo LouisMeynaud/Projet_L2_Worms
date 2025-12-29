@@ -21,7 +21,7 @@ public final class ElectronProjectile extends Projectile {
     private static final double width  = 1;
     private static final int damage = 10;
 
-    private int rebounds = 5;
+    private int bounces = 5;
 
     public ElectronProjectile(@NonNull UseParams params) {
         super(params, force, mass, height, width);
@@ -38,15 +38,15 @@ public final class ElectronProjectile extends Projectile {
             return new ArrayList<>();
         }
         List<GameCommand> list = new ArrayList<GameCommand>();
-        hitWorm(list, entity, damage);
+        handleHit(list, entity, damage);
         Worm hitWorm = null;
         if (entity instanceof Worm) {
             hitWorm = (Worm) entity;
         }
         list.add(specialAbility(hitWorm));
-        this.rebounds--;
-        if (this.rebounds <= 0) {
-            list.add(removeProjectileBody());
+        this.bounces--;
+        if (this.bounces <= 0) {
+            list.add(delete());
         }
         return list;
     }
