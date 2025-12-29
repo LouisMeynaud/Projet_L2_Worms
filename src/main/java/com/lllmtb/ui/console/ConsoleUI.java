@@ -23,7 +23,6 @@ import com.lllmtb.engine.GameSettings;
 import com.lllmtb.engine.logger.Logger;
 import com.lllmtb.events.EventBus;
 import com.lllmtb.events.game.StartGameEvent;
-import com.lllmtb.events.game.WorldCreatedEvent;
 import com.lllmtb.physics.GameMode;
 import com.lllmtb.terrain.generation.LandScape;
 import com.lllmtb.terrain.map.MapLoader;
