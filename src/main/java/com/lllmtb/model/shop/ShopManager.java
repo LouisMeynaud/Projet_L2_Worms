@@ -23,10 +23,11 @@ public class ShopManager {
         items.add(new ShopElement(WeaponId.GUN, "GUN", 50, 20, 5));
         items.add(new ShopElement(WeaponId.SHOTGUN, "SHOTGUN", 120, 40, 5));
         items.add(new ShopElement(WeaponId.BAZOOKA, "BAZOOKA", 150, 50, 1));
-        items.add(new ShopElement(WeaponId.GASGUN, "GASGUN", 200, 60, 2));
+        items.add(new ShopElement(WeaponId.GASGUN, "GASGUN", 150, 60, 2));
         items.add(new ShopElement(WeaponId.ELECTRONCANON, "ELECTRONCANON", 250, 70, 1));
         items.add(new ShopElement(WeaponId.HEALINGBAZOOKA, "HEALINGBAZOOKA", 100, 40, 1));
-
+        items.add(new ShopElement(ToolId.JETPACK, "JETPACK", 150, 90, 1));
+        items.add(new ShopElement(ToolId.CALLSTRIKE, "CALLSTRIKE", 150, 90, 1));
         items.add(new ShopElement(ToolId.PARACHUTE, "Parachute", 50, 20, 1));
     }
 
