@@ -22,8 +22,8 @@ public class Turn {
         return team.getCurrentWorm();
     }
 
-    public void nextWormPlayable(){
-        do{
+    public void nextWormPlayable() {
+        do {
             this.team.nextWorm();
         }
         while (!this.getWormPlayable().isAlive());

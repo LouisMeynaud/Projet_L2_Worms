@@ -39,7 +39,7 @@ public abstract class Projectile extends Entity {
         return owner;
     }
 
-    public static void setFriendlyFire(boolean friendlyfire){
+    public static void setFriendlyFire(boolean friendlyfire) {
         Projectile.friendlyfire = friendlyfire;
     }
 
@@ -58,12 +58,11 @@ public abstract class Projectile extends Entity {
      */
     protected void handleHit(List<GameCommand> list, Entity entity, int damage) {
         if (entity instanceof Worm worm) {
-            if (!friendlyfire && Worm.isInTheSameTeam(this.owner, worm)){
+            if (!friendlyfire && Worm.isInTheSameTeam(this.owner, worm)) {
                 Logger.logger.debug("Worm in the same Team");
             } else {
                 list.add(worm.damageWorm(damage));
             }
-            ;
             if (!worm.isAlive()) {
                 list.add(new RemoveEntityCommand(worm));
             }
