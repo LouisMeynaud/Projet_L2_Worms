@@ -56,6 +56,7 @@ public class TurnManagerTest {
         assertTrue(event1.get());
     }
 
+    @Test
     void testStartWormPlayable(){
         AtomicBoolean event2 = new AtomicBoolean(false);
         this.gw.getBus().subscribe(WormPlayable.class, event -> {

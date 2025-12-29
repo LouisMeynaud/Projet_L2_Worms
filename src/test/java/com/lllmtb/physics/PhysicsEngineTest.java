@@ -466,5 +466,18 @@ class PhysicsEngineTest {
         assertNotEquals(100, worm.getStats().getHp() );
 
     }
+
+    @Test
+    void checkIfWormDeathAfterFallDamage(){
+        Team team = Mockito.mock(Team.class);
+        Worm worm = new Worm("TestWorm", team);
+        worm.damageWorm(90);
+        assertTrue(worm.isAlive());
+        worm.getBody().setVector(new Vector(0, -200));
+        PhysicsEngine.fallDamage(worm);
+        //Worm has 100 HP and check if it loses some
+        assertFalse(worm.isAlive());
+
+    }
 }
 
