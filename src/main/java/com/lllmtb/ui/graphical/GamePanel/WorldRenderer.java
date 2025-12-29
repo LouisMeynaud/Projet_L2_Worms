@@ -226,7 +226,7 @@ public class WorldRenderer {
         g2d.drawImage(textureWorm, tx, null);
 
         if (worm.getEntity() == activeWorm) {
-            paintCurrentWormsArrow(g2d, xEcran, yEcran, largeurVerPx);
+            paintCurrentWormsArrow(g2d, xEcran, yEcran, largeurVerPx, wormEntity.getTeam().teamColor);
             paintItem(g2d, xCenter, yCenter);
             paintAim(g2d, xCenter, yCenter);
         }
@@ -307,7 +307,7 @@ public class WorldRenderer {
      * @param y la position y du worms a l'ecran
      * @param width la largeur du worms a l'ecran
      */
-    private void paintCurrentWormsArrow(Graphics2D g2d, double x, double y, double width) {
+    private void paintCurrentWormsArrow(Graphics2D g2d, double x, double y, double width, TeamColor color) {
 
         double offsetAnimation = Math.sin(world.getGameLoop().getTicks() / 10) * 5; //fonction sinuosidale , (qui monte et descend)
         int centerX = (int) (x + (width / 2.0));
@@ -316,7 +316,15 @@ public class WorldRenderer {
 
         int[] xPoints = {centerX - size, centerX + size, centerX };
         int[] yPoints = {bottomY - size, bottomY - size, bottomY };
-        g2d.setColor(Color.YELLOW);
+        Color paintColor;
+        switch (color) {
+            case GREEN : paintColor = Color.GREEN; break;
+            case YELLOW : paintColor = Color.YELLOW; break;
+            case RED : paintColor = Color.RED; break;
+            case BLUE : paintColor = Color.BLUE; break;
+            default : paintColor = Color.BLACK; break;
+        }
+        g2d.setColor(paintColor);
         g2d.fillPolygon(xPoints, yPoints, 3); //dessine le triange remplie
 
         g2d.setColor(Color.BLACK);
