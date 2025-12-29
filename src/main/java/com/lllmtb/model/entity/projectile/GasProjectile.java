@@ -52,7 +52,7 @@ public final class GasProjectile extends Projectile {
 
                     if (distance <= radius) {
                         if (Math.random() < 0.3) {
-                            list.add(worm.damageWorm(damage)); // ne pouvant pas mettre de degas inferieur a 1 (car int)  , j'ai mis une proba de 40% de faire 1 degat
+                            list.add(worm.damageWorm(damage)); // ne pouvant pas mettre de degats inferieur à 1 (car int)  , j'ai mis une proba de 30% de faire 1 degat
                         }
                     }
                 }
