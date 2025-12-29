@@ -47,6 +47,12 @@ public class ItemIdTest {
     }
 
     @Test
+    public void weaponId_bow_doesNotUseCrosshair() {
+        assertFalse(WeaponId.BOW.usesCrosshair(),
+                "BOW should not use crosshair targeting");
+    }
+
+    @Test
     public void weaponId_bazooka_doesNotUseCrosshair() {
         assertFalse(WeaponId.BAZOOKA.usesCrosshair(),
                 "BAZOOKA should not use crosshair targeting by default");
