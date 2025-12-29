@@ -7,6 +7,7 @@ import java.util.Objects;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import com.lllmtb.model.entity.projectile.Projectile;
 import org.eclipse.jdt.annotation.NonNull;
 
 import com.lllmtb.engine.commands.GameCommand;
@@ -90,6 +91,9 @@ public class GameWorld {
                 break;
             }
         }
+
+        //Init FriendlyFire
+        Projectile.setFriendlyFire(settings.friendlyfire);
 
         // Init GameLoop
         this.gameLoop = new GameLoop(this);
