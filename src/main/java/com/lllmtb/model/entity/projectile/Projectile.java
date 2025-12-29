@@ -61,7 +61,7 @@ public abstract class Projectile extends Entity {
             if (!friendlyfire && Worm.isInTheSameTeam(this.owner, worm)){
                 Logger.logger.debug("Worm in the same Team");
             } else {
-                worm.damageWorm(damage);
+                list.add(worm.damageWorm(damage));
             }
             ;
             if (!worm.isAlive()) {

@@ -2,9 +2,10 @@ package com.lllmtb.physics;
 
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import com.lllmtb.engine.GameWorld;
 import com.lllmtb.events.EventBus;
 import com.lllmtb.events.game.CoinCollisionEvent;
-import com.lllmtb.events.move.GroundCheckCollision;
+import com.lllmtb.events.physics.GroundCheckCollision;
 import com.lllmtb.model.entity.Coin;
 import com.lllmtb.model.entity.CollisionType;
 import com.lllmtb.model.entity.worm.Worm;
@@ -434,9 +435,9 @@ public class Collision {
      * @param body the {@link PhysicsBody} which move
      * @param impact the {@link Impact} with collision's information
      * @param ticktime the duration of a simulation tick
-     * @param bus the {@link EventBus} of the collisions
+     * @param world the {@link GameWorld} of the collisions
      */
-    public void slide(PhysicsBody body, Impact impact, double ticktime, EventBus bus) {
+    public void slide(PhysicsBody body, Impact impact, double ticktime, GameWorld world) {
         Position safePos = new Position(
                 impact.collisionPos.getX() + impact.normal.getX() * EPSILON,
                 impact.collisionPos.getY() + impact.normal.getY() * EPSILON
@@ -451,14 +452,16 @@ public class Collision {
                 ((Worm) body.getEntity()).setOnGround(false);
             }
         } else {
-            PhysicsEngine.fallDamage((Worm) body.getEntity());
+            if (body.getEntity() instanceof Worm worm) {
+                world.queueCommand(PhysicsEngine.fallDamage(worm));
+            }
             body.setVector(new Vector(body.getVector().getX(), 0));
             // if the worm touch the ground, it can jump again
             if (impact.normal.getY() == 1) {
                 if (body.getEntity() instanceof Worm) {
                     ((Worm) body.getEntity()).setOnGround(true);
                 }
-                bus.postQueued(new GroundCheckCollision(body.getEntity()));
+                world.getBus().postQueued(new GroundCheckCollision(body.getEntity()));
             } else if (impact.normal.getY() == -1) {
                 // Hit ceiling - mark as not on ground
                 if (body.getEntity() instanceof Worm) {
@@ -478,7 +481,7 @@ public class Collision {
 
             if (i.normal.getY() == 1 && body.getEntity() instanceof Worm) {
                 ((Worm) body.getEntity()).setOnGround(true);
-                bus.postQueued(new GroundCheckCollision(body.getEntity()));
+                world.getBus().postQueued(new GroundCheckCollision(body.getEntity()));
             }
         } else {
             body.setPos(nextPos);

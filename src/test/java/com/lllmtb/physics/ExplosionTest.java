@@ -4,6 +4,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -92,5 +94,19 @@ class ExplosionTest {
         bodies.add(body);
         Explosion.explosionDamageEffect(new Position(0, 0), 10, 50, bodies);
         assertEquals(initialHp, worm.getStats().getHp());
+    }
+
+    @Test
+    void checkIfWormDeathAfterExplosion(){
+        Worm worm = createWorm();
+        worm.damageWorm(90);
+        assertTrue(worm.isAlive());
+
+        PhysicsBody body = new PhysicsBody(worm, new Position(0, 0), new Vector(0, 0), 1, 2, 1);
+        bodies.add(body);
+
+        Explosion.explosionDamageEffect(new Position(0, 0), 10, 100, bodies);
+        assertFalse(worm.isAlive());
+
     }
 }

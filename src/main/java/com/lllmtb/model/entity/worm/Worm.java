@@ -1,5 +1,7 @@
 package com.lllmtb.model.entity.worm;
 
+import com.lllmtb.engine.commands.GameCommand;
+import com.lllmtb.engine.commands.RemoveEntityCommand;
 import com.lllmtb.engine.logger.Logger;
 import java.util.Objects;
 
@@ -185,16 +187,18 @@ public class Worm extends Entity {
      * <p>If the worm's health (or other relevant stat) indicates it is dead,
      * this method will mark the worm as no longer alive.</p>
      */
-    private void setDeath() {
+    private GameCommand setDeath() {
         if (!this.stats.isAlive()) {
             this.alive = false;
             Logger.logger.debug("Worm {} from the team {} is dead", this.name, this.team.name);
+            return new RemoveEntityCommand(this);
         }
+        return null;
     }
 
-    public void damageWorm(int damage) {
+    public GameCommand damageWorm(int damage) {
         this.stats.damageTake(damage);
-        this.setDeath();
+        return this.setDeath();
     }
 
     public static boolean isInTheSameTeam(Worm worm1, Worm worm2){

@@ -5,7 +5,7 @@ import com.lllmtb.engine.commands.AddPhysicsModifierCommand;
 import com.lllmtb.engine.commands.GameCommand;
 import com.lllmtb.engine.commands.RemovePhysicsModifierCommand;
 import com.lllmtb.events.EventListener;
-import com.lllmtb.events.move.GroundCheckCollision;
+import com.lllmtb.events.physics.GroundCheckCollision;
 import com.lllmtb.model.item.UseParams;
 import com.lllmtb.physics.PhysicsModifier;
 import com.lllmtb.physics.Transform;
@@ -45,7 +45,7 @@ public class ParachuteTool extends Tool {
             @Override
             public void execute(GameWorld world) {
                 EventListener<GroundCheckCollision> groundListener = event -> {
-                    if (event.worm.uuid == params.owner.uuid) {
+                    if (event.worm().uuid == params.owner.uuid) {
                         world.queueCommand(new RemovePhysicsModifierCommand(params.owner, modifier));
                         world.queueCommand(w -> w.getBus().unsubscribe(GroundCheckCollision.class, listenerRef.get()));
                     }

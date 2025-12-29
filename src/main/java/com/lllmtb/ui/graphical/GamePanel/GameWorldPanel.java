@@ -21,13 +21,13 @@ import com.lllmtb.events.game.GamePauseEvent;
 import com.lllmtb.events.game.GameStateUpdatedEvent;
 import com.lllmtb.events.game.MapUpdateEvent;
 import com.lllmtb.events.game.WorldCreatedEvent;
+import com.lllmtb.events.input.MoveInputEvent;
 import com.lllmtb.events.input.ProcessInputsEvent;
-import com.lllmtb.events.move.MouseInputEvent;
-import com.lllmtb.events.move.MouseWheelMoveInputEvent;
-import com.lllmtb.events.move.JetpackBoostEvent;
+import com.lllmtb.events.input.UseInputEvent;
+import com.lllmtb.events.input.JetpackBoostInputEvent;
 import com.lllmtb.events.physics.ExplosionEvent;
-import com.lllmtb.events.ui.MoveEvent;
-import com.lllmtb.events.ui.ShootMode;
+import com.lllmtb.events.ui.graphical.MouseWheelMoveInputEvent;
+import com.lllmtb.events.ui.graphical.ShootMode;
 import com.lllmtb.events.ui.graphical.RequestFocus;
 import com.lllmtb.model.item.ItemId;
 import com.lllmtb.model.item.weapon.WeaponId;
@@ -98,7 +98,7 @@ public class GameWorldPanel extends JPanel {
             public void keyPressed(KeyEvent e) {
                 pressedKeys.add(e.getKeyCode());
                 if (pressedKeys.contains(KeyEvent.VK_UP)) {
-                    world.getBus().postQueued(new MoveEvent(Direction.Up));
+                    world.getBus().postQueued(new MoveInputEvent(Direction.Up));
                 }
             }
 
@@ -135,15 +135,13 @@ public class GameWorldPanel extends JPanel {
                         String sound = world.getPlayingTeam().getHand().toString();
                         SoundPlayer.playSound(sound + "Shot");
                     }
-                    world.getBus().postQueued(new MouseInputEvent(worldPos, duration, Direction.Left));
+                    world.getBus().postQueued(new UseInputEvent(worldPos, duration));
                 }
 
                 if (type == MouseEvent.BUTTON3) {
                     isCameraMode = false;
                     if (!hasDraggedCamera) {
                         int a = 0; //suprimer une fois l'implementation du else faite
-                        //world.getBus().postQueued(new MouseInputEvent(new Position(worldX, worldY),duration, Direction.Right));
-
                     }
                 }
             }
@@ -302,16 +300,16 @@ public class GameWorldPanel extends JPanel {
      */
     public void processInputs() {
         if (pressedKeys.contains(KeyEvent.VK_UP)) {
-            world.getBus().postQueued(new JetpackBoostEvent());
+            world.getBus().postQueued(new JetpackBoostInputEvent());
         }
         if (pressedKeys.contains(KeyEvent.VK_DOWN)) {
-            world.getBus().postQueued(new MoveEvent(Direction.Down));
+            world.getBus().postQueued(new MoveInputEvent(Direction.Down));
         }
         if (pressedKeys.contains(KeyEvent.VK_LEFT)) {
-            world.getBus().postQueued(new MoveEvent(Direction.Left));
+            world.getBus().postQueued(new MoveInputEvent(Direction.Left));
         }
         if (pressedKeys.contains(KeyEvent.VK_RIGHT)) {
-            world.getBus().postQueued(new MoveEvent(Direction.Right));
+            world.getBus().postQueued(new MoveInputEvent(Direction.Right));
         }
     }
 
@@ -367,7 +365,6 @@ public class GameWorldPanel extends JPanel {
             System.out.println(event.getAnimationKey());
             SoundPlayer.playSound(event.getAnimationKey());
         });
-
     }
 
     /**
