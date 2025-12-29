@@ -45,10 +45,7 @@ public abstract class Projectile extends Entity {
 
     protected void hitWorm(List<GameCommand> list, Entity entity, int damage) {
         if (entity instanceof Worm worm) {
-            worm.damageWorm(damage);
-            if (!worm.isAlive()) {
-                list.add(world -> world.getPhysics().remove(worm.getBody()));
-            }
+            list.add(worm.damageWorm(damage));
         }
     }
 
