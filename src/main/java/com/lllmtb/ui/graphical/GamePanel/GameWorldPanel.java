@@ -29,6 +29,7 @@ import com.lllmtb.events.physics.ExplosionEvent;
 import com.lllmtb.events.ui.graphical.MouseWheelMoveInputEvent;
 import com.lllmtb.events.ui.graphical.ShootMode;
 import com.lllmtb.events.ui.graphical.RequestFocus;
+import com.lllmtb.model.entity.worm.Worm;
 import com.lllmtb.model.item.ItemId;
 import com.lllmtb.model.item.weapon.WeaponId;
 import com.lllmtb.physics.PhysicsBody;
@@ -57,7 +58,7 @@ public class GameWorldPanel extends JPanel {
     protected int currentMouseY = 0; //position Y de la souris
     protected double mouseWorldX = 0; //position X de la souris en coordonée physique
     protected double mouseWorldY = 0; //position Y de la souris en coordonnée physique
-
+    private Position lastWormPos = new Position(0,  0);
 
     /**
      * initialise les listenner d'evenement et d'input
@@ -337,6 +338,7 @@ public class GameWorldPanel extends JPanel {
                 renderer.updateAnimations();
                 renderer.updateEffects();
             }
+            screenFollowCurrentWorms();
             repaint();
         });
 
@@ -413,6 +415,32 @@ public class GameWorldPanel extends JPanel {
         }
         if (cameraOffsetY < minY) {
             cameraOffsetY = minY;
+        }
+    }
+    /**
+     * permet a la camera de suivre le worms s'il bouge
+     */
+    public void screenFollowCurrentWorms() {
+        Worm activeWorm = world.getTurnManager().getTurn().getWormPlayable();
+        PhysicsBody body = activeWorm.getBody();
+        boolean hasMoved = false;
+        double diffX = Math.abs(body.getPos().getX() - lastWormPos.getX());
+        double diffY = Math.abs(body.getPos().getY() - lastWormPos.getY());
+        if (diffX > 0.01 || diffY > 0.01) {
+                hasMoved = true;
+               }
+        lastWormPos = body.getPos();
+
+        if (hasMoved && !isCameraMode) {
+            double targetX = body.getPos().getX() * tileSize;
+            double targetY = (world.getMap().getHeight() - body.getPos().getY()) * tileSize;
+
+            double screenCenterWidth = getWidth() / 2.0;
+            double screenCenterHeight = getHeight() / 2.0;
+
+            cameraOffsetX = screenCenterWidth - (targetX * currentZoom);
+            cameraOffsetY = screenCenterHeight - (targetY * currentZoom);
+            checkCameraBounds();
         }
     }
 
