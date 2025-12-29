@@ -80,6 +80,8 @@ public class GameUIPanel extends JPanel {
     private JButton inventoryButton;
     private JButton shootModeButton;
     private JButton skipTurnButton;
+    private JButton shopButton;
+    private JButton changeWormsButton;
 
     /**
      * constructeur : initialise la disposition , les conteneurs , le HUD et les listenneur.
@@ -136,12 +138,12 @@ public class GameUIPanel extends JPanel {
         lowerBar.setOpaque(false);
 
 
-        JButton pauseButton = Utilitaire.createImageButton(TextureManager.UI, "Pause", 128, 128, 128, 128, "", "Arial", 16, Color.WHITE);
-        JButton inventoryButton = Utilitaire.createImageButton(TextureManager.UI, "InventoryButton", 128, 128, 128, 128, "", "Arial", 16, Color.WHITE);
-        JButton shopButton = Utilitaire.createImageButton(TextureManager.UI, "ShopButton", 128, 128, 128, 128, "", "Arial", 12, Color.YELLOW);
-        JButton shootModeButton = Utilitaire.createImageButton(TextureManager.UI, "ShootMode", 120, 120, 120, 120, "", "Arial", 16, Color.WHITE);
-        JButton skipTurnButton = Utilitaire.createImageButton(TextureManager.UI, "SkipTurn", 128, 128, 128, 128, "", "Arial", 16, Color.WHITE);
-        JButton changeWormsButtons = Utilitaire.createImageButton(TextureManager.UI, "ChangeWorms", 128, 128, 128, 128, "", "Arial", 16, Color.WHITE);
+        pauseButton = Utilitaire.createImageButton(TextureManager.UI, "Pause", 128, 128, 128, 128, "", "Arial", 16, Color.WHITE);
+        inventoryButton = Utilitaire.createImageButton(TextureManager.UI, "InventoryButton", 128, 128, 128, 128, "", "Arial", 16, Color.WHITE);
+        shopButton = Utilitaire.createImageButton(TextureManager.UI, "ShopButton", 128, 128, 128, 128, "", "Arial", 12, Color.YELLOW);
+        shootModeButton = Utilitaire.createImageButton(TextureManager.UI, "ShootMode", 120, 120, 120, 120, "", "Arial", 16, Color.WHITE);
+        skipTurnButton = Utilitaire.createImageButton(TextureManager.UI, "SkipTurn", 128, 128, 128, 128, "", "Arial", 16, Color.WHITE);
+        changeWormsButton = Utilitaire.createImageButton(TextureManager.UI, "ChangeWorms", 128, 128, 128, 128, "", "Arial", 16, Color.WHITE);
 
 
         pauseButton.addActionListener(e -> pauseMenu(true));
@@ -149,13 +151,13 @@ public class GameUIPanel extends JPanel {
         inventoryButton.addActionListener(e -> openCloseInventory());
         shopButton.addActionListener(e -> openCloseShop());
         skipTurnButton.addActionListener(e -> world.getBus().postQueued(new TurnSkipEvent()));
-        changeWormsButtons.addActionListener(e -> world.getBus().postQueued(new ChangeWormsEvent()));
+        changeWormsButton.addActionListener(e -> world.getBus().postQueued(new ChangeWormsEvent()));
 
         JPanel buttonsPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
         buttonsPanel.setOpaque(false);
         buttonsPanel.add(pauseButton);
         buttonsPanel.add(skipTurnButton);
-        buttonsPanel.add(changeWormsButtons);
+        buttonsPanel.add(changeWormsButton);
 
         this.timerLabel = createTimerLabel();
         JPanel timerContner = new JPanel(new FlowLayout(FlowLayout.CENTER));
@@ -574,6 +576,8 @@ public class GameUIPanel extends JPanel {
         updateButtonIcon(inventoryButton, "InventoryButton", size);
         updateButtonIcon(shootModeButton, "ShootMode", size);
         updateButtonIcon(skipTurnButton, "SkipTurn", size);
+        updateButtonIcon(shopButton, "ShopButton", size);
+        updateButtonIcon(changeWormsButton, "ChangeWorms", size); //TODO : Change
 
         if (timerLabel != null) {
             int fontSize = Math.max(12, size / 4);
