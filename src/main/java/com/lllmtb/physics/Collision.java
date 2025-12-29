@@ -5,7 +5,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import com.lllmtb.engine.GameWorld;
 import com.lllmtb.events.EventBus;
 import com.lllmtb.events.game.CoinCollisionEvent;
-import com.lllmtb.events.move.GroundCheckCollision;
+import com.lllmtb.events.physics.GroundCheckCollision;
 import com.lllmtb.model.entity.Coin;
 import com.lllmtb.model.entity.CollisionType;
 import com.lllmtb.model.entity.worm.Worm;

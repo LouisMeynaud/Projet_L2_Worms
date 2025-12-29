@@ -5,7 +5,7 @@ import com.lllmtb.engine.commands.AddPhysicsModifierCommand;
 import com.lllmtb.engine.commands.GameCommand;
 import com.lllmtb.events.EventListener;
 import com.lllmtb.events.input.ProcessInputsEvent;
-import com.lllmtb.events.move.JetpackBoostEvent;
+import com.lllmtb.events.input.JetpackBoostInputEvent;
 import com.lllmtb.events.physics.PhysicsModifierRemovedEvent;
 import com.lllmtb.model.item.UseParams;
 import com.lllmtb.physics.PhysicsModifier;
@@ -39,20 +39,20 @@ public class JetpackTool extends Tool {
         commands.add(new AddPhysicsModifierCommand(params.owner, modifier));
 
         commands.add(new GameCommand() {
-            private final AtomicReference<EventListener<JetpackBoostEvent>> boostListenerRef = new AtomicReference<>();
+            private final AtomicReference<EventListener<JetpackBoostInputEvent>> boostListenerRef = new AtomicReference<>();
             private final AtomicReference<EventListener<ProcessInputsEvent>> disableListenerRef = new AtomicReference<>();
             private final AtomicReference<EventListener<PhysicsModifierRemovedEvent>> removalListenerRef = new AtomicReference<>();
 
             @Override
             public void execute(GameWorld world) {
                 // Enable the jetpack when boost key is held
-                EventListener<JetpackBoostEvent> boostListener = event -> {
+                EventListener<JetpackBoostInputEvent> boostListener = event -> {
                     if (world.getPlayingTeam().getCurrentWorm().equals(params.owner)) modifier.enabled = true;
                 };
                 boostListenerRef.set(boostListener);
 
                 // Disable the jetpack at the start of each input cycle
-                // (it will be re-enabled by JetpackBoostEvent if the key is still held)
+                // (it will be re-enabled by JetpackBoostInputEvent if the key is still held)
                 EventListener<ProcessInputsEvent> disableListener = event -> modifier.enabled = false;
                 disableListenerRef.set(disableListener);
 
@@ -60,7 +60,7 @@ public class JetpackTool extends Tool {
                 EventListener<PhysicsModifierRemovedEvent> removalListener = event -> {
                     if (event.modifier() == modifier && event.body().getEntity() == params.owner) {
                         world.queueCommand(w -> {
-                            w.getBus().unsubscribe(JetpackBoostEvent.class, boostListenerRef.get());
+                            w.getBus().unsubscribe(JetpackBoostInputEvent.class, boostListenerRef.get());
                             w.getBus().unsubscribe(ProcessInputsEvent.class, disableListenerRef.get());
                             w.getBus().unsubscribe(PhysicsModifierRemovedEvent.class, removalListenerRef.get());
                         });
@@ -68,7 +68,7 @@ public class JetpackTool extends Tool {
                 };
                 removalListenerRef.set(removalListener);
 
-                world.getBus().subscribe(JetpackBoostEvent.class, boostListener);
+                world.getBus().subscribe(JetpackBoostInputEvent.class, boostListener);
                 world.getBus().subscribe(ProcessInputsEvent.class, disableListener);
                 world.getBus().subscribe(PhysicsModifierRemovedEvent.class, removalListener);
             }
