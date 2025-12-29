@@ -28,6 +28,7 @@ import javax.swing.border.TitledBorder;
 
 import com.lllmtb.engine.GameWorld;
 import com.lllmtb.events.EventBus;
+import com.lllmtb.events.game.ChangeWormsEvent;
 import com.lllmtb.events.game.GamePauseEvent;
 import com.lllmtb.events.game.GameStateUpdatedEvent;
 import com.lllmtb.events.game.SaveEvent;
@@ -140,6 +141,7 @@ public class GameUIPanel extends JPanel {
         JButton shopButton = Utilitaire.createImageButton(TextureManager.UI, "ShopButton", 128, 128, 128, 128, "SHOP", "Arial", 12, Color.YELLOW);
         JButton shootModeButton = Utilitaire.createImageButton(TextureManager.UI, "ShootMode", 120, 120, 120, 120, "", "Arial", 16, Color.WHITE);
         JButton skipTurnButton = Utilitaire.createImageButton(TextureManager.UI, "SkipTurn", 128, 128, 128, 128, "", "Arial", 16, Color.WHITE);
+        JButton changeWormsButtons = Utilitaire.createImageButton(TextureManager.UI, "ChangeWorms", 128, 128, 128, 128, "", "Arial", 16, Color.WHITE);
 
 
         pauseButton.addActionListener(e -> pauseMenu(true));
@@ -147,11 +149,13 @@ public class GameUIPanel extends JPanel {
         inventoryButton.addActionListener(e -> openCloseInventory());
         shopButton.addActionListener(e -> openCloseShop());
         skipTurnButton.addActionListener(e -> world.getBus().postQueued(new TurnSkipEvent()));
+        changeWormsButtons.addActionListener(e -> world.getBus().postQueued(new ChangeWormsEvent()));
 
         JPanel buttonsPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
         buttonsPanel.setOpaque(false);
         buttonsPanel.add(pauseButton);
         buttonsPanel.add(skipTurnButton);
+        buttonsPanel.add(changeWormsButtons);
 
         this.timerLabel = createTimerLabel();
         JPanel timerContner = new JPanel(new FlowLayout(FlowLayout.CENTER));
