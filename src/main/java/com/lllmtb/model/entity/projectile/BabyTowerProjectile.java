@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public final class BabyTowerProjectile extends Projectile {
-    private static final double force  = 50.0;
+    private static final double force  = 20.0;
     private static final double mass   = 0.000;
     private static final double height = 1;
     private static final double width  = 1;
@@ -30,6 +30,7 @@ public final class BabyTowerProjectile extends Projectile {
     public List<GameCommand> onImpact(Entity entity) {
         List<GameCommand> list = new ArrayList<GameCommand>();
         handleHit(list, entity, damage);
+        list.add(delete());
         return list;
     }
 

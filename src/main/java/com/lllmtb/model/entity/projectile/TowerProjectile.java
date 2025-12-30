@@ -19,13 +19,14 @@ import com.lllmtb.physics.PhysicsEngine;
 import com.lllmtb.physics.Position;
 
 public final class TowerProjectile extends Projectile {
-    private static final double FORCE  = 0;
-    private static final double MASS   = 50;
-    private static final double HEIGHT = 4;
-    private static final double WIDTH  = 3;
+    private static final double FORCE  = 50;
+    private static final double MASS   = 0.0060;
+    private static final double HEIGHT = 2;
+    private static final double WIDTH  = 1;
     private static final int DAMAGE    = 0;
+    public static final int range = 25;
 
-    private static final long FIRE_INTERVAL = 1000;
+    private static final double FIRE_INTERVAL = 500;
     private long cooldownTimer = 0;
     private int creationTurnIndex = -1;
 
@@ -62,6 +63,9 @@ public final class TowerProjectile extends Projectile {
     private GameCommand shooting(long tickTime) {
     return world -> {
             if (towerDeath(world)) return;
+            if (world.getTurnManager().getRemainingTime() <= 0) {
+                return;
+            }
             if (this.cooldownTimer >= FIRE_INTERVAL) {
                 this.cooldownTimer -= FIRE_INTERVAL;
 
@@ -71,9 +75,14 @@ public final class TowerProjectile extends Projectile {
                 List<PhysicsBody> activeBodies = activeTeam.getTeamWorms().stream().map(Worm::getBody).toList();
 
                 Worm target = world.getPhysics().findClosestEnemyFromPosition(this.getBody().getPos(), this.getOwner().getTeam(), this.getOwner(), activeBodies);
+                Position myPos = this.getBody().getPos();
+                Position targetPos = target.getBody().getPos();
 
-                if (target != null) {
-                    fireAtTarget(world, target, this.getBody().getPos());
+                double dx = myPos.getX() - targetPos.getX();
+                double dy = myPos.getY() - targetPos.getY();
+                double distSq = (dx * dx) + (dy * dy);
+                if (distSq <= (range * range)) {
+                    fireAtTarget(world, target, myPos);
                 }
             }
         };
@@ -95,10 +104,10 @@ private boolean towerDeath(GameWorld world) {
 
 
     private void fireAtTarget(GameWorld world, Worm target, Position myPos) {
-    Position spawnPos = new Position(myPos.getX(),  myPos.getY() - (HEIGHT / 2.0) - 1.);
+    Position spawnPos = new Position(myPos.getX(),  myPos.getY() + (HEIGHT / 2.0));
     double angle = PhysicsEngine.calculateAngleToBody(spawnPos, target.getBody());
     UseParams bulletParams = new UseParams(angle, spawnPos, getOwner(), 0);
-    world.queueCommand(new RegisterProjectileCommand(new BulletProjectile(bulletParams), getOwner()));
+    world.queueCommand(new RegisterProjectileCommand(new BabyTowerProjectile(bulletParams), getOwner()));
 }
 
     @Override
