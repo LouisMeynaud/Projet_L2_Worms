@@ -214,6 +214,7 @@ public final class TurnManager {
                 return false;
             }
             else if (body.getEntity() instanceof Worm worm){
+                this.world.getPhysics().removeModifierFor(body, ToolId.JETPACK);
                 if(!worm.isOnGround()){
                     return false;
                 }

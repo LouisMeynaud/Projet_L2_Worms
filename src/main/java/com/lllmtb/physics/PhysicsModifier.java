@@ -1,9 +1,15 @@
 package com.lllmtb.physics;
 
+import com.lllmtb.engine.commands.GameCommand;
+import com.lllmtb.model.entity.worm.Worm;
 import com.lllmtb.model.item.ItemId;
 
+import com.lllmtb.model.item.UseParams;
+import com.lllmtb.model.item.tool.ParachuteTool;
+import com.lllmtb.model.item.tool.ToolId;
 import org.eclipse.jdt.annotation.NonNull;
 
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -41,5 +47,14 @@ public class PhysicsModifier {
         this.source = source;
         this.oneShot = true;
         this.enabled = true;
+    }
+
+    public List<GameCommand> onRemove(Worm owner){
+        if (this.source == ToolId.JETPACK){
+            ParachuteTool parachute = new ParachuteTool();
+            UseParams useParams = new UseParams(owner);
+            return parachute.use(useParams);
+        }
+        return null;
     }
 }
