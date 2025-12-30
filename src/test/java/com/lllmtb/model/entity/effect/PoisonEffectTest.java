@@ -72,8 +72,6 @@ public class PoisonEffectTest {
         assertEquals(initialHealth - 5, worm.getStats().getHp());
         // Poison should be removed from effects list
         assertEquals(0, worm.getStatusEffects().size());
-        // Poison should be removed after expiry
-        assertEquals(0, worm.getStatusEffects().size());
     }
 
     @Test
@@ -90,8 +88,6 @@ public class PoisonEffectTest {
         // Apply both poisons
         worm.applyStatusEffects();
 
-        // Damage should be 10 + 10 = 20
         assertEquals(initialHealth - 1, worm.getStats().getHp());
     }
 }
-

@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import com.lllmtb.model.entity.effect.BurnEffect;
 import com.lllmtb.model.entity.effect.PoisonEffect;
 import com.lllmtb.model.entity.effect.StatusEffect;
 import org.junit.jupiter.api.BeforeEach;
@@ -171,5 +172,22 @@ public class WormTest {
         worm.addStatusEffect(poison1);
         worm.addStatusEffect(poison2);
         assertEquals(1, worm.getStatusEffects().size());
+    }
+
+    @Test
+    public void testApplyMultipleStatusEffects() {
+        int initialHealth = worm.getStats().getHp();
+        PoisonEffect poison = new PoisonEffect();
+        BurnEffect burn = new BurnEffect();
+        worm.addStatusEffect(poison);
+        worm.addStatusEffect(burn);
+
+        // Apply poison for 3 turns
+        for (int i = 0; i < 3; i++) {
+            worm.applyStatusEffects();
+        }
+
+        assertEquals(initialHealth - 9, worm.getStats().getHp());
+        assertEquals(2, worm.getStatusEffects().size());
     }
 }
