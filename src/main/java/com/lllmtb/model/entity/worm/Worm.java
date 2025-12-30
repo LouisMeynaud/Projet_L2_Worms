@@ -3,12 +3,15 @@ package com.lllmtb.model.entity.worm;
 import com.lllmtb.engine.commands.GameCommand;
 import com.lllmtb.engine.commands.RemoveEntityCommand;
 import com.lllmtb.engine.logger.Logger;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import org.eclipse.jdt.annotation.NonNull;
 
 import com.lllmtb.model.entity.CollisionType;
 import com.lllmtb.model.entity.Entity;
+import com.lllmtb.model.entity.effect.StatusEffect;
 import com.lllmtb.model.entity.team.Team;
 import com.lllmtb.physics.PhysicsBody;
 import com.lllmtb.physics.Position;
@@ -59,6 +62,11 @@ public class Worm extends Entity {
      * Indicates if the worm is currently in contact with the ground.
      */
     private boolean isOnGround = false;
+
+    /**
+     * List of active status effects on the worm.
+     */
+    private final List<StatusEffect> statusEffects = new ArrayList<>();
 
     /**
      * Private constructor to initialize a worm with statistics, a team, a spawn point and animation.
@@ -199,6 +207,55 @@ public class Worm extends Entity {
     public GameCommand damageWorm(int damage) {
         this.stats.damageTake(damage);
         return this.setDeath();
+    }
+
+    /**
+     * Adds a status effect to the worm.
+     * @param effect the {@link StatusEffect} to add
+     */
+    public void addStatusEffect(StatusEffect effect) {
+        if (effect != null) {
+            this.statusEffects.add(effect);
+        }
+    }
+
+    /**
+     * Gets all active status effects on the worm.
+     * @return a list of {@link StatusEffect} currently applied to the worm
+     */
+    public List<StatusEffect> getStatusEffects() {
+        return this.statusEffects;
+    }
+
+    /**
+     * Removes a status effect from the worm.
+     * @param effect the {@link StatusEffect} to remove
+     */
+    public void removeStatusEffect(StatusEffect effect) {
+        this.statusEffects.remove(effect);
+    }
+
+    /**
+     * Applies all active status effects to the worm.
+     * Inactive effects are automatically removed.
+     */
+    public void applyStatusEffects() {
+        List<StatusEffect> expiredEffects = new ArrayList<>();
+        for (StatusEffect effect : this.statusEffects) {
+            if (effect.isActive()) {
+                effect.applyEffect(this);
+                // Check again after application if the effect has expired
+                if (!effect.isActive()) {
+                    expiredEffects.add(effect);
+                }
+            } else {
+                expiredEffects.add(effect);
+            }
+        }
+        // Remove expired effects
+        for (StatusEffect effect : expiredEffects) {
+            this.statusEffects.remove(effect);
+        }
     }
 
     public static void setMaxHp(int maxHp) {
