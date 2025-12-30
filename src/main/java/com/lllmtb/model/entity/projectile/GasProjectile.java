@@ -16,7 +16,7 @@ import com.lllmtb.physics.PhysicsBody;
 import com.lllmtb.physics.Position;
 
 public final class GasProjectile extends Projectile {
-    private static final double force  = 5;
+    private static final double force  = 10;
     private static final double mass   = 0;
     private static final double height = 10;
     private static final double width  = 10;
@@ -52,6 +52,7 @@ public final class GasProjectile extends Projectile {
                     double distance = Math.sqrt(dx * dx + dy * dy);
 
                     if (distance <= radius) {
+                        list.add(worm.damageWorm(damage));
                         list.add(worm.addStatusEffect(new PoisonEffect()));
                     }
                 }
