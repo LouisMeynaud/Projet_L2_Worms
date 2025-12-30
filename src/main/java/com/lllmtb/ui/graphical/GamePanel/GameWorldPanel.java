@@ -133,7 +133,8 @@ public class GameWorldPanel extends JPanel {
                 if (type == MouseEvent.BUTTON1 && shootMode) {
                     Position worldPos = screenToWorld(e.getX(), e.getY());
                     ItemId item = world.getPlayingTeam().getHand();
-                    if ((item != null && item instanceof WeaponId) && world.getTurnManager().getTurn().getTeam().getInventory().weapons.getAmmo(((WeaponId) item)) > 0) {
+                    if ((item != null && item instanceof WeaponId)
+                    && world.getTurnManager().getTurn().getTeam().getInventory().weapons.getAmmo(((WeaponId) item)) != 0) {
                         String sound = world.getPlayingTeam().getHand().toString();
                         SoundPlayer.playSound(sound + "Shot");
                     }

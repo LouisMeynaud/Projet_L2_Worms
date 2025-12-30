@@ -303,7 +303,7 @@ public class WorldRenderer {
         double hauteurPx = bounds[3];
 
 
-        BufferedImage texture = TextureManager.UI.get("moneyIcon");
+        BufferedImage texture = TextureManager.UI.get("Coin");
         AffineTransform tx = new AffineTransform();
         tx.translate(xEcran, yEcran);
 

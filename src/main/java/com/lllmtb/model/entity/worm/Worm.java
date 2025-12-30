@@ -201,6 +201,10 @@ public class Worm extends Entity {
         return this.setDeath();
     }
 
+    public static boolean isInTheSameTeam(Worm worm1, Worm worm2) {
+        return (worm1.team.equals(worm2.team));
+    }
+
     public static void setMaxHp(int maxHp) {
         Statistics.setMaxHp(maxHp);
     }

@@ -20,8 +20,7 @@ public class ShopManager {
 
     private void initShop() {
         //prix temporaires , a changer plus tard
-        //weapons
-        items.add(new ShopElement(WeaponId.GUN, "GUN", 50, 20, 5));
+
         items.add(new ShopElement(WeaponId.SHOTGUN, "SHOTGUN", 120, 40, 5));
         items.add(new ShopElement(WeaponId.BAZOOKA, "BAZOOKA", 150, 50, 1));
         items.add(new ShopElement(WeaponId.GASGUN, "GASGUN", 150, 60, 2));
@@ -36,6 +35,7 @@ public class ShopManager {
         items.add(new ShopElement(ToolId.PARACHUTE, "PARACHUTE", 50, 20, 1));
         items.add(new ShopElement(ToolId.CATCONCRETE, "CATCONCRETE", 150, 90, 1));
         items.add(new ShopElement(ToolId.TOWER, "TOWER", 150, 150, 1));
+        items.add(new ShopElement(ToolId.MINE, "MINE", 100, 100, 1));
 
     }
 

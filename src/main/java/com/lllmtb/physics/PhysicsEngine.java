@@ -385,6 +385,8 @@ public class PhysicsEngine {
                         // Collision wih another entity impactEntity and currentBody
                         if (body.getEntity() instanceof Projectile proj) {
                             world.queueCommands(proj.onImpact(impact.hitBody.getEntity()));
+                        } else if (impact.hitBody.getEntity() instanceof Projectile proj) {
+                            world.queueCommands(proj.onImpact(body.getEntity()));
                         }
                     }
                 }
@@ -454,16 +456,28 @@ public class PhysicsEngine {
         }
     }
 
-    public void createExplosion(Projectile projectile, int rayonDegatMap, int rayonSuffle, int degats, double forceSuffle) {
+    /**
+     * Creates an explosion at the location of a given projectile.
+     * <p>
+     * This method applies damage to entities within the blast radius,
+     * modifies the terrain within the map damage radius, and applies
+     * a blast effect to nearby bodies based on the blast force.
+     * </p>
+     * @param projectile       the {@link Projectile} that caused the explosion.
+     * @param mapDamageRadius  the radius (in tiles) around the explosion center where the map will be damaged.
+     * @param blastRadius      the radius (in units) around the explosion center where entities will be affected.
+     * @param damage           the amount of damage to apply to entities within the blast radius.
+     * @param blastForce       the force applied to bodies within the blast radius.
+     */
+    public void createExplosion(@NonNull Projectile projectile, int mapDamageRadius, int blastRadius, int damage, double blastForce) {
         Position position = projectile.getBody().getPos();
-        GameCommand death = Explosion.explosionDamageEffect(position, rayonSuffle, degats, bodies);
-        if (death != null) {
-            world.queueCommand(death);
-        }
-        Explosion.explosionMapEffect(position, rayonDegatMap, collision.getMap());
-        Explosion.explosionSuffleEffect(position, rayonSuffle, forceSuffle, collision.getMap(), bodies);
-        world.getBus().postQueued(new ExplosionEvent(position, rayonSuffle, ((ExplosiveProjectile) projectile).getExplosionTexture()));
-        world.getBus().postQueued(new MapUpdateEvent(position, rayonDegatMap));
+
+        GameCommand death = Explosion.explosionDamageEffect(position, blastRadius, damage, bodies);
+        if (death != null) world.queueCommand(death);
+        Explosion.explosionMapEffect(position, mapDamageRadius, collision.getMap());
+        Explosion.explosionSuffleEffect(position, blastRadius, blastForce, collision.getMap(), bodies);
+        world.getBus().postQueued(new ExplosionEvent(position, blastRadius, ((ExplosiveProjectile) projectile).getExplosionTexture()));
+        world.getBus().postQueued(new MapUpdateEvent());
     }
     public Worm findClosestEnemyFromPosition(Position searchPos, Object ownerTeam, Worm wormToExclude) {
         return findClosestEnemyFromPosition(searchPos, ownerTeam, wormToExclude, this.bodies);
@@ -481,8 +495,8 @@ public class PhysicsEngine {
             return (dx * dx) + (dy * dy);
         }))
         .orElse(null);
-}
 
+}
 
     public static GameCommand fallDamage(Worm worm) {
         int seuil = -50;

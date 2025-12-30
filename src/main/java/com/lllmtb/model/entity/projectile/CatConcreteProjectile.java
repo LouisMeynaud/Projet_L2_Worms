@@ -14,11 +14,11 @@ public final class CatConcreteProjectile extends Projectile implements Explosive
     private static final double mass   = 0.01;
     private static final double height = 4;
     private static final double width  = 4;
-    private static final int damage = 80;
+    private static final int damage = 0;
 
     private static final int RAYON_DEGAT_MAP = 3;
     private static final int RAYON_SOUFFLE = 3;
-    private static final int DEGATS = 50;
+    private static final int DEGATS = 0;
     private static final double FORCE_SOUFFLE = 0;
     private static final String TEXTURE_KEY = "MissileExplosion";
 

@@ -186,7 +186,9 @@ public class Utilitaire {
             }
 
             //nombre
-            JLabel nbLabel = new JLabel(String.valueOf(ammoCount));
+
+            String ammoDisplay = ammoCount < 0 ? "∞" : String.valueOf(ammoCount);
+            JLabel nbLabel = new JLabel(ammoDisplay);
             nbLabel.setFont(new Font("Arial", Font.BOLD, Math.max(10, size / 8)));
             ammoPanel.add(nbLabel);
 
