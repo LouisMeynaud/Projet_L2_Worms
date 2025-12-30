@@ -105,6 +105,18 @@ public class TeamTest {
         assertNotEquals(team1.teamColor, team3.teamColor);
     }
 
+    @Test
+    public void testChangeWorm(){
+        assertEquals(Team.MAX_CHANGEWORMTEAM, team.getMaxChangeWormTeam());
+    }
+
+    @Test
+    public void testChangeWormUse(){
+        int currentCount = team.getMaxChangeWormTeam();
+        team.oneChangeWorm();
+        assertEquals(currentCount-1, team.getMaxChangeWormTeam());
+    }
+
     // ==================== Worm Management Tests ====================
 
     @Test

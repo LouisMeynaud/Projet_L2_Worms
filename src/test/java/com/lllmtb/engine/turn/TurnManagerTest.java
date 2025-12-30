@@ -2,6 +2,7 @@ package com.lllmtb.engine.turn;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import com.lllmtb.events.turn.ChangeWormsEvent;
 import com.lllmtb.model.entity.Coin;
 import com.lllmtb.model.entity.projectile.BulletProjectile;
 import com.lllmtb.model.entity.team.Team;
@@ -14,6 +15,7 @@ import org.junit.jupiter.api.AfterEach;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -54,7 +56,7 @@ public class TurnManagerTest {
     void testConstructor(){
         assertNotNull(turnManager.getWorld());
         assertEquals(10000, this.turnManager.getTurnDuration());
-        assertEquals(9, this.eb.listenerCount());
+        assertEquals(10, this.eb.listenerCount());
     }
 
     @Test
@@ -182,5 +184,35 @@ public class TurnManagerTest {
             Thread.sleep(50);
         } catch (InterruptedException ignored) {}
         assertTrue(eventEnd.get());
+    }
+
+    @Test
+    public void testEventChangeWorm(){
+        Team team2 = new Team("TestTeam", 2, new Position[]{new Position(1,1), new Position(6,6)});
+        this.turnManager.startTurn(team2);
+        Worm worm = this.turnManager.getTurn().getWormPlayable();
+        this.gw.getBus().postQueued(new ChangeWormsEvent());
+        try {
+            Thread.sleep(50);
+        } catch (InterruptedException ignored) {}
+        assertNotSame(worm, this.turnManager.getTurn().getWormPlayable());
+    }
+
+    @Test
+    public void testEventChangeWormNotPossible(){
+        Team team2 = new Team("TestTeam", 2, new Position[]{new Position(1,1), new Position(6,6)});
+        this.turnManager.startTurn(team2);
+        for(int i = 0; i <= team2.getMaxChangeWormTeam(); i++){
+            this.gw.getBus().postQueued(new ChangeWormsEvent());
+        }
+        try {
+            Thread.sleep(50);
+        } catch (InterruptedException ignored) {}
+        Worm worm = this.turnManager.getTurn().getWormPlayable();
+        this.gw.getBus().postQueued(new ChangeWormsEvent());
+        try {
+            Thread.sleep(50);
+        } catch (InterruptedException ignored) {}
+        assertSame(worm, this.turnManager.getTurn().getWormPlayable());
     }
 }

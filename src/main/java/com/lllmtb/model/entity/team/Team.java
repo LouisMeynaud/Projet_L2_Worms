@@ -90,7 +90,7 @@ public class Team {
      */
     private int shootCount;
 
-    private static int MAX_CHANGEWORMTEAM = 12;
+    public static final int MAX_CHANGEWORMTEAM = 12;
     private int maxChangeWormTeam = MAX_CHANGEWORMTEAM;
 
     /**
@@ -180,11 +180,17 @@ public class Team {
         return this.shootCount;
     }
 
-    public int getMaxChangeWormTeam(){
+    /**
+     * @return the changeWorm left of the team
+     */
+    public int getMaxChangeWormTeam() {
         return maxChangeWormTeam;
     }
 
-    public void oneChangeWorm(){
+    /**
+     * Remove one usage of change worm of the team
+     */
+    public void oneChangeWorm() {
         this.maxChangeWormTeam--;
     }
 
