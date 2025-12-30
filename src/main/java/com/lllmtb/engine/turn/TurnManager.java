@@ -22,6 +22,7 @@ import com.lllmtb.events.turn.WormPlayable;
 import com.lllmtb.model.entity.Coin;
 import com.lllmtb.model.entity.projectile.Projectile;
 import com.lllmtb.model.entity.team.Team;
+import com.lllmtb.model.entity.worm.Worm;
 import com.lllmtb.model.item.UseParams;
 import com.lllmtb.model.item.tool.ToolId;
 import com.lllmtb.physics.Move;
@@ -29,38 +30,91 @@ import static com.lllmtb.physics.Move.move;
 import com.lllmtb.physics.PhysicsBody;
 import com.lllmtb.physics.Position;
 
+/**
+ * Controls the turn system
+ * <p>
+ * This manager handles the full lifecycle of team turns, including:
+ * <ul>
+ *   <li>Turn start and end logic</li>
+ *   <li>Turn timer countdown</li>
+ *   <li>Team passive income and coin spawning</li>
+ *   <li>Checking turn clean before switching turns</li>
+ * </ul>
+ * <p>
+ * A new turn only begins when the world is in a stable state (no active projectiles, all worms on ground).
+ * <p>
+ *
+ */
 public final class TurnManager {
 
+    // Champs
     private Turn turn;
     private final GameWorld world;
-
     private final long turnDurationInMs;
     private long remainingTimeInMs;
     private int nbTurn;
     private boolean turnFinish = false;
 
+    /**
+     * Create a new {@code TurnManager} for the current gameWorld
+     * @param world the current {@link GameWorld}
+     * @param turnDuration the maximum turn duration for a turn
+     */
     public TurnManager(GameWorld world, long turnDuration) {
         this.world = world;
         this.turnDurationInMs = 1000 * turnDuration;
         this.init();
     }
 
+    /**
+     * Return the current gameWorld
+     */
     public GameWorld getWorld() {
         return this.world;
     }
-
+    /**
+     * Return the current maximum turn duration
+     */
     public long getTurnDuration() {
         return this.turnDurationInMs;
     }
 
+    /**
+     * Return the remainingTime for the current turn.
+     */
     public long getRemainingTime() {
         return this.remainingTimeInMs;
     }
 
+
+    /**
+     * Returns the active {@link Turn} object containing current team and worm data.
+     * @return the current {@link Turn}
+     */
+    public Turn getTurn() {
+        return turn;
+    }
+
+    /**
+     * Returns the number of turns that have started since the beginning of the match.
+     * @return total turn count
+     */
+    public int getNbTurn() {
+        return this.nbTurn;
+    }
+
+    /**
+     * Initialize the turn manager with all event listeners.
+     */
     public void init() {
         setupEvents();
     }
 
+    /**
+     * Start a new turn for the selected {@link Team}
+     * This method reset timer, give credits to the Team, spawnCoins on the map.
+     * @param team the selected team who will play.
+     */
     public void startTurn(Team team) {
         this.remainingTimeInMs = turnDurationInMs;
         this.turn = new Turn(team);
@@ -85,6 +139,9 @@ public final class TurnManager {
         }
     }
 
+    /**
+     * Spawn {@link Coin} on the map at random position which can be collect.
+     */
     private void spawnCoins() {
         Random random = new Random();
         int coinsToSpawn = 1 + random.nextInt(2);
@@ -106,6 +163,11 @@ public final class TurnManager {
         }
     }
 
+    /**
+     * Update the current Turn and checks if it finished.
+     * Before start a next turn, the turn have to be clean.
+     * @param elapsedTime the elapsed time since the last update
+     */
     public void updateTurn(double elapsedTime) {
         this.remainingTimeInMs -= (long) elapsedTime;
         if (turnFinish) {
@@ -113,7 +175,7 @@ public final class TurnManager {
                 this.passNextTurn();
                 world.getGameLoop().setSpeedTurn(1);
             } else {
-                world.getGameLoop().setSpeedTurn(5);
+                world.getGameLoop().setSpeedTurn(3);
             }
         } else {
             if (remainingTimeInMs <= 0) {
@@ -124,6 +186,11 @@ public final class TurnManager {
         }
     }
 
+    /**
+     * Ends the current team turn.
+     * The current worm is disabled and his hand is cleared.
+     * The turn manager enter in state of Turn finished and wait for clean turn
+     */
     public void endTurn() {
         this.turn.getTeam().emptyHand();
         Logger.logger.info("End turn - switch Team\n");
@@ -132,29 +199,45 @@ public final class TurnManager {
         this.turn.getTeam().setCurrentWormNull();
     }
 
+    /**
+     * Check if the turn is clean. clean state :
+     * <ul>
+     *   <li>All {@link Projectile} which need to clear, is clear.</li>
+     *   <li>Any alive {@link Worm} is on the ground</li>
+     * </ul>
+     * @return a boolean if the turn is in a clean state.
+     */
     private boolean cleanTurn() {
         for (PhysicsBody body : world.getPhysics().getBodies()) {
             if (body.getEntity() instanceof Projectile) {
                 //TODO : SPECIFY PROJECTILE HERE, which need to be wait and no
                 return false;
             }
+            else if (body.getEntity() instanceof Worm worm){
+                if(!worm.isOnGround()){
+                    return false;
+                }
+            }
         }
         return true;
     }
 
+    /**
+     * Tells the current {@link Turn} to close and requests the next team to play.
+     */
     private void passNextTurn() {
         this.turn.end();
         world.nextTeamTurn();
     }
 
-    public Turn getTurn() {
-        return turn;
-    }
-
-    public int getNbTurn() {
-        return this.nbTurn;
-    }
-
+    /**
+     * Registers and subscribes all game and input event listeners to the world event bus.
+     * <p>
+     * This allows the turn manager to react to:
+     * movement input, weapon/tool selection, coin pickup, worm landing, turn skip, and game stop.
+     * <p>
+     * Listeners persist across turns because they use dynamic data from {@code TurnManager}.
+     */
     private void setupEvents() {
         // TODO - unsubscribe when stopping the gameworld. Note that we can keep these listeners across turns because they use dynamic data
 
