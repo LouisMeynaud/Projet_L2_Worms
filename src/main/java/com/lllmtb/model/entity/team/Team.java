@@ -86,6 +86,11 @@ public class Team {
     public final TeamColor teamColor;
 
     /**
+     * The count of shoot in a turn
+     */
+    private int shootCount;
+
+    /**
      * Possible colors that can be assigned to a team.
      */
     private static final List<TeamColor> possibleTeamColors = Arrays.asList(TeamColor.values());
@@ -165,8 +170,22 @@ public class Team {
         return this.currentWorm;
     }
 
+    /**
+     * @return the count of shoot in this turn
+     */
+    public int getShootCount(){
+        return this.shootCount;
+    }
+
     public static ArrayList<TeamColor> getChosenTeamColors() {
         return chosenTeamColors;
+    }
+
+    /**
+     * Reset shoot count
+     */
+    public void resetShootCount(){
+        this.shootCount = 0;
     }
 
     /**
@@ -293,7 +312,10 @@ public class Team {
     public List<GameCommand> use(@NonNull UseParams useParams) {
         Objects.requireNonNull(useParams);
         if (this.selectedItem == null) return null;
-        if (this.selectedItem instanceof WeaponId weaponId) return this.inventory.fire(weaponId, useParams);
+        if (this.selectedItem instanceof WeaponId weaponId){
+            this.shootCount++;
+            return this.inventory.fire(weaponId, useParams);
+        }
         if (this.selectedItem instanceof ToolId toolId) {
             this.emptyHand();
             return this.inventory.use(toolId, useParams);

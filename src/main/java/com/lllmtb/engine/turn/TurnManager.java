@@ -178,11 +178,12 @@ public final class TurnManager {
                 world.getGameLoop().setSpeedTurn(3);
             }
         } else {
-            if (remainingTimeInMs <= 0) {
+            if (remainingTimeInMs <= 0 || this.turn.getIsEnd()) {
                 endTurn();
-            } else if (this.turn.getIsEnd()) {
-                endTurn();
+            } else if (this.turn.teamMaximumShoot() ){
+                this.remainingTimeInMs = Math.min(this.remainingTimeInMs, 5000);
             }
+
         }
     }
 
