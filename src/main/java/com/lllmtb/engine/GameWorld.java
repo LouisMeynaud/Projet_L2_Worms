@@ -21,7 +21,6 @@ import com.lllmtb.model.entity.worm.Worm;
 import com.lllmtb.model.shop.ShopManager;
 import com.lllmtb.physics.GameMode;
 import com.lllmtb.physics.Move;
-import com.lllmtb.physics.PhysicsBody;
 import com.lllmtb.physics.PhysicsEngine;
 import com.lllmtb.terrain.generation.ConfigMap;
 import com.lllmtb.terrain.generation.GenerateMap;

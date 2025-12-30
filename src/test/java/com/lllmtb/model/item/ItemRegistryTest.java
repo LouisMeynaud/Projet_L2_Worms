@@ -39,6 +39,7 @@ public class ItemRegistryTest {
         assertNotNull(weaponRegistry.get(WeaponId.BAZOOKA));
         assertNotNull(weaponRegistry.get(WeaponId.ELECTRONCANON));
         assertNotNull(weaponRegistry.get(WeaponId.BOW));
+        assertNotNull(weaponRegistry.get(WeaponId.GRENADE));
     }
 
     @Test
@@ -56,6 +57,7 @@ public class ItemRegistryTest {
         assertInstanceOf(GunWeapon.class, weaponRegistry.get(WeaponId.GUN));
         assertInstanceOf(BazookaWeapon.class, weaponRegistry.get(WeaponId.BAZOOKA));
         assertInstanceOf(BowWeapon.class, weaponRegistry.get(WeaponId.BOW));
+        assertInstanceOf(GrenadeWeapon.class, weaponRegistry.get(WeaponId.BOW));
     }
 
     // ==================== contains() Tests ====================
@@ -204,6 +206,7 @@ public class ItemRegistryTest {
         weaponRegistry.addAmmo(WeaponId.SHOTGUN, 2);
         weaponRegistry.addAmmo(WeaponId.ELECTRONCANON, 2);
         weaponRegistry.addAmmo(WeaponId.BOW, 2);
+        weaponRegistry.addAmmo(WeaponId.GRENADE, 2);
         weaponRegistry.addAmmo(WeaponId.GUN, -2);
         
         assertEquals(8, weaponRegistry.getAmmo(WeaponId.GUN));
@@ -212,6 +215,7 @@ public class ItemRegistryTest {
         assertEquals(2, weaponRegistry.getAmmo(WeaponId.SHOTGUN));
         assertEquals(2, weaponRegistry.getAmmo(WeaponId.ELECTRONCANON));
         assertEquals(2, weaponRegistry.getAmmo(WeaponId.BOW));
+        assertEquals(2, weaponRegistry.getAmmo(WeaponId.GRENADE));
     }
 }
 
