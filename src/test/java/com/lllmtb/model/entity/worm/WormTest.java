@@ -5,6 +5,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import com.lllmtb.model.entity.effect.PoisonEffect;
+import com.lllmtb.model.entity.effect.StatusEffect;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -113,5 +116,60 @@ public class WormTest {
         worm.getBody().setVector(new Vector(0, 0));
         worm.updateFacingDirection();
         assertEquals(-1, worm.getFacingDirection());
+    }
+
+    @Test
+    public void testStatusEffectsInitialization() {
+        assertNotEquals(null, worm.getStatusEffects());
+        assertEquals(0, worm.getStatusEffects().size());
+    }
+
+    @Test
+    public void testAddStatusEffect() {
+        StatusEffect effect = new PoisonEffect();
+        worm.addStatusEffect(effect);
+        assertEquals(1, worm.getStatusEffects().size());
+        assertEquals(effect, worm.getStatusEffects().get(0));
+    }
+
+    @Test
+    public void testRemoveStatusEffect() {
+        StatusEffect effect = new PoisonEffect();
+        worm.addStatusEffect(effect);
+        worm.removeStatusEffect(effect);
+        assertEquals(0, worm.getStatusEffects().size());
+    }
+
+    @Test
+    public void testApplyStatusEffects() {
+        int initialHealth = worm.getStats().getHp();
+        PoisonEffect poison = new PoisonEffect();
+        worm.addStatusEffect(poison);
+
+        worm.applyStatusEffects();
+
+        assertEquals(initialHealth - 1, worm.getStats().getHp());
+        assertEquals(4, poison.getRemainingTurns());
+    }
+
+    @Test
+    public void testStatusEffectExpiration() {
+        int initialHealth = worm.getStats().getHp();
+        PoisonEffect poison = new PoisonEffect();
+        worm.addStatusEffect(poison);
+        for (int i = 0; i < 5; i++) {
+            worm.applyStatusEffects();
+        }
+        assertEquals(initialHealth - 5, worm.getStats().getHp());
+        assertEquals(0, worm.getStatusEffects().size());
+    }
+
+    @Test
+    public void testMultipleSameStatusEffectNotAdded() {
+        PoisonEffect poison1 = new PoisonEffect();
+        PoisonEffect poison2 = new PoisonEffect();
+        worm.addStatusEffect(poison1);
+        worm.addStatusEffect(poison2);
+        assertEquals(1, worm.getStatusEffects().size());
     }
 }

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import com.lllmtb.model.entity.effect.PoisonEffect;
 import org.eclipse.jdt.annotation.NonNull;
 
 import com.lllmtb.engine.commands.GameCommand;
@@ -51,9 +52,7 @@ public final class GasProjectile extends Projectile {
                     double distance = Math.sqrt(dx * dx + dy * dy);
 
                     if (distance <= radius) {
-                        if (Math.random() < 0.3) {
-                            list.add(worm.damageWorm(damage)); // ne pouvant pas mettre de degats inferieur à 1 (car int)  , j'ai mis une proba de 30% de faire 1 degat
-                        }
+                        list.add(worm.addStatusEffect(new PoisonEffect()));
                     }
                 }
             }

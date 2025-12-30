@@ -213,10 +213,17 @@ public class Worm extends Entity {
      * Adds a status effect to the worm.
      * @param effect the {@link StatusEffect} to add
      */
-    public void addStatusEffect(StatusEffect effect) {
+    public GameCommand addStatusEffect(StatusEffect effect) {
         if (effect != null) {
+            for (StatusEffect existingEffect : this.statusEffects) {
+                if (existingEffect.getClass().equals(effect.getClass())) {
+                    this.statusEffects.remove(existingEffect);
+                    break;
+                }
+            }
             this.statusEffects.add(effect);
         }
+        return null;
     }
 
     /**

@@ -13,7 +13,6 @@ import com.lllmtb.events.game.WeaponSelectedEvent;
 import com.lllmtb.events.physics.GroundCheckCollision;
 import com.lllmtb.events.input.UseInputEvent;
 import com.lllmtb.events.input.MoveInputEvent;
-import com.lllmtb.events.turn.ApplyStatusEffectsEvent;
 import com.lllmtb.events.turn.TurnEndEvent;
 import com.lllmtb.events.turn.TurnFinishEvent;
 import com.lllmtb.events.turn.TurnSkipEvent;
@@ -67,9 +66,6 @@ public final class TurnManager {
         this.remainingTimeInMs = turnDurationInMs;
         this.turn = new Turn(team);
         this.nbTurn += 1;
-
-        // Apply status effects to all worms at the start of a new turn
-        applyStatusEffectsToAllWorms();
 
         //economy passive income at the start of the turn
         int passiveIncome = 150; //ajout de beaucoup d'argent pour pouvoir tester les arme et le shop
@@ -135,6 +131,7 @@ public final class TurnManager {
         world.getBus().postQueued(new TurnEndEvent());
         this.turnFinish = true;
         this.turn.getTeam().setCurrentWormNull();
+        applyStatusEffectsToAllWorms();
     }
 
     private void applyStatusEffectsToAllWorms() {

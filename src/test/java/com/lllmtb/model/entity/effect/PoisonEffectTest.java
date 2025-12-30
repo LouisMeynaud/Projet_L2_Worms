@@ -28,7 +28,7 @@ public class PoisonEffectTest {
     @Test
     public void testPoisonEffectCreation() {
         PoisonEffect poison = new PoisonEffect();
-        assertEquals(10, poison.getDamagePerTurn());
+        assertEquals(1, poison.getDamagePerTurn());
         assertEquals(5, poison.getRemainingTurns());
         assertTrue(poison.isActive());
     }
@@ -51,7 +51,7 @@ public class PoisonEffectTest {
         worm.applyStatusEffects();
 
         // Health should be reduced by 10
-        assertEquals(initialHealth - 10, worm.getStats().getHp());
+        assertEquals(initialHealth - 1, worm.getStats().getHp());
         // Poison duration should be decreased
         assertEquals(4, poison.getRemainingTurns());
     }
@@ -68,8 +68,8 @@ public class PoisonEffectTest {
             worm.applyStatusEffects();
         }
 
-        // Total damage should be 50 (10 * 5)
-        assertEquals(initialHealth - 50, worm.getStats().getHp());
+        // Total damage should be 5 (1 * 5)
+        assertEquals(initialHealth - 5, worm.getStats().getHp());
         // Poison should be removed from effects list
         assertEquals(0, worm.getStatusEffects().size());
         // Poison should be removed after expiry
@@ -77,7 +77,7 @@ public class PoisonEffectTest {
     }
 
     @Test
-    public void testMultiplePoisonEffects() {
+    public void testMultiplePoisonEffectsIsNotPossible() {
         int initialHealth = worm.getStats().getHp();
         PoisonEffect poison1 = new PoisonEffect();
         PoisonEffect poison2 = new PoisonEffect();
@@ -85,13 +85,13 @@ public class PoisonEffectTest {
         worm.addStatusEffect(poison1);
         worm.addStatusEffect(poison2);
 
-        assertEquals(2, worm.getStatusEffects().size());
+        assertEquals(1, worm.getStatusEffects().size());
 
         // Apply both poisons
         worm.applyStatusEffects();
 
         // Damage should be 10 + 10 = 20
-        assertEquals(initialHealth - 20, worm.getStats().getHp());
+        assertEquals(initialHealth - 1, worm.getStats().getHp());
     }
 }
 
