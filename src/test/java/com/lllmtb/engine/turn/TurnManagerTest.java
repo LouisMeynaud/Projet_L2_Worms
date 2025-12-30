@@ -7,6 +7,7 @@ import com.lllmtb.model.entity.projectile.BulletProjectile;
 import com.lllmtb.model.entity.team.Team;
 import com.lllmtb.model.entity.worm.Worm;
 import com.lllmtb.model.item.UseParams;
+import com.lllmtb.model.item.weapon.WeaponId;
 import com.lllmtb.physics.PhysicsBody;
 import com.lllmtb.physics.Position;
 import org.junit.jupiter.api.AfterEach;
@@ -172,5 +173,26 @@ public class TurnManagerTest {
             Thread.sleep(50);
         } catch (InterruptedException ignored) {}
         assertEquals(lastIndex, gw2.getIndexTeam());
+    }
+
+    @Test
+    void testEndWithMaxShootReached(){
+        AtomicBoolean eventEnd = new AtomicBoolean(false);
+        TurnManager.setRemainingTimeAfterShootInMs(10);
+        this.gw.getBus().subscribe(TurnEndEvent.class, event -> {
+            eventEnd.set(true);});
+        Team team1 = new Team("TestTeam", 1, new Position[]{new Position(1,1)});
+        turnManager.startTurn(team1);
+        team1.unlockWeapon(WeaponId.GUN);
+        team1.addAmmo(WeaponId.GUN, 10);
+        team1.selectWeapon(WeaponId.GUN);
+        UseParams params = new UseParams(0, new Position(0, 0), team1.getCurrentWorm());
+        for(int i = 0; i < Turn.limitshoot; i++){
+            team1.use(params);
+        }
+        try {
+            Thread.sleep(50);
+        } catch (InterruptedException ignored) {}
+        assertTrue(eventEnd.get());
     }
 }

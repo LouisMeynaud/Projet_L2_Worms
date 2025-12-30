@@ -173,7 +173,7 @@ public class Team {
     /**
      * @return the count of shoot in this turn
      */
-    public int getShootCount(){
+    public int getShootCount() {
         return this.shootCount;
     }
 
@@ -184,7 +184,7 @@ public class Team {
     /**
      * Reset shoot count
      */
-    public void resetShootCount(){
+    public void resetShootCount() {
         this.shootCount = 0;
     }
 
@@ -312,7 +312,7 @@ public class Team {
     public List<GameCommand> use(@NonNull UseParams useParams) {
         Objects.requireNonNull(useParams);
         if (this.selectedItem == null) return null;
-        if (this.selectedItem instanceof WeaponId weaponId){
+        if (this.selectedItem instanceof WeaponId weaponId) {
             this.shootCount++;
             return this.inventory.fire(weaponId, useParams);
         }

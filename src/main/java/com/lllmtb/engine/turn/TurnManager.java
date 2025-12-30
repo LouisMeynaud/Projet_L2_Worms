@@ -54,6 +54,7 @@ public final class TurnManager {
     private long remainingTimeInMs;
     private int nbTurn;
     private boolean turnFinish = false;
+    private static int remainingTimeAfterShootInMs = 5000;
 
     /**
      * Create a new {@code TurnManager} for the current gameWorld
@@ -108,6 +109,14 @@ public final class TurnManager {
      */
     public void init() {
         setupEvents();
+    }
+
+    /**
+     * Set RemainingTimeAfterShoot to a value specified
+     * @param value the value specified
+     */
+    public static void setRemainingTimeAfterShootInMs(int value) {
+        TurnManager.remainingTimeAfterShootInMs = value;
     }
 
     /**
@@ -180,8 +189,8 @@ public final class TurnManager {
         } else {
             if (remainingTimeInMs <= 0 || this.turn.getIsEnd()) {
                 endTurn();
-            } else if (this.turn.teamMaximumShoot() ){
-                this.remainingTimeInMs = Math.min(this.remainingTimeInMs, 5000);
+            } else if (this.turn.teamMaximumShoot()) {
+                this.remainingTimeInMs = Math.min(this.remainingTimeInMs, remainingTimeAfterShootInMs);
             }
 
         }

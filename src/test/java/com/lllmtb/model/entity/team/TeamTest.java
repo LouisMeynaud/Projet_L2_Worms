@@ -347,6 +347,20 @@ public class TeamTest {
         assertFalse(result.isEmpty());
     }
 
+    @Test
+    public void fire_addShootMax(){
+        int currentCountShoot = team.getShootCount();
+        team.unlockWeapon(WeaponId.GUN);
+        team.addAmmo(WeaponId.GUN, 10);
+        team.selectWeapon(WeaponId.GUN);
+
+        UseParams params = new UseParams(0, new Position(0, 0), team.getCurrentWorm());
+        team.use(params);
+
+        assertEquals(currentCountShoot+1, team.getShootCount());
+
+    }
+
     // ==================== Tool Management Tests ====================
 
     @Test
