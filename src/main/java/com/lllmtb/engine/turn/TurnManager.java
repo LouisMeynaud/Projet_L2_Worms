@@ -1,5 +1,6 @@
 package com.lllmtb.engine.turn;
 
+import java.io.IOException;
 import java.util.Objects;
 import com.lllmtb.engine.GameWorld;
 import com.lllmtb.engine.logger.Logger;
@@ -61,6 +62,11 @@ public final class TurnManager {
         this.remainingTimeInMs = turnDurationInMs;
         this.turn = new Turn(team);
         world.getBus().postQueued(new TurnStarEvent(team));
+        try {
+            Save.saveAll();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         Logger.logger.info("Start turn for the team {}\n", team.name);
         world.getBus().postQueued(new WormPlayable(turn.getWormPlayable()));
     }

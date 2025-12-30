@@ -3,8 +3,8 @@
     {
       "physicsBody": {
         "position": {
-          "x": 56.0,
-          "y": 40.002
+          "x": 17.002003999992,
+          "y": 28.002
         },
         "vector": {
           "x": 0.0,
@@ -19,8 +19,8 @@
         "type": "worm",
         "body": {
           "position": {
-            "x": 56.0,
-            "y": 40.002
+            "x": 17.002003999992,
+            "y": 28.002
           },
           "vector": {
             "x": 0.0,
@@ -38,7 +38,7 @@
         },
         "alive": true,
         "collisionType": "SLIDE",
-        "facingDirection": 1,
+        "facingDirection": -1,
         "isOnGround": true,
         "uuid": 1
       }
@@ -268,8 +268,8 @@
           {
             "body": {
               "position": {
-                "x": 56.0,
-                "y": 40.002
+                "x": 17.002003999992,
+                "y": 28.002
               },
               "vector": {
                 "x": 0.0,
@@ -287,7 +287,7 @@
             },
             "alive": true,
             "collisionType": "SLIDE",
-            "facingDirection": 1,
+            "facingDirection": -1,
             "isOnGround": true,
             "uuid": 1
           },
@@ -350,8 +350,8 @@
         "currentWorm": {
           "body": {
             "position": {
-              "x": 56.0,
-              "y": 40.002
+              "x": 159.0,
+              "y": 113.002
             },
             "vector": {
               "x": 0.0,
@@ -361,7 +361,7 @@
             "height": 2.0,
             "width": 1.0
           },
-          "name": "Équipe 11",
+          "name": "Équipe 12",
           "stats": {
             "hp": 100,
             "speed": 1,
@@ -371,9 +371,9 @@
           "collisionType": "SLIDE",
           "facingDirection": 1,
           "isOnGround": true,
-          "uuid": 1
+          "uuid": 2
         },
-        "index": 0,
+        "index": 1,
         "teamColor": "GREEN"
       },
       "inventorySave": {
