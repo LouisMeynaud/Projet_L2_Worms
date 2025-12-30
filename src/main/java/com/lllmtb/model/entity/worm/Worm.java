@@ -209,6 +209,10 @@ public class Worm extends Entity {
         return this.setDeath();
     }
 
+    public static boolean isInTheSameTeam(Worm worm1, Worm worm2) {
+        return (worm1.team.equals(worm2.team));
+    }
+
     /**
      * Adds a status effect to the worm.
      * @param effect the {@link StatusEffect} to add

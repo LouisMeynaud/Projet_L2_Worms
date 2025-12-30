@@ -7,6 +7,7 @@ import static org.mockito.Mockito.mock;
 
 import com.lllmtb.engine.GameSettings;
 import com.lllmtb.engine.GameWorld;
+import com.lllmtb.events.turn.ChangeWormsEvent;
 import com.lllmtb.events.game.CoinCollisionEvent;
 import com.lllmtb.events.game.GamePauseEvent;
 import com.lllmtb.events.game.GameStateUpdatedEvent;
@@ -152,6 +153,7 @@ public class EventsTest {
         new TurnSkipEvent();
         new ScreenLoadGame();
         new JetpackBoostInputEvent();
+        new ChangeWormsEvent();
     }
 
     @Test

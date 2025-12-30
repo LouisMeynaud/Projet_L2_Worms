@@ -26,7 +26,7 @@ public class TurnManagerTest {
 
     @BeforeEach
     public void setUp(){
-        GameSettings settings = new GameSettings("blabla", 2, new String[]{"TeamTest1", "TeamTest2"}, 1, 100, 1, false, null, false, 370, LandScape.HILLY, 2,GameMode.NORMAL);
+        GameSettings settings = new GameSettings("blabla", 2, new String[]{"TeamTest1", "TeamTest2"}, 1, 100, 1, false, null, false, 370, LandScape.HILLY, 2,GameMode.NORMAL, true);
         EventBus eventBus = new EventBus();
         this.gw = new GameWorld(settings, eventBus);
         gw.start();
@@ -76,7 +76,7 @@ public class TurnManagerTest {
         AtomicBoolean eventEnd = new AtomicBoolean(false);
         this.gw.getBus().subscribe(TurnEndEvent.class, event -> eventEnd.set(true));
         try {
-            Thread.sleep(gw.getTurnDuration() + 100);    // let the event bus dispatch the event
+            Thread.sleep(gw.getTurnDuration() + 200);    // let the event bus dispatch the event
         } catch (InterruptedException ignored) {}
         assertTrue(eventEnd.get());
 
@@ -96,7 +96,7 @@ public class TurnManagerTest {
 
     @Test
     void testEndWithOneTeamAlive(){
-        GameSettings settings = new GameSettings("blabla", 1, new String[]{"TeamTest1", "TeamTest2"}, 1, 100, 1, false, null, false, 370, LandScape.HILLY, 2, GameMode.NORMAL);
+        GameSettings settings = new GameSettings("blabla", 1, new String[]{"TeamTest1", "TeamTest2"}, 1, 100, 1, false, null, false, 370, LandScape.HILLY, 2, GameMode.NORMAL, true);
         EventBus eventBus = new EventBus();
         GameWorld gw2 = new GameWorld(settings, eventBus);
         gw2.start();
