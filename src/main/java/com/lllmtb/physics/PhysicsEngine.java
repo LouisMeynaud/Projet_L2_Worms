@@ -463,7 +463,7 @@ public class PhysicsEngine {
         Explosion.explosionMapEffect(position, rayonDegatMap, collision.getMap());
         Explosion.explosionSuffleEffect(position, rayonSuffle, forceSuffle, collision.getMap(), bodies);
         world.getBus().postQueued(new ExplosionEvent(position, rayonSuffle, ((ExplosiveProjectile) projectile).getExplosionTexture()));
-        world.getBus().postQueued(new MapUpdateEvent());
+        world.getBus().postQueued(new MapUpdateEvent(position, rayonDegatMap));
     }
     public Worm findClosestEnemyFromPosition(Position searchPos, Object ownerTeam, Worm wormToExclude) {
         return findClosestEnemyFromPosition(searchPos, ownerTeam, wormToExclude, this.bodies);

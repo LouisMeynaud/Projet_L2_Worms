@@ -20,6 +20,7 @@ import com.lllmtb.model.item.weapon.WeaponId;
 import com.lllmtb.physics.GameMode;
 import com.lllmtb.physics.PhysicsBody;
 import com.lllmtb.physics.PhysicsModifier;
+import com.lllmtb.physics.Position;
 import com.lllmtb.terrain.map.Tile;
 import com.lllmtb.ui.graphical.TextureManager;
 import com.lllmtb.ui.graphical.Utilitaire;
@@ -81,8 +82,38 @@ public class WorldRenderer {
         int width = panel.mapWidth();
         int height = panel.mapHeight();
 
-        mapCache = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-        Graphics2D g2d = mapCache.createGraphics(); //cree un crayon dans mapCache
+        if (mapCache == null) {
+            mapCache = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+        }
+
+        int mapW = world.getMap().getWidth();
+        int mapH = world.getMap().getHeight();
+
+        Position center = new Position(mapW / 2.0, mapH / 2.0);
+        int maxRadius = Math.max(mapW, mapH) + 10;
+
+        updateMapCacheRegion(center, maxRadius);
+
+        if (!panel.initialFitDone && panel.getWidth() > 0) {
+            panel.fitMapToScreen();
+        }
+        panel.checkCameraBounds();
+    }
+
+
+    public void updateMapCacheRegion(Position center, int radius) {
+        if (mapCache == null) {
+            updateMapCache();
+            return;
+        }
+
+        Graphics2D g2d = mapCache.createGraphics();
+
+        int startX = Math.max(0, (int) center.getX() - radius - 2);
+        int startY = Math.max(0, (int) center.getY() - radius - 2);
+        int endX = Math.min(world.getMap().getWidth(), (int) center.getX() + radius + 2);
+        int endY = Math.min(world.getMap().getHeight(), (int) center.getY() + radius + 2);
+
         Color skyColor;
         if (world.getGameMode() == GameMode.MOON) {
             skyColor = new Color(25, 10, 40); // Violet sombre
@@ -90,13 +121,19 @@ public class WorldRenderer {
             skyColor = new Color(135, 206, 235); // Bleu clair
         }
         g2d.setColor(skyColor);
-        g2d.fillRect(0, 0, width, height); //dessine tout le fond de la couleur du ciel
+
+        int pxX = startX * panel.tileSize;
+        int pxY = startY * panel.tileSize;
+        int pxWidth = (endX - startX) * panel.tileSize;
+        int pxHeight = (endY - startY) * panel.tileSize;
+        g2d.fillRect(pxX, pxY, pxWidth, pxHeight);
 
         Tile[][] mapMatrix = world.getMap().getMapMatrix();
 
-        //desinne les tuiles.
-        for (int y = 0; y < mapMatrix.length; y++) {
-            for (int x = 0; x < mapMatrix[y].length; x++) {
+        for (int y = startY; y < endY; y++) {
+            if (y >= mapMatrix.length) break;
+            for (int x = startX; x < endX; x++) {
+                if (x >= mapMatrix[y].length) break;
                 String tileType = mapMatrix[y][x].toString();
                 if (mapMatrix[y][x] != Tile.AIR) {
                     BufferedImage texture;
@@ -112,11 +149,6 @@ public class WorldRenderer {
             }
         }
         g2d.dispose();
-
-        if (!panel.initialFitDone && panel.getWidth() > 0) {
-            panel.fitMapToScreen();
-        }
-        panel.checkCameraBounds();
     }
 
     //////////////Animation and effect/////////////////////////////
