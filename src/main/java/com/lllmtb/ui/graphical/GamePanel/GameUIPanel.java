@@ -408,7 +408,7 @@ public class GameUIPanel extends JPanel {
 
             JButton itemButton = Utilitaire.createWeaponButton(id, nbAmmo, isUnlocked);
 
-            if (isUnlocked && nbAmmo > 0) {
+            if (isUnlocked && nbAmmo != 0) {
                 itemButton.addActionListener(e -> {
                     this.world.getBus().postQueued(new WeaponSelectedEvent(id));
                     openCloseInventory(); // on ferme l'inventaire si on choisie une arme
@@ -426,7 +426,7 @@ public class GameUIPanel extends JPanel {
             }
 
             int nbAmmo = currentInventory.tools.getAmmo(id);
-            boolean isAvailable = nbAmmo > 0;
+            boolean isAvailable = nbAmmo != 0;
 
             JButton itemButton = Utilitaire.createToolButton(id, nbAmmo, true);
 
