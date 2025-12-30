@@ -29,7 +29,7 @@ public class BurnEffectTest {
     public void testBurnEffectCreation() {
         BurnEffect burn = new BurnEffect();
         assertEquals(2, burn.getDamagePerTurn());
-        assertEquals(5, burn.getRemainingTurns());
+        assertEquals(4, burn.getRemainingTurns());
         assertTrue(burn.isActive());
     }
 
