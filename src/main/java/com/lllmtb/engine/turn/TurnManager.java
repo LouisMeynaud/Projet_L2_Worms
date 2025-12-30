@@ -148,9 +148,8 @@ public final class TurnManager {
 
     private boolean cleanTurn() {
         for (PhysicsBody body : world.getPhysics().getBodies()) {
-            if (body.getEntity() instanceof Projectile) {
-                //TODO : SPECIFY PROJECTILE HERE, which need to be wait and no
-                return false;
+            if (body.getEntity() instanceof Projectile projectile) {
+                if (projectile.blocksTurnEnd()) return false;
             }
         }
         return true;

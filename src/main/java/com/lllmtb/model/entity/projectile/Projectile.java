@@ -16,7 +16,6 @@ import java.util.Objects;
 public abstract class Projectile extends Entity {
     private final PhysicsBody body;
     private final Worm owner;
-    private int damage = 0;
     private static boolean friendlyfire = true;
 
     /**
@@ -37,6 +36,10 @@ public abstract class Projectile extends Entity {
 
     public Worm getOwner() {
         return owner;
+    }
+
+    public boolean blocksTurnEnd() {
+        return true;
     }
 
     public static void setFriendlyFire(boolean friendlyfire) {
