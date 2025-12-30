@@ -219,10 +219,10 @@ public class GameUIPanel extends JPanel {
 
 
         String timeString;
-        if(this.world.getTurnManager().getTurn().getWormPlayable() == null){
+        if (this.world.getTurnManager().getTurn().getWormPlayable() == null) {
             this.timerLabel.setForeground(Color.white);
             timeString = "--:--";
-        } else{
+        } else {
             timeString = String.format("%02d:%02d", timeLeft / 60, timeLeft % 60);
         }
 

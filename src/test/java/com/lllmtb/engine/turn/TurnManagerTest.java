@@ -2,10 +2,19 @@ package com.lllmtb.engine.turn;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import com.lllmtb.model.entity.Coin;
+import com.lllmtb.model.entity.projectile.BulletProjectile;
+import com.lllmtb.model.entity.team.Team;
+import com.lllmtb.model.entity.worm.Worm;
+import com.lllmtb.model.item.UseParams;
+import com.lllmtb.physics.PhysicsBody;
+import com.lllmtb.physics.Position;
 import org.junit.jupiter.api.AfterEach;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -23,12 +32,13 @@ import com.lllmtb.terrain.generation.LandScape;
 public class TurnManagerTest {
     private TurnManager turnManager;
     private GameWorld gw;
+    private EventBus eb;
 
     @BeforeEach
     public void setUp(){
-        GameSettings settings = new GameSettings("blabla", 2, new String[]{"TeamTest1", "TeamTest2"}, 1, 100, 1, false, null, false, 370, LandScape.HILLY, 2,GameMode.NORMAL);
-        EventBus eventBus = new EventBus();
-        this.gw = new GameWorld(settings, eventBus);
+        GameSettings settings = new GameSettings("blabla", 2, new String[]{"TeamTest1", "TeamTest2"}, 1, 100, 10, false, null, false, 370, LandScape.HILLY, 2,GameMode.NORMAL);
+        this.eb = new EventBus();
+        this.gw = new GameWorld(settings, eb);
         gw.start();
 
         this.turnManager = gw.getTurnManager();
@@ -42,7 +52,57 @@ public class TurnManagerTest {
     @Test
     void testConstructor(){
         assertNotNull(turnManager.getWorld());
+        assertEquals(10000, this.turnManager.getTurnDuration());
+        assertEquals(9, this.eb.listenerCount());
     }
+
+    @Test
+    void testGetWorld(){
+        assertSame(gw, turnManager.getWorld());
+    }
+
+    @Test
+    void testGetTurn(){
+        Team t = new Team("Test", 1, new Position[]{new Position(1, 2)});
+        turnManager.startTurn(t);
+        assertNotNull(turnManager.getTurn());
+        assertSame(t, turnManager.getTurn().getTeam());
+    }
+
+    @Test
+    void testGetNbTurn(){
+        Team t = new Team("Test", 1, new Position[]{new Position(1, 2)});
+        turnManager.endTurn();
+        try {
+            Thread.sleep(200);
+        } catch (InterruptedException ignored) {}
+        assertEquals(2, this.turnManager.getNbTurn());
+    }
+
+    @Test
+    void testSpawnCoins(){
+        //First Turn already lauch
+        boolean spawnCoin = false;
+        for(PhysicsBody body : this.gw.getPhysics().getBodies()){
+            if(body.getEntity() instanceof Coin){
+                spawnCoin = true;
+            }
+        }
+        assertTrue(spawnCoin);
+    }
+
+    @Test
+    void cleanTurnProjectile(){
+        Worm worm = new Worm("Test", new Team("T", 1, new Position[]{new Position(1,1)}));
+        new BulletProjectile(new UseParams(worm));
+        gw.getBus().postQueued(new TurnStopEvent());
+        assertEquals(1,turnManager.getNbTurn());
+        try {
+            Thread.sleep( 1000);
+        } catch (InterruptedException ignored) {}
+        assertEquals(2, turnManager.getNbTurn());
+    }
+
 
     @Test
     void testStartTurnStarEvent(){
@@ -73,10 +133,16 @@ public class TurnManagerTest {
 
     @Test
     void testUpdateEndWithTime(){
+        GameSettings settings = new GameSettings("blabla", 2, new String[]{"TeamTest1", "TeamTest2"}, 1, 100, 1, false, null, false, 370, LandScape.HILLY, 2,GameMode.NORMAL);
+        EventBus specialEB = new EventBus();;
+        GameWorld specialGW = new GameWorld(settings, specialEB);
+        specialGW.start();
+        TurnManager specialTM = specialGW.getTurnManager();
+
         AtomicBoolean eventEnd = new AtomicBoolean(false);
-        this.gw.getBus().subscribe(TurnEndEvent.class, event -> eventEnd.set(true));
+        specialGW.getBus().subscribe(TurnEndEvent.class, event -> eventEnd.set(true));
         try {
-            Thread.sleep(gw.getTurnDuration() + 100);    // let the event bus dispatch the event
+            Thread.sleep(specialGW.getTurnDuration() + 200);    // let the event bus dispatch the event
         } catch (InterruptedException ignored) {}
         assertTrue(eventEnd.get());
 

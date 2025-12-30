@@ -212,10 +212,9 @@ public final class TurnManager {
             if (body.getEntity() instanceof Projectile) {
                 //TODO : SPECIFY PROJECTILE HERE, which need to be wait and no
                 return false;
-            }
-            else if (body.getEntity() instanceof Worm worm){
+            } else if (body.getEntity() instanceof Worm worm) {
                 this.world.getPhysics().removeModifierFor(body, ToolId.JETPACK);
-                if(!worm.isOnGround()){
+                if (!worm.isOnGround()) {
                     return false;
                 }
             }

@@ -49,8 +49,8 @@ public class PhysicsModifier {
         this.enabled = true;
     }
 
-    public List<GameCommand> onRemove(Worm owner){
-        if (this.source == ToolId.JETPACK){
+    public List<GameCommand> onRemove(Worm owner) {
+        if (this.source == ToolId.JETPACK) {
             ParachuteTool parachute = new ParachuteTool();
             UseParams useParams = new UseParams(owner);
             return parachute.use(useParams);
