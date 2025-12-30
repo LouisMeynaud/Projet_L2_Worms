@@ -3,6 +3,7 @@ package com.lllmtb.engine.turn;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import com.lllmtb.events.turn.ChangeWormsEvent;
+import com.lllmtb.events.turn.TurnSkipEvent;
 import com.lllmtb.model.entity.Coin;
 import com.lllmtb.model.entity.projectile.BulletProjectile;
 import com.lllmtb.model.entity.team.Team;
@@ -14,6 +15,7 @@ import com.lllmtb.physics.Position;
 import org.junit.jupiter.api.AfterEach;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNotSame;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -214,5 +216,33 @@ public class TurnManagerTest {
             Thread.sleep(50);
         } catch (InterruptedException ignored) {}
         assertSame(worm, this.turnManager.getTurn().getWormPlayable());
+    }
+
+    @Test
+    public void testEventSkipTurnNotAllow(){
+        AtomicBoolean eventEnd = new AtomicBoolean(false);
+        Team team2 = new Team("TestTeam", 2, new Position[]{new Position(1,1), new Position(6,6)});
+        this.turnManager.startTurn(team2);
+        this.gw.getBus().subscribe(TurnEndEvent.class, event -> {
+            eventEnd.set(true);});
+        this.gw.getBus().postQueued(new TurnSkipEvent());
+        try { Thread.sleep(50);
+        } catch (InterruptedException ignored) {}
+        assertFalse(eventEnd.get());
+    }
+
+    @Test
+    public void testEventSkipTurnAllow(){
+        AtomicBoolean eventEnd = new AtomicBoolean(false);
+        Team team2 = new Team("TestTeam", 2, new Position[]{new Position(1,1), new Position(6,6)});
+        this.turnManager.startTurn(team2);
+        this.gw.getBus().subscribe(TurnEndEvent.class, event -> {
+            eventEnd.set(true);});
+        try { Thread.sleep(5000);
+        } catch (InterruptedException ignored) {}
+        this.gw.getBus().postQueued(new TurnSkipEvent());
+        try {Thread.sleep(50);} catch (InterruptedException ignored) {};
+        assertTrue(eventEnd.get());
+
     }
 }
