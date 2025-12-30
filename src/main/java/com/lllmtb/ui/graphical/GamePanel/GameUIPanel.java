@@ -83,6 +83,7 @@ public class GameUIPanel extends JPanel {
     private JButton shootModeButton;
     private JButton skipTurnButton;
     private JButton shopButton;
+    private int currentButtonSize = 80;
 
     /**
      * constructeur : initialise la disposition , les conteneurs , le HUD et les listenneur.
@@ -362,10 +363,11 @@ public class GameUIPanel extends JPanel {
     private void createInventoryContainer() {
         this.inventoryContainer = new JPanel();
         this.inventoryContainer.setOpaque(false);
-        this.inventoryContainer.setLayout(new BoxLayout(this.inventoryContainer, BoxLayout.X_AXIS));
+        this.inventoryContainer.setLayout(new GridLayout(1, 2, 20, 0));
+        this.inventoryContainer.setBorder(new EmptyBorder(0, 0, 0, 40));
 
-        this.weaponGrid = new JPanel(new GridLayout(0, 6, 10, 10));
-        this.toolGrid = new JPanel(new GridLayout(0, 6, 10, 10));
+        this.weaponGrid = new JPanel(new GridLayout(0, 4, 10, 10));
+        this.toolGrid = new JPanel(new GridLayout(0, 4, 10, 10));
 
         this.weaponGrid.setOpaque(false);
         this.toolGrid.setOpaque(false);
@@ -379,7 +381,6 @@ public class GameUIPanel extends JPanel {
         toolContainer.setAlignmentY(Component.TOP_ALIGNMENT);
 
         this.inventoryContainer.add(weaponContainer);
-        this.inventoryContainer.add(Box.createHorizontalStrut(20));
         this.inventoryContainer.add(toolContainer);
         this.centerContainer.add(this.inventoryContainer, "INVENTORY");
     }
@@ -398,7 +399,11 @@ public class GameUIPanel extends JPanel {
         border.setTitleColor(Color.WHITE);
         container.setBorder(border);
 
-        container.add(grid, BorderLayout.NORTH);
+        JPanel wrapper = new JPanel(new BorderLayout());
+        wrapper.setOpaque(false);
+        wrapper.add(grid, BorderLayout.NORTH);
+
+        container.add(wrapper, BorderLayout.CENTER);
         return container;
     }
 
@@ -426,7 +431,7 @@ public class GameUIPanel extends JPanel {
      * crée les boutons pour chaque item et leur associe les evenement de selection
      */
     private void createInventoryGrid() {
-        this.weaponGrid.removeAll(); //le vide
+        this.weaponGrid.removeAll();
         Inventory currentInventory = world.getTurnManager().getTurn().getWormPlayable().getTeam().getInventory();
 
         for (WeaponId id : WeaponId.values()) {
@@ -436,7 +441,7 @@ public class GameUIPanel extends JPanel {
             boolean isUnlocked = currentInventory.isUnlocked(id);
             int nbAmmo = currentInventory.weapons.getAmmo(id);
 
-            JButton itemButton = Utilitaire.createWeaponButton(id, nbAmmo, isUnlocked);
+            JButton itemButton = Utilitaire.createWeaponButton(id, nbAmmo, isUnlocked, currentButtonSize);
             itemButton.setToolTipText(id.getInfo());
 
             if (isUnlocked && nbAmmo > 0) {
@@ -459,7 +464,7 @@ public class GameUIPanel extends JPanel {
             int nbAmmo = currentInventory.tools.getAmmo(id);
             boolean isAvailable = nbAmmo > 0;
 
-            JButton itemButton = Utilitaire.createToolButton(id, nbAmmo, true);
+            JButton itemButton = Utilitaire.createToolButton(id, nbAmmo, true, currentButtonSize);
             itemButton.setToolTipText(id.getInfo());
 
             if (isAvailable) {
@@ -472,6 +477,10 @@ public class GameUIPanel extends JPanel {
             }
             this.toolGrid.add(itemButton);
         }
+        this.weaponGrid.revalidate();
+        this.weaponGrid.repaint();
+        this.toolGrid.revalidate();
+        this.toolGrid.repaint();
     }
 
 
@@ -597,7 +606,8 @@ public class GameUIPanel extends JPanel {
 /////////////resize bouton et timer/////////////
     private void resizeUI() {
         int height = getHeight();
-        if (height == 0) return;
+        int width = getWidth();
+        if (height == 0 || width == 0) return;
 
         int size = (int) (height * 0.12); // 12% de la hauteur
         size = Math.max(40, Math.min(128, size));
@@ -611,6 +621,17 @@ public class GameUIPanel extends JPanel {
         if (timerLabel != null) {
             int fontSize = Math.max(12, size / 4);
             timerLabel.setFont(new Font("Arial", Font.BOLD, fontSize));
+        }
+
+        if (this.weaponGrid != null && this.toolGrid != null) {
+            int panelWidth = (getWidth() / 2) - 60; // 60 pixel pour al marge
+            this.currentButtonSize = panelWidth / 4;
+
+            if (this.currentButtonSize < 1) this.currentButtonSize = 1;
+
+            if (inventoryContainer.isVisible()) {
+                createInventoryGrid();
+            }
         }
     }
 
