@@ -27,6 +27,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 
 import com.lllmtb.engine.GameWorld;
+import com.lllmtb.engine.turn.Turn;
 import com.lllmtb.events.EventBus;
 import com.lllmtb.events.turn.ChangeWormsEvent;
 import com.lllmtb.events.game.GamePauseEvent;
@@ -224,7 +225,8 @@ public class GameUIPanel extends JPanel {
 
 
         String timeString;
-        if (this.world.getTurnManager().getTurn().getWormPlayable() == null) {
+        Turn currentTurn = world.getTurnManager().getTurn();
+        if (currentTurn.getWormPlayable() == null) {
             this.timerLabel.setForeground(Color.white);
             timeString = "--:--";
         } else {
@@ -233,7 +235,7 @@ public class GameUIPanel extends JPanel {
 
 
         String teamName = this.world.getPlayingTeam().name;
-        this.timerLabel.setText("tour : " + world.getTurnManager().getNbTurn() + ", team : " + teamName + " , time : " + timeString);
+        this.timerLabel.setText("tour : " + world.getTurnManager().getNbTurn() + ", team : " + teamName + " left shoot: "  + (Turn.limitshoot - currentTurn.getTeam().getShootCount()) +  " , time : " + timeString);
         this.moneyLabel.setText(this.world.getPlayingTeam().getCredits() + " $");
         this.timerLabel.repaint();
         this.moneyLabel.repaint();
