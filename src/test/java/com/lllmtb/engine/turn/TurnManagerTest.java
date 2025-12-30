@@ -2,6 +2,9 @@ package com.lllmtb.engine.turn;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import com.lllmtb.events.game.ToolSelectedEvent;
+import com.lllmtb.events.game.WeaponSelectedEvent;
+import com.lllmtb.events.input.MoveInputEvent;
 import com.lllmtb.events.turn.ChangeWormsEvent;
 import com.lllmtb.events.turn.TurnSkipEvent;
 import com.lllmtb.model.entity.Coin;
@@ -9,13 +12,16 @@ import com.lllmtb.model.entity.projectile.BulletProjectile;
 import com.lllmtb.model.entity.team.Team;
 import com.lllmtb.model.entity.worm.Worm;
 import com.lllmtb.model.item.UseParams;
+import com.lllmtb.model.item.tool.ToolId;
 import com.lllmtb.model.item.weapon.WeaponId;
 import com.lllmtb.physics.PhysicsBody;
 import com.lllmtb.physics.Position;
+import com.lllmtb.ui.graphical.GamePanel.Direction;
 import org.junit.jupiter.api.AfterEach;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNotSame;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -243,6 +249,29 @@ public class TurnManagerTest {
         this.gw.getBus().postQueued(new TurnSkipEvent());
         try {Thread.sleep(50);} catch (InterruptedException ignored) {};
         assertTrue(eventEnd.get());
+    }
 
+    @Test
+    public void testEventSelectWeapon() {
+        Boolean receivedGameCommand = false;
+        Team team2 = new Team("TestTeam", 2, new Position[] {new Position(1, 1), new Position(6, 6)});
+        this.turnManager.startTurn(team2);
+        assertNull(team2.getHand());
+        this.gw.getBus().postQueued(new WeaponSelectedEvent(WeaponId.GUN));
+        try {Thread.sleep(50);} catch (InterruptedException ignored) {}
+        assertNotNull(team2.getHand());
+        assertInstanceOf(WeaponId.class, team2.getHand());
+    }
+
+    @Test
+    public void testEventSelectTool() {
+        Boolean receivedGameCommand = false;
+        Team team2 = new Team("TestTeam", 2, new Position[] {new Position(1, 1), new Position(6, 6)});
+        this.turnManager.startTurn(team2);
+        assertNull(team2.getHand());
+        this.gw.getBus().postQueued(new ToolSelectedEvent(ToolId.PARACHUTE));
+        try {Thread.sleep(50);} catch (InterruptedException ignored) {}
+        assertNotNull(team2.getHand());
+        assertInstanceOf(ToolId.class, team2.getHand());
     }
 }
