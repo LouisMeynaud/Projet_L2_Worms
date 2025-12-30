@@ -7,6 +7,7 @@ public enum ToolId implements ItemId {
     JETPACK,
     CALLSTRIKE(true, "blabla"),
     CATCONCRETE(true, "blablabis"),
+    TOWER,
     NONE;
 
     private final boolean usesCrosshair;

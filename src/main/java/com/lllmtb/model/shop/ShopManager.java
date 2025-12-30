@@ -35,6 +35,7 @@ public class ShopManager {
         items.add(new ShopElement(ToolId.CALLSTRIKE, "CALLSTRIKE", 150, 90, 1));
         items.add(new ShopElement(ToolId.PARACHUTE, "PARACHUTE", 50, 20, 1));
         items.add(new ShopElement(ToolId.CATCONCRETE, "CATCONCRETE", 150, 90, 1));
+        items.add(new ShopElement(ToolId.TOWER, "TOWER", 150, 150, 1));
 
     }
 

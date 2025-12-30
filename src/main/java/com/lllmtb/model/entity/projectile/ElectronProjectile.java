@@ -11,6 +11,7 @@ import com.lllmtb.model.entity.CollisionType;
 import com.lllmtb.model.entity.Entity;
 import com.lllmtb.model.entity.worm.Worm;
 import com.lllmtb.model.item.UseParams;
+import com.lllmtb.physics.PhysicsEngine;
 import com.lllmtb.physics.Position;
 import com.lllmtb.physics.Vector;
 
@@ -57,12 +58,7 @@ public final class ElectronProjectile extends Projectile {
         GameCommand trackWorm = (world -> {
             Worm target = world.getPhysics().findClosestEnemyFromPosition(myPos, owner.getTeam(), wormToExclude);
             if (target != null) {
-                Position targetPos = target.getBody().getPos();
-                double targetCenterX = targetPos.getX() + (target.getBody().getWidth() / 2.0);
-                double targetCenterY = targetPos.getY() + (target.getBody().getHeight() / 2.0);
-                double dx = targetCenterX - myPos.getX();
-                double dy = targetCenterY - myPos.getY();
-                double angleVersEnnemi = Math.atan2(dy, dx);
+                double angleVersEnnemi = PhysicsEngine.calculateAngleToBody(myPos, target.getBody());
                 Vector velocity = new Vector(Math.cos(angleVersEnnemi), Math.sin(angleVersEnnemi)).scale(force);
                 this.getBody().setVector(velocity);
 

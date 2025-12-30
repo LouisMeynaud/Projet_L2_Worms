@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public final class GrenadeProjectile extends Projectile implements ExplosiveProjectile {
-    // --- Config ---
     private static final double force  = 50.0;
     private static final double mass   = 0.0060;
     private static final double height = 1;

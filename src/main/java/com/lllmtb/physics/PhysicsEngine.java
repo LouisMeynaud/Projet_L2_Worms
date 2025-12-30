@@ -465,9 +465,11 @@ public class PhysicsEngine {
         world.getBus().postQueued(new ExplosionEvent(position, rayonSuffle, ((ExplosiveProjectile) projectile).getExplosionTexture()));
         world.getBus().postQueued(new MapUpdateEvent());
     }
-
     public Worm findClosestEnemyFromPosition(Position searchPos, Object ownerTeam, Worm wormToExclude) {
-    return bodies.stream()
+        return findClosestEnemyFromPosition(searchPos, ownerTeam, wormToExclude, this.bodies);
+    }
+    public Worm findClosestEnemyFromPosition(Position searchPos, Object ownerTeam, Worm wormToExclude, List<PhysicsBody> bodiesList) {
+    return bodiesList.stream()
         .filter(b -> b.getEntity() instanceof Worm)
         .map(b -> (Worm) b.getEntity())
         .filter(w -> !Objects.equals(w.getTeam(), ownerTeam))
@@ -493,4 +495,13 @@ public class PhysicsEngine {
         }
         return death;
     }
+
+    public static double calculateAngleToBody(Position fromPos, PhysicsBody targetBody) {
+    Position targetPos = targetBody.getPos();
+    double targetCenterX = targetPos.getX() + (targetBody.getWidth() / 2.0);
+    double targetCenterY = targetPos.getY() + (targetBody.getHeight() / 2.0);
+    double dx = targetCenterX - fromPos.getX();
+    double dy = targetCenterY - fromPos.getY();
+    return Math.atan2(dy, dx);
+}
 }

@@ -93,6 +93,8 @@ public class TextureManager {
             PROJECTILES.put("BowProjectile", ImageIO.read(TextureManager.class.getResource("/sprites/weapon/BowProjectile.png")));
             PROJECTILES.put("GrenadeProjectile", ImageIO.read(TextureManager.class.getResource("/sprites/weapon/GrenadeProjectile.png")));
             PROJECTILES.put("CatConcreteProjectile", ImageIO.read(TextureManager.class.getResource("/sprites/tool/CatConcreteProjectile.png")));
+            PROJECTILES.put("TowerProjectile", ImageIO.read(TextureManager.class.getResource("/sprites/tool/TowerProjectile.png")));
+            PROJECTILES.put("BabyTowerProjectile", ImageIO.read(TextureManager.class.getResource("/sprites/tool/BabyTowerProjectile.png")));
 
             /////////////EFFECT/////////////////
             EFFECT.put("BazookaExplosion", ImageIO.read(TextureManager.class.getResource("/sprites/effect/BazookaExplosion.png")));
