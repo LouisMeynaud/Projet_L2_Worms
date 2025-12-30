@@ -24,6 +24,7 @@ public class SoundManager {
         soundMap.put("GUNShot", createClip("GUNShot"));
         soundMap.put("SHOTGUNShot", createClip("SHOTGUNShot"));
         soundMap.put("ELECTRONCANONShot", createClip("ELECTRONCANONShot"));
+        soundMap.put("CatConcreteExplosion", createClip("CatConcreteExplosion"));
 
     }
 
