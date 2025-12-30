@@ -17,6 +17,7 @@ import com.lllmtb.events.game.MapUpdateEvent;
 import com.lllmtb.events.physics.ExplosionEvent;
 import com.lllmtb.events.physics.PhysicsModifierAddedEvent;
 import com.lllmtb.events.physics.PhysicsModifierRemovedEvent;
+import com.lllmtb.model.entity.Entity;
 import com.lllmtb.model.entity.projectile.ExplosiveProjectile;
 import com.lllmtb.model.entity.projectile.Projectile;
 import com.lllmtb.model.entity.worm.Worm;
@@ -439,6 +440,18 @@ public class PhysicsEngine {
             changeWind();
         }
         nextStep(ticktime / 1000.0);
+    }
+    public void update(double tickTime) {
+        List<GameCommand> commands = new ArrayList<>();
+        for (PhysicsBody body : bodies) {
+            Entity entity = body.getEntity();
+            List<GameCommand> commandsList = entity.update((long) tickTime);
+            commands.addAll(commandsList);
+
+        }
+        for (GameCommand cmd : commands) {
+            cmd.execute(this.world);
+        }
     }
 
     public void createExplosion(Projectile projectile, int rayonDegatMap, int rayonSuffle, int degats, double forceSuffle) {

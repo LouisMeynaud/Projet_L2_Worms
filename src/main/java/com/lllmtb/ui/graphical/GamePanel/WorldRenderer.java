@@ -40,7 +40,11 @@ public class WorldRenderer {
     private final Map<TeamColor, Animation> teamAnimations = new HashMap<>(); //le tableau stockant les animation des worms
     private BufferedImage mapCache = null;
 
-
+    /**
+     * le constructeur.
+     * @param panel le panel ou l'on dessine
+     * @param world le monde du jeu
+     */
     public WorldRenderer(GameWorldPanel panel, GameWorld world) {
         this.panel = panel;
         this.world = world;
@@ -306,6 +310,7 @@ public class WorldRenderer {
      * @param x la position x du worms a l'ecran
      * @param y la position y du worms a l'ecran
      * @param width la largeur du worms a l'ecran
+     * @param color la couleur de la team
      */
     private void paintCurrentWormsArrow(Graphics2D g2d, double x, double y, double width, TeamColor color) {
 
@@ -437,7 +442,7 @@ public class WorldRenderer {
     }
 
     /**
-     * Draws the active equipment on the worm (parachute, jetpack...)
+     * Draws the active equipment on the worm (parachute, jetpack...).
      *
      * @param g2d the graphics context
      * @param worm the physics body of the worm

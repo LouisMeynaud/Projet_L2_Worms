@@ -4,6 +4,8 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 
 import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.image.BufferedImage;
 
 import com.lllmtb.events.EventBus;
 import com.lllmtb.events.ui.graphical.ScreenHomeEvent;
@@ -46,6 +48,12 @@ public class NewOrLoadPanel extends JPanel {
             eventBus.postQueued(new ScreenHomeEvent());
         });
         this.add(backButton);
+    }
+
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        BufferedImage backgroundImage = TextureManager.BACKGROUND.get("Background2");
+        g.drawImage(backgroundImage, 0, 0, this.getWidth(), this.getHeight(), this);
     }
 
 

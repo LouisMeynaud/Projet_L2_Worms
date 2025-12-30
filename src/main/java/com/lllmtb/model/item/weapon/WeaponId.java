@@ -10,6 +10,7 @@ public enum WeaponId implements ItemId {
     ELECTRONCANON,
     GASGUN,
     BOW,
+    GRENADE,
     NONE;
 
     private final boolean usesCrosshair;

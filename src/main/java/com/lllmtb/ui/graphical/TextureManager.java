@@ -55,6 +55,7 @@ public class TextureManager {
 
             ///////Background/////////
             BACKGROUND.put("Background", ImageIO.read(TextureManager.class.getResource("/textures/Background.png")));
+            BACKGROUND.put("Background2", ImageIO.read(TextureManager.class.getResource("/textures/Background2.png")));
 
             //////Entities//////////
             for (TeamColor color: TeamColor.values()) {
@@ -90,6 +91,7 @@ public class TextureManager {
             PROJECTILES.put("ElectronProjectile", ImageIO.read(TextureManager.class.getResource("/sprites/weapon/ElectronProjectile.png")));
             PROJECTILES.put("GasProjectile", ImageIO.read(TextureManager.class.getResource("/sprites/weapon/GasProjectile.png")));
             PROJECTILES.put("BowProjectile", ImageIO.read(TextureManager.class.getResource("/sprites/weapon/BowProjectile.png")));
+            PROJECTILES.put("GrenadeProjectile", ImageIO.read(TextureManager.class.getResource("/sprites/weapon/GrenadeProjectile.png")));
 
             /////////////EFFECT/////////////////
             EFFECT.put("BazookaExplosion", ImageIO.read(TextureManager.class.getResource("/sprites/effect/BazookaExplosion.png")));
