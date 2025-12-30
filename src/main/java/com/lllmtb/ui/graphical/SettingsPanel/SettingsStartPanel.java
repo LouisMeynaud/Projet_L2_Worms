@@ -87,7 +87,7 @@ public class SettingsStartPanel extends JPanel {
         int nbVWorms = gameSettingsPanel.getNbWorms();
         String[] nomsEquipes = gameSettingsPanel.getNomsEquipes();
         boolean wind = gameSettingsPanel.getWind();
-        boolean friendlyFire = gameSettingsPanel.getFriendlyFire(); //TODO : ajouter le friendlyFire au setting une fois les modif necessaire faite dans team etc
+        boolean friendlyFire = gameSettingsPanel.getFriendlyFire();
         int turnDuration = gameSettingsPanel.getTurnDuration();
         int maxLife = gameSettingsPanel.getMaxLife();
         int maxJump = gameSettingsPanel.getMaxJumps();
@@ -95,14 +95,16 @@ public class SettingsStartPanel extends JPanel {
         GameMode gameMode = gameSettingsPanel.getGameMode();
         if (this.mapSettingPanel.loadMap) {
             String mapFileName = this.mapSettingPanel.panelListeMap.getFichierSelectionne().getName();
-            return new GameSettings(gameName, nbEquipes, nomsEquipes, nbVWorms, maxLife, turnDuration, wind, mapFileName, false, 0, null, maxJump, gameMode);
+            return new GameSettings(gameName, nbEquipes, nomsEquipes, nbVWorms, maxLife, turnDuration, wind, mapFileName,
+                    false, 0, null, maxJump, gameMode, friendlyFire);
 
 
         } else {
             LandScape terrainType = this.mapSettingPanel.generateMapPanel.getReliefType();
             int widthMap = this.mapSettingPanel.generateMapPanel.getWidthMapSlider();
             boolean flightIsland = this.mapSettingPanel.generateMapPanel.getflightIsland();
-            return new GameSettings(gameName, nbEquipes, nomsEquipes, nbVWorms, maxLife, turnDuration, wind, null, flightIsland, widthMap, terrainType, maxJump, gameMode);
+            return new GameSettings(gameName, nbEquipes, nomsEquipes, nbVWorms, maxLife, turnDuration, wind, null,
+                    flightIsland, widthMap, terrainType, maxJump, gameMode, friendlyFire);
 
 
         }
