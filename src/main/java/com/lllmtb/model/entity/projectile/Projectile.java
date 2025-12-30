@@ -2,6 +2,7 @@ package com.lllmtb.model.entity.projectile;
 
 import com.lllmtb.engine.commands.GameCommand;
 import com.lllmtb.engine.commands.RemoveEntityCommand;
+import com.lllmtb.engine.logger.Logger;
 import com.lllmtb.model.entity.Entity;
 import com.lllmtb.model.entity.worm.Worm;
 import com.lllmtb.model.item.UseParams;
@@ -15,6 +16,7 @@ import java.util.Objects;
 public abstract class Projectile extends Entity {
     private final PhysicsBody body;
     private final Worm owner;
+    private static boolean friendlyfire = true;
 
     /**
      * Create a new Projectile
@@ -40,6 +42,10 @@ public abstract class Projectile extends Entity {
         return true;
     }
 
+    public static void setFriendlyFire(boolean friendlyfire) {
+        Projectile.friendlyfire = friendlyfire;
+    }
+
     /**
      * Called by collision detection when an impact is detected.
      */
@@ -55,7 +61,14 @@ public abstract class Projectile extends Entity {
      */
     protected void handleHit(List<GameCommand> list, Entity entity, int damage) {
         if (entity instanceof Worm worm) {
-            list.add(worm.damageWorm(damage));
+            if (!friendlyfire && Worm.isInTheSameTeam(this.owner, worm)) {
+                Logger.logger.debug("Worm in the same Team");
+            } else {
+                list.add(worm.damageWorm(damage));
+            }
+            if (!worm.isAlive()) {
+                list.add(new RemoveEntityCommand(worm));
+            }
         }
     }
 

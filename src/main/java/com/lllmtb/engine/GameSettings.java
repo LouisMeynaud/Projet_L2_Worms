@@ -17,6 +17,7 @@ public final class GameSettings {
     public final int maxJump;
     public final int maxHp;
     public GameMode gameMode;
+    public final boolean friendlyfire;
 
 
     /**
@@ -31,11 +32,12 @@ public final class GameSettings {
      * @param terrainType    Type of terrain to generate
      * @param maxJump        Maximum jump height for worms
      * @param gameName       Name of the game session
+     * @param friendlyfire   Boolean if friendly fire is activated
      */
 
 
     public GameSettings(String gameName, int nbTeams, String[] teamNames, int nbWorms, int maxHp, long turnDuration, boolean hasWind, String mapFileName,
-        boolean floatingIsland, int widthMap, LandScape terrainType, int maxJump, GameMode gameMode) {
+        boolean floatingIsland, int widthMap, LandScape terrainType, int maxJump, GameMode gameMode, boolean friendlyfire) {
 
 
         this.nbTeams = nbTeams;
@@ -51,6 +53,7 @@ public final class GameSettings {
         this.maxJump = maxJump;
         this.maxHp = maxHp;
         this.gameMode = gameMode;
+        this.friendlyfire = friendlyfire;
 
     }
 }
