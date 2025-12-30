@@ -296,9 +296,14 @@ public final class TurnManager {
         };
 
         EventListener<ChangeWormsEvent> changeWormDuringTurn = event -> {
-            turn.nextWormPlayable();
-            Logger.logger.info("Change worm playable");
-            //TODO : PASS IT TO DEBUG
+            Team currentTeam = turn.getTeam();
+            if (currentTeam.getMaxChangeWormTeam() <= 0) {
+                Logger.logger.info("It's not possible to change worm playable");
+            } else {
+                turn.nextWormPlayable();
+                currentTeam.oneChangeWorm();
+                Logger.logger.info("Change worm playable");
+            }
         };
 
         EventListener<UseInputEvent> useInputEventListener = event -> {

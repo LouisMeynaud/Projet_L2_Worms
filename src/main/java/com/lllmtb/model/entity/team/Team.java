@@ -90,6 +90,9 @@ public class Team {
      */
     private int shootCount;
 
+    private static int MAX_CHANGEWORMTEAM = 12;
+    private int maxChangeWormTeam = MAX_CHANGEWORMTEAM;
+
     /**
      * Possible colors that can be assigned to a team.
      */
@@ -175,6 +178,14 @@ public class Team {
      */
     public int getShootCount() {
         return this.shootCount;
+    }
+
+    public int getMaxChangeWormTeam(){
+        return maxChangeWormTeam;
+    }
+
+    public void oneChangeWorm(){
+        this.maxChangeWormTeam--;
     }
 
     public static ArrayList<TeamColor> getChosenTeamColors() {

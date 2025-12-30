@@ -122,7 +122,7 @@ public class TurnManagerTest {
 
     @Test
     void testUpdateEndWithTime(){
-        GameSettings settings = new GameSettings("blabla", 2, new String[]{"TeamTest1", "TeamTest2"}, 1, 100, 1, false, null, false, 370, LandScape.HILLY, 2,GameMode.NORMAL);
+        GameSettings settings = new GameSettings("blabla", 2, new String[]{"TeamTest1", "TeamTest2"}, 1, 100, 1, false, null, false, 370, LandScape.HILLY, 2,GameMode.NORMAL, true);
         EventBus specialEB = new EventBus();;
         GameWorld specialGW = new GameWorld(settings, specialEB);
         specialGW.start();
