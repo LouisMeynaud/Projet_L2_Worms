@@ -81,6 +81,7 @@ public class ItemRegistryTest {
     @Test
     public void contains_withValidToolId() {
         assertTrue(toolRegistry.contains(ToolId.PARACHUTE));
+        assertTrue(toolRegistry.contains(ToolId.CATCONCRETE));
     }
 
     // ==================== getAmmo() Tests ====================
@@ -89,6 +90,7 @@ public class ItemRegistryTest {
     public void getAmmo_initiallyZero() {
         assertEquals(0, weaponRegistry.getAmmo(WeaponId.GUN));
         assertEquals(0, toolRegistry.getAmmo(ToolId.PARACHUTE));
+        assertEquals(0, toolRegistry.getAmmo(ToolId.CATCONCRETE));
     }
 
     @Test
