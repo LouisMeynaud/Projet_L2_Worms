@@ -28,6 +28,7 @@ import javax.swing.border.TitledBorder;
 
 import com.lllmtb.engine.GameWorld;
 import com.lllmtb.events.EventBus;
+import com.lllmtb.events.turn.ChangeWormsEvent;
 import com.lllmtb.events.game.GamePauseEvent;
 import com.lllmtb.events.game.GameStateUpdatedEvent;
 import com.lllmtb.events.game.SaveEvent;
@@ -80,6 +81,7 @@ public class GameUIPanel extends JPanel {
     private JButton shootModeButton;
     private JButton skipTurnButton;
     private JButton shopButton;
+    private JButton changeWormsButton;
 
     /**
      * constructeur : initialise la disposition , les conteneurs , le HUD et les listenneur.
@@ -141,6 +143,7 @@ public class GameUIPanel extends JPanel {
         shopButton = Utilitaire.createImageButton(TextureManager.UI, "ShopButton", 128, 128, 128, 128, "", "Arial", 12, Color.YELLOW);
         shootModeButton = Utilitaire.createImageButton(TextureManager.UI, "ShootMode", 120, 120, 120, 120, "", "Arial", 16, Color.WHITE);
         skipTurnButton = Utilitaire.createImageButton(TextureManager.UI, "SkipTurn", 128, 128, 128, 128, "", "Arial", 16, Color.WHITE);
+        changeWormsButton = Utilitaire.createImageButton(TextureManager.UI, "ChangeWorms", 128, 128, 128, 128, "", "Arial", 16, Color.WHITE);
 
 
         pauseButton.addActionListener(e -> pauseMenu(true));
@@ -148,11 +151,13 @@ public class GameUIPanel extends JPanel {
         inventoryButton.addActionListener(e -> openCloseInventory());
         shopButton.addActionListener(e -> openCloseShop());
         skipTurnButton.addActionListener(e -> world.getBus().postQueued(new TurnSkipEvent()));
+        changeWormsButton.addActionListener(e -> world.getBus().postQueued(new ChangeWormsEvent()));
 
         JPanel buttonsPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
         buttonsPanel.setOpaque(false);
         buttonsPanel.add(pauseButton);
         buttonsPanel.add(skipTurnButton);
+        buttonsPanel.add(changeWormsButton);
 
         this.timerLabel = createTimerLabel();
         JPanel timerContner = new JPanel(new FlowLayout(FlowLayout.CENTER));
@@ -417,7 +422,7 @@ public class GameUIPanel extends JPanel {
 
             JButton itemButton = Utilitaire.createWeaponButton(id, nbAmmo, isUnlocked);
 
-            if (isUnlocked && nbAmmo > 0) {
+            if (isUnlocked && nbAmmo != 0) {
                 itemButton.addActionListener(e -> {
                     this.world.getBus().postQueued(new WeaponSelectedEvent(id));
                     openCloseInventory(); // on ferme l'inventaire si on choisie une arme
@@ -435,7 +440,7 @@ public class GameUIPanel extends JPanel {
             }
 
             int nbAmmo = currentInventory.tools.getAmmo(id);
-            boolean isAvailable = nbAmmo > 0;
+            boolean isAvailable = nbAmmo != 0;
 
             JButton itemButton = Utilitaire.createToolButton(id, nbAmmo, true);
 
@@ -581,6 +586,7 @@ public class GameUIPanel extends JPanel {
         updateButtonIcon(shootModeButton, "ShootMode", size);
         updateButtonIcon(skipTurnButton, "SkipTurn", size);
         updateButtonIcon(shopButton, "ShopButton", size);
+        updateButtonIcon(changeWormsButton, "ChangeWorms", size); //TODO : Change
 
         if (timerLabel != null) {
             int fontSize = Math.max(12, size / 4);

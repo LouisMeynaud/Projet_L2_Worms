@@ -36,42 +36,42 @@ class ShopManagerTest {
 
     @Test
     void buyItem_unlocksWeapon_whenEnoughCredits() {
-        when(mockTeam.getCredits()).thenReturn(100);
+        when(mockTeam.getCredits()).thenReturn(200);
 
-        shopManager.buyItem(WeaponId.GUN, mockTeam);
+        shopManager.buyItem(WeaponId.SHOTGUN, mockTeam);
 
-        verify(mockTeam).removeCredits(50); 
-        verify(mockTeam).unlockWeapon(WeaponId.GUN);
+        verify(mockTeam).removeCredits(120);
+        verify(mockTeam).unlockWeapon(WeaponId.SHOTGUN);
     }
 
     @Test
     void buyItem_doesNothing_whenNotEnoughCredits() {
         when(mockTeam.getCredits()).thenReturn(10); 
 
-        shopManager.buyItem(WeaponId.GUN, mockTeam);
+        shopManager.buyItem(WeaponId.SHOTGUN, mockTeam);
 
-        verify(mockTeam, never()).removeCredits(50); // never pour verifier que removeCredits n est pas appeler
-        verify(mockTeam, never()).unlockWeapon(WeaponId.GUN);
+        verify(mockTeam, never()).removeCredits(120); // never pour verifier que removeCredits n est pas appeler
+    verify(mockTeam, never()).unlockWeapon(WeaponId.SHOTGUN);
     }
 
     @Test
     void buyAmmo_addsAmmo_whenUnlockedAndEnoughCredits() {
-        when(mockInventory.isUnlocked(WeaponId.GUN)).thenReturn(true);
+        when(mockInventory.isUnlocked(WeaponId.SHOTGUN)).thenReturn(true);
         when(mockTeam.getCredits()).thenReturn(100);
 
-        shopManager.buyAmmo(WeaponId.GUN, mockTeam);
+        shopManager.buyAmmo(WeaponId.SHOTGUN, mockTeam);
 
-        verify(mockTeam).removeCredits(20); 
-        verify(mockTeam).addAmmo(WeaponId.GUN, 5); 
+        verify(mockTeam).removeCredits(40);
+        verify(mockTeam).addAmmo(WeaponId.SHOTGUN, 5);
     }
 
     @Test
     void buyAmmo_doesNothing_whenWeaponLocked() {
-        when(mockInventory.isUnlocked(WeaponId.GUN)).thenReturn(false); 
-        when(mockTeam.getCredits()).thenReturn(100);
+        when(mockInventory.isUnlocked(WeaponId.SHOTGUN)).thenReturn(false);
+        when(mockTeam.getCredits()).thenReturn(200);
 
-        shopManager.buyAmmo(WeaponId.GUN, mockTeam);
-        verify(mockTeam, never()).removeCredits(50);
+        shopManager.buyAmmo(WeaponId.SHOTGUN, mockTeam);
+        verify(mockTeam, never()).removeCredits(120);
     }
 
     @Test

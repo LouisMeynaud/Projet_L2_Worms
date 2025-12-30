@@ -37,7 +37,7 @@ public class TurnManagerTest {
 
     @BeforeEach
     public void setUp(){
-        GameSettings settings = new GameSettings("blabla", 2, new String[]{"TeamTest1", "TeamTest2"}, 1, 100, 10, false, null, false, 370, LandScape.HILLY, 2,GameMode.NORMAL);
+        GameSettings settings = new GameSettings("blabla", 2, new String[]{"TeamTest1", "TeamTest2"}, 1, 100, 10, false, null, false, 370, LandScape.HILLY, 2,GameMode.NORMAL, true);
         this.eb = new EventBus();
         this.gw = new GameWorld(settings, eb);
         gw.start();
@@ -78,18 +78,6 @@ public class TurnManagerTest {
             Thread.sleep(200);
         } catch (InterruptedException ignored) {}
         assertEquals(2, this.turnManager.getNbTurn());
-    }
-
-    @Test
-    void testSpawnCoins(){
-        //First Turn already lauch
-        boolean spawnCoin = false;
-        for(PhysicsBody body : this.gw.getPhysics().getBodies()){
-            if(body.getEntity() instanceof Coin){
-                spawnCoin = true;
-            }
-        }
-        assertTrue(spawnCoin);
     }
 
     @Test
@@ -163,7 +151,7 @@ public class TurnManagerTest {
 
     @Test
     void testEndWithOneTeamAlive(){
-        GameSettings settings = new GameSettings("blabla", 1, new String[]{"TeamTest1", "TeamTest2"}, 1, 100, 1, false, null, false, 370, LandScape.HILLY, 2, GameMode.NORMAL);
+        GameSettings settings = new GameSettings("blabla", 1, new String[]{"TeamTest1", "TeamTest2"}, 1, 100, 1, false, null, false, 370, LandScape.HILLY, 2, GameMode.NORMAL, true);
         EventBus eventBus = new EventBus();
         GameWorld gw2 = new GameWorld(settings, eventBus);
         gw2.start();

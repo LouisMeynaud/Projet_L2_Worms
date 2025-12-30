@@ -23,6 +23,12 @@ public final class Inventory {
     private final Set<WeaponId> unlocked = EnumSet.noneOf(WeaponId.class);
     public final ToolRegistry tools = new ToolRegistry();
 
+    public Inventory() {
+        weapons.addAmmo(WeaponId.GUN, -1);
+        unlocked.add(WeaponId.GUN);
+        tools.addAmmo(ToolId.PARACHUTE, 2);
+    }
+
     /**
      * Checks if the given weapon is currently unlocked.
      * @param id the weapon identifier
@@ -68,7 +74,7 @@ public final class Inventory {
      */
     public boolean canFire(@NonNull WeaponId id) {
         if (!weapons.contains(id)) throw new UnknownWeaponException(id);
-        return isUnlocked(id) && (weapons.getAmmo(id) > 0);
+        return isUnlocked(id) && (weapons.getAmmo(id) != 0);
     }
 
     /**
@@ -104,7 +110,7 @@ public final class Inventory {
      */
     public boolean canUse(@NonNull ToolId id) {
         if (!tools.contains(id)) throw new UnknownToolException(id);
-        return tools.getAmmo(id) > 0;
+        return tools.getAmmo(id) != 0;
     }
 
     /**

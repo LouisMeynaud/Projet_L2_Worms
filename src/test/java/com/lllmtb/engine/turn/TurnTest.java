@@ -87,6 +87,28 @@ public class TurnTest {
 
     }
 
+    @Test
+    public void testNextWormPlayable(){
+        Team team = new Team("TestTeam", 1, new Position[]{new Position(0, 0)}) ;
+        Worm worm1 = team.getIndexWorm(0);
+        Worm worm2 = new Worm("Worm2", team);
+        Turn turn = new Turn(team);
+        Worm lastCurrentWorm = turn.getWormPlayable();
+        turn.nextWormPlayable();
+        //Different Worm if two worm is alive
+        assertNotEquals(turn.getWormPlayable(), lastCurrentWorm);
+
+        lastCurrentWorm = turn.getWormPlayable();
+        for(Worm worm : team.getTeamWorms()){
+            if (worm != turn.getWormPlayable()){
+               worm.damageWorm(1000);
+            }
+        }
+        turn.nextWormPlayable();
+        //Same worm if only one worm is alive
+        assertEquals(lastCurrentWorm, turn.getWormPlayable());
+    }
+
 
 
 }
