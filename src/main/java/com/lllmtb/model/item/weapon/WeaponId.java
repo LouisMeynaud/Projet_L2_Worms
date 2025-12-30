@@ -7,24 +7,30 @@ public enum WeaponId implements ItemId {
     BAZOOKA,
     HEALINGBAZOOKA,
     SHOTGUN,
-    ELECTRONCANON,
+    ELECTRONCANON(false, "blabla"),
     GASGUN,
     BOW,
     GRENADE,
     NONE;
 
     private final boolean usesCrosshair;
+    private final String info;
 
-    WeaponId(boolean usesCrosshair) {
+    WeaponId(boolean usesCrosshair, String info) {
         this.usesCrosshair = usesCrosshair;
+        this.info = info;
     }
 
     WeaponId() {
-        this(false);
+        this(false, "");
     }
 
     @Override
     public boolean usesCrosshair() {
         return usesCrosshair;
+    }
+
+     public String getInfo() {
+        return this.info;
     }
 }

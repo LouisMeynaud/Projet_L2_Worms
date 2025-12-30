@@ -24,6 +24,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.Timer;
+import javax.swing.ToolTipManager;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 
@@ -89,6 +90,8 @@ public class GameUIPanel extends JPanel {
      */
     public GameUIPanel(EventBus eventBus) {
         this.eventBus = eventBus;
+        ToolTipManager.sharedInstance().setInitialDelay(0);
+        ToolTipManager.sharedInstance().setReshowDelay(0);
         this.shopManager = new ShopManager();
         setOpaque(false);
         setLayout(new BorderLayout());
@@ -434,6 +437,7 @@ public class GameUIPanel extends JPanel {
             int nbAmmo = currentInventory.weapons.getAmmo(id);
 
             JButton itemButton = Utilitaire.createWeaponButton(id, nbAmmo, isUnlocked);
+            itemButton.setToolTipText(id.getInfo());
 
             if (isUnlocked && nbAmmo > 0) {
                 itemButton.addActionListener(e -> {
@@ -456,6 +460,7 @@ public class GameUIPanel extends JPanel {
             boolean isAvailable = nbAmmo > 0;
 
             JButton itemButton = Utilitaire.createToolButton(id, nbAmmo, true);
+            itemButton.setToolTipText(id.getInfo());
 
             if (isAvailable) {
                 itemButton.addActionListener(e -> {
@@ -535,6 +540,7 @@ public class GameUIPanel extends JPanel {
 
                     JButton buttonShop = Utilitaire.createShopButton(img, text, canBuy);
 
+                    buttonShop.setToolTipText(weaponId.getInfo());
 
                     buttonShop.addActionListener(e -> {
                         if (canBuy) {
@@ -551,6 +557,7 @@ public class GameUIPanel extends JPanel {
 
                     JButton buttonShop = Utilitaire.createShopButton(imgAmmo, text, canBuy);
 
+                    buttonShop.setToolTipText(weaponId.getInfo());
 
                     buttonShop.addActionListener(e -> {
                         if (canBuy) {
@@ -569,6 +576,7 @@ public class GameUIPanel extends JPanel {
 
                 JButton btn = Utilitaire.createShopButton(img, text, canBuy);
 
+                btn.setToolTipText(tid.getInfo());
 
                 btn.addActionListener(e -> {
                     shopManager.buyAmmo(tid, world.getPlayingTeam());
