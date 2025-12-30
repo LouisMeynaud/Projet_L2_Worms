@@ -9,7 +9,7 @@ public enum Tile {
     UNDERDIRT('U', '#', true, 1, 0.90, 0),
     ICE('I', '#', true, 4, 1, 0),
     SNOW('S', '_', true, 4, 1, 0),
-    LAVA('L', 'L', false, 4, 0.90, 2),
+    LAVA('L', 'L', false, 4, 0.90, 1),
     MOONGRASS('M', '_', true, 4, 0.90, 0),
     MOONDIRT('N', '#', true, 4, 0.90, 0),
     MOONUNDERDIRT('X', '#', true, 1, 0.90, 0);
@@ -50,6 +50,7 @@ public enum Tile {
         return this.friction;
     }
 
+    public int getDamage() { return damage; }
 
     public static Tile getByFileSymbol(char symbol) {
         for (Tile tile : values()) {

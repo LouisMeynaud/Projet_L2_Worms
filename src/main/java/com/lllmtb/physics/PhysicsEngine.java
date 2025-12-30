@@ -10,6 +10,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import com.lllmtb.engine.commands.GameCommand;
 import com.lllmtb.engine.logger.Logger;
 import com.lllmtb.events.physics.*;
+import com.lllmtb.model.entity.effect.BurnEffect;
 import com.lllmtb.model.entity.team.Team;
 import org.eclipse.jdt.annotation.NonNull;
 
@@ -422,6 +423,13 @@ public class PhysicsEngine {
                 }
 
                 body.setVector(new Vector(newVelX, currentVector.getY()));
+            }
+            Tile tile = collision.inTrapOrLava(body.getPos());
+            if (tile == Tile.LAVA) {
+                if (body.getEntity() instanceof Worm worm) {
+                    world.queueCommand(worm.damageWorm(Tile.LAVA.getDamage()));
+                    world.queueCommand(worm.addStatusEffect(new BurnEffect()));
+                }
             }
         }
     }

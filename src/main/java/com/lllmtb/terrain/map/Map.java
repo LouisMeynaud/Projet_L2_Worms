@@ -129,6 +129,10 @@ public class Map {
         return this.getTile(position).isSolid();
     }
 
+    public boolean isDamaging(Position position) {
+        return this.getTile(position).getDamage() > 0;
+    }
+
     public Position[][] getSpawnPoint() {
         return spawnPoint;
     }
