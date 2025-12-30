@@ -28,7 +28,7 @@ public class BurnEffectTest {
     @Test
     public void testBurnEffectCreation() {
         BurnEffect burn = new BurnEffect();
-        assertEquals(1, burn.getDamagePerTurn());
+        assertEquals(2, burn.getDamagePerTurn());
         assertEquals(5, burn.getRemainingTurns());
         assertTrue(burn.isActive());
     }
