@@ -23,6 +23,7 @@ import com.lllmtb.model.entity.Coin;
 import com.lllmtb.model.entity.projectile.Projectile;
 import com.lllmtb.model.entity.team.Team;
 import com.lllmtb.model.item.UseParams;
+import com.lllmtb.model.item.weapon.WeaponId;
 import com.lllmtb.physics.Move;
 import static com.lllmtb.physics.Move.move;
 import com.lllmtb.physics.PhysicsBody;
@@ -214,7 +215,10 @@ public final class TurnManager {
             double deltaY = (mouseY - centerY);
             double angle = Math.atan2(deltaY, deltaX);
 
-            double dist = 1.5;
+            double dist = 1;
+            if (turn.getTeam().getHand() == WeaponId.GASGUN) {
+                dist =  6;
+            }
             double spawnX = centerX + (Math.cos(angle) * dist);
             double spawnY = centerY + (Math.sin(angle) * dist);
 
