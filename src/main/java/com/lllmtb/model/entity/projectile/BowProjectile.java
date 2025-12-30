@@ -18,8 +18,8 @@ public final class BowProjectile extends Projectile {
     private int damage = 10;
 
     public BowProjectile(@NonNull UseParams params) {
-        super(params, force * Math.min(params.duration / 100, 5) / 2, mass, height, width);
-        this.damage = (int) (damage * Math.min(params.duration / 100, 5) / 2);
+        super(params, force * Math.min(params.duration / 100, 3) / 2, mass, height, width);
+        this.damage = (int) (damage * Math.min(params.duration / 100, 3) / 2);
 
     }
 

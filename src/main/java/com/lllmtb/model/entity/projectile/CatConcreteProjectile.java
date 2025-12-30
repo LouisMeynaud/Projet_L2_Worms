@@ -23,8 +23,8 @@ public final class CatConcreteProjectile extends Projectile implements Explosive
     private static final String TEXTURE_KEY = "MissileExplosion";
 
     public CatConcreteProjectile(@NonNull UseParams params) {
-        super(params, force, mass, height, width);
-    }
+        super(params, force * Math.min(params.duration / 100, 3) / 2, mass, height, width);
+        }
 
     @Override
     public CollisionType getCollisionType() {

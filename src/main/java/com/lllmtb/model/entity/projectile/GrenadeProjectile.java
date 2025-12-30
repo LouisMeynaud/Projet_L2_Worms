@@ -27,8 +27,8 @@ public final class GrenadeProjectile extends Projectile implements ExplosiveProj
     private long remainingTime = 4000;
 
     public GrenadeProjectile(@NonNull UseParams params) {
-        super(params, force, mass, height, width);
-    }
+        super(params, force * Math.min(params.duration / 100, 3) / 2, mass, height, width);
+        }
 
     @Override
     public CollisionType getCollisionType() {

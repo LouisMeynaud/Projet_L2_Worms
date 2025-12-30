@@ -65,6 +65,7 @@ public class GameWorldPanel extends JPanel {
     protected double mouseWorldX = 0;
     protected double mouseWorldY = 0;
 
+    public long chargeStartTime = 0;
 
     public GameWorldPanel(EventBus eventBus) {
         this.eventBus = eventBus;
@@ -123,22 +124,42 @@ public class GameWorldPanel extends JPanel {
                     isCameraMode = true;
                     hasDraggedCamera = false;
                 }
+                if (e.getButton() == MouseEvent.BUTTON1 && shootMode) {
+                    ItemId item = world.getPlayingTeam().getHand();
+                    if (item != null) {
+                        chargeStartTime = System.currentTimeMillis();
+                    }
+                }
+
             }
 
             @Override
             public void mouseReleased(MouseEvent e) {
                 int type = e.getButton();
-                long duration = System.currentTimeMillis() - pressStartTime;
+                long duration = 0;
+                if (chargeStartTime > 0) {
+                    duration = System.currentTimeMillis() - chargeStartTime;
+                }
+                chargeStartTime = 0;
 
                 if (type == MouseEvent.BUTTON1 && shootMode) {
                     Position worldPos = screenToWorld(e.getX(), e.getY());
                     ItemId item = world.getPlayingTeam().getHand();
+
+                    if (item != null) {
+                         int maxTime = item.getMaxChargeTime();
+                         if (maxTime > 0 && duration > maxTime) {
+                             duration = maxTime;
+                         }
+                    }
+
                     if ((item != null && item instanceof WeaponId)
                     && world.getTurnManager().getTurn().getTeam().getInventory().weapons.getAmmo(((WeaponId) item)) != 0) {
                         String sound = world.getPlayingTeam().getHand().toString();
                         SoundPlayer.playSound(sound + "Shot");
                     }
                     world.getBus().postQueued(new UseInputEvent(worldPos, duration));
+                    repaint();
                 }
 
                 if (type == MouseEvent.BUTTON3) {

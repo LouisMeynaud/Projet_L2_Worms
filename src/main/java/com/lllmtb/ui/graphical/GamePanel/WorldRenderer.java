@@ -265,7 +265,47 @@ public class WorldRenderer {
             paintCurrentWormsArrow(g2d, xEcran, yEcran, largeurVerPx, wormEntity.getTeam().teamColor);
             paintItem(g2d, xCenter, yCenter);
             paintAim(g2d, xCenter, yCenter);
+            paintChargeBar(g2d, xEcran, yEcran, largeurVerPx); // AJOUT: Dessin de la barre
         }
+    }
+
+    /**
+     * Dessine la barre de charge (puissance).
+     */
+    private void paintChargeBar(Graphics2D g2d, double x, double y, double width) {
+        if (!panel.shootMode) return;
+
+        ItemId item = world.getPlayingTeam().getHand();
+        if (item == null || item.getMaxChargeTime() <= 0) return;
+
+        double ratio = 0.0;
+        if (panel.chargeStartTime > 0) {
+            long duration = System.currentTimeMillis() - panel.chargeStartTime;
+            double maxTime = item.getMaxChargeTime();
+            ratio = duration / maxTime;
+            if (ratio > 1.0) ratio = 1.0;
+        }
+
+        int barHeight = 4;
+        int barWidth = (int) width + 10;
+        int barX = (int) (x - 5);
+        int barY = (int) (y - barHeight - 18);
+
+        g2d.setColor(Color.DARK_GRAY);
+        g2d.fillRect(barX, barY, barWidth, barHeight);
+
+        if (ratio > 0) {
+            int fillWidth = (int) (barWidth * ratio);
+            if (ratio < 0.5) g2d.setColor(Color.YELLOW);
+            else g2d.setColor(Color.ORANGE);
+            if (ratio >= 0.95) g2d.setColor(Color.RED);
+
+            g2d.fillRect(barX, barY, fillWidth, barHeight);
+        }
+
+        g2d.setColor(Color.BLACK);
+        g2d.setStroke(new BasicStroke(1));
+        g2d.drawRect(barX, barY, barWidth, barHeight);
     }
 
     /**

@@ -32,8 +32,8 @@ public final class TowerProjectile extends Projectile {
 
 
     public TowerProjectile(@NonNull UseParams params) {
-        super(params, FORCE, MASS, HEIGHT, WIDTH);
-    }
+        super(params, FORCE * Math.min(params.duration / 100, 3) / 2, MASS, HEIGHT, WIDTH);
+        }
 
     @Override
     public CollisionType getCollisionType() {
