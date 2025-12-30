@@ -385,6 +385,8 @@ public class PhysicsEngine {
                         // Collision wih another entity impactEntity and currentBody
                         if (body.getEntity() instanceof Projectile proj) {
                             world.queueCommands(proj.onImpact(impact.hitBody.getEntity()));
+                        } else if (impact.hitBody.getEntity() instanceof Projectile proj) {
+                            world.queueCommands(proj.onImpact(body.getEntity()));
                         }
                     }
                 }

@@ -13,7 +13,7 @@ public final class MineProjectile extends Projectile implements ExplosiveProject
     private static final double force  = 100.0;
     private static final double mass   = 0.01;
     private static final double height = 1;
-    private static final double width  = 2;
+    private static final double width  = 1;
     private static final int damage = 50;
 
     private static final int RAYON_DEGAT_MAP = 7;
