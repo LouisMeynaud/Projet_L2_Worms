@@ -16,6 +16,7 @@ import com.lllmtb.model.item.tool.ToolId;
 import com.lllmtb.model.item.tool.ToolRegistry;
 import com.lllmtb.model.item.weapon.BazookaWeapon;
 import com.lllmtb.model.item.weapon.BowWeapon;
+import com.lllmtb.model.item.weapon.GrenadeWeapon;
 import com.lllmtb.model.item.weapon.GunWeapon;
 import com.lllmtb.model.item.weapon.WeaponId;
 import com.lllmtb.model.item.weapon.WeaponRegistry;
@@ -57,7 +58,7 @@ public class ItemRegistryTest {
         assertInstanceOf(GunWeapon.class, weaponRegistry.get(WeaponId.GUN));
         assertInstanceOf(BazookaWeapon.class, weaponRegistry.get(WeaponId.BAZOOKA));
         assertInstanceOf(BowWeapon.class, weaponRegistry.get(WeaponId.BOW));
-        assertInstanceOf(GrenadeWeapon.class, weaponRegistry.get(WeaponId.BOW));
+        assertInstanceOf(GrenadeWeapon.class, weaponRegistry.get(WeaponId.GRENADE));
     }
 
     // ==================== contains() Tests ====================
