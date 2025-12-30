@@ -143,7 +143,7 @@ public class WormTest {
 
     @Test
     public void testApplyStatusEffects() {
-        int initialHealth = worm.getStats().getHp();
+        double initialHealth = worm.getStats().getHp();
         PoisonEffect poison = new PoisonEffect();
         worm.addStatusEffect(poison);
 
@@ -155,7 +155,7 @@ public class WormTest {
 
     @Test
     public void testStatusEffectExpiration() {
-        int initialHealth = worm.getStats().getHp();
+        double initialHealth = worm.getStats().getHp();
         PoisonEffect poison = new PoisonEffect();
         worm.addStatusEffect(poison);
         for (int i = 0; i < 5; i++) {
@@ -176,7 +176,7 @@ public class WormTest {
 
     @Test
     public void testApplyMultipleStatusEffects() {
-        int initialHealth = worm.getStats().getHp();
+        double initialHealth = worm.getStats().getHp();
         PoisonEffect poison = new PoisonEffect();
         BurnEffect burn = new BurnEffect();
         worm.addStatusEffect(poison);

@@ -424,9 +424,9 @@ public class PhysicsEngine {
 
                 body.setVector(new Vector(newVelX, currentVector.getY()));
             }
-            Tile tile = collision.inTrapOrLava(body.getPos());
-            if (tile == Tile.LAVA) {
-                if (body.getEntity() instanceof Worm worm) {
+            if (body.getEntity() instanceof Worm worm) {
+                Tile tile = collision.inTrapOrLava(body.getPos());
+                if (tile == Tile.LAVA) {
                     world.queueCommand(worm.damageWorm(Tile.LAVA.getDamage()));
                     world.queueCommand(worm.addStatusEffect(new BurnEffect()));
                 }

@@ -9,7 +9,7 @@ public enum Tile {
     UNDERDIRT('U', '#', true, 1, 0.90, 0),
     ICE('I', '#', true, 4, 1, 0),
     SNOW('S', '_', true, 4, 1, 0),
-    LAVA('L', 'L', false, 4, 0.90, 1),
+    LAVA('L', 'L', false, 4, 0.90, 0.5),
     MOONGRASS('M', '_', true, 4, 0.90, 0),
     MOONDIRT('N', '#', true, 4, 0.90, 0),
     MOONUNDERDIRT('X', '#', true, 1, 0.90, 0);
@@ -19,9 +19,9 @@ public enum Tile {
     private final boolean solid; // true if the tile is solid
     private final int nbTexture; // number of textures
     private final double friction; // firction of Tile. 1.0 = no friction , 0.0 = full friction
-    private final int damage; // damage per tick, -1 if kill instantly
+    private final double damage; // damage per tick, -1 if kill instantly
 
-    Tile(char fileSymbol, char consoleSymbol, boolean solid, int nbTexture, double friction, int damage) {
+    Tile(char fileSymbol, char consoleSymbol, boolean solid, int nbTexture, double friction, double damage) {
         this.fileSymbol = fileSymbol;
         this.consoleSymbol = consoleSymbol;
         this.solid = solid;
@@ -50,7 +50,9 @@ public enum Tile {
         return this.friction;
     }
 
-    public int getDamage() { return damage; }
+    public double getDamage() {
+        return this.damage;
+    }
 
     public static Tile getByFileSymbol(char symbol) {
         for (Tile tile : values()) {

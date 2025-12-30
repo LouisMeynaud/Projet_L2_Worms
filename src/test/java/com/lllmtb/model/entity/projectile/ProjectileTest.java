@@ -95,7 +95,7 @@ public class ProjectileTest {
         BulletProjectile bullet = new BulletProjectile(params);
         Projectile.setFriendlyFire(true);
         Worm wormHit = new Worm("Test",this.owner.getTeam());
-        int hp = wormHit.getStats().getHp();
+        double hp = wormHit.getStats().getHp();
         bullet.onImpact(wormHit);
         assertNotEquals(wormHit.getStats().getHp(), hp);
     }
@@ -105,7 +105,7 @@ public class ProjectileTest {
         BulletProjectile bullet = new BulletProjectile(params);
         Projectile.setFriendlyFire(false);
         Worm wormHit = new Worm("Test",this.owner.getTeam());
-        int hp = wormHit.getStats().getHp();
+        double hp = wormHit.getStats().getHp();
         bullet.onImpact(wormHit);
         assertEquals(wormHit.getStats().getHp(), hp);
     }

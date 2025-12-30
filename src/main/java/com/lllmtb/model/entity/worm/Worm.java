@@ -204,7 +204,7 @@ public class Worm extends Entity {
         return null;
     }
 
-    public GameCommand damageWorm(int damage) {
+    public GameCommand damageWorm(double damage) {
         this.stats.damageTake(damage);
         return this.setDeath();
     }
@@ -277,7 +277,7 @@ public class Worm extends Entity {
         return commands;
     }
 
-    public static void setMaxHp(int maxHp) {
+    public static void setMaxHp(double maxHp) {
         Statistics.setMaxHp(maxHp);
     }
 

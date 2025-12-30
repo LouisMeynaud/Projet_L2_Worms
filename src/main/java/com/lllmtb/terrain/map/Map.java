@@ -130,7 +130,10 @@ public class Map {
     }
 
     public boolean isDamaging(Position position) {
-        return this.getTile(position).getDamage() > 0;
+        Position posMatrix = this.cooMapToCooMatrix(position);
+        int x = (int) position.getX();
+        int y = (int) position.getY();
+        return this.getTile(new Position(x, y)).getDamage() > 0;
     }
 
     public Position[][] getSpawnPoint() {

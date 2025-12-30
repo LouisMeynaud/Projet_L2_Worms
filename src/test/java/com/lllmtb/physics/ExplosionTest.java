@@ -65,7 +65,7 @@ class ExplosionTest {
     @Test
     void testEffetDegatsExplosion() {
         Worm worm = createWorm();
-        int initialHp = worm.getStats().getHp();
+        double initialHp = worm.getStats().getHp();
         
         PhysicsBody body = new PhysicsBody(worm, new Position(0, 0), new Vector(0, 0), 1, 2, 1);
         bodies.add(body);
@@ -77,7 +77,7 @@ class ExplosionTest {
     @Test
     void testEffetDegatsExplosion_degatDistance() {
         Worm worm = createWorm();
-        int initialHp = worm.getStats().getHp();
+        double initialHp = worm.getStats().getHp();
         
         PhysicsBody body = new PhysicsBody(worm, new Position(5, 0), new Vector(0, 0), 1, 2, 1);
         bodies.add(body);
@@ -88,7 +88,7 @@ class ExplosionTest {
     @Test
     void testEffetDegatsExplosion_PasDegatTropLoin() {
         Worm worm = createWorm();
-        int initialHp = worm.getStats().getHp();
+        double initialHp = worm.getStats().getHp();
         
         PhysicsBody body = new PhysicsBody(worm, new Position(20, 20), new Vector(0, 0), 1, 2, 1);
         bodies.add(body);

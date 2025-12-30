@@ -44,7 +44,7 @@ public class PoisonEffectTest {
 
     @Test
     public void testPoisonDamageApplication() {
-        int initialHealth = worm.getStats().getHp();
+        double initialHealth = worm.getStats().getHp();
         PoisonEffect poison = new PoisonEffect();
 
         worm.addStatusEffect(poison);
@@ -58,7 +58,7 @@ public class PoisonEffectTest {
 
     @Test
     public void testPoisonMultipleTurns() {
-        int initialHealth = worm.getStats().getHp();
+        double initialHealth = worm.getStats().getHp();
         PoisonEffect poison = new PoisonEffect();
 
         worm.addStatusEffect(poison);
@@ -76,7 +76,7 @@ public class PoisonEffectTest {
 
     @Test
     public void testMultiplePoisonEffectsIsNotPossible() {
-        int initialHealth = worm.getStats().getHp();
+        double initialHealth = worm.getStats().getHp();
         PoisonEffect poison1 = new PoisonEffect();
         PoisonEffect poison2 = new PoisonEffect();
 

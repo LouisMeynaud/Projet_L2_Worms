@@ -71,7 +71,7 @@ public final class MineProjectile extends Projectile implements ExplosiveProject
     }
 
     @Override
-    public int getDamage() {
+    public double getDamage() {
         return damage;
     }
 }

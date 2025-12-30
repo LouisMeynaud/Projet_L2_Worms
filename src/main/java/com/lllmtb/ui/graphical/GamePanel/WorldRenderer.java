@@ -336,8 +336,8 @@ public class WorldRenderer {
      */
     private void paintHealthBar(Graphics2D g2d, Worm worm, double x, double y, double width) {
 
-        int maxHp = Statistics.getMaxHp();
-        int currentHp = worm.getStats().getHp();
+        double maxHp = Statistics.getMaxHp();
+        double currentHp = worm.getStats().getHp();
 
         int barHeight = 4;
         int barWidth = (int) width + 10;

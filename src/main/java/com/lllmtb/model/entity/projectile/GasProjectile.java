@@ -20,7 +20,7 @@ public final class GasProjectile extends Projectile {
     private static final double mass   = 0;
     private static final double height = 10;
     private static final double width  = 10;
-    private static final int damage = 1;
+    private static final double damage = 0.5;
     private static final double radius = 6.0;
 
     public GasProjectile(@NonNull UseParams params) {
@@ -62,7 +62,7 @@ public final class GasProjectile extends Projectile {
     }
 
     @Override
-    public int getDamage() {
+    public double getDamage() {
         return damage;
     }
 }

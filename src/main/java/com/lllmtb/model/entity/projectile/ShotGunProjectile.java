@@ -34,7 +34,7 @@ public final class ShotGunProjectile extends Projectile {
     }
 
     @Override
-    public int getDamage() {
+    public double getDamage() {
         return damage;
     }
 }

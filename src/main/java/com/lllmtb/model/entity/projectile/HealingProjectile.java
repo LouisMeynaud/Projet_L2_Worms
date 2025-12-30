@@ -70,7 +70,7 @@ public final class HealingProjectile extends Projectile implements ExplosiveProj
     }
 
     @Override
-    public int getDamage() {
+    public double getDamage() {
         return damage;
     }
 }

@@ -68,7 +68,7 @@ public final class RocketProjectile extends Projectile implements ExplosiveProje
     }
 
     @Override
-    public int getDamage() {
+    public double getDamage() {
         return damage;
     }
 }

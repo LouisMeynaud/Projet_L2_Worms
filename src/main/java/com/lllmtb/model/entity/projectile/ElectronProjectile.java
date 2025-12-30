@@ -73,7 +73,7 @@ public final class ElectronProjectile extends Projectile {
     }
 
     @Override
-    public int getDamage() {
+    public double getDamage() {
         return damage;
     }
 }

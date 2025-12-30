@@ -51,7 +51,7 @@ public abstract class Projectile extends Entity {
      */
     public abstract List<GameCommand> onImpact(Entity entity);
 
-    public abstract int getDamage();
+    public abstract double getDamage();
 
     /**
      * Handle the hit on an entity, applying damage if it's a Worm.

@@ -11,7 +11,6 @@ import com.lllmtb.model.entity.CollisionType;
 import com.lllmtb.model.entity.worm.Worm;
 import com.lllmtb.terrain.map.Map;
 import com.lllmtb.terrain.map.Tile;
-import java.lang.Math;
 
 /**
  * The {@code Collision} class is the central collision engine for the game, inspired by JBump principles (swept collision detection).
@@ -555,24 +554,6 @@ public class Collision {
         double xup = Math.ceil(position.getX());
         double ydown = Math.floor(position.getY());
         double yup = Math.ceil(position.getY());
-        if (xdown != xup && ydown != yup) {
-            Position pos1 = new Position(xdown, yup + 1);
-            Position pos2 = new Position(xup, ydown);
-            Position pos3 = new Position(xup, yup);
-            Position pos4 = new Position(xup, yup + 1);
-            if (map.isDamaging(pos1)) {
-                return map.getTile(pos1);
-            }
-            if (map.isDamaging(pos2)) {
-                return map.getTile(pos2);
-            }
-            if (map.isDamaging(pos3)) {
-                return map.getTile(pos3);
-            }
-            if (map.isDamaging(pos4)) {
-                return map.getTile(pos4);
-            }
-        }
         if (xdown != xup) {
             Position pos1 = new Position(xup, position.getY());
             Position pos2 = new Position(xup, position.getY() + 1);
@@ -585,6 +566,12 @@ public class Collision {
         }
         if (ydown != yup) {
             Position pos1 = new Position(position.getX(), yup + 1);
+            if (map.isDamaging(pos1)) {
+                return map.getTile(pos1);
+            }
+        }
+        if (xdown != xup && ydown != yup) {
+            Position pos1 = new Position(xup, yup + 1);
             if (map.isDamaging(pos1)) {
                 return map.getTile(pos1);
             }

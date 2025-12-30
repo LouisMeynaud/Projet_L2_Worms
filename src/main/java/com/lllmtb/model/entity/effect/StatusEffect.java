@@ -11,7 +11,7 @@ public abstract class StatusEffect {
     /**
      * The damage dealt per turn
      */
-    private final int damagePerTurn;
+    private final double damagePerTurn;
 
     /**
      * The remaining duration of the effect (in turns)
@@ -23,7 +23,7 @@ public abstract class StatusEffect {
      * @param damagePerTurn the name of the effect
      * @param durationInTurns the duration of the effect in turns
      */
-    public StatusEffect(int damagePerTurn, int durationInTurns) {
+    public StatusEffect(double damagePerTurn, int durationInTurns) {
         this.damagePerTurn = damagePerTurn;
         this.remainingTurns = durationInTurns;
     }
@@ -32,7 +32,7 @@ public abstract class StatusEffect {
      * Gets the name of the effect
      * @return the name of the effect
      */
-    public int getDamagePerTurn() {
+    public double getDamagePerTurn() {
         return this.damagePerTurn;
     }
 

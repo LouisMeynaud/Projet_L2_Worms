@@ -44,7 +44,7 @@ public class BurnEffectTest {
 
     @Test
     public void testBurnDamageApplication() {
-        int initialHealth = worm.getStats().getHp();
+        double initialHealth = worm.getStats().getHp();
         BurnEffect burn = new BurnEffect();
 
         worm.addStatusEffect(burn);
@@ -58,7 +58,7 @@ public class BurnEffectTest {
 
     @Test
     public void testBurnMultipleTurns() {
-        int initialHealth = worm.getStats().getHp();
+        double initialHealth = worm.getStats().getHp();
         BurnEffect burn = new BurnEffect();
 
         worm.addStatusEffect(burn);
@@ -76,7 +76,7 @@ public class BurnEffectTest {
 
     @Test
     public void testMultipleBurnEffectsIsNotPossible() {
-        int initialHealth = worm.getStats().getHp();
+        double initialHealth = worm.getStats().getHp();
         BurnEffect burn1 = new BurnEffect();
         BurnEffect burn2 = new BurnEffect();
 
