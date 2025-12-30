@@ -170,7 +170,7 @@ public class GameUIPanel extends JPanel {
         this.moneyLabel = new JLabel("0 $");
         this.moneyLabel.setFont(new Font("Arial", Font.BOLD, 22));
         this.moneyLabel.setForeground(Color.YELLOW);
-        BufferedImage img = TextureManager.UI.get("moneyIcon");
+        BufferedImage img = TextureManager.UI.get("Coin");
         this.moneyLabel.setIcon(new ImageIcon(img.getScaledInstance(40, 40, Image.SCALE_SMOOTH)));
         moneyPanel.add(this.moneyLabel);
         topBar.add(buttonsPanel, BorderLayout.WEST);

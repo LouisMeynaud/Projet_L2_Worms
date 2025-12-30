@@ -49,7 +49,7 @@ public class TextureManager {
             UI.put("ShootModeHover", ImageIO.read(TextureManager.class.getResource("/textures/button/ShootMode.png")));
             UI.put("Panel", ImageIO.read(TextureManager.class.getResource("/textures/button/Panel.png")));
             UI.put("PanelHover", ImageIO.read(TextureManager.class.getResource("/textures/button/Panel.png")));
-            UI.put("moneyIcon", ImageIO.read(TextureManager.class.getResource("/textures/moneyIcon.png")));
+            UI.put("Coin", ImageIO.read(TextureManager.class.getResource("/textures/Coin.png")));
             UI.put("ShopButton", ImageIO.read(TextureManager.class.getResource("/textures/button/ShopButton.png")));
             UI.put("ShopButtonHover", ImageIO.read(TextureManager.class.getResource("/textures/button/ShopButton.png")));
             UI.put("ChangeWorms", ImageIO.read(TextureManager.class.getResource("/textures/button/changeWorms.png")));
@@ -84,13 +84,14 @@ public class TextureManager {
             }
 
             ///////////projectile//////////
-            PROJECTILES.put("BulletProjectile", ImageIO.read(TextureManager.class.getResource("/sprites/weapon/BulletGun.png")));
-            PROJECTILES.put("RocketProjectile", ImageIO.read(TextureManager.class.getResource("/sprites/weapon/BulletBazooka.png")));
-            PROJECTILES.put("MissileProjectile", ImageIO.read(TextureManager.class.getResource("/sprites/tool/Missile.png")));
-            PROJECTILES.put("HealingProjectile", ImageIO.read(TextureManager.class.getResource("/sprites/weapon/BulletHealingBazooka.png")));
-            PROJECTILES.put("ShotGunProjectile", ImageIO.read(TextureManager.class.getResource("/sprites/weapon/ShotGunProjectile.png")));
-            PROJECTILES.put("ElectronProjectile", ImageIO.read(TextureManager.class.getResource("/sprites/weapon/ElectronProjectile.png")));
-            PROJECTILES.put("GasProjectile", ImageIO.read(TextureManager.class.getResource("/sprites/weapon/GasProjectile.png")));
+            PROJECTILES.put("BulletProjectile", ImageIO.read(TextureManager.class.getResource("/sprites/projectile/BulletGun.png")));
+            PROJECTILES.put("RocketProjectile", ImageIO.read(TextureManager.class.getResource("/sprites/projectile/BulletBazooka.png")));
+            PROJECTILES.put("MissileProjectile", ImageIO.read(TextureManager.class.getResource("/sprites/projectile/Missile.png")));
+            PROJECTILES.put("HealingProjectile", ImageIO.read(TextureManager.class.getResource("/sprites/projectile/BulletHealingBazooka.png")));
+            PROJECTILES.put("ShotGunProjectile", ImageIO.read(TextureManager.class.getResource("/sprites/projectile/ShotGunProjectile.png")));
+            PROJECTILES.put("ElectronProjectile", ImageIO.read(TextureManager.class.getResource("/sprites/projectile/ElectronProjectile.png")));
+            PROJECTILES.put("GasProjectile", ImageIO.read(TextureManager.class.getResource("/sprites/projectile/GasProjectile.png")));
+            PROJECTILES.put("MineProjectile", ImageIO.read(TextureManager.class.getResource("/sprites/projectile/MineProjectile.png")));
 
             /////////////EFFECT/////////////////
             EFFECT.put("BazookaExplosion", ImageIO.read(TextureManager.class.getResource("/sprites/effect/BazookaExplosion.png")));

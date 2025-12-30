@@ -193,7 +193,6 @@ public final class TurnManager {
             } else if (this.turn.teamMaximumShoot()) {
                 this.remainingTimeInMs = Math.min(this.remainingTimeInMs, remainingTimeAfterShootInMs);
             }
-
         }
     }
 
@@ -220,9 +219,8 @@ public final class TurnManager {
      */
     private boolean cleanTurn() {
         for (PhysicsBody body : world.getPhysics().getBodies()) {
-            if (body.getEntity() instanceof Projectile) {
-                //TODO : SPECIFY PROJECTILE HERE, which need to be wait and no
-                return false;
+            if (body.getEntity() instanceof Projectile projectile) {
+                if (projectile.blocksTurnEnd()) return false;
             } else if (body.getEntity() instanceof Worm worm) {
                 this.world.getPhysics().removeModifierFor(body, ToolId.JETPACK);
                 if (!worm.isOnGround()) {
