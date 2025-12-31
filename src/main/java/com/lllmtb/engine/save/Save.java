@@ -212,4 +212,31 @@ public class Save {
         BufferedImage image = maptoBuffered(gameWorld.getMap());
         saveImage(image, stringPath);
     }
+
+    public static void EraseSave(String name) {
+        // On définit le chemin du dossier de sauvegarde
+        Path pathToBeDeleted = Paths.get("src/test/resources/SaveTest/", name);
+
+        try {
+            if (Files.exists(pathToBeDeleted)) {
+                // Files.walk parcourt l'arborescence (fichiers et sous-dossiers)
+                Files.walk(pathToBeDeleted)
+                        // On trie en ordre inverse pour supprimer le contenu avant le dossier parent
+                        .sorted(java.util.Comparator.reverseOrder())
+                        .forEach(path -> {
+                            try {
+                                Files.delete(path);
+                            } catch (IOException e) {
+                                System.err.println("Impossible de supprimer : " + path + " - " + e.getMessage());
+                            }
+                        });
+                System.out.println("Sauvegarde '" + name + "' supprimée avec succès.");
+            } else {
+                System.out.println("La sauvegarde '" + name + "' n'existe pas.");
+            }
+        } catch (IOException e) {
+            System.err.println("Erreur lors de la suppression de la sauvegarde : " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
 }
