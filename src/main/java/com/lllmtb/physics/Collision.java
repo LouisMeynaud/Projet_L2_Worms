@@ -578,4 +578,48 @@ public class Collision {
         }
         return null;
     }
+
+    /**
+     * Checks if a physics body (particularly its lower half) is in damaging terrain (lava, traps).
+     * This method tests multiple points around the body, especially the lower portion,
+     * to detect when only part of the body is in damaging terrain.
+     * @param body the {@link PhysicsBody} to check
+     * @return the {@link Tile} if the body is in damaging terrain, {@code null} otherwise
+     */
+    public Tile inTrapOrLavaWithBody(PhysicsBody body) {
+        Position pos = body.getPos();
+        double height = body.getHeight();
+        double width = body.getWidth();
+
+        // Test the center position
+        Tile tile = inTrapOrLava(pos);
+        if (tile != null) {
+            return tile;
+        }
+
+        // Test multiple points in the lower half of the body to catch partial immersion
+        // This ensures detection even when only the lower portion is in lava
+        for (double offsetY = 0; offsetY < height / 2; offsetY += 0.25) {
+            Position testPos = new Position(pos.getX(), pos.getY() - offsetY);
+            tile = inTrapOrLava(testPos);
+            if (tile != null) {
+                return tile;
+            }
+        }
+
+        // Test left and right sides of the lower portion
+        Position leftPos = new Position(pos.getX() - width / 2, pos.getY() - height / 4);
+        tile = inTrapOrLava(leftPos);
+        if (tile != null) {
+            return tile;
+        }
+
+        Position rightPos = new Position(pos.getX() + width / 2, pos.getY() - height / 4);
+        tile = inTrapOrLava(rightPos);
+        if (tile != null) {
+            return tile;
+        }
+
+        return null;
+    }
 }

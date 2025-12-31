@@ -216,6 +216,7 @@ public class Worm extends Entity {
     /**
      * Adds a status effect to the worm.
      * @param effect the {@link StatusEffect} to add
+     * @return the GameCommand {@code null}
      */
     public GameCommand addStatusEffect(StatusEffect effect) {
         if (effect != null) {
@@ -244,6 +245,15 @@ public class Worm extends Entity {
      */
     public void removeStatusEffect(StatusEffect effect) {
         this.statusEffects.remove(effect);
+    }
+
+    /**
+     * Removes all status effects from the worm.
+     * @return the GameCommand {@code null}
+     */
+    public GameCommand removeAllStatusEffects() {
+        this.statusEffects.clear();
+        return null;
     }
 
     /**

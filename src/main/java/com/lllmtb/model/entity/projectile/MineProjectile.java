@@ -41,7 +41,7 @@ public final class MineProjectile extends Projectile implements ExplosiveProject
         if (entity == null) return List.of();
         List<GameCommand> list = new ArrayList<>();
         handleHit(list, entity, damage);
-        list.add((world -> world.getPhysics().createExplosion(this, RAYON_DEGAT_MAP, RAYON_SOUFFLE, DEGATS, FORCE_SOUFFLE)));
+        list.add((world -> world.getPhysics().createExplosion(this, RAYON_DEGAT_MAP, RAYON_SOUFFLE, DEGATS, FORCE_SOUFFLE, false)));
         list.add(delete());
         return list;
     }

@@ -425,7 +425,7 @@ public class PhysicsEngine {
                 body.setVector(new Vector(newVelX, currentVector.getY()));
             }
             if (body.getEntity() instanceof Worm worm) {
-                Tile tile = collision.inTrapOrLava(body.getPos());
+                Tile tile = collision.inTrapOrLavaWithBody(body);
                 if (tile == Tile.LAVA) {
                     world.queueCommand(worm.damageWorm(Tile.LAVA.getDamage()));
                     world.queueCommand(worm.addStatusEffect(new BurnEffect()));
@@ -465,10 +465,14 @@ public class PhysicsEngine {
      * @param damage           the amount of damage to apply to entities within the blast radius.
      * @param blastForce       the force applied to bodies within the blast radius.
      */
-    public void createExplosion(@NonNull Projectile projectile, int mapDamageRadius, int blastRadius, int damage, double blastForce) {
+    public void createExplosion(@NonNull Projectile projectile, int mapDamageRadius, int blastRadius, int damage, double blastForce, boolean heal) {
         Position position = projectile.getBody().getPos();
-        GameCommand death = Explosion.explosionDamageEffect(position, blastRadius, damage, bodies);
-        if (death != null) world.queueCommand(death);
+        List<GameCommand> death = Explosion.explosionDamageEffect(position, blastRadius, damage, bodies, heal);
+        if (death != null) {
+            for (GameCommand command : death) {
+                world.queueCommand(command);
+            }
+        }
         Explosion.explosionMapEffect(position, mapDamageRadius, collision.getMap());
         Explosion.explosionSuffleEffect(position, blastRadius, blastForce, collision.getMap(), bodies);
         world.getBus().postQueued(new ExplosionEvent(position, blastRadius, ((ExplosiveProjectile) projectile).getExplosionTexture()));

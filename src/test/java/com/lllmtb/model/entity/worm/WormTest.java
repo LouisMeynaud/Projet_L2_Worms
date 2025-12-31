@@ -190,4 +190,16 @@ public class WormTest {
         assertEquals(initialHealth - 9, worm.getStats().getHp());
         assertEquals(2, worm.getStatusEffects().size());
     }
+
+    @Test
+    public void testRemoveAllStatusEffects() {
+        PoisonEffect poison = new PoisonEffect();
+        BurnEffect burn = new BurnEffect();
+        worm.addStatusEffect(poison);
+        worm.addStatusEffect(burn);
+
+        worm.removeAllStatusEffects();
+
+        assertEquals(0, worm.getStatusEffects().size());
+    }
 }
