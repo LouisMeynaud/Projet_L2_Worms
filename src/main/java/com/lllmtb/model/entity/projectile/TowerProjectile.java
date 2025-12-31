@@ -72,7 +72,7 @@ public final class TowerProjectile extends Projectile {
                 Team activeTeam = world.getTurnManager().getTurn().getTeam();
                 if (Objects.equals(activeTeam, this.getOwner().getTeam())) return;
 
-                List<PhysicsBody> activeBodies = activeTeam.getTeamWorms().stream().map(Worm::getBody).toList();
+                List<PhysicsBody> activeBodies = activeTeam.getTeamWorms().stream().filter(Worm::isAlive).map(Worm::getBody).toList();
 
                 Worm target = world.getPhysics().findClosestEnemyFromPosition(this.getBody().getPos(), this.getOwner().getTeam(), this.getOwner(), activeBodies);
                 Position myPos = this.getBody().getPos();
