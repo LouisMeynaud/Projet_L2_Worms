@@ -97,5 +97,17 @@ public class ItemIdTest {
         assertFalse(defaultItem.usesCrosshair(),
                 "Default ItemId implementation should return false");
     }
+
+    @Test
+    public void getMaxChargeTime_Bow() {
+        assertEquals(3000, WeaponId.BOW.getMaxChargeTime());
+    }
+
+    @Test
+    public void testDefaultMaxChargeTime() {
+        ItemId item = new ItemId() {
+        };
+        assertEquals(0, item.getMaxChargeTime());
+    }
 }
 
