@@ -93,10 +93,11 @@ public class SettingsStartPanel extends JPanel {
         int maxJump = gameSettingsPanel.getMaxJumps();
         String gameName = gameSettingsPanel.getGameName();
         GameMode gameMode = gameSettingsPanel.getGameMode();
+        boolean coinCheat = gameSettingsPanel.getCoinCheat();
         if (this.mapSettingPanel.loadMap) {
             String mapFileName = this.mapSettingPanel.panelListeMap.getFichierSelectionne().getName();
             return new GameSettings(gameName, nbEquipes, nomsEquipes, nbVWorms, maxLife, turnDuration, wind, mapFileName,
-                    false, 0, null, maxJump, gameMode, friendlyFire);
+                    false, 0, null, maxJump, gameMode, friendlyFire, coinCheat);
 
 
         } else {
@@ -104,7 +105,7 @@ public class SettingsStartPanel extends JPanel {
             int widthMap = this.mapSettingPanel.generateMapPanel.getWidthMapSlider();
             boolean flightIsland = this.mapSettingPanel.generateMapPanel.getflightIsland();
             return new GameSettings(gameName, nbEquipes, nomsEquipes, nbVWorms, maxLife, turnDuration, wind, null,
-                    flightIsland, widthMap, terrainType, maxJump, gameMode, friendlyFire);
+                    flightIsland, widthMap, terrainType, maxJump, gameMode, friendlyFire, coinCheat);
 
 
         }

@@ -257,7 +257,11 @@ public class GameUIPanel extends JPanel {
         this.timerContainer.setBackground(color);
         String timeString = String.format("%02d:%02d", timeLeft / 60, timeLeft % 60);
         this.timerLabel.setText("tour : " + world.getTurnManager().getNbTurn() + "| team : " + teamName + "| time : " + timeString);
-        this.moneyLabel.setText(this.world.getPlayingTeam().getCredits() + " $");
+        if (this.world.getPlayingTeam().getCredits() == -1) {
+            this.moneyLabel.setText("∞ $");
+        } else {
+            this.moneyLabel.setText(this.world.getPlayingTeam().getCredits() + " $");
+        }
         this.timerLabel.repaint();
         this.moneyLabel.repaint();
     }
@@ -549,7 +553,7 @@ public class GameUIPanel extends JPanel {
             if (element.id instanceof WeaponId) {
                 WeaponId weaponId = (WeaponId) element.id;
                 if (!inventory.isUnlocked(weaponId)) {
-                    boolean canBuy = currentMoney >= element.unlockPrice;
+                    boolean canBuy = currentMoney >= element.unlockPrice || currentMoney == -1;
                     String text = element.unlockPrice + "$";
                     BufferedImage img = TextureManager.WEAPONS.get(weaponId.toString());
 
@@ -568,7 +572,7 @@ public class GameUIPanel extends JPanel {
                 } else {
                     String text = element.ammoPrice + "$ (+" + element.ammoPackSize + ")";
                     BufferedImage imgAmmo = TextureManager.WEAPONS.get("Ammo" + weaponId.toString());
-                    boolean canBuy = currentMoney >= element.ammoPrice;
+                    boolean canBuy = currentMoney >= element.ammoPrice || currentMoney == -1;
 
                     JButton buttonShop = Utilitaire.createShopButton(imgAmmo, text, canBuy);
 
@@ -587,7 +591,7 @@ public class GameUIPanel extends JPanel {
                 ToolId tid = (ToolId) element.id;
                 String text = element.ammoPrice + "$ (+" + element.ammoPackSize + ")";
                 BufferedImage img = TextureManager.TOOLS.get(tid.toString());
-                boolean canBuy = currentMoney >= element.ammoPrice;
+                boolean canBuy = currentMoney >= element.ammoPrice || currentMoney == -1;
 
                 JButton btn = Utilitaire.createShopButton(img, text, canBuy);
 

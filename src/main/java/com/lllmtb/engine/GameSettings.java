@@ -18,6 +18,7 @@ public final class GameSettings {
     public final int maxHp;
     public GameMode gameMode;
     public final boolean friendlyfire;
+    public final boolean coinCheat;
 
 
     /**
@@ -33,11 +34,14 @@ public final class GameSettings {
      * @param maxJump        Maximum jump height for worms
      * @param gameName       Name of the game session
      * @param friendlyfire   Boolean if friendly fire is activated
+     * @param maxHp         Maximum health points for worms
+     * @param gameMode      Game mode selected
+     * @param coinCheat     If coin cheat is activated
      */
 
 
     public GameSettings(String gameName, int nbTeams, String[] teamNames, int nbWorms, int maxHp, long turnDuration, boolean hasWind, String mapFileName,
-        boolean floatingIsland, int widthMap, LandScape terrainType, int maxJump, GameMode gameMode, boolean friendlyfire) {
+        boolean floatingIsland, int widthMap, LandScape terrainType, int maxJump, GameMode gameMode, boolean friendlyfire, boolean coinCheat) {
 
 
         this.nbTeams = nbTeams;
@@ -54,6 +58,7 @@ public final class GameSettings {
         this.maxHp = maxHp;
         this.gameMode = gameMode;
         this.friendlyfire = friendlyfire;
+        this.coinCheat = coinCheat;
 
     }
 }

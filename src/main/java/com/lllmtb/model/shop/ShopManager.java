@@ -52,7 +52,7 @@ public class ShopManager {
                 break;
             }
         }
-        if (team.getCredits() >= itemBuy.unlockPrice) {
+        if (team.getCredits() >= itemBuy.unlockPrice || team.getCredits() == -1) {
                 team.removeCredits(itemBuy.unlockPrice);
                 team.unlockWeapon((WeaponId) id);
                 Logger.logger.info("Achat arme reussie : " + itemBuy.name);
@@ -75,7 +75,7 @@ public class ShopManager {
                 return;
             }
         }
-        if (team.getCredits() >= itemBuy.ammoPrice) {
+        if (team.getCredits() >= itemBuy.ammoPrice || team.getCredits() == -1) {
             team.removeCredits(itemBuy.ammoPrice);
 
             if (id instanceof WeaponId) {

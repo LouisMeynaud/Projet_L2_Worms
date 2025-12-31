@@ -22,7 +22,7 @@ public class InventoryTest {
     @BeforeEach
     public void setUp() {
         testPosition = new Position(0, 0);
-        testTeam = new Team("TestTeam", 1, new Position[]{testPosition});
+        testTeam = new Team("TestTeam", 1, new Position[]{testPosition}, 0);
         testWorm = testTeam.getTeamWorms().get(0);
         inventory = new Inventory();
     }

@@ -45,7 +45,7 @@ public class CollisionTest {
         Position posW1 = new Position(0, 14);
         Position posW2 = new Position(14, 14);
         Position[] positions = {posW1, posW2};
-        team = new Team("Jeff team", 2, positions);
+        team = new Team("Jeff team", 2, positions,0);
         worm1 = new Worm("Jeff", team);
         worm2 = new Worm("José", team);
         team.addWorm(worm1);
@@ -282,7 +282,7 @@ public class CollisionTest {
     void slide() {
         pBWorm1.setPos(new Position(7, 10));
         pBWorm1.setVector(new Vector(5, -2));
-        GameSettings settings = new GameSettings("blabla", 1, new String[]{}, 1,100, 10, true, "mapTest", false,370, LandScape.HILLY,2,GameMode.NORMAL, true);
+        GameSettings settings = new GameSettings("blabla", 1, new String[]{}, 1,100, 10, true, "mapTest", false,370, LandScape.HILLY,2,GameMode.NORMAL, true,false);
         EventBus eventBus = new EventBus();
         GameWorld gw = new GameWorld(settings, eventBus);
         Position posFinal = new Position(12, 8);

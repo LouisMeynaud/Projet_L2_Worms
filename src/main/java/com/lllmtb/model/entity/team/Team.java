@@ -102,8 +102,9 @@ public class Team {
      * @param numberOfWorms number of worms in the team
      * @param inventory     the inventory assigned to the team
      * @param spawn         the spawn position where the worms will be placed
+     * @param credits       initial amount of credits for the team
      */
-    private Team(@NonNull String name, int numberOfWorms, @NonNull Inventory inventory, @NonNull Position[] spawn) {
+    private Team(@NonNull String name, int numberOfWorms, @NonNull Inventory inventory, @NonNull Position[] spawn, int credits) {
         this.teamColor = Team.chooseColor();
         this.inventory = Objects.requireNonNull(inventory);
         this.name = Objects.requireNonNull(name);
@@ -112,6 +113,7 @@ public class Team {
         this.setUpWorms(numberOfWorms, spawn);
         this.currentWorm = this.worms.get(0);
         this.selectedItem = null;
+        this.credits = credits;
     }
 
     /**
@@ -120,8 +122,8 @@ public class Team {
      * @param numberOfWorms number of worms in the team
      * @param spawn         the spawn position where the worms will be placed
      */
-    public Team(@NonNull String teamName, int numberOfWorms, @NonNull Position[] spawn) {
-        this(teamName, numberOfWorms, new Inventory(), spawn);
+    public Team(@NonNull String teamName, int numberOfWorms, @NonNull Position[] spawn, int credits) {
+        this(teamName, numberOfWorms, new Inventory(), spawn, credits);
     }
 
     /**
@@ -383,13 +385,17 @@ public class Team {
     }
 
     public void addCredits(int amount) {
-        if (amount > 0) {
+        if (amount > 0 && credits != -1) {
             this.credits += amount;
             Logger.logger.info("$$$ [TEAM " + this.name + "] Gain de " + amount + " pieces. Total: " + this.credits);
         }
     }
 
     public void removeCredits(int amount) {
+        if(credits == -1) {
+            return;
+        }
+        
         if (amount > 0 && credits >= amount) {
             this.credits -= amount;
             Logger.logger.info("$$$ [TEAM " + this.name + "] achat/perte de " + amount + " pieces. Total: " + this.credits);
