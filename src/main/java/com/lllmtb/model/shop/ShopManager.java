@@ -29,6 +29,7 @@ public class ShopManager {
         items.add(new ShopElement(ToolId.CALLSTRIKE, "CALLSTRIKE", 150, 300, 1));
         items.add(new ShopElement(ToolId.PARACHUTE, "PARACHUTE", 50, 20, 1));
         items.add(new ShopElement(ToolId.MINE, "MINE", 100, 100, 1));
+        items.add(new ShopElement(ToolId.MEDKIT, "MEDKIT", 75, 75, 1));
     }
 
     public ArrayList<ShopElement> getShopElements() {

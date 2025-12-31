@@ -154,6 +154,7 @@ public class GameWorldScreen implements Runnable {
             world.getPlayingTeam().getInventory().tools.addAmmo(ToolId.PARACHUTE, 5);
             world.getPlayingTeam().getInventory().tools.addAmmo(ToolId.JETPACK, 2);
             world.getPlayingTeam().getInventory().tools.addAmmo(ToolId.CALLSTRIKE, 1);
+            world.getPlayingTeam().getInventory().tools.addAmmo(ToolId.MEDKIT, 1);
             shootMode = false;
             inventoryOpen = false;
         });
