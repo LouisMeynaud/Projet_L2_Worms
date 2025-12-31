@@ -235,7 +235,8 @@ public class GameUIPanel extends JPanel {
 
 
         String teamName = this.world.getPlayingTeam().name;
-        this.timerLabel.setText("tour : " + world.getTurnManager().getNbTurn() + ", team : " + teamName + " left shoot: "  + (Turn.limitshoot - currentTurn.getTeam().getShootCount()) +  " , time : " + timeString);
+        this.timerLabel.setText("tour : " + world.getTurnManager().getNbTurn() + ", team : " + teamName + " left shoot: "
+                + (Turn.limitshoot - currentTurn.getTeam().getShootCount()) +  " , time : " + timeString);
         this.moneyLabel.setText(this.world.getPlayingTeam().getCredits() + " $");
         this.timerLabel.repaint();
         this.moneyLabel.repaint();

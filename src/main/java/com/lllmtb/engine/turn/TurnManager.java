@@ -7,6 +7,7 @@ import com.lllmtb.engine.GameWorld;
 import com.lllmtb.engine.logger.Logger;
 import com.lllmtb.events.EventListener;
 import com.lllmtb.events.game.CoinCollisionEvent;
+import com.lllmtb.events.game.DropCollisionEvent;
 import com.lllmtb.events.game.MapUpdateEvent;
 import com.lllmtb.events.game.ToolSelectedEvent;
 import com.lllmtb.events.game.WeaponSelectedEvent;
@@ -21,11 +22,14 @@ import com.lllmtb.events.turn.TurnStartEvent;
 import com.lllmtb.events.turn.TurnStopEvent;
 import com.lllmtb.events.turn.WormPlayable;
 import com.lllmtb.model.entity.Coin;
+import com.lllmtb.model.entity.Drop;
 import com.lllmtb.model.entity.projectile.Projectile;
 import com.lllmtb.model.entity.team.Team;
 import com.lllmtb.model.entity.worm.Worm;
+import com.lllmtb.model.item.ItemId;
 import com.lllmtb.model.item.UseParams;
 import com.lllmtb.model.item.tool.ToolId;
+import com.lllmtb.model.item.weapon.WeaponId;
 import com.lllmtb.physics.Move;
 import static com.lllmtb.physics.Move.move;
 import com.lllmtb.physics.PhysicsBody;
@@ -135,6 +139,7 @@ public final class TurnManager {
         team.addCredits(passiveIncome);
         Logger.logger.info("l'equipe : " + team.name + "gagne :" + passiveIncome + "pour le debut du tour");
         spawnCoins();
+        spawnDrops();
 
 
         this.turnFinish = false;
@@ -172,6 +177,42 @@ public final class TurnManager {
             }
         }
     }
+
+    /**
+     * Spawn {@link Drop} on the map at random position which can be collect.
+     */
+    private void spawnDrops() {
+        Random random = new Random();
+        int dropToSpawn = random.nextInt(2);
+        int mapWidth = world.getMap().getWidth();
+        int mapHeight = world.getMap().getHeight();
+
+        for (int i = 0; i < dropToSpawn; i++) {
+            boolean placed = false;
+            int x = random.nextInt(mapWidth);
+            for (int y = mapHeight - 1; y > 0; y--) {
+                if (world.getMap().isSolid(new Position(x, y))) {
+                    int dropY = y + 1;
+                    ItemId itemId = null;
+                    if (random.nextInt(2) == 0) {
+                        //Weapon Drop
+                        WeaponId[] weaponIdValues = WeaponId.values();
+                        itemId = weaponIdValues[random.nextInt(weaponIdValues.length - 1)];
+                    } else {
+                        // Tool Drop
+                        ToolId[] toolIdValues = ToolId.values();
+                        itemId = toolIdValues[random.nextInt(toolIdValues.length - 1)];
+                    }
+                    Logger.logger.debug(" Drop spawn with item : {}", itemId);
+                    Drop drop = new Drop(new Position(x + 0.25, dropY), itemId);
+                    world.getPhysics().getBodies().add(drop.getBody());
+                    placed = true;
+                    break;
+                }
+            }
+        }
+    }
+
 
     /**
      * Update the current Turn and checks if it finished.
@@ -293,6 +334,21 @@ public final class TurnManager {
             });
         };
 
+        EventListener<DropCollisionEvent> dropListener = event -> {
+            world.queueCommand(w -> {
+                if (event.drop.itemIdToUnlock instanceof ToolId toolID) {
+                    event.team.addAmmo(toolID, event.ammoAmount);
+                    Logger.logger.info("Drop ramasse, outil obtenu : " + event.drop.itemIdToUnlock + ", nombre d'utilisation : " + event.ammoAmount + " !");
+                } else if (event.drop.itemIdToUnlock instanceof WeaponId weaponID) {
+                    event.team.unlockWeapon(weaponID);
+                    event.team.addAmmo(weaponID, event.ammoAmount);
+                    Logger.logger.info("Drop ramasse, arme obtenu : " + event.drop.itemIdToUnlock + ", nombre de munitions : " + event.ammoAmount + " !");
+                }
+                world.getPhysics().remove(event.drop.getBody());
+            });
+        };
+
+
         EventListener<ChangeWormsEvent> changeWormDuringTurn = event -> {
             Team currentTeam = turn.getTeam();
             if (currentTeam.getMaxChangeWormTeam() <= 0) {
@@ -344,6 +400,7 @@ public final class TurnManager {
         world.getBus().subscribe(UseInputEvent.class, useInputEventListener);
         world.getBus().subscribe(TurnFinishEvent.class, turnFinishListener);
         world.getBus().subscribe(CoinCollisionEvent.class, coinListener);
+        world.getBus().subscribe(DropCollisionEvent.class, dropListener);
         world.getBus().subscribe(ChangeWormsEvent.class, changeWormDuringTurn);
     }
 }
