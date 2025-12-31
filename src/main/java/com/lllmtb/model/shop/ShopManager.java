@@ -36,6 +36,7 @@ public class ShopManager {
         items.add(new ShopElement(ToolId.CATCONCRETE, "CATCONCRETE", 150, 90, 1));
         items.add(new ShopElement(ToolId.TOWER, "TOWER", 150, 150, 1));
         items.add(new ShopElement(ToolId.MINE, "MINE", 100, 100, 1));
+        items.add(new ShopElement(ToolId.MEDKIT, "MEDKIT", 75, 75, 1));
 
     }
 

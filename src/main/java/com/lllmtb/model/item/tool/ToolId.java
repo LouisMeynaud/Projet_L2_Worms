@@ -5,10 +5,12 @@ import com.lllmtb.model.item.ItemId;
 public enum ToolId implements ItemId {
     PARACHUTE,
     JETPACK,
+
     CALLSTRIKE(true, "blabla", 0),
     CATCONCRETE(true, "blablabis", 0),
     TOWER(false, "tower info", 3000),
     MINE(false, "mine info", 3000),
+    MEDKIT,
     NONE;
 
     private final boolean usesCrosshair;
