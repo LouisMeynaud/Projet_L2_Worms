@@ -7,6 +7,7 @@ public enum ToolId implements ItemId {
     JETPACK,
     CALLSTRIKE(true),
     MINE,
+    MEDKIT,
     NONE;
 
     private final boolean usesCrosshair;
