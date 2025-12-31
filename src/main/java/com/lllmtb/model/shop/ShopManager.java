@@ -80,7 +80,7 @@ public class ShopManager {
 
             if (id instanceof WeaponId) {
                 team.addAmmo((WeaponId) id, itemBuy.ammoPackSize);
-            } else if (id instanceof ToolId) {
+            } else {
                 team.addAmmo((ToolId) id, itemBuy.ammoPackSize);
             }
 

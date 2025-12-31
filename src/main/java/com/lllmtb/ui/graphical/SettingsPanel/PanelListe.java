@@ -97,7 +97,7 @@ public class PanelListe extends JPanel {
         try {
             String cheminInfo = "/map/" + nomDossier + "/" + NOM_FICHIER_INFO;
             InputStream isText = getClass().getResourceAsStream(cheminInfo);
-            
+
             if (isText != null) {
                 BufferedReader reader = new BufferedReader(new InputStreamReader(isText));
                 String ligne1 = reader.readLine();
@@ -111,7 +111,7 @@ public class PanelListe extends JPanel {
 
             String cheminImage = "/map/" + nomDossier + "/" + NOM_FICHIER_IMAGE;
             URL imageUrl = getClass().getResource(cheminImage);
-            
+
             if (imageUrl != null) {
                 Image imgOriginale = ImageIO.read(imageUrl);
                 Image imgRedimensionnee = imgOriginale.getScaledInstance(100, 100, Image.SCALE_FAST);

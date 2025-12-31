@@ -38,6 +38,6 @@ public class MapLoader {
     }
 
     public static String[] getListeNomsMaps() {
-        return new String[] { "Camembert", "Emmental", "Gorgonzola", "Roquefort" };
+        return new String[] {"Camembert", "Emmental", "Gorgonzola", "Roquefort" };
     }
 }

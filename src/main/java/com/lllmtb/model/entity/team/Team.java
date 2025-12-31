@@ -392,10 +392,10 @@ public class Team {
     }
 
     public void removeCredits(int amount) {
-        if(credits == -1) {
+        if (credits == -1) {
             return;
         }
-        
+
         if (amount > 0 && credits >= amount) {
             this.credits -= amount;
             Logger.logger.info("$$$ [TEAM " + this.name + "] achat/perte de " + amount + " pieces. Total: " + this.credits);
