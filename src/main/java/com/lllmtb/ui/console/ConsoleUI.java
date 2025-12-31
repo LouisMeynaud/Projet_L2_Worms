@@ -203,14 +203,14 @@ public class ConsoleUI implements UI {
         ConsolePrompt prompt = new ConsolePrompt(terminal);
         PromptBuilder builder = prompt.getPromptBuilder();
 
-        File[] dossiers = MapLoader.getListeDossiersMaps();
+        String[] dossiers = MapLoader.getListeNomsMaps();
 
         ListPromptBuilder b = builder.createListPrompt()
                 .name("mapFileName")
                 .message("  Select a map to load");
 
-        for (File d : dossiers) {
-            b.newItem(d.getName()).text(d.getName()).add();
+        for (String dossier : dossiers) {
+            b.newItem(dossier).text(dossier).add();
         }
         b.addPrompt();
 

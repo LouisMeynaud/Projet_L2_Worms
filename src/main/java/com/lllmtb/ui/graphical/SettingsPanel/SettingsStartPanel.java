@@ -95,7 +95,7 @@ public class SettingsStartPanel extends JPanel {
         GameMode gameMode = gameSettingsPanel.getGameMode();
         boolean coinCheat = gameSettingsPanel.getCoinCheat();
         if (this.mapSettingPanel.loadMap) {
-            String mapFileName = this.mapSettingPanel.panelListeMap.getFichierSelectionne().getName();
+            String mapFileName = this.mapSettingPanel.panelListeMap.getSelectedMapName();
             return new GameSettings(gameName, nbEquipes, nomsEquipes, nbVWorms, maxLife, turnDuration, wind, mapFileName,
                     false, 0, null, maxJump, gameMode, friendlyFire, coinCheat);
 

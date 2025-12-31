@@ -1,6 +1,5 @@
 package com.lllmtb.terrain.map;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 
@@ -52,54 +51,30 @@ public class MapLoaderTest {
     }
 
     @Test
-    public void testGetListeDossiersMaps_Fonctionne() {
-        File dossierRacine = new File("src/main/resources/map");
-        if (!dossierRacine.exists()) {
-            dossierRacine.mkdirs();
-        }
-        File dossierTest = new File(dossierRacine, "MapTestUnit");
-        dossierTest.mkdir(); 
+    public void testGetListeDossiersMaps() {
+        String[] resultats = MapLoader.getListeNomsMaps();
 
-        try {
-            File[] resultats = MapLoader.getListeDossiersMaps();
-
-            assertNotNull(resultats, "Ne doit pas retourner null");
-            
-            boolean aTrouveMonDossier = false;
-            for (File f : resultats) {
-                if (f.getName().equals("MapTestUnit")) {
-                    aTrouveMonDossier = true;
-                    break;
-                }
+        assertNotNull(resultats, "Ne doit pas retourner null");
+        
+        boolean trouver = false;
+        for (String nom : resultats) {
+            if (nom.equals("Camembert")) {
+                trouver = true;
+                break;
             }
-            assertTrue(aTrouveMonDossier, "La méthode aurait dû trouver le dossier 'MapTestUnit'");
-
-        } finally {
-            dossierTest.delete();
         }
+        assertTrue(trouver, "La méthode aurait dû trouver le dossier 'Camembert'");
     }
 
     @Test
     void testGetListeDossiers_AvecDossierInexistant() {
-        File dossierFantome = new File("src/main/resources/DossierQuiNExistePasDuTout");
-        
-        
-        File[] resultats = MapLoader.getListeDossiers(dossierFantome);
-        
-        assertEquals(0, resultats.length, "Doit renvoyer vide si le dossier n'existe pas");
+        Map resultat = MapLoader.loadMatrix("dossierInexistant");
+        assertEquals(null, resultat, "Doit renvoyer null si le dossier n'existe pas");
     }
 
     @Test
     void testGetListeDossiers_AvecUnFichier() throws IOException {
-        
-        File fichierTemp = File.createTempFile("test", ".txt");
-        fichierTemp.deleteOnExit();
-
-       
-        File[] resultats = MapLoader.getListeDossiers(fichierTemp);
-        
-        assertEquals(0, resultats.length, "Doit renvoyer vide si on donne un fichier au lieu d'un dossier");
+        Map resultat = MapLoader.loadMatrix("test.txt");
+        assertEquals(null, resultat, "Doit renvoyer null si on donne un fichier au lieu d'un dossier");
     }
-
-
 }
