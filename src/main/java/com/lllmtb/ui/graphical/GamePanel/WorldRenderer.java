@@ -287,7 +287,7 @@ public class WorldRenderer {
         double hauteurPx = bounds[3];
 
 
-        BufferedImage texture = TextureManager.UI.get("Coin"); //TODO : Change texture of drop
+        BufferedImage texture = TextureManager.UI.get("Drop");
         AffineTransform tx = new AffineTransform();
         tx.translate(xEcran, yEcran);
 
