@@ -51,6 +51,11 @@ public class SoundPlayer {
 
         }
     }
+
+    public static Clip getCurrentMusic() {
+        return currentMusic;
+    }
+
     public static int getMusiqueVolume() {
         return musiqueVolume;
     }

@@ -12,6 +12,7 @@ import com.lllmtb.events.EventBus;
 import com.lllmtb.events.game.StartGameEvent;
 import com.lllmtb.events.ui.graphical.ScreenHomeEvent;
 import com.lllmtb.events.ui.graphical.ScreenLoadGame;
+import com.lllmtb.events.ui.graphical.ScreenMusicSettingsEvent;
 import com.lllmtb.events.ui.graphical.ScreenNewOrLoadEvent;
 import com.lllmtb.events.ui.graphical.ScreenSettingsGame;
 import com.lllmtb.ui.UI;
@@ -65,6 +66,7 @@ public class GraphicalUI implements UI {
 
         HomeScreenPanel homeScreen = new HomeScreenPanel(this.eventBus);
         SettingsStartPanel startSettingScreen = new SettingsStartPanel(this.eventBus);
+        MusicSettingsScreenPanel musicSettingsScreen = new MusicSettingsScreenPanel(this.eventBus);
         GameScreen gamePanel = new GameScreen(eventbus);
         NewOrLoadPanel newOrLoadPanel = new NewOrLoadPanel(eventbus);
         LoadGamePanel loadGamePanel = new LoadGamePanel(eventbus);
@@ -73,6 +75,7 @@ public class GraphicalUI implements UI {
         mainPanel.add(gamePanel, "gamePanel"); // la page de jeu
         mainPanel.add(newOrLoadPanel, "newOrLoadPanel"); //The page allowing you to choose whether you want to load or create a game
         mainPanel.add(loadGamePanel, "loadGamePanel");
+        mainPanel.add(musicSettingsScreen, "musicSettingsScreen"); // the page containing the music settings
         windows.add(mainPanel); // the page containing the others, (the card layout).
 
 
@@ -109,6 +112,12 @@ public class GraphicalUI implements UI {
         eventBus.subscribe(ScreenLoadGame.class, event -> {
             cardLayout.show(mainPanel, "loadGamePanel");
             Logger.logger.debug("Show loadGamePanel");
+
+        });
+
+        eventBus.subscribe(ScreenMusicSettingsEvent.class, event -> {
+            cardLayout.show(mainPanel, "musicSettingsScreen");
+            Logger.logger.debug("Show musicSettingsScreen");
 
         });
     }

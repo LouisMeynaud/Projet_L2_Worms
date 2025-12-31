@@ -322,7 +322,7 @@ public class GameWorldPanel extends JPanel {
             this.renderer = new WorldRenderer(this, this.world);
             subscribeToWorldEvents();
             this.initialFitDone = false;
-            SoundPlayer.playMusique("MusiqueGame1");
+            if (SoundPlayer.getCurrentMusic() == null) SoundPlayer.playMusique("MusiqueGame1");
             repaint();
         });
 
