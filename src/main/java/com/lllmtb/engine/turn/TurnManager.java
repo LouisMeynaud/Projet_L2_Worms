@@ -20,6 +20,7 @@ import com.lllmtb.events.turn.TurnSkipEvent;
 import com.lllmtb.events.turn.TurnStartEvent;
 import com.lllmtb.events.turn.TurnStopEvent;
 import com.lllmtb.events.turn.WormPlayable;
+import com.lllmtb.events.ui.graphical.ScreenEndGameEvent;
 import com.lllmtb.model.entity.Coin;
 import com.lllmtb.model.entity.projectile.Projectile;
 import com.lllmtb.model.entity.team.Team;
@@ -39,6 +40,7 @@ public final class TurnManager {
     private long remainingTimeInMs;
     private int nbTurn;
     private boolean turnFinish = false;
+    public static Team winner;
 
     public TurnManager(GameWorld world, long turnDuration) {
         this.world = world;
@@ -180,9 +182,9 @@ public final class TurnManager {
         };
 
         EventListener<TurnFinishEvent> turnFinishListener = event -> {
-            //TODO : Close the game properly
             world.stop();
-
+            this.winner = this.getTurn().getTeam();
+            new ScreenEndGameEvent();
         };
 
         EventListener<WeaponSelectedEvent> weaponSelectedEventEventListener = event -> {

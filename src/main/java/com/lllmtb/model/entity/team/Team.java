@@ -125,6 +125,14 @@ public class Team {
     }
 
     /**
+         * Returns the name associated with the team.
+         * @return the team's name
+         */
+    public String getName() {
+        return this.name;
+    }
+
+    /**
      * Returns the inventory associated with the team.
      * @return the team's inventory
      */
