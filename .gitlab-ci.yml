@@ -10,6 +10,9 @@ variables:
   MAVEN_CLI_OPTS: "-B -ntp -e -Dmaven.repo.local=.m2/repository" # non-interactive, no progress bars, show errors
   MAVEN_OPTS: "-Dhttps.proxyHost=194.254.199.96 -Dhttps.proxyPort=3128 -Djava.awt.headless=true"  # proxy + disable gui
 
+before_script:
+  - if [ "$USER" = "leo" ]; then export MAVEN_OPTS="-Djava.awt.headless=true"; fi
+
 #Validate - checkstyle before compile
 validate:
   stage: validate
