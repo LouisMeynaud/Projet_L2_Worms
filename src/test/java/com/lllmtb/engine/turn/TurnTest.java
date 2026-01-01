@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class TurnTest {
 
     private Turn turn;
-    private Team team = new Team("TestTeam", 1, new Position[]{new Position(0, 0)});
+    private Team team = new Team("TestTeam", 1, new Position[]{new Position(0, 0)},0);
 
     @BeforeEach
     public void setUp(){
@@ -26,7 +26,7 @@ public class TurnTest {
 
     @Test
     public void testContructorCurrentWorm(){
-        Team team2 = new Team("TestTeam", 2, new Position[]{new Position(0, 0), new Position(0,0)});
+        Team team2 = new Team("TestTeam", 2, new Position[]{new Position(0, 0), new Position(0,0)},0);
         Worm worm1 = team2.getCurrentWorm();
         worm1.damageWorm(100);
         Turn turn2 = new Turn(team2);
@@ -40,7 +40,7 @@ public class TurnTest {
 
     @Test
     public void testEnd(){
-        Team team2 = new Team("TestTeam", 2, new Position[]{new Position(0, 0), new Position(0,0)});
+        Team team2 = new Team("TestTeam", 2, new Position[]{new Position(0, 0), new Position(0,0)},0);
         Turn turn2 = new Turn(team2);
         Worm worm1 = turn2.getWormPlayable();
         turn2.end();
@@ -89,7 +89,7 @@ public class TurnTest {
 
     @Test
     public void testNextWormPlayable(){
-        Team team = new Team("TestTeam", 1, new Position[]{new Position(0, 0)}) ;
+        Team team = new Team("TestTeam", 1, new Position[]{new Position(0, 0)},0) ;
         Worm worm1 = team.getIndexWorm(0);
         Worm worm2 = new Worm("Worm2", team);
         Turn turn = new Turn(team);

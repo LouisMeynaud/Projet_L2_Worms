@@ -1,6 +1,6 @@
 package com.lllmtb.ui.console;
 
-import java.io.File;
+
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Map;
@@ -89,6 +89,7 @@ public class ConsoleUI implements UI {
             boolean hasWind = promptHasWind();
 
             boolean friendlyfire = promptFriendlyFire();
+            boolean cheat = promptCheat();
 
             // Print a recap of the configured settings
             terminal.writer().println();
@@ -104,7 +105,7 @@ public class ConsoleUI implements UI {
             terminal.writer().println("   Wind: " + (hasWind ? "ON" : "OFF"));
             terminal.writer().flush();
             return new GameSettings("blabla", nbTeams, teamNames, nbWorms, maxHealth, turnDuration, hasWind, mapFileName,
-                    floatingIsland, size, landscape, 2, GameMode.NORMAL, friendlyfire);
+                    floatingIsland, size, landscape, 2, GameMode.NORMAL, friendlyfire, cheat);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -202,14 +203,14 @@ public class ConsoleUI implements UI {
         ConsolePrompt prompt = new ConsolePrompt(terminal);
         PromptBuilder builder = prompt.getPromptBuilder();
 
-        File[] dossiers = MapLoader.getListeDossiersMaps();
+        String[] dossiers = MapLoader.getListeNomsMaps();
 
         ListPromptBuilder b = builder.createListPrompt()
                 .name("mapFileName")
                 .message("  Select a map to load");
 
-        for (File d : dossiers) {
-            b.newItem(d.getName()).text(d.getName()).add();
+        for (String dossier : dossiers) {
+            b.newItem(dossier).text(dossier).add();
         }
         b.addPrompt();
 
@@ -282,6 +283,19 @@ public class ConsoleUI implements UI {
         Map<String, PromptResultItemIF> result = prompt.prompt(builder.build());
         return result.get("friendlyFire").getResult().equals(ConfirmChoice.ConfirmationValue.YES.toString());
     }
+
+    private boolean promptCheat() throws IOException {
+        ConsolePrompt prompt = new ConsolePrompt(terminal);
+        PromptBuilder builder = prompt.getPromptBuilder();
+        builder.createConfirmPromp()
+                .name("cheat")
+                .message("Do you want to enable cheat mode?")
+                .defaultValue(ConfirmChoice.ConfirmationValue.NO)
+                .addPrompt();
+        Map<String, PromptResultItemIF> result = prompt.prompt(builder.build());
+        return result.get("cheat").getResult().equals(ConfirmChoice.ConfirmationValue.YES.toString());
+    }
+
 
     public boolean readyToPlay() {
 

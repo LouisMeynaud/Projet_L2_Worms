@@ -23,8 +23,8 @@ public final class MineProjectile extends Projectile implements ExplosiveProject
     private static final String TEXTURE_KEY = "MineExplosion";
 
     public MineProjectile(@NonNull UseParams params) {
-        super(params, force, mass, height, width);
-    }
+        super(params, force * Math.min(params.duration / 100, 3) / 2, mass, height, width);
+        }
 
     @Override
     public CollisionType getCollisionType() {

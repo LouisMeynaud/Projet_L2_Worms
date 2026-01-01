@@ -19,6 +19,11 @@ public class SaveMap {
     // }
     // }
 
+    /**
+     * Converts a Map object to its string representation for saving.
+     * @param m The Map object to convert.
+     * @return A string representation of the map.
+     */
     public static String mapToString(Map m) {
         Tile[][] mMapMatrix = m.getMapMatrix();
         StringBuilder mapString = new StringBuilder();
@@ -32,7 +37,10 @@ public class SaveMap {
         return mapString.toString();
     }
 
-    // methode demandant le fichie d'enregistrement de save quand une map est crée
+    /**
+     * Generates a new map save file name.
+     * @return A string representing the new map save file name.
+     */
     public static String newMapSaveFile() {
         // boolean existe = false;
         // String files;

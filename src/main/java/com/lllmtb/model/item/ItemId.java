@@ -8,4 +8,11 @@ public interface ItemId {
     default boolean usesCrosshair() {
         return false;
     }
+    /**
+     *
+     * @return the maximun tile to charge the weapon/tools
+     */
+    default int getMaxChargeTime() {
+        return 0;
+    }
 }

@@ -148,7 +148,7 @@ public final class TurnManager {
         world.getBus().postQueued(new WormPlayable(turn.getWormPlayable()));
         if (this.nbTurn > world.getTeams().size() * 4) {
             Logger.logger.info("Level of the water : {}", world.getMap().getHeightWater());
-            if (world.getMap().risingWater()) {
+            if (world.getMap().risingWater(1)) {
                 world.getBus().postQueued(new MapUpdateEvent());
             }
         }
@@ -164,14 +164,12 @@ public final class TurnManager {
         int mapHeight = world.getMap().getHeight();
 
         for (int i = 0; i < coinsToSpawn; i++) {
-            boolean placed = false;
             int x = random.nextInt(mapWidth);
             for (int y = mapHeight - 1; y > 0; y--) {
                 if (world.getMap().isSolid(new Position(x, y))) {
                     int coinY = y + 1;
                     Coin coin = new Coin(new Position(x + 0.25, coinY), 50);
                     world.getPhysics().getBodies().add(coin.getBody());
-                    placed = true;
                     break;
                 }
             }
@@ -188,7 +186,6 @@ public final class TurnManager {
         int mapHeight = world.getMap().getHeight();
 
         for (int i = 0; i < dropToSpawn; i++) {
-            boolean placed = false;
             int x = random.nextInt(mapWidth);
             int y = mapHeight - 1;
 
@@ -208,7 +205,6 @@ public final class TurnManager {
             Logger.logger.info(" Drop spawn with item : {}", itemId);
             Drop drop = new Drop(new Position(x + 0.25, y), itemId);
             world.queueCommands(drop.addModifier());
-            placed = true;
             }
     }
 
@@ -373,18 +369,21 @@ public final class TurnManager {
             double deltaY = (mouseY - centerY);
             double angle = Math.atan2(deltaY, deltaX);
 
-            double dist = 1.5;
+            double dist = 1;
+            if (turn.getTeam().getHand() == WeaponId.GASGUN) {
+                dist =  6;
+            }
             double spawnX = centerX + (Math.cos(angle) * dist);
             double spawnY = centerY + (Math.sin(angle) * dist);
 
             Position spawnBullet = new Position(spawnX, spawnY);
 
-            if (turn.getTeam().getHand() == ToolId.CALLSTRIKE) {
+            if (turn.getTeam().getHand().usesCrosshair()) {
                 spawnBullet = new Position(mouseX, world.getMap().getHeight() - 1);
                 angle = -Math.PI / 2;
             }
 
-            UseParams params = new UseParams(angle, spawnBullet, Objects.requireNonNull(turn.getWormPlayable()));
+            UseParams params = new UseParams(angle, spawnBullet, Objects.requireNonNull(turn.getWormPlayable()), event.time());
 
             world.queueCommands(turn.getTeam().use(params));
         };

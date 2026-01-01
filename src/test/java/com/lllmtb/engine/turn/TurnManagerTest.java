@@ -47,7 +47,7 @@ public class TurnManagerTest {
 
     @BeforeEach
     public void setUp(){
-        GameSettings settings = new GameSettings("blabla", 2, new String[]{"TeamTest1", "TeamTest2"}, 1, 100, 10, false, null, false, 370, LandScape.HILLY, 2,GameMode.NORMAL, true);
+        GameSettings settings = new GameSettings("blabla", 2, new String[]{"TeamTest1", "TeamTest2"}, 1, 100, 10, false, null, false, 370, LandScape.HILLY, 2,GameMode.NORMAL, true, false);
         this.eb = new EventBus();
         this.gw = new GameWorld(settings, eb);
         gw.start();
@@ -74,7 +74,7 @@ public class TurnManagerTest {
 
     @Test
     void testGetTurn(){
-        Team t = new Team("Test", 1, new Position[]{new Position(1, 2)});
+        Team t = new Team("Test", 1, new Position[]{new Position(1, 2)}, 0);
         turnManager.startTurn(t);
         assertNotNull(turnManager.getTurn());
         assertSame(t, turnManager.getTurn().getTeam());
@@ -82,7 +82,7 @@ public class TurnManagerTest {
 
     @Test
     void testGetNbTurn(){
-        Team t = new Team("Test", 1, new Position[]{new Position(1, 2)});
+        Team t = new Team("Test", 1, new Position[]{new Position(1, 2)},0);
         turnManager.endTurn();
         try {
             Thread.sleep(200);
@@ -92,7 +92,7 @@ public class TurnManagerTest {
 
     @Test
     void cleanTurnProjectile(){
-        Worm worm = new Worm("Test", new Team("T", 1, new Position[]{new Position(1,1)}));
+        Worm worm = new Worm("Test", new Team("T", 1, new Position[]{new Position(1,1)}, 0));
         new BulletProjectile(new UseParams(worm));
         gw.getBus().postQueued(new TurnStopEvent());
         assertEquals(1,turnManager.getNbTurn());
@@ -132,7 +132,7 @@ public class TurnManagerTest {
 
     @Test
     void testUpdateEndWithTime(){
-        GameSettings settings = new GameSettings("blabla", 2, new String[]{"TeamTest1", "TeamTest2"}, 1, 100, 1, false, null, false, 370, LandScape.HILLY, 2,GameMode.NORMAL, true);
+        GameSettings settings = new GameSettings("blabla", 2, new String[]{"TeamTest1", "TeamTest2"}, 1, 100, 1, false, null, false, 370, LandScape.HILLY, 2,GameMode.NORMAL, true, false);
         EventBus specialEB = new EventBus();;
         GameWorld specialGW = new GameWorld(settings, specialEB);
         specialGW.start();
@@ -161,7 +161,7 @@ public class TurnManagerTest {
 
     @Test
     void testEndWithOneTeamAlive(){
-        GameSettings settings = new GameSettings("blabla", 1, new String[]{"TeamTest1", "TeamTest2"}, 1, 100, 1, false, null, false, 370, LandScape.HILLY, 2, GameMode.NORMAL, true);
+        GameSettings settings = new GameSettings("blabla", 1, new String[]{"TeamTest1", "TeamTest2"}, 1, 100, 1, false, null, false, 370, LandScape.HILLY, 2, GameMode.NORMAL, true, false);
         EventBus eventBus = new EventBus();
         GameWorld gw2 = new GameWorld(settings, eventBus);
         gw2.start();
@@ -179,12 +179,12 @@ public class TurnManagerTest {
         TurnManager.setRemainingTimeAfterShootInMs(10);
         this.gw.getBus().subscribe(TurnEndEvent.class, event -> {
             eventEnd.set(true);});
-        Team team1 = new Team("TestTeam", 1, new Position[]{new Position(1,1)});
+        Team team1 = new Team("TestTeam", 1, new Position[]{new Position(1,1)}, 0);
         turnManager.startTurn(team1);
         team1.unlockWeapon(WeaponId.GUN);
         team1.addAmmo(WeaponId.GUN, 10);
         team1.selectWeapon(WeaponId.GUN);
-        UseParams params = new UseParams(0, new Position(0, 0), team1.getCurrentWorm());
+        UseParams params = new UseParams(team1.getCurrentWorm());
         for(int i = 0; i < Turn.limitshoot; i++){
             team1.use(params);
         }
@@ -196,7 +196,7 @@ public class TurnManagerTest {
 
     @Test
     public void testEventChangeWorm(){
-        Team team2 = new Team("TestTeam", 2, new Position[]{new Position(1,1), new Position(6,6)});
+        Team team2 = new Team("TestTeam", 2, new Position[]{new Position(1,1), new Position(6,6)}, 0);
         this.turnManager.startTurn(team2);
         Worm worm = this.turnManager.getTurn().getWormPlayable();
         this.gw.getBus().postQueued(new ChangeWormsEvent());
@@ -208,7 +208,7 @@ public class TurnManagerTest {
 
     @Test
     public void testEventChangeWormNotPossible(){
-        Team team2 = new Team("TestTeam", 2, new Position[]{new Position(1,1), new Position(6,6)});
+        Team team2 = new Team("TestTeam", 2, new Position[]{new Position(1,1), new Position(6,6)}, 0);
         this.turnManager.startTurn(team2);
         for(int i = 0; i <= team2.getMaxChangeWormTeam(); i++){
             this.gw.getBus().postQueued(new ChangeWormsEvent());
@@ -227,7 +227,7 @@ public class TurnManagerTest {
     @Test
     public void testEventSkipTurnNotAllow(){
         AtomicBoolean eventEnd = new AtomicBoolean(false);
-        Team team2 = new Team("TestTeam", 2, new Position[]{new Position(1,1), new Position(6,6)});
+        Team team2 = new Team("TestTeam", 2, new Position[]{new Position(1,1), new Position(6,6)}, 0);
         this.turnManager.startTurn(team2);
         this.gw.getBus().subscribe(TurnEndEvent.class, event -> {
             eventEnd.set(true);});
@@ -240,7 +240,7 @@ public class TurnManagerTest {
     @Test
     public void testEventSkipTurnAllow(){
         AtomicBoolean eventEnd = new AtomicBoolean(false);
-        Team team2 = new Team("TestTeam", 2, new Position[]{new Position(1,1), new Position(6,6)});
+        Team team2 = new Team("TestTeam", 2, new Position[]{new Position(1,1), new Position(6,6)}, 0);
         this.turnManager.startTurn(team2);
         this.gw.getBus().subscribe(TurnEndEvent.class, event -> {
             eventEnd.set(true);});
@@ -254,7 +254,7 @@ public class TurnManagerTest {
     @Test
     public void testEventSelectWeapon() {
         Boolean receivedGameCommand = false;
-        Team team2 = new Team("TestTeam", 2, new Position[] {new Position(1, 1), new Position(6, 6)});
+        Team team2 = new Team("TestTeam", 2, new Position[] {new Position(1, 1), new Position(6, 6)}, 0);
         this.turnManager.startTurn(team2);
         assertNull(team2.getHand());
         this.gw.getBus().postQueued(new WeaponSelectedEvent(WeaponId.GUN));
@@ -266,7 +266,7 @@ public class TurnManagerTest {
     @Test
     public void testEventSelectTool() {
         Boolean receivedGameCommand = false;
-        Team team2 = new Team("TestTeam", 2, new Position[] {new Position(1, 1), new Position(6, 6)});
+        Team team2 = new Team("TestTeam", 2, new Position[] {new Position(1, 1), new Position(6, 6)}, 0);
         this.turnManager.startTurn(team2);
         assertNull(team2.getHand());
         this.gw.getBus().postQueued(new ToolSelectedEvent(ToolId.PARACHUTE));
@@ -277,7 +277,7 @@ public class TurnManagerTest {
 
     @Test
     public void testSameRemainingTimeWhenPause(){
-        Team team2 = new Team("TestTeam", 1, new Position[] {new Position(1, 1),});
+        Team team2 = new Team("TestTeam", 1, new Position[] {new Position(1, 1),}, 0);
         this.turnManager.startTurn(team2);
         this.gw.pause(true);
         long ancientCurrentRemainingTime = this.turnManager.getRemainingTime();

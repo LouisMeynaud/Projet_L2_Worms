@@ -8,8 +8,9 @@ import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.Image;
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.URL;
 import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
@@ -26,13 +27,13 @@ public class PanelListe extends JPanel {
         String titre;
         String description;
         ImageIcon image;
-        File fichierMap;
+        String nomMap;
 
-        public InfoLigne(String titre, String info, ImageIcon image, File fichierMap) {
+        public InfoLigne(String titre, String info, ImageIcon image, String nomMap) {
             this.titre = titre;
             this.description = info;
             this.image = image;
-            this.fichierMap = fichierMap;
+            this.nomMap = nomMap;
         }
 
         @Override
@@ -44,20 +45,18 @@ public class PanelListe extends JPanel {
 
     /**
      * Constructor of the panel that displays the list of maps available in the maps folder.
-     * @param tableauDeDossiers an array of files representing the map directories.
+     * @param nomsMaps an array of Strings representing the map directory names.
      */
-    public PanelListe(File[] tableauDeDossiers) {
+    public PanelListe(String[] nomsMaps) {
         setBackground(Color.DARK_GRAY);
         this.setLayout(new BorderLayout());
 
         ArrayList<InfoLigne> donneeMap = new ArrayList<>();
 
-        if (tableauDeDossiers != null) {
-            for (File dossier : tableauDeDossiers) {
-                if (dossier.isDirectory()) {
-                    InfoLigne info = loadInfoDossier(dossier);
-                    donneeMap.add(info);
-                }
+        if (nomsMaps != null) {
+            for (String nom : nomsMaps) {
+                InfoLigne info = loadInfoRessource(nom);
+                donneeMap.add(info);
             }
         }
 
@@ -78,55 +77,52 @@ public class PanelListe extends JPanel {
     }
 
     /**
-     * Gets the selected map file.
-     * @return the selected map file, or null if none is selected.
+     * Gets the selected map name.
+     * @return the selected map name, or null if none is selected.
      */
-    public File getFichierSelectionne() {
+    public String getSelectedMapName() {
         InfoLigne selection = maListe.getSelectedValue();
         if (selection != null) {
-            return selection.fichierMap;
+            return selection.nomMap;
         }
         return null;
     }
 
 
-    private InfoLigne loadInfoDossier(File dossier) {
-        String titre = dossier.getName();
+    private InfoLigne loadInfoRessource(String nomDossier) {
+        String titre = nomDossier;
         String description = "";
         ImageIcon image = null;
 
         try {
-            File fichierTexte = new File(dossier, NOM_FICHIER_INFO);
-            if (fichierTexte.exists()) {
-                FileReader fileReader = new FileReader(fichierTexte);
-                BufferedReader buffereReader = new BufferedReader(fileReader);
+            String cheminInfo = "/map/" + nomDossier + "/" + NOM_FICHIER_INFO;
+            InputStream isText = getClass().getResourceAsStream(cheminInfo);
 
-
-                String ligne1 = buffereReader.readLine();
+            if (isText != null) {
+                BufferedReader reader = new BufferedReader(new InputStreamReader(isText));
+                String ligne1 = reader.readLine();
                 if (ligne1 != null) {
                     description = ligne1;
                 }
-
-                buffereReader.close();
-                fileReader.close();
-
+                reader.close();
             } else {
-                titre = dossier.getName();
                 description = "Pas de fichier info";
             }
-            File fichierImage = new File(dossier, NOM_FICHIER_IMAGE); //fait le chemin vers le fichier
-            if (fichierImage.exists()) {
-                Image imgOriginale = ImageIO.read(fichierImage); //charge l'image
+
+            String cheminImage = "/map/" + nomDossier + "/" + NOM_FICHIER_IMAGE;
+            URL imageUrl = getClass().getResource(cheminImage);
+
+            if (imageUrl != null) {
+                Image imgOriginale = ImageIO.read(imageUrl);
                 Image imgRedimensionnee = imgOriginale.getScaledInstance(100, 100, Image.SCALE_FAST);
                 image = new ImageIcon(imgRedimensionnee);
             }
         } catch (Exception e) {
-            System.out.println("Probleme avec le dossier:" + dossier.getName());
+            System.out.println("Probleme avec la map:" + nomDossier);
             e.printStackTrace();
             titre = "erreur de lecture";
-
         }
-        return new InfoLigne(titre, description, image, dossier);
+        return new InfoLigne(titre, description, image, nomDossier);
     }
 
 

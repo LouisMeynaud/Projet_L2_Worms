@@ -27,9 +27,9 @@ class HealingRocketProjectileTest {
     @Test
     void testValeursRocketProjectile() {
         Position pos = new Position(0, 0);
-        Team team = new Team("TeamTest", 1, new Position[]{pos});
+        Team team = new Team("TeamTest", 1, new Position[]{pos}, 0);
         Worm worm = new Worm("WormTest", team) {};
-        UseParams params = new UseParams(0.0, pos, worm);
+        UseParams params = new UseParams(0.0, pos, worm, 0);
         HealingProjectile healing = new HealingProjectile(params);
 
 
@@ -45,11 +45,11 @@ class HealingRocketProjectileTest {
     @Test
     void testOnImpact_ReturnsExplosionCommand() {
         Position pos = new Position(0, 0);
-        Team team = new Team("TeamTest", 1, new Position[]{pos});
+        Team team = new Team("TeamTest", 1, new Position[]{pos}, 0);
         Worm worm = mock(Worm.class);
         when(worm.getTeam()).thenReturn(team);
 
-        UseParams params = new UseParams(0.0, pos, worm);
+        UseParams params = new UseParams(0.0, pos, worm, 0);
         HealingProjectile healing = new HealingProjectile(params);
 
         GameWorld worldMock = mock(GameWorld.class);

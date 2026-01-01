@@ -5,20 +5,16 @@ import javax.sound.sampled.FloatControl;
 
 
 /**
- * gestionnaire de son pour le jeu.
- *
- * cette classe permet de jouer des bruitage et de la musique de fond
+ * * Class for playing sounds and music in the game.
  */
 public class SoundPlayer {
-    private static Clip currentMusic; // la musique de fond en cours
-    private static int musiqueVolume = 5; //le volume de la musique
-    private static int soundEffectVolume = 75; // le volume des effet sonor
+    private static Clip currentMusic; // the current music clip being played
+    private static int musiqueVolume = 5; //the volume of the music
+    private static int soundEffectVolume = 75; // the volume of the sound effects
 
     /**
-     * permet de jouer des effet sonor.
-     * coupe l'effet precedent si on nouveaux est fait pour evitée la saturation
-     *
-     * @param key la cle du son que l'on veux jouer dans le soundManager
+     * Method to play a sound effect.
+     * @param key the key of the sound to play in soundManager
      */
     public static void playSound(String key) {
         Clip clip = SoundManager.soundMap.get(key);
@@ -26,16 +22,14 @@ public class SoundPlayer {
         if (clip.isRunning()) {
             clip.stop();
         }
-        clip.setFramePosition(0); //on le remet au debut
+        clip.setFramePosition(0); //rewind to the beginning
         applyVolumeToClip(clip, soundEffectVolume);
         clip.start();
     }
 
     /**
-     * permet de jouer une musique de fond.
-     * couple la precedente
-     *
-     * @param key la cle de la musique a joeur dans soundManager
+     * Method to play background music.
+     * @param key the key of the music to play in soundManager
      */
     public static void playMusique(String key) {
         if (currentMusic != null) {
@@ -51,14 +45,25 @@ public class SoundPlayer {
 
         }
     }
+    /**
+     * Gets the current music volume.
+     * @return the music volume as an integer.
+     */
     public static int getMusiqueVolume() {
         return musiqueVolume;
     }
-
+    /**
+     * Gets the current sound effect volume.
+     * @return the sound effect volume as an integer.
+     */
     public static int getSoundEffectVolume() {
         return soundEffectVolume;
     }
 
+    /**
+     * Sets the music volume.
+     * @param volume the desired music volume as an integer.
+     */
     public static void setMusiqueVolume(int volume) {
         musiqueVolume = volume;
         if (currentMusic != null) {
@@ -66,14 +71,18 @@ public class SoundPlayer {
         }
     }
 
+    /**
+     * Sets the sound effect volume.
+     * @param volume the desired sound effect volume as an integer.
+     */
     public static void setSoundEffectVolume(int volume) {
         soundEffectVolume = volume;
     }
 
     /**
-     *
-     * @param clip le sont sur lequel on vas faire le changement de volume
-     * @param volumePercent le pourcentage de sont voulu
+     * Applies the specified volume to the given clip.
+     * @param clip the Clip object to adjust volume for.
+     * @param volumePercent the desired volume level as a percentage (0-100).
      */
     private static void applyVolumeToClip(Clip clip, int volumePercent) {
 
@@ -84,7 +93,9 @@ public class SoundPlayer {
         controlSound.setValue(40.0f * (volumePercent / 100.0f) - 40.0f); // marche avec des decibel
     }
     }
-
+    /**
+     * Stops the currently playing music.
+     */
     public static void stopMusic() {
         if (currentMusic != null) {
             currentMusic.stop();

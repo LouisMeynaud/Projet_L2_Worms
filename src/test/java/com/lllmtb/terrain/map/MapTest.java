@@ -174,7 +174,7 @@ public class MapTest {
 
         map.setHeightWater(2);
         assertEquals(2, map.getHeightWater());
-        boolean result = map.risingWater();
+        boolean result = map.risingWater(1);
         assertTrue(result);
         assertEquals(3, map.getHeightWater());
         assertEquals(Tile.WATER, map.getTile(new Position(3, 2)));
@@ -217,7 +217,7 @@ public class MapTest {
 
         map.setHeightWater(5);
         assertEquals(5, map.getHeightWater());
-        boolean result = map.risingWater();
+        boolean result = map.risingWater(1);
         assertFalse(result);
     }
 }
