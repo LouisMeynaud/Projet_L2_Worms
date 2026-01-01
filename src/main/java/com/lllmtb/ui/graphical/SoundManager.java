@@ -13,8 +13,8 @@ public class SoundManager {
     public static final Map<String, Clip> soundMap = new HashMap<>();
 
     /**
-     * place dans le sound map les different son du jeu a charger.
-     */
+    * Method for loading all the sounds.
+    */
     public static void  load() {
         soundMap.put("BazookaExplosion", createClip("BazookaExplosion"));
         soundMap.put("HealingBazookaExplosion", createClip("HealingBazookaExplosion"));
@@ -24,18 +24,20 @@ public class SoundManager {
         soundMap.put("GUNShot", createClip("GUNShot"));
         soundMap.put("SHOTGUNShot", createClip("SHOTGUNShot"));
         soundMap.put("ELECTRONCANONShot", createClip("ELECTRONCANONShot"));
+        soundMap.put("CatConcreteExplosion", createClip("CatConcreteExplosion"));
 
     }
 
     /**
-     * methode permetant de crée a partir d'un fichier un clip.
-     * 1: recuperation du sons depuis un dossier
-     * 2 : creation d'un conteneur vide (le clip)
-     * 3 : placement du sont dans le conteneur
-     *
-     * @param nom nom du fichier de la musique a ajouter
-     * @return le clip de la musique
-     */
+
+    * Method for creating a clip from a file.
+
+    * 1: Retrieve the sound from a folder
+    * 2: Create an empty container (the clip)
+    * 3: Place the sound in the container
+    * @param nom Name of the music file to add
+    * @return The music clip
+    */
     private static Clip createClip(String nom) {
         try {
             AudioInputStream sound = AudioSystem.getAudioInputStream(SoundManager.class.getResource("/sound/" + nom + ".wav")); //lie le fichier audio (ouvre un "flux")

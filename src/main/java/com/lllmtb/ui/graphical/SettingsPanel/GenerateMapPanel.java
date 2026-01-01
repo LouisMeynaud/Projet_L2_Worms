@@ -25,7 +25,7 @@ public class GenerateMapPanel extends JPanel {
     public JCheckBox flightIslandCheckBox;
 
     /**
-     * Constructor of the settings panel of map
+     * Constructor of the settings panel of map.
      */
     public GenerateMapPanel() {
         this.setLayout(new BorderLayout());

@@ -45,7 +45,7 @@ public class CollisionTest {
         Position posW1 = new Position(0, 14);
         Position posW2 = new Position(14, 14);
         Position[] positions = {posW1, posW2};
-        team = new Team("Jeff team", 2, positions);
+        team = new Team("Jeff team", 2, positions,0);
         worm1 = new Worm("Jeff", team);
         worm2 = new Worm("José", team);
         team.addWorm(worm1);
@@ -53,11 +53,11 @@ public class CollisionTest {
         pBWorm1 = new PhysicsBody(worm1, posW1, new Vector(5, 0), 1, 2, 1);
         pBWorm2 = new PhysicsBody(worm2, posW2, new Vector(5, 0), 1, 2, 1);
         Position posBP1 = new Position(14, 18);
-        fP1 = new UseParams(0, posBP1, worm1);
+        fP1 = new UseParams(0, posBP1, worm1, 0);
         bP1 = new BulletProjectile(fP1);
         pBBP1 = new PhysicsBody(bP1, posBP1, new Vector(0,0), 1, 1, 1);
         Position posBP2 = new Position(4, 6);
-        fP2 = new UseParams(0, posBP2, worm2);
+        fP2 = new UseParams(0, posBP2, worm2, 0);
         bP2 = new BulletProjectile(fP2);
         pBBP2 = new PhysicsBody(bP2, posBP2, new Vector(1, 0), 1, 1, 1);
         bodies = new CopyOnWriteArrayList<>();
@@ -282,7 +282,7 @@ public class CollisionTest {
     void slide() {
         pBWorm1.setPos(new Position(7, 10));
         pBWorm1.setVector(new Vector(5, -2));
-        GameSettings settings = new GameSettings("blabla", 1, new String[]{}, 1,100, 10, true, "mapTest", false,370, LandScape.HILLY,2,GameMode.NORMAL, true);
+        GameSettings settings = new GameSettings("blabla", 1, new String[]{}, 1,100, 10, true, "mapTest", false,370, LandScape.HILLY,2,GameMode.NORMAL, true,false);
         EventBus eventBus = new EventBus();
         GameWorld gw = new GameWorld(settings, eventBus);
         Position posFinal = new Position(12, 8);

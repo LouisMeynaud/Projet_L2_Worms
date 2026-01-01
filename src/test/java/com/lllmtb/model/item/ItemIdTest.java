@@ -47,6 +47,12 @@ public class ItemIdTest {
     }
 
     @Test
+    public void weaponId_bow_doesNotUseCrosshair() {
+        assertFalse(WeaponId.BOW.usesCrosshair(),
+                "BOW should not use crosshair targeting");
+    }
+
+    @Test
     public void weaponId_bazooka_doesNotUseCrosshair() {
         assertFalse(WeaponId.BAZOOKA.usesCrosshair(),
                 "BAZOOKA should not use crosshair targeting by default");
@@ -90,6 +96,18 @@ public class ItemIdTest {
 
         assertFalse(defaultItem.usesCrosshair(),
                 "Default ItemId implementation should return false");
+    }
+
+    @Test
+    public void getMaxChargeTime_Bow() {
+        assertEquals(3000, WeaponId.BOW.getMaxChargeTime());
+    }
+
+    @Test
+    public void testDefaultMaxChargeTime() {
+        ItemId item = new ItemId() {
+        };
+        assertEquals(0, item.getMaxChargeTime());
     }
 }
 

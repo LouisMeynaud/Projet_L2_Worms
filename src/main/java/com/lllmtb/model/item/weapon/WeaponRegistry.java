@@ -13,5 +13,7 @@ public final class WeaponRegistry extends ItemRegistry<WeaponId, Weapon> {
         this.register(WeaponId.SHOTGUN, new ShotGunWeapon());
         this.register(WeaponId.ELECTRONCANON, new ElectronCanonWeapon());
         this.register(WeaponId.GASGUN, new GasGunWeapon());
+        this.register(WeaponId.BOW, new BowWeapon());
+        this.register(WeaponId.GRENADE, new GrenadeWeapon());
     }
 }

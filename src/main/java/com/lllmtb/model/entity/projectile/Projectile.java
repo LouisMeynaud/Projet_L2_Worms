@@ -75,4 +75,8 @@ public abstract class Projectile extends Entity {
     protected GameCommand delete() {
         return new RemoveEntityCommand(this);
     }
+
+    public List<GameCommand> update(long dt) {
+        return new java.util.ArrayList<>();
+    }
 }
