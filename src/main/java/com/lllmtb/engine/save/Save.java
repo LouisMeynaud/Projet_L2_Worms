@@ -207,7 +207,7 @@ public class Save {
      * @throws IOException If an error occurs during any of the save processes.
      */
     public static void saveAll() throws IOException {
-        String stringPath = SaveConfig.SAVE_DIRECTORY + gameWorld.getGameName() + "_save";
+        String stringPath = SaveConfig.SAVE_DIRECTORY + gameWorld.getGameName();
         saveMap(gameWorld.getMap(), stringPath);
         saveGameWorld(gameWorld, stringPath);
         saveInfo(gameWorld, stringPath);

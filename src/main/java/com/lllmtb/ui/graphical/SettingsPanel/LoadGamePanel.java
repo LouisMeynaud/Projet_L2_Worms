@@ -11,6 +11,7 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
 import com.lllmtb.engine.logger.Logger;
+import com.lllmtb.engine.save.SaveConfig;
 import com.lllmtb.events.EventBus;
 import com.lllmtb.events.game.LoadEvent;
 import com.lllmtb.events.ui.graphical.ScreenNewOrLoadEvent;
@@ -42,7 +43,7 @@ public class LoadGamePanel extends JPanel {
 
 
 
-        this.panelListe = new PanelListe(MapLoader.getListeNomsLoads());
+        this.panelListe = new PanelListe(MapLoader.getListeNomsLoads(), SaveConfig.SAVE_DIRECTORY, true);
         this.add(panelListe, BorderLayout.CENTER);
 
 
