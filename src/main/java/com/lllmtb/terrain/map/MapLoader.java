@@ -71,7 +71,7 @@ public class MapLoader {
      * @return Array of map names.
      */
     public static String[] getListeNomsMaps() {
-        return new String[] {"Camembert", "Emmental", "Gorgonzola", "Roquefort" };
+        return new String[] {"Camembert", "Emmental", "Gorgonzola", "Roquefort", "Feta", "Cendré de Lune" };
     }
 
     public static String[] getListeNomsLoads() {

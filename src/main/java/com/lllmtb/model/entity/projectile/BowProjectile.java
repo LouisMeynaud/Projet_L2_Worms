@@ -15,7 +15,7 @@ public final class BowProjectile extends Projectile {
     private static final double mass   = 0.006;
     private static final double height = 2;
     private static final double width  = 2;
-    private int damage = 10;
+    private double damage = 10;
 
 
     /**
@@ -42,7 +42,7 @@ public final class BowProjectile extends Projectile {
     }
 
     @Override
-    public int getDamage() {
+    public double getDamage() {
         return damage;
     }
 }

@@ -1,6 +1,8 @@
 package com.lllmtb.engine.turn;
 import com.lllmtb.model.entity.team.Team;
 import com.lllmtb.model.entity.worm.Worm;
+import com.lllmtb.model.item.UseParams;
+import com.lllmtb.model.item.weapon.WeaponId;
 import com.lllmtb.physics.Position;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -54,6 +56,35 @@ public class TurnTest {
     public void testGetIsEndTrue(){
         this.turn.setIsEnd();
         assertTrue(turn.getIsEnd());
+    }
+
+    @Test
+    public void testMaxShootNotReached(){
+        Team team1 = new Team("TestTeam", 1, new Position[]{new Position(1,1)}, 0);
+        Turn turn1 = new Turn(team1);
+        team1.unlockWeapon(WeaponId.GUN);
+        team1.addAmmo(WeaponId.GUN, 10);
+        team1.selectWeapon(WeaponId.GUN);
+
+        UseParams params = new UseParams(team1.getCurrentWorm());
+        team1.use(params);
+        assertFalse(turn1.teamMaximumShoot());
+    }
+
+    @Test
+    public void testMaxShootReached(){
+        Team team1 = new Team("TestTeam", 1, new Position[]{new Position(1,1)}, 0);
+        Turn turn1 = new Turn(team1);
+        team1.unlockWeapon(WeaponId.GUN);
+        team1.addAmmo(WeaponId.GUN, 10);
+        team1.selectWeapon(WeaponId.GUN);
+        UseParams params = new UseParams(team1.getCurrentWorm());
+        for(int i = 0; i < Turn.limitshoot; i++){
+            team1.use(params);
+        }
+
+        assertTrue(turn1.teamMaximumShoot());
+
     }
 
     @Test

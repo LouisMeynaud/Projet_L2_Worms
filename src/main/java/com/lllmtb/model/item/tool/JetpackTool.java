@@ -64,6 +64,7 @@ public class JetpackTool extends Tool {
                             w.getBus().unsubscribe(ProcessInputsEvent.class, disableListenerRef.get());
                             w.getBus().unsubscribe(PhysicsModifierRemovedEvent.class, removalListenerRef.get());
                         });
+                        world.queueCommands(modifier.onRemove(params.owner));
                     }
                 };
                 removalListenerRef.set(removalListener);

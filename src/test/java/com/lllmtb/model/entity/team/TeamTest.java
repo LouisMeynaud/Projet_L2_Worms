@@ -117,6 +117,18 @@ public class TeamTest {
         assertNotEquals(team1.teamColor, team3.teamColor);
     }
 
+    @Test
+    public void testChangeWorm(){
+        assertEquals(Team.MAX_CHANGEWORMTEAM, team.getMaxChangeWormTeam());
+    }
+
+    @Test
+    public void testChangeWormUse(){
+        int currentCount = team.getMaxChangeWormTeam();
+        team.oneChangeWorm();
+        assertEquals(currentCount-1, team.getMaxChangeWormTeam());
+    }
+
     // ==================== Worm Management Tests ====================
 
     @Test
@@ -354,6 +366,20 @@ public class TeamTest {
         
         assertNotNull(result);
         assertFalse(result.isEmpty());
+    }
+
+    @Test
+    public void fire_addShootMax(){
+        int currentCountShoot = team.getShootCount();
+        team.unlockWeapon(WeaponId.GUN);
+        team.addAmmo(WeaponId.GUN, 10);
+        team.selectWeapon(WeaponId.GUN);
+
+        UseParams params = new UseParams(team.getCurrentWorm());
+        team.use(params);
+
+        assertEquals(currentCountShoot+1, team.getShootCount());
+
     }
 
     // ==================== Tool Management Tests ====================

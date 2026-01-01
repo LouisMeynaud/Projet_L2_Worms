@@ -66,6 +66,6 @@ class RocketProjectileTest {
                 cmd.execute(worldMock);
             }
 
-            verify(physicsMock).createExplosion(eq(rocket), eq(10), eq(15), eq(30), eq(100.0));
+            verify(physicsMock).createExplosion(eq(rocket), eq(10), eq(15), eq(30), eq(100.0), eq(false));
         }
 }

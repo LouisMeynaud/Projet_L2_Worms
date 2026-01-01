@@ -45,6 +45,15 @@ public class SoundPlayer {
 
         }
     }
+
+    /**
+     * Gets the current music.
+     * @return the current music as a clip.
+     */
+    public static Clip getCurrentMusic() {
+        return currentMusic;
+    }
+
     /**
      * Gets the current music volume.
      * @return the music volume as an integer.

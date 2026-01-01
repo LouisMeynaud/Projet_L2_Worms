@@ -250,7 +250,7 @@ public class GameWorldTest {
         assertTrue(gw.loopThread.isAlive(), "Game loop thread should still be alive while paused");
         long ticksBeforePause = gw.getGameLoop().getTicks();
         assertTrue(ticksBeforePause > 0, "Game loop should have ticked while running");
-        TimeUnit.MILLISECONDS.sleep(50);
+        TimeUnit.MILLISECONDS.sleep(100);
         long ticksAfterPaused = gw.getGameLoop().getTicks();
         assertEquals(ticksBeforePause, ticksAfterPaused, "Ticks should not increment while paused");
 

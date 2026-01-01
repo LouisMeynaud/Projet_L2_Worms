@@ -5,9 +5,11 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import com.lllmtb.engine.GameWorld;
 import com.lllmtb.events.EventBus;
 import com.lllmtb.events.game.CoinCollisionEvent;
+import com.lllmtb.events.game.DropCollisionEvent;
 import com.lllmtb.events.physics.GroundCheckCollision;
 import com.lllmtb.model.entity.Coin;
 import com.lllmtb.model.entity.CollisionType;
+import com.lllmtb.model.entity.Drop;
 import com.lllmtb.model.entity.worm.Worm;
 import com.lllmtb.terrain.map.Map;
 import com.lllmtb.terrain.map.Tile;
@@ -122,6 +124,17 @@ public class Collision {
                         }
                         continue;
                     }
+                    //Special case for Drop
+                    if (other.getEntity() instanceof Drop) {
+                        double radiusOther = other.getWidth() / 2;
+                        Position otherPos = new Position(other.getPos().getX() + 0.5, other.getPos().getY() + 0.5);
+                        Impact dropImpact = this.testSweptCircleCircle(body, body.getPos(), radius, other, otherPos, radiusOther, endPos, vector);
+                        if (dropImpact.ti < finalImpact.ti) { // Collision with coin
+                            eventBus.postQueued(new DropCollisionEvent((Drop) other.getEntity(), ((Worm) body.getEntity()).getTeam()));
+                        }
+                        continue;
+                    }
+
                     double radiusOther = other.getHeight() / 2;
                     Position otherPos = new Position(other.getPos().getX() + 0.5, other.getPos().getY() + 0.5);
                     Impact bodyImpact = this.testSweptCircleCircle(body, body.getPos(), radius, other, otherPos, radiusOther, endPos, vector);
@@ -537,7 +550,89 @@ public class Collision {
     public void cross(PhysicsBody body, Position pos) {
         body.setPos(pos);
     }
+
     public Map getMap() {
         return this.map;
+    }
+
+    public Tile inTrapOrLava(Position position) {
+        if (map.isDamaging(position)) {
+            return map.getTile(position);
+        }
+        Position pos = new Position(position.getX(), position.getY() + 1);
+        if (map.isDamaging(pos)) {
+            return map.getTile(pos);
+        }
+        double xdown = Math.floor(position.getX());
+        double xup = Math.ceil(position.getX());
+        double ydown = Math.floor(position.getY());
+        double yup = Math.ceil(position.getY());
+        if (xdown != xup) {
+            Position pos1 = new Position(xup, position.getY());
+            Position pos2 = new Position(xup, position.getY() + 1);
+            if (map.isDamaging(pos1)) {
+                return map.getTile(pos1);
+            }
+            if (map.isDamaging(pos2)) {
+                return map.getTile(pos2);
+            }
+        }
+        if (ydown != yup) {
+            Position pos1 = new Position(position.getX(), yup + 1);
+            if (map.isDamaging(pos1)) {
+                return map.getTile(pos1);
+            }
+        }
+        if (xdown != xup && ydown != yup) {
+            Position pos1 = new Position(xup, yup + 1);
+            if (map.isDamaging(pos1)) {
+                return map.getTile(pos1);
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Checks if a physics body is in damaging terrain (lava, traps).
+     * This method tests multiple points around the body to detect when only part
+     * of the body is in damaging terrain.
+     * @param body the {@link PhysicsBody} to check
+     * @return the {@link Tile} if the body is in damaging terrain, {@code null} otherwise
+     */
+    public Tile inTrapOrLavaWithBody(PhysicsBody body) {
+        Position pos = body.getPos();
+        double height = body.getHeight();
+        double width = body.getWidth();
+
+        // Test the center position
+        Tile tile = inTrapOrLava(pos);
+        if (tile != null) {
+            return tile;
+        }
+
+        // Test multiple points in the lower half of the body to catch partial immersion
+        // This ensures detection even when only the lower portion is in lava
+        for (double offsetY = 0; offsetY < height / 2; offsetY += 0.25) {
+            Position testPos = new Position(pos.getX(), pos.getY() - offsetY);
+            tile = inTrapOrLava(testPos);
+            if (tile != null) {
+                return tile;
+            }
+        }
+
+        // Test left and right sides of the lower portion
+        Position leftPos = new Position(pos.getX() - width / 2, pos.getY() - height / 4);
+        tile = inTrapOrLava(leftPos);
+        if (tile != null) {
+            return tile;
+        }
+
+        Position rightPos = new Position(pos.getX() + width / 2, pos.getY() - height / 4);
+        tile = inTrapOrLava(rightPos);
+        if (tile != null) {
+            return tile;
+        }
+
+        return null;
     }
 }
