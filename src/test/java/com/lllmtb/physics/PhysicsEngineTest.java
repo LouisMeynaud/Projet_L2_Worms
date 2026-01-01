@@ -49,10 +49,10 @@ class PhysicsEngineTest {
         Mockito.when(world.getBus()).thenReturn(bus);
         pE = new PhysicsEngine(map, world, true, GameMode.NORMAL);
         Position pw = new Position(4, 4);
-        Worm w = new Worm("José", new Team("Team", 1, new Position[]{pw}));
+        Worm w = new Worm("José", new Team("Team", 1, new Position[]{pw}, 0));
         assertTrue(map.inMap(pw));
         Position pBP = new Position(0, 5);
-        BulletProjectile bP = new BulletProjectile(new UseParams(0, pBP, w));
+        BulletProjectile bP = new BulletProjectile(new UseParams(0, pBP, w, 0));
         assertTrue(map.inMap(pw));
         pBWorm = w.getBody();
         pBBP = bP.getBody();
@@ -192,7 +192,7 @@ class PhysicsEngineTest {
         Map map = Mockito.mock(Map.class);
         Mockito.when(map.getWidth()).thenReturn(100);
         Mockito.when(map.getHeightWater()).thenReturn(0);
-        Team team = new Team("TestTeam", 1, new Position[]{new Position(2,4)});
+        Team team = new Team("TestTeam", 1, new Position[]{new Position(2,4)}, 0);
         Mockito.when(world.getTurnManager()).thenReturn(t);
         Mockito.when(world.getMap()).thenReturn(map);
         t.startTurn(team);
@@ -436,7 +436,7 @@ class PhysicsEngineTest {
 
     @Test
     void actualizeBodiesTest(){
-        Worm worm = new Worm("Test", new Team("TestTeam", 1, new Position[]{new Position(3,3)}));
+        Worm worm = new Worm("Test", new Team("TestTeam", 1, new Position[]{new Position(3,3)}, 0));
         pE.add(worm.getBody());
         int size = pE.getBodies().size();
         worm.damageWorm(worm.getStats().getHp());
@@ -450,7 +450,7 @@ class PhysicsEngineTest {
 
         Worm owner = (Worm) pBWorm.getEntity();
         Position pos = new Position(10, 10);
-        RocketProjectile rocket = new RocketProjectile(new UseParams(0, pos, owner));
+        RocketProjectile rocket = new RocketProjectile(new UseParams(0, pos, owner, 0));
         pE.add(rocket.getBody());
         pE.createExplosion(rocket, 10, 15, 30, 100);
         assertEquals(2, bus.queuedEventCount());//verifie que les event sont bien crée(explosion et mapUpdate)

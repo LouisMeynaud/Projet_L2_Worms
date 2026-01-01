@@ -31,6 +31,7 @@ public class SettingGamePanel extends JPanel {
     public JSlider turnDurationSlider;
     public JCheckBox windCheckBox;
     public JCheckBox friendlyFireCheckBox;
+    public JCheckBox coinCheatBox;
     public JSlider maxJumpSlider;
     public JSlider maxLifeSlider;
     public JTextField gameTitleField;
@@ -195,8 +196,24 @@ public class SettingGamePanel extends JPanel {
         contentGrid.add(gameModeBox, gbc);
         row++;
 
-    }
 
+
+    //cheat parametter
+        gbc.gridwidth = 2;
+        gbc.gridx = 0;
+        gbc.gridy = row++;
+        JLabel titre3 = new JLabel("CHEATS");
+        titre3.setFont(new Font("Arial", Font.BOLD, 16));
+        contentGrid.add(titre3, gbc);
+
+        //coin
+        gbc.gridwidth = 2;
+        gbc.gridx = 0;
+        gbc.gridy = row;
+        this.coinCheatBox = new JCheckBox("Pièces illimitées");
+        contentGrid.add(this.coinCheatBox, gbc);
+        row++;
+    }
 
     ////////////GETTERS/////////////////
 
@@ -270,14 +287,26 @@ public class SettingGamePanel extends JPanel {
     }
 
     /**
-     * gets if the friendlyFire option is selected
-     * @return ture if selected.
+     * gets if the friendlyFire option is selected.
+     * @return true if selected.
      */
     public boolean getFriendlyFire() {
         return this.friendlyFireCheckBox.isSelected();
     }
 
+    /**
+     * Gets the selected game mode from the combo box.
+     * @return the selected GameMode.
+     */
     public GameMode getGameMode() {
         return (GameMode) this.gameModeBox.getSelectedItem();
+    }
+
+    /**
+     * Gets if the coin cheat option is selected.
+     * @return true if coin cheat is selected, false otherwise.
+     */
+    public boolean getCoinCheat() {
+        return this.coinCheatBox.isSelected();
     }
 }

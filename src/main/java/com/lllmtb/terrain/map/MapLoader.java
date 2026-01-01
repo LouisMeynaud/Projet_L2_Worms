@@ -1,11 +1,41 @@
 package com.lllmtb.terrain.map;
 
+import com.lllmtb.engine.save.SaveConfig;
+import com.lllmtb.terrain.generation.ConfigMap;
+
 import java.io.File;
-import java.io.IOException;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public class MapLoader {
+
+    /**
+     * Load a map from a given map name.
+     * @param directoryName
+     * @return the loaded Map object.
+     */
+
+    public static Map loadMatrixLoad(String directoryName) {
+        try {
+            Path path = Paths.get(SaveConfig.SAVE_DIRECTORY + directoryName + "/map.txt");
+
+            if (!Files.exists(path)) {
+                System.err.println("Aucune sauvegarde trouvée à : " + path.toAbsolutePath());
+                return null;
+            }
+
+            // Lecture du fichier externe
+            String contentMap = Files.readString(path, StandardCharsets.UTF_8);
+            return parseMapData(contentMap, directoryName);
+
+        } catch (Exception e) {
+            System.err.println("Erreur lors du chargement de la sauvegarde : " + e.getMessage());
+            return null;
+        }
+    }
 
     /**
      * Load a map from a given map name.
@@ -13,20 +43,22 @@ public class MapLoader {
      * @return the loaded Map object.
      */
     public static Map loadMatrix(String mapName) {
-        String path;
-        if (mapName.contains("save")) {
-            path = "src/main/resources/save/";
-        } else if (mapName.contains("Test")) {
-            path = "src/test/resources/map/";
-    } else {
-            path = "src/main/resources/map/";
-        }
-
         try {
-            String mapPath = path + mapName + "/map.txt";
-            String contentMap = Files.readString(Path.of(mapPath));
+            URL resource = MapLoader.class.getResource("/map/" + mapName + "/map.txt");
+            if (resource == null) {
+                return null;
+            }
+            Path path = Paths.get(resource.toURI());
+            String contentMap = Files.readString(path);
+            return  parseMapData(contentMap, mapName);
+        } catch (Exception e) {
+            System.out.println(e); // NB. Il faudra mieux gérer cette exception
+            return null;
+        }
+    }
+    public static Map parseMapData(String contentMap, String name) {
             String[] row = contentMap.split("\n");
-            Map tileMatrix = new Map(row.length, row[0].length(), mapName + ".txt");
+            Map tileMatrix = new Map(row.length, row[0].length(), name + ".txt");
 
             for (int i = 0; i < row.length; i++) {
                 for (int j = 0; j < row[0].length(); j++) {
@@ -35,55 +67,28 @@ public class MapLoader {
                 }
             tileMatrix.initializeHeightWater();
             return tileMatrix;
-
-        } catch (IOException e) { // we should propagate the exception instead so GameWorld can catch and respond accordingly
-            return null;
-        } catch (Exception e) {
-            System.out.println(e); // NB. Il faudra mieux gérer cette exception
-            return null;
-        }
     }
-
     /**
-     * Gets the list of map directories.
-     * @return an array of map directories.
+     * Get a list of available map names.
+     * @return Array of map names.
      */
-    public static File[] getListeDossiersMaps() {
-        String cheminDossierMaps = "src/main/resources/map";
-        return getListeDossiers(new File(cheminDossierMaps));
+    public static String[] getListeNomsMaps() {
+        return new String[] {"Camembert", "Emmental", "Gorgonzola", "Roquefort" };
     }
 
-    /**
-     * Gets the list of map directories.
-     * @return an array of map directories.
-     */
-    public static File[] getListeDossiersSave() {
-        String cheminDossierMaps = "src/main/resources/save";
-        return getListeDossiers(new File(cheminDossierMaps));
-    }
-
-
-    /**
-     * Gets the list of subdirectories in a given root directory.
-     * @param dossierRacine the root directory.
-     * @return an array of subdirectories.
-     */
-    public static File[] getListeDossiers(File dossierRacine) {
-        if (!dossierRacine.exists() || !dossierRacine.isDirectory()) {
-            System.err.println("Erreur le chemin n'est pas bon : " + dossierRacine.getAbsolutePath());
-            return new File[0];
+    public static String[] getListeNomsLoads() {
+        File folder = new File(SaveConfig.SAVE_DIRECTORY);
+        if (!folder.exists() || !folder.isDirectory()) {
+            return new String[0];
         }
-        File[] sousDossiers = dossierRacine.listFiles(f -> MapLoader.predicatEstUnDossier(f));
-
-        if (sousDossiers == null) {
-            return new File[0];
+        File[] subFolders = folder.listFiles(File::isDirectory);
+        if (subFolders == null) {
+            return new String[0];
         }
-        return sousDossiers;
+        String[] saveNames = new String[subFolders.length];
+        for (int i = 0; i < subFolders.length; i++) {
+            saveNames[i] = subFolders[i].getName();
+        }
+        return saveNames;
     }
-
-    private static boolean predicatEstUnDossier(File fichier) {
-        return fichier.isDirectory();
-    }
-
-
 }

@@ -58,7 +58,8 @@ public class GameWorldTest {
                 370,    //widthMap
                 LandScape.HILLY,2     //heightMap
                 ,GameMode.NORMAL, //gameMode
-                true                //Friendlyfire
+                true,                //Friendlyfire
+                false                //CoinCheat
 
         );
         EventBus eventBus = new EventBus();
@@ -98,7 +99,7 @@ public class GameWorldTest {
     void whenMapFileNameProvided_MapLoaderIsUsed_insteadOfGenerateMap() {
         // we only mock MapLoader.loadMatrix to return a real map created by GenerateMap
         Map generated = MapLoader.loadMatrix("mapTest");
-        GameSettings settings = new GameSettings("blabla", 0, new String[]{}, 0,100, 10, true, "mapTest", false,370,LandScape.HILLY,2,GameMode.NORMAL,true);
+        GameSettings settings = new GameSettings("blabla", 0, new String[]{}, 0,100, 10, true, "mapTest", false,370,LandScape.HILLY,2,GameMode.NORMAL,true, false);
         EventBus eventBus = new EventBus();
         GameWorld gw = new GameWorld(settings,eventBus);
 
@@ -117,7 +118,7 @@ public class GameWorldTest {
             mocked.when(() -> MapLoader.loadMatrix("badPath")).thenThrow(new IllegalStateException("io fail"));
 
             GameSettings settings = new GameSettings("blabla", 
-                    0, new String[]{}, 0, 100,10, false, "badPath", false,370,LandScape.HILLY,2,GameMode.NORMAL, true);
+                    0, new String[]{}, 0, 100,10, false, "badPath", false,370,LandScape.HILLY,2,GameMode.NORMAL, true, false);
             EventBus eventBus = new EventBus();
             RuntimeException e = assertThrows(RuntimeException.class, () -> new GameWorld(settings,eventBus));
             assertNotNull(e.getCause());
@@ -150,7 +151,8 @@ public class GameWorldTest {
                 370,
                 LandScape.HILLY,2,
                 GameMode.NORMAL,
-                true
+                true,
+                false
         );
          EventBus eventBus = new EventBus();
 
@@ -167,7 +169,7 @@ public class GameWorldTest {
     @Test
     void startRunsLoopAndStopStopsIt_whenStartedInSeparateThread() throws Exception {
         // use a small, simple world (no teams) so physics starts empty
-        GameSettings settings = new GameSettings("blabla", 0, new String[]{}, 0,100, 10, false, null, false,370,LandScape.HILLY,2,GameMode.NORMAL, true);
+        GameSettings settings = new GameSettings("blabla", 0, new String[]{}, 0,100, 10, false, null, false,370,LandScape.HILLY,2,GameMode.NORMAL, true, false);
          EventBus eventBus = new EventBus();
         GameWorld gw = new GameWorld(settings,eventBus);
 
@@ -190,7 +192,7 @@ public class GameWorldTest {
 
     @Test
     void registerEntity_null_throwsNPE() {
-        GameSettings settings = new GameSettings("blabla", 0, new String[]{}, 0,100, 10, false, null, false,370,LandScape.HILLY,2,GameMode.NORMAL, true);
+        GameSettings settings = new GameSettings("blabla", 0, new String[]{}, 0,100, 10, false, null, false,370,LandScape.HILLY,2,GameMode.NORMAL, true, false);
          EventBus eventBus = new EventBus();
         GameWorld gw = new GameWorld(settings,eventBus);
 
@@ -199,7 +201,7 @@ public class GameWorldTest {
 
     @Test
     void stopLoop_whenNotRunning() {
-        GameSettings settings = new GameSettings("blabla", 0, new String[]{}, 0,100, 10, false, null, false,370,LandScape.HILLY,2,GameMode.NORMAL, true);
+        GameSettings settings = new GameSettings("blabla", 0, new String[]{}, 0,100, 10, false, null, false,370,LandScape.HILLY,2,GameMode.NORMAL, true, false);
          EventBus eventBus = new EventBus();
         GameWorld gw = new GameWorld(settings,eventBus);
 
@@ -210,7 +212,7 @@ public class GameWorldTest {
 
     @Test
     void startLoop_whenAlreadyRunning() throws Exception {
-        GameSettings settings = new GameSettings("blabla", 0, new String[]{}, 0,100, 10, false, null, false,370,LandScape.HILLY,2,GameMode.NORMAL, true);
+        GameSettings settings = new GameSettings("blabla", 0, new String[]{}, 0,100, 10, false, null, false,370,LandScape.HILLY,2,GameMode.NORMAL, true, false);
         EventBus eventBus = new EventBus();
         GameWorld gw = new GameWorld(settings,eventBus);
 
@@ -236,7 +238,7 @@ public class GameWorldTest {
 
     @Test
     void pauseAndResume_togglesGameLoopPauseState() throws Exception {
-        GameSettings settings = new GameSettings("blabla", 1, new String[]{"Team1"}, 1, 100,100, false, null, false, 370, LandScape.HILLY, 2,GameMode.NORMAL, true);
+        GameSettings settings = new GameSettings("blabla", 1, new String[]{"Team1"}, 1, 100,100, false, null, false, 370, LandScape.HILLY, 2,GameMode.NORMAL, true, false);
         EventBus eventBus = new EventBus();
         GameWorld gw = new GameWorld(settings, eventBus);
 
@@ -264,7 +266,7 @@ public class GameWorldTest {
 
     @Test
     void getTurnManager() {
-        GameSettings settings = new GameSettings("blabla", 0, new String[]{}, 0, 100, 100, false, null, false, 370, LandScape.HILLY, 2, GameMode.NORMAL, true);
+        GameSettings settings = new GameSettings("blabla", 0, new String[]{}, 0, 100, 100, false, null, false, 370, LandScape.HILLY, 2, GameMode.NORMAL, true, false);
         EventBus eventBus = new EventBus();
         GameWorld gw = new GameWorld(settings, eventBus);
 

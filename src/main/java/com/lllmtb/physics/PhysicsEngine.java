@@ -10,7 +10,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import com.lllmtb.engine.commands.GameCommand;
 import com.lllmtb.engine.logger.Logger;
 import com.lllmtb.events.physics.*;
-import com.lllmtb.model.entity.team.Team;
 import org.eclipse.jdt.annotation.NonNull;
 
 import com.lllmtb.engine.GameWorld;
@@ -18,6 +17,7 @@ import com.lllmtb.events.game.MapUpdateEvent;
 import com.lllmtb.events.physics.ExplosionEvent;
 import com.lllmtb.events.physics.PhysicsModifierAddedEvent;
 import com.lllmtb.events.physics.PhysicsModifierRemovedEvent;
+import com.lllmtb.model.entity.Entity;
 import com.lllmtb.model.entity.projectile.ExplosiveProjectile;
 import com.lllmtb.model.entity.projectile.Projectile;
 import com.lllmtb.model.entity.worm.Worm;
@@ -443,6 +443,28 @@ public class PhysicsEngine {
         }
         nextStep(ticktime / 1000.0);
     }
+    /**
+     * Updates all physics bodies and processes their game commands.
+     * <p>
+     * This method iterates through all {@link PhysicsBody} instances managed by the engine,
+     * calls their associated entities' update methods, and collects any resulting
+     * {@link GameCommand} objects. All collected commands are then executed in the context
+     * of the current {@link GameWorld}.
+     * </p>
+     * @param tickTime the duration of the simulation tick (in milliseconds).
+     */
+    public void update(double tickTime) {
+        List<GameCommand> commands = new ArrayList<>();
+        for (PhysicsBody body : bodies) {
+            Entity entity = body.getEntity();
+            List<GameCommand> commandsList = entity.update((long) tickTime);
+            commands.addAll(commandsList);
+
+        }
+        for (GameCommand cmd : commands) {
+            cmd.execute(this.world);
+        }
+    }
 
     /**
      * Creates an explosion at the location of a given projectile.
@@ -459,6 +481,7 @@ public class PhysicsEngine {
      */
     public void createExplosion(@NonNull Projectile projectile, int mapDamageRadius, int blastRadius, int damage, double blastForce) {
         Position position = projectile.getBody().getPos();
+
         GameCommand death = Explosion.explosionDamageEffect(position, blastRadius, damage, bodies);
         if (death != null) world.queueCommand(death);
         Explosion.explosionMapEffect(position, mapDamageRadius, collision.getMap());
@@ -466,21 +489,49 @@ public class PhysicsEngine {
         world.getBus().postQueued(new ExplosionEvent(position, blastRadius, ((ExplosiveProjectile) projectile).getExplosionTexture()));
         world.getBus().postQueued(new MapUpdateEvent());
     }
+    /**
+     * Finds the closest enemy worm to a given position, excluding a specified worm.
+     * <p>
+     * This method searches through all physics bodies managed by the engine,
+     * identifies those that are worms belonging to enemy teams, and calculates
+     * the distance from the specified position. The closest enemy worm is returned.
+     * </p>
+     * @param searchPos      the {@link Position} from which to search for the closest enemy worm.
+     * @param ownerTeam      the team of the searching entity, used to identify enemies.
+     * @param wormToExclude  the {@link Worm} instance to exclude from the search (typically the searching worm itself).
+     * @return the closest enemy {@link Worm} instance, or {@code null} if no enemies are found.
+     */
+    public Worm findClosestEnemyFromPosition(Position searchPos, Object ownerTeam, Worm wormToExclude) {
+        return findClosestEnemyFromPosition(searchPos, ownerTeam, wormToExclude, this.bodies);
+    }
+    /**
+     * Finds the closest enemy worm to a given position from a specified list of bodies, excluding a specified worm.
+     * <p>
+     * This method searches through the provided list of physics bodies,
+     * identifies those that are worms belonging to enemy teams, and calculates
+     * the distance from the specified position. The closest enemy worm is returned.
+     * </p>
+     * @param searchPos      the {@link Position} from which to search for the closest enemy worm.
+     * @param ownerTeam      the team of the searching entity, used to identify enemies.
+     * @param wormToExclude  the {@link Worm} instance to exclude from the search (typically the searching worm itself).
+     * @param bodiesList     the list of {@link PhysicsBody} instances to search through.
+     * @return the closest enemy {@link Worm} instance, or {@code null} if no enemies are found.
+     */
+    public Worm findClosestEnemyFromPosition(Position searchPos, Object ownerTeam, Worm wormToExclude, List<PhysicsBody> bodiesList) {
+    return bodiesList.stream()
+        .filter(b -> b.getEntity() instanceof Worm)
+        .map(b -> (Worm) b.getEntity())
+        .filter(w -> !Objects.equals(w.getTeam(), ownerTeam))
+        .filter(w -> w != wormToExclude)
+        .min(Comparator.comparingDouble(targetWorm -> {
+            Position p = targetWorm.getBody().getPos();
+            double dx = searchPos.getX() - p.getX();
+            double dy = searchPos.getY() - p.getY();
+            return (dx * dx) + (dy * dy);
+        }))
+        .orElse(null);
 
-    public Worm findClosestEnemyFromPosition(Position searchPos, Team ownerTeam, Worm wormToExclude) {
-        return bodies.stream()
-            .filter(b -> b.getEntity() instanceof Worm)
-            .map(b -> (Worm) b.getEntity())
-            .filter(w -> !Objects.equals(w.getTeam(), ownerTeam))
-            .filter(w -> w != wormToExclude)
-            .min(Comparator.comparingDouble(targetWorm -> {
-                Position p = targetWorm.getBody().getPos();
-                double dx = searchPos.getX() - p.getX();
-                double dy = searchPos.getY() - p.getY();
-                return (dx * dx) + (dy * dy);
-            }))
-            .orElse(null);
-}
+    }
 
     public static GameCommand fallDamage(Worm worm) {
         int seuil = -50;
@@ -493,4 +544,19 @@ public class PhysicsEngine {
         }
         return death;
     }
+
+    /**
+     * Calculates the angle in radians from a given position to the center of a target physics body.
+     * @param fromPos the {@link Position} from which to calculate the angle.
+     * @param targetBody the target {@link PhysicsBody} to which the angle is calculated.
+     * @return the angle in radians from {@code fromPos} to the center of {@code targetBody}.
+     */
+    public static double calculateAngleToBody(Position fromPos, PhysicsBody targetBody) {
+    Position targetPos = targetBody.getPos();
+    double targetCenterX = targetPos.getX() + (targetBody.getWidth() / 2.0);
+    double targetCenterY = targetPos.getY() + (targetBody.getHeight() / 2.0);
+    double dx = targetCenterX - fromPos.getX();
+    double dy = targetCenterY - fromPos.getY();
+    return Math.atan2(dy, dx);
+}
 }

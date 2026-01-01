@@ -23,6 +23,10 @@ public final class HealingProjectile extends Projectile implements ExplosiveProj
     private static final double FORCE_SOUFFLE = 0;
     private static final String TEXTURE_KEY = "HealingBazookaExplosion";
 
+    /**
+     * Constructor for HealingProjectile.
+     * @param params UseParams containing initial parameters for the projectile.
+     */
     public HealingProjectile(@NonNull UseParams params) {
         super(params, force, mass, height, width);
     }

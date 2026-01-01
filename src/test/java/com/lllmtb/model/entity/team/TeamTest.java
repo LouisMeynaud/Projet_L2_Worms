@@ -33,7 +33,7 @@ public class TeamTest {
     public void setUp() {
         Team.getChosenTeamColors().clear();
         spawnPositions = new Position[]{new Position(0, 0)};
-        team = new Team("TestTeam", 1, spawnPositions);
+        team = new Team("TestTeam", 1, spawnPositions, 0);
     }
 
     // ==================== Constructor Tests ====================
@@ -46,7 +46,7 @@ public class TeamTest {
     @Test
     public void constructor_createsTeamWithUniqueId() {
         Team.getChosenTeamColors().clear();
-        Team team2 = new Team("Team2", 1, new Position[]{new Position(0, 0)});
+        Team team2 = new Team("Team2", 1, new Position[]{new Position(0, 0)}, 0);
         assertNotEquals(team.id, team2.id);
     }
 
@@ -79,14 +79,14 @@ public class TeamTest {
     public void constructor_multipleWorms() {
         Team.getChosenTeamColors().clear();
         Position[] spawns = {new Position(0, 0), new Position(10, 10), new Position(20, 20)};
-        Team teamWith3 = new Team("Team3", 3, spawns);
+        Team teamWith3 = new Team("Team3", 3, spawns, 0);
         assertEquals(3, teamWith3.getNumberOfWorms());
     }
 
     @Test
     public void constructor_throwsExceptionForMismatchedSpawns() {
         Position[] spawns = {new Position(0, 0), new Position(10, 10)};
-        assertThrows(IllegalArgumentException.class, () -> new Team("BadTeam", 3, spawns));
+        assertThrows(IllegalArgumentException.class, () -> new Team("BadTeam", 3, spawns, 0));
     }
 
     // ==================== Team Properties Tests ====================
@@ -109,9 +109,9 @@ public class TeamTest {
     @Test
     public void teamColor_isDifferentForMultipleTeams() {
         Team.getChosenTeamColors().clear();
-        Team team1 = new Team("Team1", 1, new Position[]{new Position(0, 0)});
-        Team team2 = new Team("Team2", 1, new Position[]{new Position(0, 0)});
-        Team team3 = new Team("Team3", 1, new Position[]{new Position(0, 0)});
+        Team team1 = new Team("Team1", 1, new Position[]{new Position(0, 0)}, 0);
+        Team team2 = new Team("Team2", 1, new Position[]{new Position(0, 0)}, 0);
+        Team team3 = new Team("Team3", 1, new Position[]{new Position(0, 0)}, 0);
         assertNotEquals(team1.teamColor, team2.teamColor);
         assertNotEquals(team2.teamColor, team3.teamColor);
         assertNotEquals(team1.teamColor, team3.teamColor);
@@ -167,7 +167,7 @@ public class TeamTest {
     public void removeWorm_multipleWorms() {
         Team.getChosenTeamColors().clear();
         Position[] spawns = {new Position(0, 0), new Position(10, 10)};
-        Team team2 = new Team("Team2", 2, spawns);
+        Team team2 = new Team("Team2", 2, spawns, 0);
         Worm worm1 = team2.getIndexWorm(0);
         Worm worm2 = team2.getIndexWorm(1);
         
@@ -200,7 +200,7 @@ public class TeamTest {
     public void nextWorm_multipleWorms() {
         Team.getChosenTeamColors().clear();
         Position[] spawns = {new Position(0, 0), new Position(10, 10)};
-        Team team2 = new Team("Team2", 2, spawns);
+        Team team2 = new Team("Team2", 2, spawns, 0);
         Worm worm0 = team2.getIndexWorm(0);
         Worm worm1 = team2.getIndexWorm(1);
         
@@ -213,7 +213,7 @@ public class TeamTest {
     public void nextWorm_wrapsAroundToFirst() {
         Team.getChosenTeamColors().clear();
         Position[] spawns = {new Position(0, 0), new Position(10, 10)};
-        Team team2 = new Team("Team2", 2, spawns);
+        Team team2 = new Team("Team2", 2, spawns, 0);
         Worm worm0 = team2.getIndexWorm(0);
         
         team2.nextWorm();  // Move to worm1
@@ -225,7 +225,7 @@ public class TeamTest {
     public void nextWorm_threeWorms() {
         Team.getChosenTeamColors().clear();
         Position[] spawns = {new Position(0, 0), new Position(10, 10), new Position(20, 20)};
-        Team team3 = new Team("Team3", 3, spawns);
+        Team team3 = new Team("Team3", 3, spawns, 0);
         
         Worm worm0 = team3.getIndexWorm(0);
         Worm worm1 = team3.getIndexWorm(1);
@@ -331,7 +331,7 @@ public class TeamTest {
     public void fire_succeeds() {
         team.selectWeapon(WeaponId.GUN);
         
-        UseParams params = new UseParams(0, new Position(0, 0), team.getCurrentWorm());
+        UseParams params = new UseParams(0, new Position(0, 0), team.getCurrentWorm(),0);
         assertDoesNotThrow(() -> team.use(params));
     }
 
@@ -339,7 +339,7 @@ public class TeamTest {
     public void fire_consumesAmmo() {
         team.selectWeapon(WeaponId.GUN);
         
-        UseParams params = new UseParams(0, new Position(0, 0), team.getCurrentWorm());
+        UseParams params = new UseParams(0, new Position(0, 0), team.getCurrentWorm(),0);
         team.use(params);
         
         assertEquals(-2, team.getInventory().weapons.getAmmo(WeaponId.GUN));
@@ -349,7 +349,7 @@ public class TeamTest {
     public void fire_returnsGameCommands() {
         team.selectWeapon(WeaponId.GUN);
         
-        UseParams params = new UseParams(0, new Position(0, 0), team.getCurrentWorm());
+        UseParams params = new UseParams(0, new Position(0, 0), team.getCurrentWorm(), 0);
         var result = team.use(params);
         
         assertNotNull(result);

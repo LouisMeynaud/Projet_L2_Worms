@@ -162,7 +162,7 @@ public class Load {
         try {
             GameSave gameSave = loadGameSave(name);
             reforgeGameSave(gameSave);
-            Map map = MapLoader.loadMatrix(name);
+            Map map = MapLoader.loadMatrixLoad(name);
             return new GameWorld(gameSave, map);
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);

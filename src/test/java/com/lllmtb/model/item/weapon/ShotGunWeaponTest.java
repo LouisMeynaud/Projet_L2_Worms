@@ -27,7 +27,7 @@ public class ShotGunWeaponTest {
     public void fire() throws Exception {
         Position p = new Position(0, 0);
         Worm w = mock(Worm.class);
-        UseParams fp = new UseParams(0, p, w);
+        UseParams fp = new UseParams(0, p, w, 0);
 
         // Check that the fire method returns the correct command
         List<GameCommand> cmds = b.fire(fp);

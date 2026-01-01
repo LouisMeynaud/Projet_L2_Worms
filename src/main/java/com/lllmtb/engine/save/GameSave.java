@@ -63,7 +63,8 @@ public class GameSave {
                 null,
                 Move.getMaxjump(),
                 gameWorld.getGameMode(),
-                Projectile.isFriendlyfire());
+                Projectile.isFriendlyfire(),
+            false);
     }
 
 
