@@ -49,6 +49,10 @@ public class HomeScreenPanel extends JPanel {
         this.add(settingButton, gbc);
         gbc.gridy = 2;
         this.add(closeButton, gbc);
+
+        if (SoundPlayer.getCurrentMusic() == null) SoundPlayer.playMusique("MusiqueGame1");
+
+
     }
 
     protected void paintComponent(Graphics g) {
