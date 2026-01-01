@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class Drop extends Entity {
-    PhysicsBody body;
+    private PhysicsBody body;
     public final ItemId itemIdToUnlock;
     private static final double DROP_MAX_FALL_SPEED = -9.0;
     private CollisionType collisionType;
@@ -26,12 +26,6 @@ public class Drop extends Entity {
         this.itemIdToUnlock = itemId;
         this.body = new PhysicsBody(this, position, new Vector(0, 0), 0.1, 2, 2);
         this.collisionType = CollisionType.SLIDE;
-    }
-
-    private Drop(Drop drop){
-        this.itemIdToUnlock = drop.itemIdToUnlock;
-        this.body = new PhysicsBody(this, drop.getBody().getPos(), new Vector(0,0), 0, 2, 2);
-        this.collisionType = CollisionType.CROSS;
     }
 
     @Override
@@ -44,7 +38,7 @@ public class Drop extends Entity {
         return this.body;
     }
 
-    public List<GameCommand> addModifier(){
+    public List<GameCommand> addModifier() {
         List<GameCommand> commands = new ArrayList<GameCommand>();
         Drop drop = this;
 
@@ -68,8 +62,9 @@ public class Drop extends Entity {
                         PhysicsBody dropBody = drop.getBody();
                         world.getPhysics().remove(dropBody);
                         world.queueCommand(w -> w.getBus().unsubscribe(GroundCheckCollision.class, dropRefListener.get()));
-                        Drop newDrop = new Drop(drop);
-                        world.getPhysics().add(newDrop.getBody());
+                        drop.body = new PhysicsBody(drop, drop.getBody().getPos(), new Vector(0, 0), 0, 2, 2);
+                        drop.collisionType = CollisionType.CROSS;
+                        world.getPhysics().add(drop.getBody());
                     }
                 };
                 dropRefListener.set(groundListener);

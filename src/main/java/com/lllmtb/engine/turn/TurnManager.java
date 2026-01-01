@@ -190,17 +190,14 @@ public final class TurnManager {
         for (int i = 0; i < dropToSpawn; i++) {
             boolean placed = false;
             int x = random.nextInt(mapWidth);
-            int y = 0;
-            do {
-                y = random.nextInt(mapHeight);
-            } while(y < mapHeight-1 && y > mapHeight -10 );
+            int y = mapHeight - 1;
 
 
             ItemId itemId = null;
             if (random.nextInt(2) == 0) {
                 //Weapon Drop
                 WeaponId[] weaponIdValues = WeaponId.values();
-                itemId = weaponIdValues[random.nextInt(1,weaponIdValues.length - 1)]; // Between 1 and length-1 to remove Gun and None in the choice
+                itemId = weaponIdValues[random.nextInt(1, weaponIdValues.length - 1)]; // Between 1 and length-1 to remove Gun and None in the choice
             } else {
                 // Tool Drop
                 ToolId[] toolIdValues = ToolId.values();
