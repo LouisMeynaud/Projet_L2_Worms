@@ -83,7 +83,8 @@ public class GameWorld {
         for (int i = 0; i < settings.nbTeams; i++) {
             try {
                 Worm.setMaxHp(settings.maxHp);
-                Team team = new Team(settings.teamNames[i], settings.nbWorms, tmap.getSpawnPoint()[i]);
+                int coin = settings.coinCheat ? -1 : 0;
+                Team team = new Team(settings.teamNames[i], settings.nbWorms, tmap.getSpawnPoint()[i], coin);
                 teams.add(team);
                 team.getTeamWorms().forEach(this::registerEntity);
                 Logger.logger.info("{} | {} - {} - {}\n", i, team.name, team.id, team.teamColor);
@@ -193,6 +194,7 @@ public class GameWorld {
         processCommands();
         physics.next(tickTime);
         turnManager.updateTurn(tickTime);
+        physics.update(tickTime);
         bus.postQueued(new GameStateUpdatedEvent());
     }
 

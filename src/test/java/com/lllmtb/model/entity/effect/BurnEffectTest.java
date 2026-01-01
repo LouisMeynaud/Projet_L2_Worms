@@ -20,7 +20,7 @@ public class BurnEffectTest {
     @BeforeEach
     public void setUp() {
         Position pos = new Position(0, 0);
-        team = new Team("Team", 1, new Position[]{pos});
+        team = new Team("Team", 1, new Position[]{pos}, 0);
         worm = new Worm("TestWorm", team);
         Worm.setMaxHp(100);
     }

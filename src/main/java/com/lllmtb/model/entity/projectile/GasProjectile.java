@@ -24,7 +24,7 @@ public final class GasProjectile extends Projectile {
     private static final double radius = 6.0;
 
     public GasProjectile(@NonNull UseParams params) {
-        super(params, force, mass, height, width);
+        super(new UseParams(params.angleRadians, new Position(params.pos.getX() - width / 2, params.pos.getY() - height / 2), params.owner, 0), force, mass, height, width);
     }
 
     @Override

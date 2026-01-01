@@ -28,11 +28,11 @@ public class ProjectileTest {
 
     @BeforeEach
     public void setUp() {
-        Team team = new Team("TestTeam", 1, new Position[]{new Position(0, 0)});
+        Team team = new Team("TestTeam", 1, new Position[]{new Position(0, 0)}, 0);
         this.owner = new Worm("Test", team);
         this.spawn = new Position(3.0, 0.0);
         double angle = Math.PI / 4.0;
-        this.params = new UseParams(angle, spawn, owner);
+        this.params = new UseParams(angle, spawn, owner, 0);
     }
 
     @Test

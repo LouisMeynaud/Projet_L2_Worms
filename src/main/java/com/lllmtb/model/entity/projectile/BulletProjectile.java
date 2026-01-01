@@ -17,6 +17,10 @@ public final class BulletProjectile extends Projectile {
     private static final double width  = 1;
     private static final int damage = 20;
 
+    /**
+     * Constructor for BulletProjectile.
+     * @param params UseParams containing initial parameters for the projectile.
+     */
     public BulletProjectile(@NonNull UseParams params) {
         super(params, force, mass, height, width);
     }

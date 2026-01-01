@@ -23,6 +23,10 @@ public final class RocketProjectile extends Projectile implements ExplosiveProje
     private static final double FORCE_SOUFFLE = 100;
     private static final String TEXTURE_KEY = "BazookaExplosion";
 
+    /**
+     * Constructor for RocketProjectile.
+     * @param params UseParams containing initial parameters for the projectile.
+    */
     public RocketProjectile(@NonNull UseParams params) {
         super(params, force, mass, height, width);
     }
