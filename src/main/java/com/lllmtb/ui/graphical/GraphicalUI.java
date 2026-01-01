@@ -28,6 +28,7 @@ public class GraphicalUI implements UI {
     public EventBus eventBus;
     public CardLayout cardLayout; // the container for all pages
     public JPanel mainPanel;
+    public JPanel loadGamePanel;
 
 
     /**
@@ -70,7 +71,7 @@ public class GraphicalUI implements UI {
         MusicSettingsScreenPanel musicSettingsScreen = new MusicSettingsScreenPanel(this.eventBus);
         GameScreen gamePanel = new GameScreen(eventbus);
         NewOrLoadPanel newOrLoadPanel = new NewOrLoadPanel(eventbus);
-        LoadGamePanel loadGamePanel = new LoadGamePanel(eventbus);
+        this.loadGamePanel = new LoadGamePanel(eventbus);
         mainPanel.add(homeScreen, "homeScreen"); // the principal page
         mainPanel.add(startSettingScreen, "startSettingScreen"); // the game launch settings page
         mainPanel.add(gamePanel, "gamePanel"); // la page de jeu
@@ -118,6 +119,8 @@ public class GraphicalUI implements UI {
         });
 
         eventBus.subscribe(ScreenLoadGame.class, event -> {
+            this.loadGamePanel =  new LoadGamePanel(this.eventBus);
+            mainPanel.add(loadGamePanel, "loadGamePanel");
             cardLayout.show(mainPanel, "loadGamePanel");
             Logger.logger.debug("Show loadGamePanel");
 

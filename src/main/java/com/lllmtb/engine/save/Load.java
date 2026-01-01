@@ -100,20 +100,47 @@ public class Load {
             try {
             if (saveBody.entity instanceof Worm worm) {
                 // use reflexion to recreate worm instance with correct PhysicsBody
-                    Field bodyField = Worm.class.getDeclaredField("body");
-                    bodyField.setAccessible(true);
-                    bodyField.set(worm, saveBody.physicsBody);
+                    Field bodyWormField = Worm.class.getDeclaredField("body");
+                    bodyWormField.setAccessible(true);
+                    bodyWormField.set(worm, saveBody.physicsBody);
             } else if (saveBody.entity instanceof Projectile projectile) {
                 // use reflexion to recreate worm instance with correct PhysicsBody
-                Field bodyField = Projectile.class.getDeclaredField("body");
-                bodyField.setAccessible(true);
-                bodyField.set(projectile, saveBody.physicsBody);
-            } else if (saveBody.entity instanceof Coin c) {
+                Field bodyProjectileField = Projectile.class.getDeclaredField("body");
+                bodyProjectileField.setAccessible(true);
+                bodyProjectileField.set(projectile, saveBody.physicsBody);
+
+                // use reflexion to recreate worm instance with correct PhysicsBody
+                Field entityProjectileField = PhysicsBody.class.getDeclaredField("entity");
+                entityProjectileField.setAccessible(true);
+                entityProjectileField.set(saveBody.physicsBody, projectile);
+
+
+            } else if (saveBody.entity instanceof Coin coin) {
+                // use reflexion to recreate worm instance with correct PhysicsBody
                 System.out.println("chargement coin");
-                Field bodyField = Coin.class.getDeclaredField("body");
-                bodyField.setAccessible(true);
-                bodyField.set(c, saveBody.physicsBody);
+                Field bodyCoinField = Coin.class.getDeclaredField("body");
+                bodyCoinField.setAccessible(true);
+                bodyCoinField.set(coin, saveBody.physicsBody);
+
+                // use reflexion to recreate worm instance with correct PhysicsBody
+                Field entityCoinField = PhysicsBody.class.getDeclaredField("entity");
+                entityCoinField.setAccessible(true);
+                entityCoinField.set(saveBody.physicsBody, coin);
+
+            }else if (saveBody.entity instanceof Drop drop) {
+                // use reflexion to recreate worm instance with correct PhysicsBody
+                System.out.println("chargement drop");
+                Field bodyDropField = Drop.class.getDeclaredField("body");
+                bodyDropField.setAccessible(true);
+                bodyDropField.set(drop, saveBody.physicsBody);
+
+                // use reflexion to recreate worm instance with correct PhysicsBody
+                Field entityDropField = PhysicsBody.class.getDeclaredField("entity");
+                entityDropField.setAccessible(true);
+                entityDropField.set(saveBody.physicsBody, drop);
             }
+
+
             } catch (NoSuchFieldException | IllegalAccessException e) {
                 throw new RuntimeException(e);
             }
