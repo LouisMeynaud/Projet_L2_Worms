@@ -6,6 +6,7 @@ import com.lllmtb.events.game.ToolSelectedEvent;
 import com.lllmtb.events.game.WeaponSelectedEvent;
 import com.lllmtb.events.input.MoveInputEvent;
 import com.lllmtb.events.turn.ChangeWormsEvent;
+import com.lllmtb.events.turn.TurnFinishEvent;
 import com.lllmtb.events.turn.TurnSkipEvent;
 import com.lllmtb.model.entity.Coin;
 import com.lllmtb.model.entity.projectile.BulletProjectile;
@@ -39,6 +40,7 @@ import com.lllmtb.events.turn.TurnStopEvent;
 import com.lllmtb.events.turn.WormPlayable;
 import com.lllmtb.physics.GameMode;
 import com.lllmtb.terrain.generation.LandScape;
+import org.mockito.Mockito;
 
 public class TurnManagerTest {
     private TurnManager turnManager;
@@ -292,7 +294,13 @@ public class TurnManagerTest {
         long ancientCurrentRemainingTime = this.turnManager.getRemainingTime();
         try {Thread.sleep(50);} catch (InterruptedException ignored) {}
         assertEquals(this.turnManager.getRemainingTime(), ancientCurrentRemainingTime);
+    }
 
+    @Test //TODO : TEST THE WINNING
+    public void testFinishTurns(){
+        Team team = Mockito.mock(Team.class);
+        TurnFinishEvent tf = new TurnFinishEvent(team);
+        assertSame(tf.winningTeam, team);
 
     }
 }
