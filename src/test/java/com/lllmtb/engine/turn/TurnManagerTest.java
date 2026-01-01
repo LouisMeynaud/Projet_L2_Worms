@@ -64,7 +64,7 @@ public class TurnManagerTest {
     void testConstructor(){
         assertNotNull(turnManager.getWorld());
         assertEquals(10000, this.turnManager.getTurnDuration());
-        assertEquals(10, this.eb.listenerCount());
+        assertEquals(11, this.eb.listenerCount());
     }
 
     @Test
@@ -273,5 +273,17 @@ public class TurnManagerTest {
         try {Thread.sleep(50);} catch (InterruptedException ignored) {}
         assertNotNull(team2.getHand());
         assertInstanceOf(ToolId.class, team2.getHand());
+    }
+
+    @Test
+    public void testSameRemainingTimeWhenPause(){
+        Team team2 = new Team("TestTeam", 1, new Position[] {new Position(1, 1),});
+        this.turnManager.startTurn(team2);
+        this.gw.pause(true);
+        long ancientCurrentRemainingTime = this.turnManager.getRemainingTime();
+        try {Thread.sleep(50);} catch (InterruptedException ignored) {}
+        assertEquals(this.turnManager.getRemainingTime(), ancientCurrentRemainingTime);
+
+
     }
 }
