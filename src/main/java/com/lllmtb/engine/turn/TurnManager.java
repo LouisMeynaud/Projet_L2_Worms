@@ -9,11 +9,7 @@ import com.lllmtb.engine.commands.GameCommand;
 import com.lllmtb.engine.logger.Logger;
 import com.lllmtb.engine.save.Save;
 import com.lllmtb.events.EventListener;
-import com.lllmtb.events.game.CoinCollisionEvent;
-import com.lllmtb.events.game.DropCollisionEvent;
-import com.lllmtb.events.game.MapUpdateEvent;
-import com.lllmtb.events.game.ToolSelectedEvent;
-import com.lllmtb.events.game.WeaponSelectedEvent;
+import com.lllmtb.events.game.*;
 import com.lllmtb.events.physics.GroundCheckCollision;
 import com.lllmtb.events.input.UseInputEvent;
 import com.lllmtb.events.input.MoveInputEvent;
@@ -156,11 +152,8 @@ public final class TurnManager {
             }
         }
         // La Save du premier tour ne marche pas . TODO : Faire sorte qu'elle marche
-        try {
-            Save.saveAll();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        Save.setGameWorld(world);
+        this.world.getBus().postQueued(new SaveEvent());
     }
 
     /**
@@ -295,8 +288,6 @@ public final class TurnManager {
     private void passNextTurn() {
         this.turn.end();
         world.nextTeamTurn();
-        Save.setGameWorld(world);
-
     }
 
     /**

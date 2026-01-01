@@ -85,9 +85,11 @@ public class GameEngine {
         Objects.requireNonNull(world);
         // Uncomment to log all world events for debugging
         //world.getBus().subscribe(Event.class, e -> Logger.logger.info("[EVENT/world]: {}", e.getClass().getSimpleName()));
-        Save.setGameWorld(world);
         systemBus.postSync(new WorldCreatedEvent(world));
-        systemBus.subscribe(SaveEvent.class, e -> {
+        world.getBus().subscribe(SaveEvent.class, e -> {
+            world.getBus().postSync(new FinalSaveEvent());
+        });
+        world.getBus().subscribe(FinalSaveEvent.class, e -> {
             try {
                 Save.saveAll();
             } catch (IOException ex) {
