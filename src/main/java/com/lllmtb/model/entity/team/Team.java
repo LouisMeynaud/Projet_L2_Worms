@@ -146,6 +146,7 @@ public class Team {
         this.name = teamSave.team.name;
         this.numberOfWorms =  teamSave.team.numberOfWorms;
         this.id = teamSave.team.id;
+        this.credits = teamSave.team.credits;
         for (Worm worm: teamSave.team.getTeamWorms()) {
             this.worms.add(worm);
         }
