@@ -22,6 +22,10 @@ public final class CatConcreteProjectile extends Projectile implements Explosive
     private static final double FORCE_SOUFFLE = 0;
     private static final String TEXTURE_KEY = "MissileExplosion";
 
+    /**
+     * Constructor for CatConcreteProjectile.
+     * @param params UseParams containing initial parameters for the projectile.
+     */
     public CatConcreteProjectile(@NonNull UseParams params) {
         super(params, force * Math.min(params.duration / 100, 3) / 2, mass, height, width);
         }
@@ -31,6 +35,11 @@ public final class CatConcreteProjectile extends Projectile implements Explosive
         return CollisionType.BOUNCE;
     }
 
+    /**
+     * Handles the impact of the projectile with an entity.
+     * @param entity The entity that the projectile has impacted.
+     * @return A list of GameCommands resulting from the impact.
+     */
     @Override
     public List<GameCommand> onImpact(Entity entity) {
         List<GameCommand> list = new ArrayList<>();

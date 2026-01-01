@@ -37,6 +37,10 @@ public class MapLoader {
         }
     }
 
+    /**
+     * Get a list of available map names.
+     * @return Array of map names.
+     */
     public static String[] getListeNomsMaps() {
         return new String[] {"Camembert", "Emmental", "Gorgonzola", "Roquefort" };
     }

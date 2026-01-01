@@ -80,7 +80,7 @@ public final class TurnManager {
         world.getBus().postQueued(new WormPlayable(turn.getWormPlayable()));
         if (this.nbTurn > world.getTeams().size() * 4) {
             Logger.logger.info("Level of the water : {}", world.getMap().getHeightWater());
-            if (world.getMap().risingWater()) {
+            if (world.getMap().risingWater(1)) {
                 world.getBus().postQueued(new MapUpdateEvent());
             }
         }
@@ -93,14 +93,12 @@ public final class TurnManager {
         int mapHeight = world.getMap().getHeight();
 
         for (int i = 0; i < coinsToSpawn; i++) {
-            boolean placed = false;
             int x = random.nextInt(mapWidth);
             for (int y = mapHeight - 1; y > 0; y--) {
                 if (world.getMap().isSolid(new Position(x, y))) {
                     int coinY = y + 1;
                     Coin coin = new Coin(new Position(x + 0.25, coinY), 50);
                     world.getPhysics().getBodies().add(coin.getBody());
-                    placed = true;
                     break;
                 }
             }

@@ -22,6 +22,10 @@ public class LoadGamePanel extends JPanel {
     private PanelListe panelListe;
     private final EventBus eventBus;
 
+    /**
+     * Constructor for LoadGamePanel.
+     * @param eventBus The EventBus for posting events.
+     */
     public LoadGamePanel(EventBus eventBus) {
         this.eventBus = eventBus;
         this.setLayout(new BorderLayout(10, 10));
@@ -49,7 +53,7 @@ public class LoadGamePanel extends JPanel {
 
 
         backButton.addActionListener(e -> {
-            eventBus.postQueued(new ScreenNewOrLoadEvent());
+            this.eventBus.postQueued(new ScreenNewOrLoadEvent());
         });
 
 

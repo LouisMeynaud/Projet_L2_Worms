@@ -24,6 +24,10 @@ public final class ElectronProjectile extends Projectile {
 
     private int bounces = 5;
 
+    /**
+     * Constructor for ElectronProjectile.
+     * @param params UseParams containing initial parameters for the projectile.
+     */
     public ElectronProjectile(@NonNull UseParams params) {
         super(params, force, mass, height, width);
     }
@@ -33,6 +37,11 @@ public final class ElectronProjectile extends Projectile {
         return CollisionType.CROSS;
     }
 
+    /**
+     * Handles the impact of the projectile with an entity.
+     * @param entity The entity that the projectile has impacted.
+     * @return A list of GameCommands resulting from the impact.
+     */
     @Override
     public List<GameCommand> onImpact(Entity entity) {
         if (entity == null) {
@@ -52,6 +61,11 @@ public final class ElectronProjectile extends Projectile {
         return list;
     }
 
+    /**
+     * Special ability to track the closest enemy worm.
+     * @param wormToExclude The worm to exclude from targeting (usually the owner).
+     * @return A GameCommand that adjusts the projectile's trajectory.
+     */
     public GameCommand specialAbility(Worm wormToExclude) {
         Position myPos = this.getBody().getPos();
         Worm owner = this.getOwner();

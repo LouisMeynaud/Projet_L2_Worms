@@ -6,6 +6,13 @@ import com.lllmtb.physics.Position;
 
 public class CreateSpawnPoint {
 
+    /**
+     * Creates spawn points for teams on the map.
+     * @param nbTeams Number of teams.
+     * @param nbWorms Number of worms per team.
+     * @param map The game map.
+     * @return A 2D array of Positions representing spawn points for each team and worm. (one little array per team)
+     */
     public static Position[][] createSpawnPoint(int nbTeams, int nbWorms, Map map) {
         int nbSpawnPoint = nbTeams * nbWorms;
         Position[] spawnPointPos = new Position[nbSpawnPoint];

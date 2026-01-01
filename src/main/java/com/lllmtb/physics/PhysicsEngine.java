@@ -443,6 +443,16 @@ public class PhysicsEngine {
         }
         nextStep(ticktime / 1000.0);
     }
+    /**
+     * Updates all physics bodies and processes their game commands.
+     * <p>
+     * This method iterates through all {@link PhysicsBody} instances managed by the engine,
+     * calls their associated entities' update methods, and collects any resulting
+     * {@link GameCommand} objects. All collected commands are then executed in the context
+     * of the current {@link GameWorld}.
+     * </p>
+     * @param tickTime the duration of the simulation tick (in milliseconds).
+     */
     public void update(double tickTime) {
         List<GameCommand> commands = new ArrayList<>();
         for (PhysicsBody body : bodies) {
@@ -479,9 +489,34 @@ public class PhysicsEngine {
         world.getBus().postQueued(new ExplosionEvent(position, blastRadius, ((ExplosiveProjectile) projectile).getExplosionTexture()));
         world.getBus().postQueued(new MapUpdateEvent());
     }
+    /**
+     * Finds the closest enemy worm to a given position, excluding a specified worm.
+     * <p>
+     * This method searches through all physics bodies managed by the engine,
+     * identifies those that are worms belonging to enemy teams, and calculates
+     * the distance from the specified position. The closest enemy worm is returned.
+     * </p>
+     * @param searchPos      the {@link Position} from which to search for the closest enemy worm.
+     * @param ownerTeam      the team of the searching entity, used to identify enemies.
+     * @param wormToExclude  the {@link Worm} instance to exclude from the search (typically the searching worm itself).
+     * @return the closest enemy {@link Worm} instance, or {@code null} if no enemies are found.
+     */
     public Worm findClosestEnemyFromPosition(Position searchPos, Object ownerTeam, Worm wormToExclude) {
         return findClosestEnemyFromPosition(searchPos, ownerTeam, wormToExclude, this.bodies);
     }
+    /**
+     * Finds the closest enemy worm to a given position from a specified list of bodies, excluding a specified worm.
+     * <p>
+     * This method searches through the provided list of physics bodies,
+     * identifies those that are worms belonging to enemy teams, and calculates
+     * the distance from the specified position. The closest enemy worm is returned.
+     * </p>
+     * @param searchPos      the {@link Position} from which to search for the closest enemy worm.
+     * @param ownerTeam      the team of the searching entity, used to identify enemies.
+     * @param wormToExclude  the {@link Worm} instance to exclude from the search (typically the searching worm itself).
+     * @param bodiesList     the list of {@link PhysicsBody} instances to search through.
+     * @return the closest enemy {@link Worm} instance, or {@code null} if no enemies are found.
+     */
     public Worm findClosestEnemyFromPosition(Position searchPos, Object ownerTeam, Worm wormToExclude, List<PhysicsBody> bodiesList) {
     return bodiesList.stream()
         .filter(b -> b.getEntity() instanceof Worm)
@@ -496,7 +531,7 @@ public class PhysicsEngine {
         }))
         .orElse(null);
 
-}
+    }
 
     public static GameCommand fallDamage(Worm worm) {
         int seuil = -50;
@@ -510,6 +545,12 @@ public class PhysicsEngine {
         return death;
     }
 
+    /**
+     * Calculates the angle in radians from a given position to the center of a target physics body.
+     * @param fromPos the {@link Position} from which to calculate the angle.
+     * @param targetBody the target {@link PhysicsBody} to which the angle is calculated.
+     * @return the angle in radians from {@code fromPos} to the center of {@code targetBody}.
+     */
     public static double calculateAngleToBody(Position fromPos, PhysicsBody targetBody) {
     Position targetPos = targetBody.getPos();
     double targetCenterX = targetPos.getX() + (targetBody.getWidth() / 2.0);

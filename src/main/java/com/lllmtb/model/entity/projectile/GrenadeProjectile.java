@@ -26,6 +26,10 @@ public final class GrenadeProjectile extends Projectile implements ExplosiveProj
     private long tempsEcoule = 0;
     private long remainingTime = 4000;
 
+    /**
+     * Constructor for GrenadeProjectile.
+     * @param params UseParams containing initial parameters for the projectile.
+     */
     public GrenadeProjectile(@NonNull UseParams params) {
         super(params, force * Math.min(params.duration / 100, 3) / 2, mass, height, width);
         }
@@ -40,6 +44,11 @@ public final class GrenadeProjectile extends Projectile implements ExplosiveProj
         return new ArrayList<>();
     }
 
+    /**
+     * Updates the projectile state based on the elapsed tick time.
+     * @param tickTime The time elapsed since the last update.
+     * @return A list of GameCommands resulting from the update.
+     */
     @Override
     public List<GameCommand> update(long tickTime) {
         List<GameCommand> cmds = new ArrayList<>();

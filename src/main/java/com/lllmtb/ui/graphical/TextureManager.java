@@ -26,7 +26,7 @@ public class TextureManager {
 
 
     /**
-     * load every texture one time at the start (avoids lag in part)
+     * Loads all textures into their respective maps.
      */
     public static void load() {
         try {

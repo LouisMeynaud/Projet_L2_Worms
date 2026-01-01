@@ -17,6 +17,10 @@ public final class BabyTowerProjectile extends Projectile {
     private static final double width  = 1;
     private static final int damage = 3;
 
+    /**
+     * Constructor for BabyTowerProjectile.
+     * @param params UseParams containing initial parameters for the projectile.
+     */
     public BabyTowerProjectile(@NonNull UseParams params) {
         super(params, force, mass, height, width);
     }

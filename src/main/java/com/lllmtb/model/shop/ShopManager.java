@@ -13,11 +13,17 @@ public class ShopManager {
 
     private final ArrayList<ShopElement> items;
 
+    /**
+     * Constructor initializes the shop manager and populates the shop with items.
+     */
     public ShopManager() {
         this.items = new ArrayList<>();
         initShop();
     }
 
+    /**
+     * Initializes the shop with items, their prices, and ammo pack sizes.
+     */
     private void initShop() {
         //prix temporaires , a changer plus tard
 
@@ -40,10 +46,19 @@ public class ShopManager {
 
     }
 
+    /**
+     * Gets the list of shop elements.
+     * @return List of ShopElement objects in the shop.
+     */
     public ArrayList<ShopElement> getShopElements() {
         return items;
     }
 
+    /**
+     * Buys an item for the given team if they have enough credits.
+     * @param id ItemId of the item to be purchased.
+     * @param team Team attempting to purchase the item.
+     */
     public void buyItem(ItemId id, Team team) {
         ShopElement itemBuy = null;
         for (ShopElement element : items) {
@@ -61,6 +76,11 @@ public class ShopManager {
         }
     }
 
+    /**
+     * Buys ammo for the given item for the team if they have enough credits.
+     * @param id ItemId of the item to buy ammo for.
+     * @param team Team attempting to purchase the ammo.
+     */
     public void buyAmmo(ItemId id, Team team) {
         ShopElement itemBuy = null;
         for (ShopElement element : items) {

@@ -67,6 +67,10 @@ public class GameWorldPanel extends JPanel {
 
     public long chargeStartTime = 0;
 
+    /**
+     * Constructor for GameWorldPanel.
+     * @param eventBus The EventBus for event handling.
+     */
     public GameWorldPanel(EventBus eventBus) {
         this.eventBus = eventBus;
         setFocusable(true);
@@ -77,6 +81,10 @@ public class GameWorldPanel extends JPanel {
 
 
 /////////initialisation listenner (fenetre/imput)/////////////
+
+    /**
+     * Initializes window listeners for resizing and focus events.
+     */
     private void initWindowListeners() {
         addComponentListener(new ComponentAdapter() {
             @Override
@@ -112,11 +120,10 @@ public class GameWorldPanel extends JPanel {
         });
 
         MouseAdapter mouseHandler = new MouseAdapter() {
-            private long pressStartTime;
+
 
             @Override
             public void mousePressed(MouseEvent e) {
-                pressStartTime = System.currentTimeMillis();
                 lastMouseX = e.getX();
                 lastMouseY = e.getY();
 
@@ -162,12 +169,12 @@ public class GameWorldPanel extends JPanel {
                     repaint();
                 }
 
-                if (type == MouseEvent.BUTTON3) {
-                    isCameraMode = false;
-                    if (!hasDraggedCamera) {
-                        int a = 0; //suprimer une fois l'implementation du else faite
-                    }
-                }
+                // if (type == MouseEvent.BUTTON3) {
+                //     isCameraMode = false;
+                //     if (!hasDraggedCamera) {
+                //
+                //     }
+                // }
             }
 
             @Override
@@ -229,7 +236,12 @@ public class GameWorldPanel extends JPanel {
     }
 
 ///////////// EVENT SUBSCRIPTIONS////////////////
+
+    /**
+     * Subscribes to system events such as world creation.
+     */
     public void subscribeToSystemEvents() {
+
         eventBus.subscribe(WorldCreatedEvent.class, event -> {
             this.world = event.getWorld();
             this.renderer = new WorldRenderer(this, this.world);
@@ -240,6 +252,9 @@ public class GameWorldPanel extends JPanel {
         });
     }
 
+    /**
+     * Subscribes to world-specific events for updating the panel.
+     */
     public void subscribeToWorldEvents() {
         if (this.world == null) return;
 
@@ -279,6 +294,10 @@ public class GameWorldPanel extends JPanel {
     }
 
 /////////////INPUT LOGIC (Processing)///////////////
+
+    /**
+     * Processes the current input states and posts corresponding events.
+     */
     public void processInputs() {
         if (pressedKeys.contains(KeyEvent.VK_UP)) {
             world.getBus().postQueued(new JetpackBoostInputEvent());
@@ -304,8 +323,7 @@ public class GameWorldPanel extends JPanel {
 ///////////CAMERA LOGIC//////////
 
     /**
-     * ajuste la position de la camera pour que la carte tienne entiere dans l'ecran lors du premier affichage
-     * appelee a l'initialisation
+     * Fits the map to the screen by adjusting zoom and camera offsets.
      */
     protected void fitMapToScreen() {
         double screenWidth = getWidth();
@@ -328,7 +346,7 @@ public class GameWorldPanel extends JPanel {
     }
 
     /**
-     * verifie et corrige la position de la camera pour qu'elle ne sorte pas de la map (pour eviter de voir des bord blanc)
+     * Checks and adjusts camera bounds to ensure it stays within the map limits.
      */
      protected void checkCameraBounds() {
         double screenWidth = getWidth();
@@ -359,7 +377,7 @@ public class GameWorldPanel extends JPanel {
     }
 
     /**
-     * verifie que l'on essaye pas de trop zoomer/dezoomer et si c'est le cas on replace au zoomMax/minim
+     * Check that we are not trying to zoom in/out too much, and if so, reset to the maximum/minimum zoom level.
      */
     protected void validateZoom() {
         double screenWidth = getWidth();
@@ -375,7 +393,7 @@ public class GameWorldPanel extends JPanel {
     }
 
     /**
-     * permet a la camera de suivre le worms s'il bouge
+     * Makes the camera follow the currently active worm.
      */
     public void screenFollowCurrentWorms() {
         Worm activeWorm = world.getTurnManager().getTurn().getWormPlayable();
@@ -403,6 +421,12 @@ public class GameWorldPanel extends JPanel {
 
 /////////////////Utilitaire/////////////////
 
+    /**
+     * Converts screen coordinates to world coordinates.
+     * @param screenX The x coordinate on the screen.
+     * @param screenY The y coordinate on the screen.
+     * @return The corresponding Position in the game world.
+     */
     protected Position screenToWorld(int screenX, int screenY) {
         double pixelX = (screenX - cameraOffsetX) / currentZoom;
         double pixelY = (screenY - cameraOffsetY) / currentZoom;
@@ -416,6 +440,11 @@ public class GameWorldPanel extends JPanel {
         return new Position(tileX, tileY);
     }
 
+    /**
+     * Calculates the screen bounds of a physics body.
+     * @param body The physics body.
+     * @return An array containing the x and y screen coordinates, width, and height in pixels.
+     */
     protected double[] getScreenBounds(PhysicsBody body) {
         double largeurPx = body.getWidth() * tileSize;
         double hauteurPx = body.getHeight() * tileSize;
@@ -440,7 +469,8 @@ public class GameWorldPanel extends JPanel {
 /////////////////RENDERING/////////////////
 
     /**
-     * appelle le render de WorldRender pour tout dessiner
+     * Paints the component by rendering the game world.
+     * @param g The Graphics object for rendering.
      */
     @Override
     protected void paintComponent(Graphics g) {

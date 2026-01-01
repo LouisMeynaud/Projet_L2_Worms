@@ -24,14 +24,14 @@ import com.lllmtb.model.item.weapon.WeaponId;
 
 
 /**
- * classe utilitaire fournissans des methode statique pour eviter de dupliquer du code
- * Contient par exemple des methode pour crée des bouton avec des image , des slider , generer un "hashCode" etc
+ * classe utilitaire fournissans des methode statique pour eviter de dupliquer du code.
+ * Contient par exemple des methode pour crée des bouton avec des image , des slider , generer un "hashCode" etc.
  */
 public class Utilitaire {
 
 
     /**
-     * cree un bouton swing personnaliser avec une image de fond et une image de survol(HOVER)
+     * cree un bouton swing personnaliser avec une image de fond et une image de survol(HOVER).
      * @param <T> Le type de la cle dans la map contenant les texture
      * @param textureMap Le map contenant les texture
      * @param name la cle de l'image dans le map
@@ -242,7 +242,14 @@ public class Utilitaire {
         }
         return sprites;
     }
-
+    /**
+     * crée un bouton pour le shop avec une image et un texte.
+     * change la couleur du texte en fonction de si l'objet peut etre acheter ou non.
+     * @param img l'image de l'objet
+     * @param text le texte a afficher
+     * @param canBuy boolean indiquant si l'objet peut etre acheter ou non
+     * @return le bouton
+     */
     public static JButton createShopButton(BufferedImage img, String text, boolean canBuy) {
         JButton button = new JButton();
         button.setLayout(new BorderLayout());

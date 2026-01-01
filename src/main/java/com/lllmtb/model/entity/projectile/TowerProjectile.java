@@ -30,7 +30,10 @@ public final class TowerProjectile extends Projectile {
     private long cooldownTimer = 0;
     private int creationTurnIndex = -1;
 
-
+    /**
+     * Constructor for TowerProjectile.
+     * @param params UseParams containing initial parameters for the projectile.
+     */
     public TowerProjectile(@NonNull UseParams params) {
         super(params, FORCE * Math.min(params.duration / 100, 3) / 2, MASS, HEIGHT, WIDTH);
         }
@@ -54,12 +57,16 @@ public final class TowerProjectile extends Projectile {
 
         return cmds;
     }
-
-        public boolean blocksTurnEnd() {
+    @Override
+    public boolean blocksTurnEnd() {
         return false;
     }
 
-
+    /**
+     * Handles the shooting logic of the tower projectile.
+     * @param tickTime The time elapsed since the last update.
+     * @return A GameCommand that performs the shooting action.
+     */
     private GameCommand shooting(long tickTime) {
     return world -> {
             if (towerDeath(world)) return;
@@ -88,21 +95,31 @@ public final class TowerProjectile extends Projectile {
         };
     }
 
-private boolean towerDeath(GameWorld world) {
-    int currentTurnIndex = world.getTurnManager().getNbTurn();
+    /**
+     * Checks if the tower projectile should be removed based on turn count.
+     * @param world The game world context.
+     * @return true if the tower projectile is to be removed, false otherwise.
+     */
+    private boolean towerDeath(GameWorld world) {
+        int currentTurnIndex = world.getTurnManager().getNbTurn();
 
-    if (this.creationTurnIndex == -1) {
-        this.creationTurnIndex = currentTurnIndex;
+        if (this.creationTurnIndex == -1) {
+            this.creationTurnIndex = currentTurnIndex;
+        }
+        if (currentTurnIndex - this.creationTurnIndex > world.getTeams().size() - 1) {
+            world.queueCommand(this.delete());
+            return true;
+        }
+        return false;
     }
-    if (currentTurnIndex - this.creationTurnIndex > world.getTeams().size() - 1) {
-        world.queueCommand(this.delete());
-        return true;
-    }
-    return false;
-}
 
 
-
+    /**
+     * Fires a baby tower projectile at the specified target.
+     * @param world The game world context.
+     * @param target The worm target to shoot at.
+     * @param myPos The position of the tower projectile.
+     */
     private void fireAtTarget(GameWorld world, Worm target, Position myPos) {
     Position spawnPos = new Position(myPos.getX(),  myPos.getY() + (HEIGHT / 2.0));
     double angle = PhysicsEngine.calculateAngleToBody(spawnPos, target.getBody());

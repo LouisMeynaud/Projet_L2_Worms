@@ -26,6 +26,11 @@ public class SettingsStartPanel extends JPanel {
     SettingMapPanel mapSettingPanel;
     SettingGamePanel gameSettingsPanel;
 
+    /**
+     * This panel contains both the map settings and game settings panels,
+     * along with buttons to start the game or go back.
+     * @param eventBus the event bus of the game
+     */
     public SettingsStartPanel(EventBus eventBus) {
         this.eventBus = eventBus;
         panelSetting();
@@ -33,6 +38,10 @@ public class SettingsStartPanel extends JPanel {
 
     }
 
+    /**
+     * This panel contains both the map settings and game settings panels,
+     * along with buttons to start the game or go back.
+     */
     public void panelSetting() {
 
         this.setLayout(new BorderLayout(10, 10)); // North zone, South,...
@@ -81,7 +90,11 @@ public class SettingsStartPanel extends JPanel {
         });
     }
 
-
+    /**
+     * Sets the game settings based on user input from the game settings panel.
+     * @param gameSettingsPanel The panel containing game settings input fields.
+     * @return A GameSettings object populated with the user's selections.
+     */
     private GameSettings setSettings(SettingGamePanel gameSettingsPanel) {
         int nbEquipes = gameSettingsPanel.getNbEquipes();
         int nbVWorms = gameSettingsPanel.getNbWorms();

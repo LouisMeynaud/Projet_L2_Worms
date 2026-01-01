@@ -17,6 +17,11 @@ public final class BowProjectile extends Projectile {
     private static final double width  = 2;
     private int damage = 10;
 
+
+    /**
+     * Constructor for BowProjectile.
+     * @param params UseParams containing initial parameters for the projectile.
+     */
     public BowProjectile(@NonNull UseParams params) {
         super(params, force * Math.min(params.duration / 100, 3) / 2, mass, height, width);
         this.damage = (int) (damage * Math.min(params.duration / 100, 3) / 2);

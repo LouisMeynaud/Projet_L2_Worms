@@ -287,17 +287,25 @@ public class SettingGamePanel extends JPanel {
     }
 
     /**
-     * gets if the friendlyFire option is selected
-     * @return ture if selected.
+     * gets if the friendlyFire option is selected.
+     * @return true if selected.
      */
     public boolean getFriendlyFire() {
         return this.friendlyFireCheckBox.isSelected();
     }
 
+    /**
+     * Gets the selected game mode from the combo box.
+     * @return the selected GameMode.
+     */
     public GameMode getGameMode() {
         return (GameMode) this.gameModeBox.getSelectedItem();
     }
 
+    /**
+     * Gets if the coin cheat option is selected.
+     * @return true if coin cheat is selected, false otherwise.
+     */
     public boolean getCoinCheat() {
         return this.coinCheatBox.isSelected();
     }
