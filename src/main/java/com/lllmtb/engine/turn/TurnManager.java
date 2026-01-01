@@ -40,7 +40,6 @@ public final class TurnManager {
     private long remainingTimeInMs;
     private int nbTurn;
     private boolean turnFinish = false;
-    public static Team winner;
 
     public TurnManager(GameWorld world, long turnDuration) {
         this.world = world;
@@ -183,8 +182,7 @@ public final class TurnManager {
 
         EventListener<TurnFinishEvent> turnFinishListener = event -> {
             world.stop();
-            this.winner = this.getTurn().getTeam();
-            new ScreenEndGameEvent();
+            world.getBus().postQueued(new ScreenEndGameEvent(event.winningTeam));
         };
 
         EventListener<WeaponSelectedEvent> weaponSelectedEventEventListener = event -> {

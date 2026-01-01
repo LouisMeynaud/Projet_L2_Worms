@@ -7,6 +7,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.UIManager;
 
+
 import com.lllmtb.engine.logger.Logger;
 import com.lllmtb.events.EventBus;
 import com.lllmtb.events.game.StartGameEvent;
@@ -15,7 +16,6 @@ import com.lllmtb.events.ui.graphical.ScreenHomeEvent;
 import com.lllmtb.events.ui.graphical.ScreenLoadGame;
 import com.lllmtb.events.ui.graphical.ScreenNewOrLoadEvent;
 import com.lllmtb.events.ui.graphical.ScreenSettingsGame;
-import com.lllmtb.model.entity.team.Team;
 import com.lllmtb.ui.UI;
 import com.lllmtb.ui.graphical.GamePanel.GameScreen;
 import com.lllmtb.ui.graphical.SettingsPanel.LoadGamePanel;
@@ -28,7 +28,6 @@ public class GraphicalUI implements UI {
     public EventBus eventBus;
     public CardLayout cardLayout; // the container for all pages
     public JPanel mainPanel;
-
     private EndGameScreenPanel endGameScreen;
 
 
@@ -119,7 +118,7 @@ public class GraphicalUI implements UI {
         });
 
         eventBus.subscribe(ScreenEndGameEvent.class, event -> {
-            this.endGameScreen.setWinner(com.lllmtb.engine.turn.TurnManager.winner);
+            this.endGameScreen.setWinner(event.getTeam());
             cardLayout.show(mainPanel, "endGameScreen");
             Logger.logger.debug("Show endGameScreen");
 
