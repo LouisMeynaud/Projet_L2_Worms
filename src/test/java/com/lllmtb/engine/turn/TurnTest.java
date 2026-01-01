@@ -60,25 +60,25 @@ public class TurnTest {
 
     @Test
     public void testMaxShootNotReached(){
-        Team team1 = new Team("TestTeam", 1, new Position[]{new Position(1,1)});
+        Team team1 = new Team("TestTeam", 1, new Position[]{new Position(1,1)}, 0);
         Turn turn1 = new Turn(team1);
         team1.unlockWeapon(WeaponId.GUN);
         team1.addAmmo(WeaponId.GUN, 10);
         team1.selectWeapon(WeaponId.GUN);
 
-        UseParams params = new UseParams(0, new Position(0, 0), team1.getCurrentWorm());
+        UseParams params = new UseParams(team1.getCurrentWorm());
         team1.use(params);
         assertFalse(turn1.teamMaximumShoot());
     }
 
     @Test
     public void testMaxShootReached(){
-        Team team1 = new Team("TestTeam", 1, new Position[]{new Position(1,1)});
+        Team team1 = new Team("TestTeam", 1, new Position[]{new Position(1,1)}, 0);
         Turn turn1 = new Turn(team1);
         team1.unlockWeapon(WeaponId.GUN);
         team1.addAmmo(WeaponId.GUN, 10);
         team1.selectWeapon(WeaponId.GUN);
-        UseParams params = new UseParams(0, new Position(0, 0), team1.getCurrentWorm());
+        UseParams params = new UseParams(team1.getCurrentWorm());
         for(int i = 0; i < Turn.limitshoot; i++){
             team1.use(params);
         }

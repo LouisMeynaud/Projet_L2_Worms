@@ -363,7 +363,7 @@ public class TeamTest {
         team.addAmmo(WeaponId.GUN, 10);
         team.selectWeapon(WeaponId.GUN);
 
-        UseParams params = new UseParams(0, new Position(0, 0), team.getCurrentWorm());
+        UseParams params = new UseParams(team.getCurrentWorm());
         team.use(params);
 
         assertEquals(currentCountShoot+1, team.getShootCount());

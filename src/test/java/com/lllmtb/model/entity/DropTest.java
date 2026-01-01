@@ -47,7 +47,7 @@ public class DropTest {
 
     @Test
     public void testAddModifierTouchTheGround(){
-        GameSettings settings = new GameSettings("blabla", 1, new String[]{"Team"}, 1, 100, 10, false, null, false, 200, LandScape.FLAT,2, GameMode.NORMAL, true);
+        GameSettings settings = new GameSettings("blabla", 1, new String[]{"Team"}, 1, 100, 10, false, null, false, 200, LandScape.FLAT,2, GameMode.NORMAL, true, false);
         EventBus eb = new EventBus();
         GameWorld world = new GameWorld(settings, eb);
         world.start();
@@ -65,11 +65,11 @@ public class DropTest {
 
     @Test
     public void testDropCollisionEventWeaponItem(){
-        GameSettings settings = new GameSettings("blabla", 1, new String[]{"Team"}, 1, 100, 10, false, null, false, 200, LandScape.FLAT,2, GameMode.NORMAL, true);
+        GameSettings settings = new GameSettings("blabla", 1, new String[]{"Team"}, 1, 100, 10, false, null, false, 200, LandScape.FLAT,2, GameMode.NORMAL, true, false);
         EventBus eb = new EventBus();
         GameWorld world = new GameWorld(settings, eb);
         world.start();
-        Team team = new Team("Test", 1, new Position[]{new Position(1,1)});
+        Team team = new Team("Test", 1, new Position[]{new Position(1,1)}, 0);
         Drop drop = new Drop(new Position(1, 1), WeaponId.SHOTGUN);
         eb.postSync(new DropCollisionEvent(drop, team));
         try{
@@ -81,11 +81,11 @@ public class DropTest {
 
     @Test
     public void testDropCollisionEventToolItem(){
-        GameSettings settings = new GameSettings("blabla", 1, new String[]{"Team"}, 1, 100, 10, false, null, false, 200, LandScape.FLAT,2, GameMode.NORMAL, true);
+        GameSettings settings = new GameSettings("blabla", 1, new String[]{"Team"}, 1, 100, 10, false, null, false, 200, LandScape.FLAT,2, GameMode.NORMAL, true, false);
         EventBus eb = new EventBus();
         GameWorld world = new GameWorld(settings, eb);
         world.start();
-        Team team = new Team("Test", 1, new Position[]{new Position(1,1)});
+        Team team = new Team("Test", 1, new Position[]{new Position(1,1)}, 0);
         Drop drop = new Drop(new Position(1, 1), ToolId.JETPACK);
         eb.postSync(new DropCollisionEvent(drop, team));
         try{
