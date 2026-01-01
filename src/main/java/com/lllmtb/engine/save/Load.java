@@ -127,7 +127,7 @@ public class Load {
                 entityCoinField.setAccessible(true);
                 entityCoinField.set(saveBody.physicsBody, coin);
 
-            }else if (saveBody.entity instanceof Drop drop) {
+            } else if (saveBody.entity instanceof Drop drop) {
                 // use reflexion to recreate worm instance with correct PhysicsBody
                 System.out.println("chargement drop");
                 Field bodyDropField = Drop.class.getDeclaredField("body");
