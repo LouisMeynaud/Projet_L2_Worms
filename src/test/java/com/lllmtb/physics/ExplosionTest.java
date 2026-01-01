@@ -65,34 +65,34 @@ class ExplosionTest {
     @Test
     void testEffetDegatsExplosion() {
         Worm worm = createWorm();
-        int initialHp = worm.getStats().getHp();
+        double initialHp = worm.getStats().getHp();
         
         PhysicsBody body = new PhysicsBody(worm, new Position(0, 0), new Vector(0, 0), 1, 2, 1);
         bodies.add(body);
         
-        Explosion.explosionDamageEffect(new Position(0, 0), 10, 50, bodies);
+        Explosion.explosionDamageEffect(new Position(0, 0), 10, 50, bodies, false);
         assertEquals(initialHp - 50, worm.getStats().getHp());
     }
 
     @Test
     void testEffetDegatsExplosion_degatDistance() {
         Worm worm = createWorm();
-        int initialHp = worm.getStats().getHp();
+        double initialHp = worm.getStats().getHp();
         
         PhysicsBody body = new PhysicsBody(worm, new Position(5, 0), new Vector(0, 0), 1, 2, 1);
         bodies.add(body);
-        Explosion.explosionDamageEffect(new Position(0, 0), 10, 50, bodies);
+        Explosion.explosionDamageEffect(new Position(0, 0), 10, 50, bodies, false);
         assertEquals(initialHp - 25, worm.getStats().getHp());
     }
 
     @Test
     void testEffetDegatsExplosion_PasDegatTropLoin() {
         Worm worm = createWorm();
-        int initialHp = worm.getStats().getHp();
+        double initialHp = worm.getStats().getHp();
         
         PhysicsBody body = new PhysicsBody(worm, new Position(20, 20), new Vector(0, 0), 1, 2, 1);
         bodies.add(body);
-        Explosion.explosionDamageEffect(new Position(0, 0), 10, 50, bodies);
+        Explosion.explosionDamageEffect(new Position(0, 0), 10, 50, bodies, false);
         assertEquals(initialHp, worm.getStats().getHp());
     }
 
@@ -105,7 +105,7 @@ class ExplosionTest {
         PhysicsBody body = new PhysicsBody(worm, new Position(0, 0), new Vector(0, 0), 1, 2, 1);
         bodies.add(body);
 
-        Explosion.explosionDamageEffect(new Position(0, 0), 10, 100, bodies);
+        Explosion.explosionDamageEffect(new Position(0, 0), 10, 100, bodies, false);
         assertFalse(worm.isAlive());
 
     }

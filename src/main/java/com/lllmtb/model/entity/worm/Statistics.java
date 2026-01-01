@@ -2,20 +2,20 @@ package com.lllmtb.model.entity.worm;
 
 public class Statistics {
     //Champs
-    private static int maxHp = 100;
-    private int hp;
+    private static double maxHp = 100;
+    private double hp;
     private int speed;
     private int strength;
 
     //Constructor
-    public Statistics(int hp, int speed, int strength) {
+    public Statistics(double hp, int speed, int strength) {
         this.hp = hp;
         this.speed = speed;
         this.strength = strength;
     }
 
     //Getter
-    public int getHp() {
+    public double getHp() {
         return this.hp;
     }
 
@@ -27,17 +27,17 @@ public class Statistics {
         return this.strength;
     }
 
-    public static int getMaxHp() {
+    public static double getMaxHp() {
         return maxHp;
     }
 
-    public static void setMaxHp(int maxHp) {
+    public static void setMaxHp(double maxHp) {
         Statistics.maxHp = maxHp;
     }
 
 
     //Setter
-    public void setHp(int hp) {
+    public void setHp(double hp) {
         if (hp >= 0 && hp <= maxHp) {
             this.hp = hp;
         } else if (hp < 0) {
@@ -51,14 +51,12 @@ public class Statistics {
         if (speed >= 0) {
             this.speed = speed;
         }
-
     }
 
     public void setStrength(int strength) {
         if (strength >= 0) {
             this.strength = strength;
         }
-
     }
 
     //Method
@@ -66,8 +64,7 @@ public class Statistics {
         return this.hp > 0;
     }
 
-    public void damageTake(int damage) {
+    public void damageTake(double damage) {
         this.setHp(this.hp - damage);
     }
-
 }

@@ -41,7 +41,7 @@ public final class RocketProjectile extends Projectile implements ExplosiveProje
         List<GameCommand> list = new ArrayList<GameCommand>();
         handleHit(list, entity, damage);
         list.add((world -> {
-            world.getPhysics().createExplosion(this, RAYON_DEGAT_MAP, RAYON_SOUFFLE, DEGATS, FORCE_SOUFFLE);
+            world.getPhysics().createExplosion(this, RAYON_DEGAT_MAP, RAYON_SOUFFLE, DEGATS, FORCE_SOUFFLE, false);
         }));
         list.add(delete());
         return list;
@@ -72,7 +72,7 @@ public final class RocketProjectile extends Projectile implements ExplosiveProje
     }
 
     @Override
-    public int getDamage() {
+    public double getDamage() {
         return damage;
     }
 }
