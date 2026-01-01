@@ -6,6 +6,6 @@ public class BurnEffect extends StatusEffect {
      * Constructor for a burn effect
      */
     public BurnEffect() {
-        super(20, 4);
+        super(2, 4);
     }
 }
