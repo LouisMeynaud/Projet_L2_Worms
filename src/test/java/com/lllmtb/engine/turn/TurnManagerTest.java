@@ -150,6 +150,7 @@ public class TurnManagerTest {
         try {
             Thread.sleep(specialGW.getTurnDuration() + 200);    // let the event bus dispatch the event
         } catch (InterruptedException ignored) {}
+        specialGW.stop();
         assertTrue(eventEnd.get());
 
     }
@@ -177,6 +178,7 @@ public class TurnManagerTest {
         try {
             Thread.sleep(50);
         } catch (InterruptedException ignored) {}
+        gw2.stop();
         assertEquals(lastIndex, gw2.getIndexTeam());
     }
 
