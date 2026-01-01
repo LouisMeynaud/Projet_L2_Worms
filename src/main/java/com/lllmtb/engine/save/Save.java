@@ -9,6 +9,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.typeadapters.RuntimeTypeAdapterFactory;
 import com.lllmtb.engine.GameWorld;
+import com.lllmtb.model.entity.Coin;
 import com.lllmtb.model.entity.Entity;
 import com.lllmtb.model.entity.projectile.Projectile;
 import com.lllmtb.model.entity.team.Team;
@@ -59,8 +60,9 @@ public class Save {
      */
     public static void saveGameWorld(GameWorld gameWorld, String stringPath) throws IOException {
         RuntimeTypeAdapterFactory<Entity> entityAdapter = RuntimeTypeAdapterFactory.of(Entity.class, "type")
-                .registerSubtype(Projectile.class, "projectile") // Si le JSON contient "type": "bazooka", on crée un Bazooka
-                .registerSubtype(Worm.class, "worm");
+                .registerSubtype(Projectile.class, "projectile")
+                .registerSubtype(Worm.class, "worm")
+                .registerSubtype(Coin.class, "coin");
 
         Gson gson = new GsonBuilder()
                 .setPrettyPrinting()

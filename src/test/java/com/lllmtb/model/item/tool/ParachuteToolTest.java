@@ -1,19 +1,22 @@
 package com.lllmtb.model.item.tool;
 
+import java.lang.reflect.Field;
+import java.util.List;
+
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 import com.lllmtb.engine.commands.AddPhysicsModifierCommand;
 import com.lllmtb.engine.commands.GameCommand;
 import com.lllmtb.model.entity.team.Team;
+import com.lllmtb.model.entity.team.TeamColor;
 import com.lllmtb.model.entity.worm.Worm;
 import com.lllmtb.model.item.UseParams;
 import com.lllmtb.physics.PhysicsModifier;
 import com.lllmtb.physics.Vector;
-import org.junit.jupiter.api.Test;
-
-import java.lang.reflect.Field;
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.mock;
 
 public class ParachuteToolTest {
     private final ParachuteTool parachute = new ParachuteTool();
@@ -25,13 +28,18 @@ public class ParachuteToolTest {
 
     @Test
     public void use() throws Exception {
-        Worm w = new Worm("José", mock(Team.class));
+        
+        Team mockTeam = mock(Team.class);
+        when(mockTeam.getTeamColor()).thenReturn(TeamColor.RED); 
+        Worm w = new Worm("José", mockTeam);
+        
         UseParams up = new UseParams(w);
 
-        // Check that the use method returns the correct command
+        // Check that the use method returns the correct commands
         List<GameCommand> cmds = parachute.use(up);
-        assertEquals(1, cmds.size());
+        assertEquals(2, cmds.size());
 
+        // First command should be AddPhysicsModifierCommand
         GameCommand cmd = cmds.get(0);
         assertInstanceOf(AddPhysicsModifierCommand.class, cmd);
 
@@ -51,5 +59,9 @@ public class ParachuteToolTest {
 
         Vector v2 = new Vector(0, 5);
         assertEquals(5.0, m.transform.apply(v2).getY());
+
+        // Second command should be the listener registration command
+        GameCommand listenerCmd = cmds.get(1);
+        assertNotNull(listenerCmd);
     }
 }

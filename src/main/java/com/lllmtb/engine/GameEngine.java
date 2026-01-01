@@ -1,20 +1,22 @@
 package com.lllmtb.engine;
 
-import java.util.Objects;
 import java.io.IOException;
+import java.util.Objects;
 
-import com.lllmtb.events.move.MouseInputEvent;
+import com.lllmtb.engine.save.Load;
+import com.lllmtb.events.Event;
+import com.lllmtb.events.game.*;
 import org.eclipse.jdt.annotation.NonNull;
 
 import com.lllmtb.engine.logger.Logger;
-import com.lllmtb.engine.save.Load;
 import com.lllmtb.engine.save.Save;
 import com.lllmtb.events.EventBus;
-import com.lllmtb.events.game.*;
+import com.lllmtb.ui.console.ConsoleUI;
 import com.lllmtb.ui.UI;
-import com.lllmtb.ui.ConsoleUI;
 import com.lllmtb.ui.graphical.GraphicalUI;
+import com.lllmtb.ui.graphical.SoundManager;
 import com.lllmtb.ui.graphical.TextureManager;
+import com.lllmtb.ui.graphical.animation.AnimationManager;
 
 public class GameEngine {
     private static EventBus systemBus;
@@ -47,7 +49,9 @@ public class GameEngine {
         UI ui;
         if (graphique) {
             Logger.logger.info("Using graphical interface");
-            TextureManager.load(); // charge les textures
+            TextureManager.load(); // load textures
+            AnimationManager.load(); //load animation
+            SoundManager.load(); //load sound effect
             ui = new GraphicalUI(systemBus);
         } else {
             Logger.logger.info("Using console interface");
@@ -83,7 +87,7 @@ public class GameEngine {
     private static void start(@NonNull GameWorld world) {
         Objects.requireNonNull(world);
         // Uncomment to log all world events for debugging
-        world.getBus().subscribe(MouseInputEvent.class, e -> Logger.logger.info("[EVENT/world]: {}", e.getClass().getSimpleName()));
+        //world.getBus().subscribe(Event.class, e -> Logger.logger.info("[EVENT/world]: {}", e.getClass().getSimpleName()));
         Save.setGameWorld(world);
         systemBus.postSync(new WorldCreatedEvent(world));
         systemBus.subscribe(SaveEvent.class, e -> {

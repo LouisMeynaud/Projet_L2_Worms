@@ -8,5 +8,9 @@ public final class ToolRegistry extends ItemRegistry<ToolId, Tool> {
         super(ToolId.class);
 
         this.register(ToolId.PARACHUTE, new ParachuteTool());
+        this.register(ToolId.JETPACK, new JetpackTool());
+        this.register(ToolId.CALLSTRIKE, new CallStrikeTool());
+        this.register(ToolId.MINE, new MineTool());
+        this.register(ToolId.MEDKIT, new MedkitTool());
     }
 }

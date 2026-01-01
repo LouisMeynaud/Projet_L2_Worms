@@ -23,10 +23,28 @@ import com.lllmtb.model.item.tool.ToolId;
 import com.lllmtb.model.item.weapon.WeaponId;
 
 
-
+/**
+ * classe utilitaire fournissans des methode statique pour eviter de dupliquer du code
+ * Contient par exemple des methode pour crée des bouton avec des image , des slider , generer un "hashCode" etc
+ */
 public class Utilitaire {
 
 
+    /**
+     * cree un bouton swing personnaliser avec une image de fond et une image de survol(HOVER)
+     * @param <T> Le type de la cle dans la map contenant les texture
+     * @param textureMap Le map contenant les texture
+     * @param name la cle de l'image dans le map
+     * @param buttonWidth la largeur du bouton
+     * @param buttonHeight la hauteur du bouton
+     * @param iconWidth la largeur de l'image
+     * @param iconHeight la hauteur de l'image
+     * @param text le texte a afficher
+     * @param font le nom de la police d'ecriture
+     * @param fontSize la taille de la police
+     * @param fontColor la couleur du texte
+     * @return le bouton personnalisé
+     */
     public static <T> JButton createImageButton(
         Map<T, BufferedImage> textureMap, T name, int buttonWidth, int buttonHeight, int iconWidth, int iconHeight, String text, String font, int fontSize, Color fontColor) {
         JButton button = new JButton();
@@ -61,7 +79,14 @@ public class Utilitaire {
         button.setVerticalTextPosition(SwingConstants.CENTER);
         return button;
     }
-
+    /**
+     * crée un slider avec des parametre par defaut (evite la duplication de code).
+     * @param min le minimun souhaiter
+     * @param max le maximun souhaiter
+     * @param value la valeur par defaut
+     * @param spacing l'espace entre deux valeur
+     * @return le slider
+     */
     public static JSlider createSlider(int min, int max, int value, int spacing) {
         JSlider slider = new JSlider(JSlider.HORIZONTAL, min, max, value);
 
@@ -73,8 +98,14 @@ public class Utilitaire {
         return slider;
     }
 
-
-
+    /**
+     * crée les bouton d'inventaire pour une arme.
+     * gere l'affichage de l'icone locked si une arme est pas debloquer
+     * @param weaponkey l'id de l'arme
+     * @param ammoCount le nombre de munition
+     * @param isUnlocked le boolean indiquant si l'arme est unlock ou non
+     * @return le bouton
+     */
     public static JButton createWeaponButton(WeaponId weaponkey, int ammoCount, boolean isUnlocked) {
         String searchKey;
         //l'image a chercher (lock ou non)
@@ -88,7 +119,13 @@ public class Utilitaire {
         return createBaseItemButton(searchKey, ammoKey, ammoCount, isUnlocked, TextureManager.WEAPONS);
     }
 
-
+   /**
+    * crée un bouton d'inventaire pour un outill.
+    * @param id l'id de l'outil
+    * @param ammoCount le nombre de munition
+    * @param isUnlocked le boolean indiquant si l'outils est unlock ou non
+    * @return le bouton
+    */
     public static JButton createToolButton(ToolId id, int ammoCount, boolean isUnlocked) {
         String searchKey = id.toString();
         String ammoKey = "Ammo" + id.toString();
@@ -98,6 +135,16 @@ public class Utilitaire {
     }
 
 
+    /**
+     * methode pour crée les bouton de la grille d'inventaire
+     * le bouton a au centre l'image de l'arme/outils,et en dessous l'image des munition ainsi que le nombre restant.
+     * @param searchKey La cle de l'image principale
+     * @param ammoKey la clé de l'image de munique
+     * @param ammoCount le nombre de munition
+     * @param isUnlocked le boolean indiquant si l'objet est unlock ou non
+     * @param texture le texture map ou chercher les image
+     * @return le bouton
+     */
     private static JButton createBaseItemButton(String searchKey, String ammoKey, int ammoCount, boolean isUnlocked, Map<String, BufferedImage> texture) {
         JButton button = new JButton();
         button.setLayout(new BorderLayout());
@@ -134,7 +181,8 @@ public class Utilitaire {
             }
 
             //nombre
-            JLabel nbLabel = new JLabel(String.valueOf(ammoCount));
+            String ammoDisplay = ammoCount < 0 ? "∞" : String.valueOf(ammoCount);
+            JLabel nbLabel = new JLabel(ammoDisplay);
             nbLabel.setFont(new Font("Arial", Font.BOLD, 12));
             ammoPanel.add(nbLabel);
 
@@ -144,11 +192,75 @@ public class Utilitaire {
         return button;
     }
 
+    /**
+     * crée un "hascode" compris entre 0 et max a partir de deux nombre(la position x y d'un bloc par exemple pour avoir une texture).
+     * @param x un int
+     * @param y un int
+     * @param max le nombre max voulu
+     * @return un entier entre 0 et max-1
+     */
     public static int getHashId(int x, int y, int max) {
     int h = x * 374761393 + y * 668265263;
     h = (h ^ (h >> 13)) * 1274126177;
     h = h ^ (h >> 16);
     return (Math.abs(h) % max);
 }
+    /**
+     * decoupe une image (un spriteSheet) en un tableau d'image pour les animations.
+     * permet de charger des animation ou toute les frame sont sur une meme image
+     * @param sheet l'image a decouper
+     * @param cols le nombre de colonne sur l'image
+     * @param rows le nombre de ligne sur l'image
+     * @return le tableau contenant les differente frames.
+     */
+    public static BufferedImage[] cutSpriteSheet(BufferedImage sheet, int cols, int rows) {
+        if (sheet == null) {
+            return new BufferedImage[0];
+        }
+
+        int frameWidth = sheet.getWidth() / cols;
+        int frameHeight = sheet.getHeight() / rows;
+        BufferedImage[] sprites = new BufferedImage[cols * rows];
+
+        int count = 0;
+        for (int y = 0; y < rows; y++) {
+            for (int x = 0; x < cols; x++) {
+                sprites[count] = sheet.getSubimage(
+                        x * frameWidth,
+                        y * frameHeight,
+                        frameWidth,
+                        frameHeight
+                );
+                count++;
+            }
+        }
+        return sprites;
+    }
+
+    public static JButton createShopButton(BufferedImage img, String text, boolean canBuy) {
+        JButton button = new JButton();
+        button.setLayout(new BorderLayout());
+        button.setPreferredSize(new Dimension(80, 80));
+        button.setBackground(Color.LIGHT_GRAY);
+        button.setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
+
+        if (img != null) {
+            Image scaled = img.getScaledInstance(48, 48, Image.SCALE_REPLICATE);
+            button.setIcon(new ImageIcon(scaled));
+        }
+
+        button.setText(text);
+        button.setFont(new Font("Arial", Font.BOLD, 12));
+        if (canBuy) {
+            button.setForeground(Color.BLUE);
+            button.setBackground(Color.LIGHT_GRAY);
+        } else {
+            button.setForeground(Color.RED);
+            button.setBackground(Color.DARK_GRAY);
+        }
+        button.setVerticalTextPosition(SwingConstants.BOTTOM);
+        button.setHorizontalTextPosition(SwingConstants.CENTER);
+        return button;
+    }
 
 }

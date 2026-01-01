@@ -1,21 +1,21 @@
 package com.lllmtb.ui.graphical;
 
-import com.lllmtb.engine.logger.Logger;
-import com.lllmtb.events.EventBus;
-
-import java.awt.*;
+import java.awt.CardLayout;
+import java.awt.Dimension;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.UIManager;
 
+import com.lllmtb.engine.logger.Logger;
+import com.lllmtb.events.EventBus;
 import com.lllmtb.events.game.LoadEvent;
 import com.lllmtb.events.game.StartGameEvent;
 import com.lllmtb.events.ui.graphical.ScreenHomeEvent;
 import com.lllmtb.events.ui.graphical.ScreenLoadGame;
 import com.lllmtb.events.ui.graphical.ScreenNewOrLoadEvent;
 import com.lllmtb.events.ui.graphical.ScreenSettingsGame;
-import com.lllmtb.ui.*;
+import com.lllmtb.ui.UI;
 import com.lllmtb.ui.graphical.GamePanel.GameScreen;
 import com.lllmtb.ui.graphical.SettingsPanel.LoadGamePanel;
 import com.lllmtb.ui.graphical.SettingsPanel.NewOrLoadPanel;
@@ -58,7 +58,8 @@ public class GraphicalUI implements UI {
         windows.setTitle("Worms-MI4");
         windows.setExtendedState(JFrame.MAXIMIZED_BOTH); //sets the window to the maximum screen size
         windows.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        windows.setResizable(false);
+        windows.setResizable(true);
+        windows.setMinimumSize(new Dimension(800, 400));
 
         cardLayout = new CardLayout();
         mainPanel = new JPanel(cardLayout);
@@ -96,11 +97,15 @@ public class GraphicalUI implements UI {
 
         eventBus.subscribe(StartGameEvent.class, event -> {
             cardLayout.show(mainPanel, "gamePanel");
+            GameScreen gamePanel = new GameScreen(this.eventBus);
+            mainPanel.add(gamePanel, "gamePanel"); // la page de jeu
             Logger.logger.debug("Show GameScreen");
         });
 
         eventBus.subscribe(LoadEvent.class, event -> {
             cardLayout.show(mainPanel, "gamePanel");
+            GameScreen gamePanel = new GameScreen(this.eventBus);
+            mainPanel.add(gamePanel, "gamePanel"); // la page de jeu
             Logger.logger.debug("Show GameScreen");
         });
 
@@ -116,6 +121,8 @@ public class GraphicalUI implements UI {
         });
     }
 
+
+
     /**
      * makes the page visible.
      */
@@ -126,6 +133,7 @@ public class GraphicalUI implements UI {
 
     @Override
     public void close() {
+        System.exit(0);
     }
 
 }

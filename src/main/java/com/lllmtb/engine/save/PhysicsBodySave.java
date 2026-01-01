@@ -12,4 +12,7 @@ public class PhysicsBodySave {
         uuid = physicsBody.getEntity().uuid;
         entity = physicsBody.getEntity();
     }
+    public PhysicsBodySave(){
+
+    }
 }

@@ -18,8 +18,17 @@ public class TurnTest {
     }
 
     @Test
-    public void testConstructor(){
+    public void testConstructorTeam(){
         assertSame(this.turn.getTeam(), this.team);
+    }
+
+    @Test
+    public void testContructorCurrentWorm(){
+        Team team2 = new Team("TestTeam", 2, new Position[]{new Position(0, 0), new Position(0,0)});
+        Worm worm1 = team2.getCurrentWorm();
+        worm1.damageWorm(100);
+        Turn turn2 = new Turn(team2);
+        assertNotSame(turn2.getWormPlayable(), worm1);
     }
 
     @Test
@@ -45,6 +54,28 @@ public class TurnTest {
     public void testGetIsEndTrue(){
         this.turn.setIsEnd();
         assertTrue(turn.getIsEnd());
+    }
+
+    @Test
+    public void testNextWormPlayable(){
+        Team team = new Team("TestTeam", 1, new Position[]{new Position(0, 0)}) ;
+        Worm worm1 = team.getIndexWorm(0);
+        Worm worm2 = new Worm("Worm2", team);
+        Turn turn = new Turn(team);
+        Worm lastCurrentWorm = turn.getWormPlayable();
+        turn.nextWormPlayable();
+        //Different Worm if two worm is alive
+        assertNotEquals(turn.getWormPlayable(), lastCurrentWorm);
+
+        lastCurrentWorm = turn.getWormPlayable();
+        for(Worm worm : team.getTeamWorms()){
+            if (worm != turn.getWormPlayable()){
+               worm.damageWorm(1000);
+            }
+        }
+        turn.nextWormPlayable();
+        //Same worm if only one worm is alive
+        assertEquals(lastCurrentWorm, turn.getWormPlayable());
     }
 
 

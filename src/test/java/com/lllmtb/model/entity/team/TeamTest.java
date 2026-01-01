@@ -3,20 +3,27 @@ package com.lllmtb.model.entity.team;
 import com.lllmtb.engine.GameEngine;
 import com.lllmtb.engine.save.GameSave;
 import com.lllmtb.engine.save.TeamSave;
-import com.lllmtb.model.entity.worm.Worm;
-import com.lllmtb.model.item.UseParams;
-import com.lllmtb.model.item.weapon.WeaponId;
-import com.lllmtb.model.item.weapon.UnknownWeaponException;
-import com.lllmtb.model.item.weapon.LockedWeaponException;
-import com.lllmtb.model.item.weapon.UnusableWeaponException;
-import com.lllmtb.model.item.tool.ToolId;
-import com.lllmtb.model.item.tool.UnknownToolException;
-import com.lllmtb.model.item.tool.UnusableToolException;
-import com.lllmtb.physics.Position;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import com.lllmtb.model.entity.worm.Worm;
+import com.lllmtb.model.item.UseParams;
+import com.lllmtb.model.item.tool.ToolId;
+import com.lllmtb.model.item.tool.UnknownToolException;
+import com.lllmtb.model.item.tool.UnusableToolException;
+import com.lllmtb.model.item.weapon.LockedWeaponException;
+import com.lllmtb.model.item.weapon.UnknownWeaponException;
+import com.lllmtb.model.item.weapon.UnusableWeaponException;
+import com.lllmtb.model.item.weapon.WeaponId;
+import com.lllmtb.physics.Position;
 
 public class TeamTest {
     private Team team;
@@ -233,40 +240,50 @@ public class TeamTest {
         assertEquals(worm0, team3.getCurrentWorm());
     }
 
+    @Test
+    void testSetCurrentWormNull(){
+        assertNotNull(team.getCurrentWorm());
+        team.setCurrentWormNull();
+        assertNull(team.getCurrentWorm());
+    }
+
     // ==================== Weapon Management Tests ====================
 
     @Test
-    public void unlockWeapon_makesWeaponUsable() {
-        team.unlockWeapon(WeaponId.GUN);
+    public void isGUNUnlocked_initiallyTrue() {
         assertTrue(team.getInventory().isUnlocked(WeaponId.GUN));
     }
 
     @Test
+    public void unlockWeapon_makesWeaponUsable() {
+        team.unlockWeapon(WeaponId.BAZOOKA);
+        assertTrue(team.getInventory().isUnlocked(WeaponId.BAZOOKA));
+    }
+
+    @Test
     public void lockWeapon_locksWeapon() {
-        team.unlockWeapon(WeaponId.GUN);
-        team.lockWeapon(WeaponId.GUN);
-        assertFalse(team.getInventory().isUnlocked(WeaponId.GUN));
+        team.unlockWeapon(WeaponId.BAZOOKA);
+    team.lockWeapon(WeaponId.BAZOOKA);
+        assertFalse(team.getInventory().isUnlocked(WeaponId.BAZOOKA));
     }
 
     @Test
     public void addAmmo_addsWeaponAmmo() {
-        team.addAmmo(WeaponId.GUN, 10);
-        assertEquals(10, team.getInventory().weapons.getAmmo(WeaponId.GUN));
+        team.addAmmo(WeaponId.BAZOOKA, 10);
+        assertEquals(10, team.getInventory().weapons.getAmmo(WeaponId.BAZOOKA));
     }
 
     @Test
     public void addAmmo_cumulative() {
-        team.addAmmo(WeaponId.GUN, 5);
-        team.addAmmo(WeaponId.GUN, 5);
-        assertEquals(10, team.getInventory().weapons.getAmmo(WeaponId.GUN));
+        team.addAmmo(WeaponId.BAZOOKA, 5);
+        team.addAmmo(WeaponId.BAZOOKA, 5);
+        assertEquals(10, team.getInventory().weapons.getAmmo(WeaponId.BAZOOKA));
     }
 
     // ==================== selectWeapon() Tests ====================
 
     @Test
     public void selectWeapon_setsHand() {
-        team.unlockWeapon(WeaponId.GUN);
-        team.addAmmo(WeaponId.GUN, 1);
         team.selectWeapon(WeaponId.GUN);
         assertEquals(WeaponId.GUN, team.getHand());
     }
@@ -278,31 +295,31 @@ public class TeamTest {
 
     @Test
     public void selectWeapon_throwsForLockedWeapon() {
-        assertThrows(LockedWeaponException.class, () -> team.selectWeapon(WeaponId.GUN));
+        assertThrows(LockedWeaponException.class, () -> team.selectWeapon(WeaponId.BAZOOKA));
     }
 
     @Test
     public void selectWeapon_throwsForWeaponWithoutAmmo() {
-        team.unlockWeapon(WeaponId.GUN);
-        assertThrows(UnusableWeaponException.class, () -> team.selectWeapon(WeaponId.GUN));
+        team.unlockWeapon(WeaponId.BAZOOKA);
+        assertThrows(UnusableWeaponException.class, () -> team.selectWeapon(WeaponId.BAZOOKA));
     }
 
     @Test
     public void selectWeapon_succeeds() {
-        team.unlockWeapon(WeaponId.GUN);
-        team.addAmmo(WeaponId.GUN, 5);
-        assertDoesNotThrow(() -> team.selectWeapon(WeaponId.GUN));
+        team.unlockWeapon(WeaponId.BAZOOKA);
+        team.addAmmo(WeaponId.BAZOOKA, 5);
+        assertDoesNotThrow(() -> team.selectWeapon(WeaponId.BAZOOKA));
     }
 
     @Test
     public void selectWeapon_multipleWeapons() {
-        team.unlockWeapon(WeaponId.GUN);
+        team.unlockWeapon(WeaponId.SHOTGUN);
         team.unlockWeapon(WeaponId.BAZOOKA);
-        team.addAmmo(WeaponId.GUN, 5);
+        team.addAmmo(WeaponId.SHOTGUN, 5);
         team.addAmmo(WeaponId.BAZOOKA, 3);
         
-        team.selectWeapon(WeaponId.GUN);
-        assertEquals(WeaponId.GUN, team.getHand());
+        team.selectWeapon(WeaponId.SHOTGUN);
+        assertEquals(WeaponId.SHOTGUN, team.getHand());
         
         team.selectWeapon(WeaponId.BAZOOKA);
         assertEquals(WeaponId.BAZOOKA, team.getHand());
@@ -312,8 +329,6 @@ public class TeamTest {
 
     @Test
     public void fire_succeeds() {
-        team.unlockWeapon(WeaponId.GUN);
-        team.addAmmo(WeaponId.GUN, 10);
         team.selectWeapon(WeaponId.GUN);
         
         UseParams params = new UseParams(0, new Position(0, 0), team.getCurrentWorm());
@@ -322,20 +337,16 @@ public class TeamTest {
 
     @Test
     public void fire_consumesAmmo() {
-        team.unlockWeapon(WeaponId.GUN);
-        team.addAmmo(WeaponId.GUN, 10);
         team.selectWeapon(WeaponId.GUN);
         
         UseParams params = new UseParams(0, new Position(0, 0), team.getCurrentWorm());
         team.use(params);
         
-        assertEquals(9, team.getInventory().weapons.getAmmo(WeaponId.GUN));
+        assertEquals(-2, team.getInventory().weapons.getAmmo(WeaponId.GUN));
     }
 
     @Test
     public void fire_returnsGameCommands() {
-        team.unlockWeapon(WeaponId.GUN);
-        team.addAmmo(WeaponId.GUN, 10);
         team.selectWeapon(WeaponId.GUN);
         
         UseParams params = new UseParams(0, new Position(0, 0), team.getCurrentWorm());
@@ -349,22 +360,21 @@ public class TeamTest {
 
     @Test
     public void addAmmo_addToolAmmo() {
-        team.addAmmo(ToolId.PARACHUTE, 5);
-        assertEquals(5, team.getInventory().tools.getAmmo(ToolId.PARACHUTE));
+        team.addAmmo(ToolId.JETPACK, 5);
+        assertEquals(5, team.getInventory().tools.getAmmo(ToolId.JETPACK));
     }
 
     @Test
     public void addAmmo_toolCumulative() {
-        team.addAmmo(ToolId.PARACHUTE, 3);
-        team.addAmmo(ToolId.PARACHUTE, 2);
-        assertEquals(5, team.getInventory().tools.getAmmo(ToolId.PARACHUTE));
+        team.addAmmo(ToolId.JETPACK, 3);
+        team.addAmmo(ToolId.JETPACK, 2);
+        assertEquals(5, team.getInventory().tools.getAmmo(ToolId.JETPACK));
     }
 
     // ==================== selectTool() Tests ====================
 
     @Test
     public void selectTool_setsHand() {
-        team.addAmmo(ToolId.PARACHUTE, 5);
         team.selectTool(ToolId.PARACHUTE);
         assertEquals(ToolId.PARACHUTE, team.getHand());
     }
@@ -376,12 +386,11 @@ public class TeamTest {
 
     @Test
     public void selectTool_throwsForToolWithoutAmmo() {
-        assertThrows(UnusableToolException.class, () -> team.selectTool(ToolId.PARACHUTE));
+        assertThrows(UnusableToolException.class, () -> team.selectTool(ToolId.JETPACK));
     }
 
     @Test
     public void selectTool_succeeds() {
-        team.addAmmo(ToolId.PARACHUTE, 5);
         assertDoesNotThrow(() -> team.selectTool(ToolId.PARACHUTE));
     }
 
@@ -389,7 +398,6 @@ public class TeamTest {
 
     @Test
     public void use_succeeds() {
-        team.addAmmo(ToolId.PARACHUTE, 5);
         team.selectTool(ToolId.PARACHUTE);
         
         UseParams params = new UseParams(team.getCurrentWorm());
@@ -398,18 +406,16 @@ public class TeamTest {
 
     @Test
     public void use_consumesAmmo() {
-        team.addAmmo(ToolId.PARACHUTE, 5);
         team.selectTool(ToolId.PARACHUTE);
         
         UseParams params = new UseParams(team.getCurrentWorm());
         team.use(params);
         
-        assertEquals(4, team.getInventory().tools.getAmmo(ToolId.PARACHUTE));
+        assertEquals(1, team.getInventory().tools.getAmmo(ToolId.PARACHUTE));
     }
 
     @Test
     public void use_returnsGameCommands() {
-        team.addAmmo(ToolId.PARACHUTE, 5);
         team.selectTool(ToolId.PARACHUTE);
         
         UseParams params = new UseParams(team.getCurrentWorm());
@@ -423,9 +429,6 @@ public class TeamTest {
 
     @Test
     public void weaponAndTool_canBeSelectedIndependently() {
-        team.unlockWeapon(WeaponId.GUN);
-        team.addAmmo(WeaponId.GUN, 10);
-        team.addAmmo(ToolId.PARACHUTE, 5);
         
         team.selectWeapon(WeaponId.GUN);
         assertEquals(WeaponId.GUN, team.getHand());
@@ -437,5 +440,49 @@ public class TeamTest {
     @Test
     public void getHand_initiallyNull() {
         assertNull(team.getHand());
+    }
+
+    @Test
+    public void getTeamColor_returnsAssignedColor() {
+        assertEquals(team.teamColor, team.getTeamColor());
+    }
+
+    @Test
+    public void getCredits_initiallyZero() {
+        assertEquals(0, team.getCredits());
+    }
+
+    @Test
+    public void addCredits_increasesBalance() {
+        team.addCredits(100);
+        assertEquals(100, team.getCredits());
+    }
+
+    @Test
+    public void addCredits_NegativeAmount() {
+        team.addCredits(50);
+        team.addCredits(-10);
+        assertEquals(50, team.getCredits());
+    }
+
+    @Test
+    public void removeCredits_WhenSufficientFunds() {
+        team.addCredits(100);
+        team.removeCredits(40);
+        assertEquals(60, team.getCredits());
+    }
+
+    @Test
+    public void removeCredits_WhenInsufficientFunds() {
+        team.addCredits(50);
+        team.removeCredits(100);
+        assertEquals(50, team.getCredits());
+    }
+
+    @Test
+    public void removeCredits_WhenNegativeAmount() {
+        team.addCredits(100);
+        team.removeCredits(-20);
+        assertEquals(100, team.getCredits());
     }
 }

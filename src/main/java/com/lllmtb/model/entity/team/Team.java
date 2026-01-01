@@ -2,17 +2,30 @@ package com.lllmtb.model.entity.team;
 
 import java.lang.reflect.Field;
 import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
+import java.util.Random;
+
+import org.eclipse.jdt.annotation.NonNull;
 
 import com.lllmtb.engine.commands.GameCommand;
 import com.lllmtb.engine.save.TeamSave;
+import com.lllmtb.engine.logger.Logger;
 import com.lllmtb.model.entity.worm.Worm;
-import com.lllmtb.model.item.*;
-import com.lllmtb.model.item.tool.*;
-import com.lllmtb.model.item.weapon.*;
+import com.lllmtb.model.item.ItemId;
+import com.lllmtb.model.item.UnknownItemException;
+import com.lllmtb.model.item.UseParams;
 import com.lllmtb.model.item.inventory.Inventory;
+import com.lllmtb.model.item.tool.ToolId;
+import com.lllmtb.model.item.tool.UnknownToolException;
+import com.lllmtb.model.item.tool.UnusableToolException;
+import com.lllmtb.model.item.weapon.LockedWeaponException;
+import com.lllmtb.model.item.weapon.UnknownWeaponException;
+import com.lllmtb.model.item.weapon.UnusableWeaponException;
+import com.lllmtb.model.item.weapon.WeaponId;
 import com.lllmtb.physics.Position;
-
-import org.eclipse.jdt.annotation.NonNull;
 
 /**
  * Represents a team of {@link Worm} entities in the game.
@@ -81,6 +94,10 @@ public class Team {
     private static final List<TeamColor> possibleTeamColors = Arrays.asList(TeamColor.values());
     private static final ArrayList<TeamColor> chosenTeamColors = new ArrayList<>();
 
+    /**
+     * The amount of credits (in-game currency) the team has.
+     */
+    private int credits = 0;
 
     /**
      * Private constructor used to initialize a team with a given name, number of players, inventory, and spawn position.
@@ -90,6 +107,7 @@ public class Team {
      * @param spawn         the spawn position where the worms will be placed
      */
     private Team(@NonNull String name, int numberOfWorms, @NonNull Inventory inventory, @NonNull Position[] spawn) {
+        this.teamColor = Team.chooseColor();
         this.inventory = Objects.requireNonNull(inventory);
         this.name = Objects.requireNonNull(name);
         this.numberOfWorms = numberOfWorms;
@@ -97,7 +115,6 @@ public class Team {
         this.setUpWorms(numberOfWorms, spawn);
         this.currentWorm = this.worms.get(0);
         this.selectedItem = null;
-        this.teamColor = Team.chooseColor();
     }
 
     /**
@@ -233,6 +250,15 @@ public class Team {
         this.numberOfWorms = this.worms.size();
     }
 
+    public boolean oneAlive() {
+        for (Worm worm : this.worms) {
+            if (worm.isAlive()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     /**
      * Randomly selects a color from the available team colors.
      * @return a random {@link TeamColor}
@@ -308,8 +334,11 @@ public class Team {
     public List<GameCommand> use(@NonNull UseParams useParams) {
         Objects.requireNonNull(useParams);
         if (this.selectedItem == null) return null;
-        if (this.selectedItem instanceof WeaponId) return this.inventory.fire((WeaponId) this.selectedItem, useParams);
-        if (this.selectedItem instanceof ToolId) return this.inventory.use((ToolId) this.selectedItem, useParams);
+        if (this.selectedItem instanceof WeaponId weaponId) return this.inventory.fire(weaponId, useParams);
+        if (this.selectedItem instanceof ToolId toolId) {
+            this.emptyHand();
+            return this.inventory.use(toolId, useParams);
+        }
         throw new UnknownItemException(this.selectedItem);
     }
 
@@ -323,7 +352,7 @@ public class Team {
     /**
      * Sets the currently selected item to null
      */
-    private void emptyHand() {
+    public void emptyHand() {
         this.selectedItem = null;
     }
 
@@ -333,7 +362,6 @@ public class Team {
      */
     private void selectItem(@NonNull ItemId id) {
         this.selectedItem = Objects.requireNonNull(id);
-
     }
 
     /**
@@ -351,7 +379,6 @@ public class Team {
             throw new UnusableWeaponException(id, this);
         }
         selectItem(id);
-        System.out.println("Item Select" + this.selectedItem);
     }
 
     /**
@@ -375,5 +402,38 @@ public class Team {
     public void nextWorm() {
         this.index = (++this.index >= this.worms.size()) ? 0 : this.index;
         this.currentWorm = this.getIndexWorm(this.index);
+    }
+
+    /**
+     * Set currentWorm of the team to null
+     */
+    public void setCurrentWormNull() {
+        this.currentWorm = null;
+    }
+
+    /**
+     * @return the {@link TeamColor} of the team
+     */
+    public TeamColor getTeamColor() {
+        return this.teamColor;
+    }
+
+
+    public int getCredits() {
+        return credits;
+    }
+
+    public void addCredits(int amount) {
+        if (amount > 0) {
+            this.credits += amount;
+            Logger.logger.info("$$$ [TEAM " + this.name + "] Gain de " + amount + " pieces. Total: " + this.credits);
+        }
+    }
+
+    public void removeCredits(int amount) {
+        if (amount > 0 && credits >= amount) {
+            this.credits -= amount;
+            Logger.logger.info("$$$ [TEAM " + this.name + "] achat/perte de " + amount + " pieces. Total: " + this.credits);
+        }
     }
 }

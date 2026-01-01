@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.typeadapters.RuntimeTypeAdapterFactory;
 import com.lllmtb.engine.GameWorld;
+import com.lllmtb.model.entity.Coin;
 import com.lllmtb.model.entity.Entity;
 import com.lllmtb.model.entity.projectile.Projectile;
 import com.lllmtb.model.entity.team.Team;
@@ -19,7 +20,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.lang.reflect.Field;
 
-import static com.lllmtb.model.entity.worm.Worm.standing;
 
 /**
  * Utility class responsible for loading game data from the file system.
@@ -51,7 +51,9 @@ public class Load {
         }
         RuntimeTypeAdapterFactory<Entity> entityAdapter = RuntimeTypeAdapterFactory.of(Entity.class, "type")
                 .registerSubtype(Projectile.class, "projectile") // Si le JSON contient "type": "bazooka", on crée un Bazooka
-                .registerSubtype(Worm.class, "worm");
+                .registerSubtype(Worm.class, "worm")
+                .registerSubtype(Coin.class, "coin");
+
 
         Gson gson = new GsonBuilder()
                 .setPrettyPrinting()
@@ -107,6 +109,12 @@ public class Load {
                 bodyField.set(projectile, saveBody.physicsBody);
 
             }
+            else if (saveBody.entity instanceof Coin c) {
+                System.out.println("chargement coin");
+                Field bodyField = Coin.class.getDeclaredField("body");
+                bodyField.setAccessible(true);
+                bodyField.set(c, saveBody.physicsBody);
+            }
             } catch (NoSuchFieldException | IllegalAccessException e) {
                 throw new RuntimeException(e);
             }
@@ -116,9 +124,6 @@ public class Load {
                 Field entityField = PhysicsBody.class.getDeclaredField("entity");
                 entityField.setAccessible(true);
                 entityField.set(savePhysicsBody.physicsBody, savePhysicsBody.entity);
-                Field animationField = Worm.class.getDeclaredField("animation");
-                animationField.setAccessible(true);
-                animationField.set(savePhysicsBody.physicsBody.getEntity(), new Animation(standing, 10));
             } catch (NoSuchFieldException | IllegalAccessException e) {
                 throw new RuntimeException(e);
             }

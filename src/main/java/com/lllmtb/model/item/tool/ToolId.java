@@ -4,5 +4,24 @@ import com.lllmtb.model.item.ItemId;
 
 public enum ToolId implements ItemId {
     PARACHUTE,
-    NONE
+    JETPACK,
+    CALLSTRIKE(true),
+    MINE,
+    MEDKIT,
+    NONE;
+
+    private final boolean usesCrosshair;
+
+    ToolId(boolean usesCrosshair) {
+        this.usesCrosshair = usesCrosshair;
+    }
+
+    ToolId() {
+        this(false);
+    }
+
+    @Override
+    public boolean usesCrosshair() {
+        return usesCrosshair;
+    }
 }

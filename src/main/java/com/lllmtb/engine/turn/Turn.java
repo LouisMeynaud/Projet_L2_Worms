@@ -9,6 +9,9 @@ public class Turn {
 
     public Turn(Team team) {
         this.team = team;
+        while (!this.getWormPlayable().isAlive()) {
+            this.team.nextWorm();
+        }
     }
 
     public Team getTeam() {
@@ -17,6 +20,13 @@ public class Turn {
 
     public Worm getWormPlayable() {
         return team.getCurrentWorm();
+    }
+
+    public void nextWormPlayable() {
+        do {
+            this.team.nextWorm();
+        }
+        while (!this.getWormPlayable().isAlive());
     }
 
     public void end() {
