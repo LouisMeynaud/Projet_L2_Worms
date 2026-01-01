@@ -215,7 +215,7 @@ public class Save {
         saveImage(image, stringPath);
     }
 
-    public static void EraseSave(String name) {
+    public static void eraseSave(String name) {
         // On définit le chemin du dossier de sauvegarde
         Path pathToBeDeleted = Paths.get("src/test/resources/SaveTest/", name);
 

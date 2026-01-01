@@ -12,7 +12,6 @@ import com.lllmtb.model.entity.worm.Worm;
 import com.lllmtb.physics.PhysicsBody;
 import com.lllmtb.terrain.map.Map;
 import com.lllmtb.terrain.map.MapLoader;
-import com.lllmtb.ui.graphical.animation.Animation;
 import org.eclipse.jdt.annotation.NonNull;
 
 import java.io.FileNotFoundException;
@@ -107,9 +106,7 @@ public class Load {
                 Field bodyField = Projectile.class.getDeclaredField("body");
                 bodyField.setAccessible(true);
                 bodyField.set(projectile, saveBody.physicsBody);
-
-            }
-            else if (saveBody.entity instanceof Coin c) {
+            } else if (saveBody.entity instanceof Coin c) {
                 System.out.println("chargement coin");
                 Field bodyField = Coin.class.getDeclaredField("body");
                 bodyField.setAccessible(true);

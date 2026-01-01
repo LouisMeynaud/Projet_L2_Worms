@@ -53,7 +53,8 @@ public class GameWorld {
         // Init Map (we'll have to handle this better once MapLoader throws catchable exceptions)
 
         if (map == null) {
-            //TODO: Make an Exeption for this case
+            //TODO Make an Exeption for this case
+            Logger.logger.error("Map vide");
         }
 
         this.map = map;

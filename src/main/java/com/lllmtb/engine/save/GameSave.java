@@ -31,7 +31,7 @@ public class GameSave {
             this.teams.add(new TeamSave(team));
         }
         this.indexTeam = gameWorld.getIndexTeam();
-        this.turnDuration = gameWorld.getTurnDuration()/1000;
+        this.turnDuration = gameWorld.getTurnDuration() / 1000;
         this.bus = gameWorld.getBus();
         this.hasWind = gameWorld.getPhysics().hasWind();
         this.wind = gameWorld.getPhysics().getWind();
@@ -49,7 +49,21 @@ public class GameSave {
         for (int i = 0; i < teamNames.length; i++) {
             teamNames[i] = gameWorld.getTeams().get(i).name;
         }
-        this.gameSettings = new GameSettings(gameWorld.getGameName(),gameWorld.getTeams().size(),teamNames,-1,Statistics.getMaxHp(),gameWorld.getTurnDuration(),gameWorld.getPhysics().hasWind(),gameWorld.getGameName(),false,gameWorld.getMap().getWidth(),null,Move.getMaxjump(),gameWorld.getGameMode(),Projectile.isFriendlyfire());
+        this.gameSettings = new GameSettings(
+                gameWorld.getGameName(),
+                gameWorld.getTeams().size(),
+                teamNames,
+                -1,
+                Statistics.getMaxHp(),
+                gameWorld.getTurnDuration(),
+                gameWorld.getPhysics().hasWind(),
+                gameWorld.getGameName(),
+                false,
+                gameWorld.getMap().getWidth(),
+                null,
+                Move.getMaxjump(),
+                gameWorld.getGameMode(),
+                Projectile.isFriendlyfire());
     }
 
 
