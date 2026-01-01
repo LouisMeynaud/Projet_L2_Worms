@@ -1,7 +1,6 @@
 package com.lllmtb.engine.turn;
 
 import java.util.List;
-import java.io.IOException;
 import java.util.Objects;
 import java.util.Random;
 import com.lllmtb.engine.GameWorld;
