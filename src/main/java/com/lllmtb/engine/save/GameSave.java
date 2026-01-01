@@ -2,6 +2,8 @@ package com.lllmtb.engine.save;
 
 import com.lllmtb.engine.GameSettings;
 import com.lllmtb.engine.GameWorld;
+import com.lllmtb.engine.turn.Turn;
+import com.lllmtb.engine.turn.TurnManager;
 import com.lllmtb.events.EventBus;
 import com.lllmtb.model.entity.projectile.Projectile;
 import com.lllmtb.model.entity.team.Team;
@@ -24,12 +26,14 @@ public class GameSave {
     public Vector gravity;
     public ConcurrentHashMap<Integer, ArrayList<PhysicsModifier>> modifiers;
     public GameSettings gameSettings;
+    public TurnManager turnManager;
 
 
     public GameSave(GameWorld gameWorld) {
         for (Team team : gameWorld.getTeams()) {
             this.teams.add(new TeamSave(team));
         }
+        this.turnManager = gameWorld.getTurnManager();
         this.indexTeam = gameWorld.getIndexTeam();
         this.turnDuration = gameWorld.getTurnDuration() / 1000;
         this.bus = gameWorld.getBus();

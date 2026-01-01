@@ -117,7 +117,6 @@ public class Load {
 
             } else if (saveBody.entity instanceof Coin coin) {
                 // use reflexion to recreate worm instance with correct PhysicsBody
-                System.out.println("chargement coin");
                 Field bodyCoinField = Coin.class.getDeclaredField("body");
                 bodyCoinField.setAccessible(true);
                 bodyCoinField.set(coin, saveBody.physicsBody);
@@ -129,7 +128,6 @@ public class Load {
 
             } else if (saveBody.entity instanceof Drop drop) {
                 // use reflexion to recreate worm instance with correct PhysicsBody
-                System.out.println("chargement drop");
                 Field bodyDropField = Drop.class.getDeclaredField("body");
                 bodyDropField.setAccessible(true);
                 bodyDropField.set(drop, saveBody.physicsBody);

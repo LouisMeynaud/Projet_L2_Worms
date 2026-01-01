@@ -51,8 +51,8 @@ import com.lllmtb.physics.Position;
 public final class TurnManager {
 
     // Champs
-    private Turn turn;
-    private final GameWorld world;
+    private transient Turn turn;
+    private final transient GameWorld world;
     private final long turnDurationInMs;
     private long remainingTimeInMs;
     private int nbTurn;

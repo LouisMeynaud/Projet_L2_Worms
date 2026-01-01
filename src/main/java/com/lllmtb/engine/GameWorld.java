@@ -1,6 +1,7 @@
 package com.lllmtb.engine;
 
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -10,6 +11,8 @@ import java.util.concurrent.LinkedBlockingQueue;
 import com.lllmtb.engine.save.GameSave;
 import com.lllmtb.engine.save.PhysicsBodySave;
 import com.lllmtb.engine.save.TeamSave;
+import com.lllmtb.engine.turn.Turn;
+import com.lllmtb.model.entity.Coin;
 import com.lllmtb.model.entity.projectile.Projectile;
 import org.eclipse.jdt.annotation.NonNull;
 
@@ -88,7 +91,21 @@ public class GameWorld {
         Logger.logger.debug("Game initialised");
 
         //Init TurnManager
-        this.turnManager = new TurnManager(this, gameSave.turnDuration);
+        this.turnManager = gameSave.turnManager;
+
+        // use reflexion to recreate worm instance with correct PhysicsBody
+        try {
+            Field worldField = TurnManager.class.getDeclaredField("world");
+            worldField.setAccessible(true);
+            worldField.set(this.turnManager, this);
+            Field turnField = TurnManager.class.getDeclaredField("world");
+            turnField.setAccessible(true);
+            turnField.set(this.turnManager, new Turn(this.getPlayingTeam()));
+        } catch (NoSuchFieldException e) {
+            throw new RuntimeException(e);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
 
         //Init FriendlyFire
         Projectile.setFriendlyFire(settings.friendlyfire);
