@@ -7,6 +7,7 @@ import com.lllmtb.engine.GameWorld;
 import com.lllmtb.engine.logger.Logger;
 import com.lllmtb.events.EventListener;
 import com.lllmtb.events.game.CoinCollisionEvent;
+import com.lllmtb.events.game.DropCollisionEvent;
 import com.lllmtb.events.game.MapUpdateEvent;
 import com.lllmtb.events.game.ToolSelectedEvent;
 import com.lllmtb.events.game.WeaponSelectedEvent;
@@ -22,47 +23,113 @@ import com.lllmtb.events.turn.TurnStopEvent;
 import com.lllmtb.events.turn.WormPlayable;
 import com.lllmtb.events.ui.graphical.ScreenEndGameEvent;
 import com.lllmtb.model.entity.Coin;
+import com.lllmtb.model.entity.Drop;
 import com.lllmtb.model.entity.projectile.Projectile;
 import com.lllmtb.model.entity.team.Team;
+import com.lllmtb.model.entity.worm.Worm;
+import com.lllmtb.model.item.ItemId;
 import com.lllmtb.model.item.UseParams;
 import com.lllmtb.model.item.tool.ToolId;
+import com.lllmtb.model.item.weapon.WeaponId;
 import com.lllmtb.physics.Move;
 import static com.lllmtb.physics.Move.move;
 import com.lllmtb.physics.PhysicsBody;
 import com.lllmtb.physics.Position;
 
+/**
+ * Controls the turn system
+ * <p>
+ * This manager handles the full lifecycle of team turns, including:
+ * <ul>
+ *   <li>Turn start and end logic</li>
+ *   <li>Turn timer countdown</li>
+ *   <li>Team passive income and coin spawning</li>
+ *   <li>Checking turn clean before switching turns</li>
+ * </ul>
+ * <p>
+ * A new turn only begins when the world is in a stable state (no active projectiles, all worms on ground).
+ * <p>
+ *
+ */
 public final class TurnManager {
 
+    // Champs
     private Turn turn;
     private final GameWorld world;
-
     private final long turnDurationInMs;
     private long remainingTimeInMs;
     private int nbTurn;
     private boolean turnFinish = false;
+    private static int remainingTimeAfterShootInMs = 5000;
 
+    /**
+     * Create a new {@code TurnManager} for the current gameWorld
+     * @param world the current {@link GameWorld}
+     * @param turnDuration the maximum turn duration for a turn
+     */
     public TurnManager(GameWorld world, long turnDuration) {
         this.world = world;
         this.turnDurationInMs = 1000 * turnDuration;
         this.init();
     }
 
+    /**
+     * Return the current gameWorld
+     */
     public GameWorld getWorld() {
         return this.world;
     }
-
+    /**
+     * Return the current maximum turn duration
+     */
     public long getTurnDuration() {
         return this.turnDurationInMs;
     }
 
+    /**
+     * Return the remainingTime for the current turn.
+     */
     public long getRemainingTime() {
         return this.remainingTimeInMs;
     }
 
+
+    /**
+     * Returns the active {@link Turn} object containing current team and worm data.
+     * @return the current {@link Turn}
+     */
+    public Turn getTurn() {
+        return turn;
+    }
+
+    /**
+     * Returns the number of turns that have started since the beginning of the match.
+     * @return total turn count
+     */
+    public int getNbTurn() {
+        return this.nbTurn;
+    }
+
+    /**
+     * Initialize the turn manager with all event listeners.
+     */
     public void init() {
         setupEvents();
     }
 
+    /**
+     * Set RemainingTimeAfterShoot to a value specified
+     * @param value the value specified
+     */
+    public static void setRemainingTimeAfterShootInMs(int value) {
+        TurnManager.remainingTimeAfterShootInMs = value;
+    }
+
+    /**
+     * Start a new turn for the selected {@link Team}
+     * This method reset timer, give credits to the Team, spawnCoins on the map.
+     * @param team the selected team who will play.
+     */
     public void startTurn(Team team) {
         this.remainingTimeInMs = turnDurationInMs;
         this.turn = new Turn(team);
@@ -73,6 +140,7 @@ public final class TurnManager {
         team.addCredits(passiveIncome);
         Logger.logger.info("l'equipe : " + team.name + "gagne :" + passiveIncome + "pour le debut du tour");
         spawnCoins();
+        spawnDrops();
 
 
         this.turnFinish = false;
@@ -81,12 +149,15 @@ public final class TurnManager {
         world.getBus().postQueued(new WormPlayable(turn.getWormPlayable()));
         if (this.nbTurn > world.getTeams().size() * 4) {
             Logger.logger.info("Level of the water : {}", world.getMap().getHeightWater());
-            if (world.getMap().risingWater()) {
+            if (world.getMap().risingWater(1)) {
                 world.getBus().postQueued(new MapUpdateEvent());
             }
         }
     }
 
+    /**
+     * Spawn {@link Coin} on the map at random position which can be collect.
+     */
     private void spawnCoins() {
         Random random = new Random();
         int coinsToSpawn = 1 + random.nextInt(2);
@@ -94,20 +165,56 @@ public final class TurnManager {
         int mapHeight = world.getMap().getHeight();
 
         for (int i = 0; i < coinsToSpawn; i++) {
-            boolean placed = false;
             int x = random.nextInt(mapWidth);
             for (int y = mapHeight - 1; y > 0; y--) {
                 if (world.getMap().isSolid(new Position(x, y))) {
                     int coinY = y + 1;
                     Coin coin = new Coin(new Position(x + 0.25, coinY), 50);
                     world.getPhysics().getBodies().add(coin.getBody());
-                    placed = true;
                     break;
                 }
             }
         }
     }
 
+    /**
+     * Spawn {@link Drop} on the map at random position which can be collect.
+     */
+    private void spawnDrops() {
+        Random random = new Random();
+        int dropToSpawn = random.nextInt(2);
+        int mapWidth = world.getMap().getWidth();
+        int mapHeight = world.getMap().getHeight();
+
+        for (int i = 0; i < dropToSpawn; i++) {
+            int x = random.nextInt(mapWidth);
+            int y = mapHeight - 1;
+
+
+            ItemId itemId = null;
+            if (random.nextInt(2) == 0) {
+                //Weapon Drop
+                WeaponId[] weaponIdValues = WeaponId.values();
+                itemId = weaponIdValues[random.nextInt(1, weaponIdValues.length - 1)]; // Between 1 and length-1 to remove Gun and None in the choice
+            } else {
+                // Tool Drop
+                ToolId[] toolIdValues = ToolId.values();
+                itemId = toolIdValues[random.nextInt(toolIdValues.length - 1)];  // Between 0 and length-1 to remove None in the choice
+            }
+
+
+            Logger.logger.info(" Drop spawn with item : {}", itemId);
+            Drop drop = new Drop(new Position(x + 0.25, y), itemId);
+            world.queueCommands(drop.addModifier());
+            }
+    }
+
+
+    /**
+     * Update the current Turn and checks if it finished.
+     * Before start a next turn, the turn have to be clean.
+     * @param elapsedTime the elapsed time since the last update
+     */
     public void updateTurn(double elapsedTime) {
         this.remainingTimeInMs -= (long) elapsedTime;
         if (turnFinish) {
@@ -115,17 +222,22 @@ public final class TurnManager {
                 this.passNextTurn();
                 world.getGameLoop().setSpeedTurn(1);
             } else {
-                world.getGameLoop().setSpeedTurn(5);
+                world.getGameLoop().setSpeedTurn(3);
             }
         } else {
-            if (remainingTimeInMs <= 0) {
+            if (remainingTimeInMs <= 0 || this.turn.getIsEnd()) {
                 endTurn();
-            } else if (this.turn.getIsEnd()) {
-                endTurn();
+            } else if (this.turn.teamMaximumShoot()) {
+                this.remainingTimeInMs = Math.min(this.remainingTimeInMs, remainingTimeAfterShootInMs);
             }
         }
     }
 
+    /**
+     * Ends the current team turn.
+     * The current worm is disabled and his hand is cleared.
+     * The turn manager enter in state of Turn finished and wait for clean turn
+     */
     public void endTurn() {
         this.turn.getTeam().emptyHand();
         Logger.logger.info("End turn - switch Team\n");
@@ -134,28 +246,44 @@ public final class TurnManager {
         this.turn.getTeam().setCurrentWormNull();
     }
 
+    /**
+     * Check if the turn is clean. clean state :
+     * <ul>
+     *   <li>All {@link Projectile} which need to clear, is clear.</li>
+     *   <li>Any alive {@link Worm} is on the ground</li>
+     * </ul>
+     * @return a boolean if the turn is in a clean state.
+     */
     private boolean cleanTurn() {
         for (PhysicsBody body : world.getPhysics().getBodies()) {
             if (body.getEntity() instanceof Projectile projectile) {
                 if (projectile.blocksTurnEnd()) return false;
+            } else if (body.getEntity() instanceof Worm worm) {
+                this.world.getPhysics().removeModifierFor(body, ToolId.JETPACK);
+                if (!worm.isOnGround()) {
+                    return false;
+                }
             }
         }
         return true;
     }
 
+    /**
+     * Tells the current {@link Turn} to close and requests the next team to play.
+     */
     private void passNextTurn() {
         this.turn.end();
         world.nextTeamTurn();
     }
 
-    public Turn getTurn() {
-        return turn;
-    }
-
-    public int getNbTurn() {
-        return this.nbTurn;
-    }
-
+    /**
+     * Registers and subscribes all game and input event listeners to the world event bus.
+     * <p>
+     * This allows the turn manager to react to:
+     * movement input, weapon/tool selection, coin pickup, worm landing, turn skip, and game stop.
+     * <p>
+     * Listeners persist across turns because they use dynamic data from {@code TurnManager}.
+     */
     private void setupEvents() {
         // TODO - unsubscribe when stopping the gameworld. Note that we can keep these listeners across turns because they use dynamic data
 
@@ -201,10 +329,30 @@ public final class TurnManager {
             });
         };
 
+        EventListener<DropCollisionEvent> dropListener = event -> {
+            world.queueCommand(w -> {
+                if (event.drop.itemIdToUnlock instanceof ToolId toolID) {
+                    event.team.addAmmo(toolID, event.ammoAmount);
+                    Logger.logger.info("Drop ramasse, outil obtenu : " + event.drop.itemIdToUnlock + ", nombre d'utilisation : " + event.ammoAmount + " !");
+                } else if (event.drop.itemIdToUnlock instanceof WeaponId weaponID) {
+                    event.team.unlockWeapon(weaponID);
+                    event.team.addAmmo(weaponID, event.ammoAmount);
+                    Logger.logger.info("Drop ramasse, arme obtenu : " + event.drop.itemIdToUnlock + ", nombre de munitions : " + event.ammoAmount + " !");
+                }
+                world.getPhysics().remove(event.drop.getBody());
+            });
+        };
+
+
         EventListener<ChangeWormsEvent> changeWormDuringTurn = event -> {
-            turn.nextWormPlayable();
-            Logger.logger.info("Change worm playable");
-            //TODO : PASS IT TO DEBUG
+            Team currentTeam = turn.getTeam();
+            if (currentTeam.getMaxChangeWormTeam() <= 0) {
+                Logger.logger.info("It's not possible to change worm playable");
+            } else {
+                turn.nextWormPlayable();
+                currentTeam.oneChangeWorm();
+                Logger.logger.info("Change worm playable");
+            }
         };
 
         EventListener<UseInputEvent> useInputEventListener = event -> {
@@ -221,18 +369,21 @@ public final class TurnManager {
             double deltaY = (mouseY - centerY);
             double angle = Math.atan2(deltaY, deltaX);
 
-            double dist = 1.5;
+            double dist = 1;
+            if (turn.getTeam().getHand() == WeaponId.GASGUN) {
+                dist =  6;
+            }
             double spawnX = centerX + (Math.cos(angle) * dist);
             double spawnY = centerY + (Math.sin(angle) * dist);
 
             Position spawnBullet = new Position(spawnX, spawnY);
 
-            if (turn.getTeam().getHand() == ToolId.CALLSTRIKE) {
+            if (turn.getTeam().getHand().usesCrosshair()) {
                 spawnBullet = new Position(mouseX, world.getMap().getHeight() - 1);
                 angle = -Math.PI / 2;
             }
 
-            UseParams params = new UseParams(angle, spawnBullet, Objects.requireNonNull(turn.getWormPlayable()));
+            UseParams params = new UseParams(angle, spawnBullet, Objects.requireNonNull(turn.getWormPlayable()), event.time());
 
             world.queueCommands(turn.getTeam().use(params));
         };
@@ -247,6 +398,7 @@ public final class TurnManager {
         world.getBus().subscribe(UseInputEvent.class, useInputEventListener);
         world.getBus().subscribe(TurnFinishEvent.class, turnFinishListener);
         world.getBus().subscribe(CoinCollisionEvent.class, coinListener);
+        world.getBus().subscribe(DropCollisionEvent.class, dropListener);
         world.getBus().subscribe(ChangeWormsEvent.class, changeWormDuringTurn);
     }
 }

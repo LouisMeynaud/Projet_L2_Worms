@@ -86,6 +86,14 @@ public class Team {
     public final TeamColor teamColor;
 
     /**
+     * The count of shoot in a turn
+     */
+    private int shootCount;
+
+    public static final int MAX_CHANGEWORMTEAM = 12;
+    private int maxChangeWormTeam = MAX_CHANGEWORMTEAM;
+
+    /**
      * Possible colors that can be assigned to a team.
      */
     private static final List<TeamColor> possibleTeamColors = Arrays.asList(TeamColor.values());
@@ -102,8 +110,9 @@ public class Team {
      * @param numberOfWorms number of worms in the team
      * @param inventory     the inventory assigned to the team
      * @param spawn         the spawn position where the worms will be placed
+     * @param credits       initial amount of credits for the team
      */
-    private Team(@NonNull String name, int numberOfWorms, @NonNull Inventory inventory, @NonNull Position[] spawn) {
+    private Team(@NonNull String name, int numberOfWorms, @NonNull Inventory inventory, @NonNull Position[] spawn, int credits) {
         this.teamColor = Team.chooseColor();
         this.inventory = Objects.requireNonNull(inventory);
         this.name = Objects.requireNonNull(name);
@@ -112,6 +121,7 @@ public class Team {
         this.setUpWorms(numberOfWorms, spawn);
         this.currentWorm = this.worms.get(0);
         this.selectedItem = null;
+        this.credits = credits;
     }
 
     /**
@@ -120,8 +130,8 @@ public class Team {
      * @param numberOfWorms number of worms in the team
      * @param spawn         the spawn position where the worms will be placed
      */
-    public Team(@NonNull String teamName, int numberOfWorms, @NonNull Position[] spawn) {
-        this(teamName, numberOfWorms, new Inventory(), spawn);
+    public Team(@NonNull String teamName, int numberOfWorms, @NonNull Position[] spawn, int credits) {
+        this(teamName, numberOfWorms, new Inventory(), spawn, credits);
     }
 
     /**
@@ -173,8 +183,36 @@ public class Team {
         return this.currentWorm;
     }
 
+    /**
+     * @return the count of shoot in this turn
+     */
+    public int getShootCount() {
+        return this.shootCount;
+    }
+
+    /**
+     * @return the changeWorm left of the team
+     */
+    public int getMaxChangeWormTeam() {
+        return maxChangeWormTeam;
+    }
+
+    /**
+     * Remove one usage of change worm of the team
+     */
+    public void oneChangeWorm() {
+        this.maxChangeWormTeam--;
+    }
+
     public static ArrayList<TeamColor> getChosenTeamColors() {
         return chosenTeamColors;
+    }
+
+    /**
+     * Reset shoot count
+     */
+    public void resetShootCount() {
+        this.shootCount = 0;
     }
 
     /**
@@ -301,7 +339,10 @@ public class Team {
     public List<GameCommand> use(@NonNull UseParams useParams) {
         Objects.requireNonNull(useParams);
         if (this.selectedItem == null) return null;
-        if (this.selectedItem instanceof WeaponId weaponId) return this.inventory.fire(weaponId, useParams);
+        if (this.selectedItem instanceof WeaponId weaponId) {
+            this.shootCount++;
+            return this.inventory.fire(weaponId, useParams);
+        }
         if (this.selectedItem instanceof ToolId toolId) {
             this.emptyHand();
             return this.inventory.use(toolId, useParams);
@@ -391,13 +432,17 @@ public class Team {
     }
 
     public void addCredits(int amount) {
-        if (amount > 0) {
+        if (amount > 0 && credits != -1) {
             this.credits += amount;
             Logger.logger.info("$$$ [TEAM " + this.name + "] Gain de " + amount + " pieces. Total: " + this.credits);
         }
     }
 
     public void removeCredits(int amount) {
+        if (credits == -1) {
+            return;
+        }
+
         if (amount > 0 && credits >= amount) {
             this.credits -= amount;
             Logger.logger.info("$$$ [TEAM " + this.name + "] achat/perte de " + amount + " pieces. Total: " + this.credits);

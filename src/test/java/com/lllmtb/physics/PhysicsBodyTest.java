@@ -21,7 +21,7 @@ void testConstructor(){
 
     Position pos1 = new Position(x1, y1);
     String name = "Test";
-    Team team = new Team("TestTeam",1, new Position[]{pos1});
+    Team team = new Team("TestTeam",1, new Position[]{pos1}, 0);
     Entity entity = new Worm(name, team);
     Vector vector1 = new Vector(x2, y2);
     PhysicsBody pB = new PhysicsBody(entity, pos1,vector1, mass1, height1,width1);
@@ -50,7 +50,7 @@ void testSet(){
 
     Position pos1 = new Position(x1, y1);
     String name = "Test";
-    Team team = new Team("TestTeam",1, new Position[]{pos1});
+    Team team = new Team("TestTeam",1, new Position[]{pos1}, 0);
     Entity entity = new Worm(name, team );
     Vector vector2 = new Vector(x2, y2);
     Position pos3 = new Position(x3, y3);
@@ -69,7 +69,7 @@ void testSet(){
     public void testToString() {
         Position position = new Position(10, 20);
         Vector vector = new Vector(5.0, -2.5);
-        Entity entity = new Worm("TestWorm", new Team("TestTeam", 1, new Position[]{position}));
+        Entity entity = new Worm("TestWorm", new Team("TestTeam", 1, new Position[]{position}, 0));
         PhysicsBody body = new PhysicsBody(entity, position, vector, 10.0, 2.0, 1.0);
         String expectedString = "Body{ " + position + " | " + vector + " }";
         assertEquals(expectedString, body.toString(), "Le format de PhysicsBody.toString() est incorrect");

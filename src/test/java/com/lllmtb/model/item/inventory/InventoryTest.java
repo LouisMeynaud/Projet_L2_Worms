@@ -22,7 +22,7 @@ public class InventoryTest {
     @BeforeEach
     public void setUp() {
         testPosition = new Position(0, 0);
-        testTeam = new Team("TestTeam", 1, new Position[]{testPosition});
+        testTeam = new Team("TestTeam", 1, new Position[]{testPosition}, 0);
         testWorm = testTeam.getTeamWorms().get(0);
         inventory = new Inventory();
     }
@@ -102,55 +102,67 @@ public class InventoryTest {
 
     @Test
     public void fire_throwsExceptionForUnknownWeapon() {
-        UseParams params = new UseParams(0, testPosition, testWorm);
+        UseParams params = new UseParams(0, testPosition, testWorm, 0);
         assertThrows(UnknownWeaponException.class, () -> inventory.fire(WeaponId.NONE, params));
     }
 
     @Test
     public void fire_throwsExceptionWhenWeaponIsLocked() {
-        UseParams params = new UseParams(0, testPosition, testWorm);
-        assertThrows(UnusableWeaponException.class, () -> inventory.fire(WeaponId.BAZOOKA, params));
+
+        UseParams paramsbis = new UseParams(0, testPosition, testWorm, 0);
+        assertThrows(UnusableWeaponException.class, () -> inventory.fire(WeaponId.BAZOOKA, paramsbis));
+
     }
 
     @Test
     public void fire_throwsExceptionWhenNoAmmo() {
         inventory.unlock(WeaponId.BAZOOKA);
-        UseParams params = new UseParams(0, testPosition, testWorm);
-        assertThrows(UnusableWeaponException.class, () -> inventory.fire(WeaponId.BAZOOKA, params));
+        UseParams paramsbis = new UseParams(0, testPosition, testWorm, 0);
+        assertThrows(UnusableWeaponException.class, () -> inventory.fire(WeaponId.BAZOOKA, paramsbis));
     }
 
     @Test
     public void fire_successfullyFires() {
+
         inventory.unlock(WeaponId.BAZOOKA);
         inventory.weapons.addAmmo(WeaponId.BAZOOKA, 10);
-        UseParams params = new UseParams(0, testPosition, testWorm);
+        UseParams paramsbis = new UseParams(0, testPosition, testWorm, 0);
+
         
-        assertDoesNotThrow(() -> inventory.fire(WeaponId.BAZOOKA, params));
+        assertDoesNotThrow(() -> inventory.fire(WeaponId.BAZOOKA, paramsbis));
     }
 
     @Test
     public void fire_consumesAmmo() {
-        UseParams params = new UseParams(0, testPosition, testWorm);
+        inventory.unlock(WeaponId.GUN);
+        inventory.weapons.addAmmo(WeaponId.GUN, 10);
+        UseParams params = new UseParams(0, testPosition, testWorm, 0);
+
         
         inventory.fire(WeaponId.GUN, params);
-        assertEquals(-2, inventory.weapons.getAmmo(WeaponId.GUN));
+        assertEquals(8, inventory.weapons.getAmmo(WeaponId.GUN));
     }
 
     @Test
     public void fire_consumesMultipleAmmo() {
-        UseParams params = new UseParams(0, testPosition, testWorm);
+        inventory.unlock(WeaponId.GUN);
+        inventory.weapons.addAmmo(WeaponId.GUN, 10);
+        UseParams params = new UseParams(0, testPosition, testWorm, 0);
+
         
         inventory.fire(WeaponId.GUN, params);
         inventory.fire(WeaponId.GUN, params);
-        assertEquals(-3, inventory.weapons.getAmmo(WeaponId.GUN));
+        assertEquals(7, inventory.weapons.getAmmo(WeaponId.GUN));
     }
 
     @Test
     public void fire_returnsGameCommands() {
+
         inventory.unlock(WeaponId.BAZOOKA);
         inventory.weapons.addAmmo(WeaponId.BAZOOKA, 10);
-        UseParams params = new UseParams(0, testPosition, testWorm);
-        
+        UseParams params = new UseParams(0, testPosition, testWorm, 0);
+
+
         var result = inventory.fire(WeaponId.BAZOOKA, params);
         assertNotNull(result);
         assertFalse(result.isEmpty());
@@ -296,7 +308,7 @@ public class InventoryTest {
         inventory.weapons.addAmmo(WeaponId.BAZOOKA, 10);
         inventory.tools.addAmmo(ToolId.JETPACK, 5);
         
-        UseParams useParams = new UseParams(0, testPosition, testWorm);
+        UseParams useParams = new UseParams(0, testPosition, testWorm, 0);
         UseParams toolParams = new UseParams(testWorm);
         
         assertDoesNotThrow(() -> inventory.fire(WeaponId.BAZOOKA, useParams));

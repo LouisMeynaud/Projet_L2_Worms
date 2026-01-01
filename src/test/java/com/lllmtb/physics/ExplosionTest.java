@@ -33,7 +33,7 @@ class ExplosionTest {
 
     private Worm createWorm() {
         Position[] spawn = new Position[]{new Position(0,0)};
-        Team team = new Team("TestTeam", 1, spawn);
+        Team team = new Team("TestTeam", 1, spawn, 0);
         return new Worm("TestWorm", team) {
         };
     }

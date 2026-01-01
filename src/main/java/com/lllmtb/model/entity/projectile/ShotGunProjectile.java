@@ -16,6 +16,10 @@ public final class ShotGunProjectile extends Projectile {
     private static final double width  = 0.5;
     private static final int damage = 50;
 
+    /**
+     * Constructor for ShotGunProjectile.
+     * @param params UseParams containing initial parameters for the projectile.
+     */
     public ShotGunProjectile(@NonNull UseParams params) {
         super(params, force, mass, height, width);
     }

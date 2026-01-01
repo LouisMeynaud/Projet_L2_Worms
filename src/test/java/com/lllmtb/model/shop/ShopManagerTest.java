@@ -3,7 +3,6 @@ package com.lllmtb.model.shop;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import static org.mockito.ArgumentMatchers.eq;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -82,5 +81,23 @@ class ShopManagerTest {
 
         verify(mockTeam).removeCredits(20); 
         verify(mockTeam).addAmmo(ToolId.PARACHUTE, 1);
+    }
+
+    @Test
+    void buyItem_withInfiniteCredits() {
+        when(mockTeam.getCredits()).thenReturn(-1); // -1 = infinite credits
+        shopManager.buyItem(WeaponId.SHOTGUN, mockTeam);
+        verify(mockTeam).removeCredits(120);
+        verify(mockTeam).unlockWeapon(WeaponId.SHOTGUN);
+    }
+
+    @Test
+    void buyAmmo_withInfiniteCredits() {
+        when(mockInventory.isUnlocked(WeaponId.SHOTGUN)).thenReturn(true);
+        when(mockTeam.getCredits()).thenReturn(-1); // -1 = infinite credits
+        shopManager.buyAmmo(WeaponId.SHOTGUN, mockTeam);
+        
+        verify(mockTeam).removeCredits(40);
+        verify(mockTeam).addAmmo(WeaponId.SHOTGUN, 5);
     }
 }

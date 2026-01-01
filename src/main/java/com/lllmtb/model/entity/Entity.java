@@ -1,5 +1,9 @@
 package com.lllmtb.model.entity;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.lllmtb.engine.commands.GameCommand;
 import com.lllmtb.physics.PhysicsBody;
 
 public abstract class Entity {
@@ -19,4 +23,9 @@ public abstract class Entity {
      * @return the {@link CollisionType} associated with the entity.
      */
     public abstract CollisionType getCollisionType();
+
+
+    public List<GameCommand> update(long tickTime) {
+        return new ArrayList<>();
+    }
 }

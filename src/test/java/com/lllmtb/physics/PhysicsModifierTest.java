@@ -1,9 +1,13 @@
 package com.lllmtb.physics;
 
+import com.lllmtb.model.entity.team.Team;
+import com.lllmtb.model.entity.worm.Worm;
 import com.lllmtb.model.item.ItemId;
 import com.lllmtb.model.item.tool.ToolId;
 
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class PhysicsModifierTest {
@@ -26,5 +30,19 @@ public class PhysicsModifierTest {
         assertSame(source, oneShotModifier.source);
         assertTrue(oneShotModifier.oneShot);
         assertTrue(oneShotModifier.enabled);
+    }
+
+    @Test
+    public void testOnRemove(){
+        PhysicsModifier modifierJetpack = new PhysicsModifier(transform, ToolId.JETPACK, remaining, true);
+        Worm worm = new Worm("Test", Mockito.mock(Team.class));
+        assertNotNull(modifierJetpack.onRemove(worm));
+    }
+
+    @Test
+    public void testOnRemoveNotJetpack(){
+        PhysicsModifier modifierJetpack = new PhysicsModifier(transform, source, remaining, true);
+        Worm worm = new Worm("Test", Mockito.mock(Team.class));
+        assertNull(modifierJetpack.onRemove(worm));
     }
 }

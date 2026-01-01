@@ -28,7 +28,7 @@ public class CallStrikeToolTest {
     public void use() throws Exception {
         Worm w = new Worm("José", mock(Team.class));
         Position pos = new Position(10.0, 20.0);
-        UseParams up = new UseParams(90, pos, w);
+        UseParams up = new UseParams(90, pos, w, 0);
 
         // Check that the use method returns the correct commands
         List<GameCommand> cmds = callstrike.use(up);
