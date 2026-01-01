@@ -170,6 +170,11 @@ public class Map {
         return this.getTile(position).isSolid();
     }
 
+    public boolean isDamaging(Position position) {
+        Tile tile = this.getTile(position);
+        return tile.getDamage() > 0;
+    }
+
     /**
      * Gets the spawn points for the map.
      * @return 2D array of Position representing different spawn points.

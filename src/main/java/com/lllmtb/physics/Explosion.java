@@ -1,5 +1,7 @@
 package com.lllmtb.physics;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import com.lllmtb.engine.commands.GameCommand;
@@ -73,8 +75,8 @@ public class Explosion {
      * @param maxDamage the maximun damage to the explosion (at the center)
      * @param bodies the list of bodies
      */
-    public static GameCommand explosionDamageEffect(Position position, int damageRadius, int maxDamage, CopyOnWriteArrayList<PhysicsBody> bodies) {
-        GameCommand death = null;
+    public static List<GameCommand> explosionDamageEffect(Position position, int damageRadius, int maxDamage, CopyOnWriteArrayList<PhysicsBody> bodies, boolean heal) {
+        List<GameCommand> death = new ArrayList<>();
         for (PhysicsBody body : bodies) {
         Position bodyPos = body.getPos();
         double dx = bodyPos.getX() - position.getX();
@@ -85,7 +87,10 @@ public class Explosion {
             double ratio = 1 - (distance / damageRadius);
             int actualDamage = (int) (maxDamage * ratio);
             if (body.getEntity() instanceof Worm worm) {
-                death = worm.damageWorm(actualDamage);
+                death.add(worm.damageWorm(actualDamage));
+                if (heal) {
+                    death.add(worm.removeAllStatusEffects());
+                }
             }
         }
     }

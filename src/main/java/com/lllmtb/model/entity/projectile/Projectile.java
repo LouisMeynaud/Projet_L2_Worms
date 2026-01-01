@@ -51,7 +51,7 @@ public abstract class Projectile extends Entity {
      */
     public abstract List<GameCommand> onImpact(Entity entity);
 
-    public abstract int getDamage();
+    public abstract double getDamage();
 
     /**
      * Handle the hit on an entity, applying damage if it's a Worm.
@@ -59,7 +59,7 @@ public abstract class Projectile extends Entity {
      * @param entity the entity that was hit
      * @param damage the damage to apply
      */
-    protected void handleHit(List<GameCommand> list, Entity entity, int damage) {
+    protected void handleHit(List<GameCommand> list, Entity entity, double damage) {
         if (entity instanceof Worm worm) {
             if (!friendlyfire && Worm.isInTheSameTeam(this.owner, worm)) {
                 Logger.logger.debug("Worm in the same Team");

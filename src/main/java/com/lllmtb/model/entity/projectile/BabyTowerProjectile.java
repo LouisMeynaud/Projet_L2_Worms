@@ -15,7 +15,7 @@ public final class BabyTowerProjectile extends Projectile {
     private static final double mass   = 0.000;
     private static final double height = 1;
     private static final double width  = 1;
-    private static final int damage = 3;
+    private static final double damage = 3;
 
     /**
      * Constructor for BabyTowerProjectile.
@@ -39,7 +39,7 @@ public final class BabyTowerProjectile extends Projectile {
     }
 
     @Override
-    public int getDamage() {
+    public double getDamage() {
         return damage;
     }
 }

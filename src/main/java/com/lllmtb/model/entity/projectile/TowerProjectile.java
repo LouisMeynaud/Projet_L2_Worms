@@ -23,7 +23,7 @@ public final class TowerProjectile extends Projectile {
     private static final double MASS   = 0.0060;
     private static final double HEIGHT = 2;
     private static final double WIDTH  = 2;
-    private static final int DAMAGE    = 0;
+    private static final double DAMAGE    = 0;
     public static final int range = 25;
 
     private static final double FIRE_INTERVAL = 500;
@@ -128,7 +128,7 @@ public final class TowerProjectile extends Projectile {
 }
 
     @Override
-    public int getDamage() {
+    public double getDamage() {
         return DAMAGE;
     }
 }

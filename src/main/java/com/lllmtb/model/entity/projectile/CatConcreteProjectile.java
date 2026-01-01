@@ -14,7 +14,7 @@ public final class CatConcreteProjectile extends Projectile implements Explosive
     private static final double mass   = 0.01;
     private static final double height = 4;
     private static final double width  = 4;
-    private static final int damage = 0;
+    private static final double damage = 0;
 
     private static final int RAYON_DEGAT_MAP = 3;
     private static final int RAYON_SOUFFLE = 3;
@@ -44,7 +44,7 @@ public final class CatConcreteProjectile extends Projectile implements Explosive
     public List<GameCommand> onImpact(Entity entity) {
         List<GameCommand> list = new ArrayList<>();
         handleHit(list, entity, damage);
-        list.add((world -> world.getPhysics().createExplosion(this, RAYON_DEGAT_MAP, RAYON_SOUFFLE, DEGATS, FORCE_SOUFFLE)));
+        list.add((world -> world.getPhysics().createExplosion(this, RAYON_DEGAT_MAP, RAYON_SOUFFLE, DEGATS, FORCE_SOUFFLE, false)));
         return list;
     }
 
@@ -73,7 +73,7 @@ public final class CatConcreteProjectile extends Projectile implements Explosive
     }
 
     @Override
-    public int getDamage() {
+    public double getDamage() {
         return damage;
     }
 }
