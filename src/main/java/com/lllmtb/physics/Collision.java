@@ -542,7 +542,7 @@ public class Collision {
         return this.map;
     }
 
-    public Tile inTrapOrLava(Position position) {
+    private Tile inTrapOrLava(Position position) {
         if (map.isDamaging(position)) {
             return map.getTile(position);
         }
@@ -580,9 +580,9 @@ public class Collision {
     }
 
     /**
-     * Checks if a physics body (particularly its lower half) is in damaging terrain (lava, traps).
-     * This method tests multiple points around the body, especially the lower portion,
-     * to detect when only part of the body is in damaging terrain.
+     * Checks if a physics body is in damaging terrain (lava, traps).
+     * This method tests multiple points around the body to detect when only part
+     * of the body is in damaging terrain.
      * @param body the {@link PhysicsBody} to check
      * @return the {@link Tile} if the body is in damaging terrain, {@code null} otherwise
      */

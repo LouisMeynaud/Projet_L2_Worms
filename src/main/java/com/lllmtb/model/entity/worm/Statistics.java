@@ -51,14 +51,12 @@ public class Statistics {
         if (speed >= 0) {
             this.speed = speed;
         }
-
     }
 
     public void setStrength(int strength) {
         if (strength >= 0) {
             this.strength = strength;
         }
-
     }
 
     //Method
@@ -69,5 +67,4 @@ public class Statistics {
     public void damageTake(double damage) {
         this.setHp(this.hp - damage);
     }
-
 }

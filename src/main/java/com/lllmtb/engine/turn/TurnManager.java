@@ -135,6 +135,9 @@ public final class TurnManager {
         applyStatusEffectsToAllWorms();
     }
 
+    /**
+     * apply to all worms the status effect at each end of turn
+     */
     private void applyStatusEffectsToAllWorms() {
         for (Team team : world.getTeams()) {
             for (Worm worm : team.getTeamWorms()) {
