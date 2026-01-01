@@ -30,6 +30,7 @@ import com.lllmtb.events.ui.graphical.ScreenGenerateMap;
 import com.lllmtb.events.ui.graphical.ScreenHomeEvent;
 import com.lllmtb.events.ui.graphical.ScreenLoadGame;
 import com.lllmtb.events.ui.graphical.ScreenLoadMap;
+import com.lllmtb.events.ui.graphical.ScreenMusicSettingsEvent;
 import com.lllmtb.events.ui.graphical.ScreenNewOrLoadEvent;
 import com.lllmtb.events.ui.graphical.ScreenSettingsGame;
 import com.lllmtb.model.entity.Coin;
@@ -156,6 +157,7 @@ public class EventsTest {
         new ScreenLoadMap();
         new ScreenNewOrLoadEvent();
         new ScreenSettingsGame();
+        new ScreenMusicSettingsEvent();
         new MapUpdateEvent();
         new SaveEvent();
         new RequestFocus();
