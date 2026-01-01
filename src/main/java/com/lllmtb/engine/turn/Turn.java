@@ -6,6 +6,7 @@ import com.lllmtb.model.entity.worm.Worm;
 public class Turn {
     private final Team team;
     private boolean isEnd = false;
+    public static final int limitshoot = 3;
 
     public Turn(Team team) {
         this.team = team;
@@ -30,6 +31,7 @@ public class Turn {
     }
 
     public void end() {
+        this.team.resetShootCount();
         this.team.nextWorm();
     }
 
@@ -40,4 +42,13 @@ public class Turn {
     public void setIsEnd() {
         this.isEnd = true;
     }
+
+    public boolean teamMaximumShoot() {
+        if (this.team.getShootCount() >= Turn.limitshoot) {
+            this.team.emptyHand();
+            return true;
+        }
+        return false;
+    }
+
 }

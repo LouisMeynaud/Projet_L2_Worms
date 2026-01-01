@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 
 import com.lllmtb.engine.GameWorld;
 import com.lllmtb.model.entity.Coin;
+import com.lllmtb.model.entity.Drop;
 import com.lllmtb.model.entity.projectile.Projectile;
 import com.lllmtb.model.entity.team.TeamColor;
 import com.lllmtb.model.entity.worm.Statistics;
@@ -354,6 +355,25 @@ public class WorldRenderer {
         g2d.drawImage(texture, tx, null);
     }
 
+    private void drawDrop(Graphics2D g2d, PhysicsBody body) {
+        double[] bounds = panel.getScreenBounds(body); // Convertit position monde -> écran
+        double xEcran = bounds[0];
+        double yEcran = bounds[1];
+        double largeurPx = bounds[2];
+        double hauteurPx = bounds[3];
+
+
+        BufferedImage texture = TextureManager.UI.get("Drop");
+        AffineTransform tx = new AffineTransform();
+        tx.translate(xEcran, yEcran);
+
+        double echelleX = largeurPx / texture.getWidth();
+        double echelleY = hauteurPx / texture.getHeight();
+        tx.scale(echelleX, echelleY);
+
+        g2d.drawImage(texture, tx, null);
+    }
+
     /**
      * parcours la liste des physique body delegue le dessins de chaque entité au methode correspondanteZ.
      *
@@ -370,6 +390,8 @@ public class WorldRenderer {
                     drawProjectile(g2d, body);
                 } else if (body.getEntity() instanceof Coin) {
                     drawCoin(g2d, body);
+                } else if (body.getEntity() instanceof Drop) {
+                    drawDrop(g2d, body);
                 }
             }
         }
