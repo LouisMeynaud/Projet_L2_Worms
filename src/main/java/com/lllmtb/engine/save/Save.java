@@ -10,6 +10,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.typeadapters.RuntimeTypeAdapterFactory;
 import com.lllmtb.engine.GameWorld;
 import com.lllmtb.model.entity.Coin;
+import com.lllmtb.model.entity.Drop;
 import com.lllmtb.model.entity.Entity;
 import com.lllmtb.model.entity.projectile.Projectile;
 import com.lllmtb.model.entity.team.Team;
@@ -62,7 +63,8 @@ public class Save {
         RuntimeTypeAdapterFactory<Entity> entityAdapter = RuntimeTypeAdapterFactory.of(Entity.class, "type")
                 .registerSubtype(Projectile.class, "projectile")
                 .registerSubtype(Worm.class, "worm")
-                .registerSubtype(Coin.class, "coin");
+                .registerSubtype(Coin.class, "coin")
+                .registerSubtype(Drop.class, "drop");
 
         Gson gson = new GsonBuilder()
                 .setPrettyPrinting()

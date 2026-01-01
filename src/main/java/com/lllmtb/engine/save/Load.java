@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.typeadapters.RuntimeTypeAdapterFactory;
 import com.lllmtb.engine.GameWorld;
 import com.lllmtb.model.entity.Coin;
+import com.lllmtb.model.entity.Drop;
 import com.lllmtb.model.entity.Entity;
 import com.lllmtb.model.entity.projectile.Projectile;
 import com.lllmtb.model.entity.team.Team;
@@ -44,14 +45,15 @@ public class Load {
      * @throws RuntimeException If an I/O error occurs during reading.
      */
     public static GameSave loadGameSave(String name) throws FileNotFoundException {
-        String stringpath = "src/main/resources/save/" + name + "/save.json";
+        String stringpath = SaveConfig.SAVE_DIRECTORY + name + "/save.json";
         if (name.contains("Test")) {
             stringpath = "src/test/resources/saveTest/" + name + "/save.json";
         }
         RuntimeTypeAdapterFactory<Entity> entityAdapter = RuntimeTypeAdapterFactory.of(Entity.class, "type")
-                .registerSubtype(Projectile.class, "projectile") // Si le JSON contient "type": "bazooka", on crée un Bazooka
+                .registerSubtype(Projectile.class, "projectile")
                 .registerSubtype(Worm.class, "worm")
-                .registerSubtype(Coin.class, "coin");
+                .registerSubtype(Coin.class, "coin")
+                .registerSubtype(Drop.class, "drop");
 
 
         Gson gson = new GsonBuilder()

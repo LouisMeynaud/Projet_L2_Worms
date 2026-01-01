@@ -135,11 +135,6 @@ public final class TurnManager {
     public void startTurn(Team team) {
         this.remainingTimeInMs = turnDurationInMs;
         this.turn = new Turn(team);
-        try {
-            Save.saveAll();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
         this.nbTurn += 1;
 
         //economy passive income at the start of the turn
@@ -159,6 +154,12 @@ public final class TurnManager {
             if (world.getMap().risingWater(1)) {
                 world.getBus().postQueued(new MapUpdateEvent());
             }
+        }
+        // La Save du premier tour ne marche pas . TODO : Faire sorte qu'elle marche
+        try {
+            Save.saveAll();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 
