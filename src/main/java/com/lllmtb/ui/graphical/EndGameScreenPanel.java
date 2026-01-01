@@ -12,6 +12,7 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import com.lllmtb.engine.GameWorld;
 import com.lllmtb.events.EventBus;
 import com.lllmtb.events.ui.graphical.ScreenHomeEvent;
 import com.lllmtb.model.entity.team.Team;
@@ -30,7 +31,7 @@ public class EndGameScreenPanel extends JPanel {
         gbc.gridx = 0;
         gbc.insets = new Insets(15, 0, 15, 0);
 
-        JLabel winnerLabel = new JLabel("");
+        this.winnerLabel = new JLabel("");
         JButton replayButton = Utilitaire.createImageButton(TextureManager.UI, "Panel", 256, 128, 256, 128, "Replay", "Arial", 23, Color.WHITE);
         JButton closeButton = Utilitaire.createImageButton(TextureManager.UI, "Panel", 256, 128, 256, 128, "Close", "Arial", 23, Color.WHITE);
 
@@ -50,10 +51,11 @@ public class EndGameScreenPanel extends JPanel {
 
     }
 
-    public void setWinner(Team team) {
+    public void setWinner(Team team, GameWorld world) {
         winnerLabel.setText("Winner : " + team.getName());
         winnerLabel.setForeground(Color.WHITE);
         winnerLabel.setFont(new Font("Arial", Font.BOLD, 32));
+        world.stop();
     }
 
     protected void paintComponent(Graphics g) {

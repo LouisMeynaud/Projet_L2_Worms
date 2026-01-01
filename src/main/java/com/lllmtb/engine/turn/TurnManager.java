@@ -309,8 +309,7 @@ public final class TurnManager {
         };
 
         EventListener<TurnFinishEvent> turnFinishListener = event -> {
-            world.stop();
-            world.getBus().postQueued(new ScreenEndGameEvent(event.winningTeam));
+            world.getBus().postQueued(new ScreenEndGameEvent(event.winningTeam, world));
         };
 
         EventListener<WeaponSelectedEvent> weaponSelectedEventEventListener = event -> {

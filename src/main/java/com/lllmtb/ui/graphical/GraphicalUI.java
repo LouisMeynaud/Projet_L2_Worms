@@ -121,10 +121,9 @@ public class GraphicalUI implements UI {
         });
 
         eventBus.subscribe(ScreenEndGameEvent.class, event -> {
-            this.endGameScreen.setWinner(event.getTeam());
+            this.endGameScreen.setWinner(event.getTeam(), event.getWorld());
             cardLayout.show(mainPanel, "endGameScreen");
             Logger.logger.debug("Show endGameScreen");
-
         });
 
         eventBus.subscribe(ScreenMusicSettingsEvent.class, event -> {
