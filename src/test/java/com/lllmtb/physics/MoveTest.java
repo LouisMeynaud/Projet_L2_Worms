@@ -67,7 +67,8 @@ public class MoveTest {
     @Test
     void testMoveUpWithoutJump() {
         Worm wormMock = Mockito.mock(Worm.class);
-        GameCommand gameCommand =   Move.move(wormMock, Direction.Up);
+        Move.jump = 0;
+        GameCommand gameCommand = Move.move(wormMock, Direction.Up);
         assertNull(gameCommand);
     }
     @Test

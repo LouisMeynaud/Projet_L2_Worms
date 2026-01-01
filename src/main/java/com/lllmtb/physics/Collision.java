@@ -5,9 +5,11 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import com.lllmtb.engine.GameWorld;
 import com.lllmtb.events.EventBus;
 import com.lllmtb.events.game.CoinCollisionEvent;
+import com.lllmtb.events.game.DropCollisionEvent;
 import com.lllmtb.events.physics.GroundCheckCollision;
 import com.lllmtb.model.entity.Coin;
 import com.lllmtb.model.entity.CollisionType;
+import com.lllmtb.model.entity.Drop;
 import com.lllmtb.model.entity.worm.Worm;
 import com.lllmtb.terrain.map.Map;
 import com.lllmtb.terrain.map.Tile;
@@ -122,6 +124,17 @@ public class Collision {
                         }
                         continue;
                     }
+                    //Special case for Drop
+                    if (other.getEntity() instanceof Drop) {
+                        double radiusOther = other.getWidth() / 2;
+                        Position otherPos = new Position(other.getPos().getX() + 0.5, other.getPos().getY() + 0.5);
+                        Impact dropImpact = this.testSweptCircleCircle(body, body.getPos(), radius, other, otherPos, radiusOther, endPos, vector);
+                        if (dropImpact.ti < finalImpact.ti) { // Collision with coin
+                            eventBus.postQueued(new DropCollisionEvent((Drop) other.getEntity(), ((Worm) body.getEntity()).getTeam()));
+                        }
+                        continue;
+                    }
+
                     double radiusOther = other.getHeight() / 2;
                     Position otherPos = new Position(other.getPos().getX() + 0.5, other.getPos().getY() + 0.5);
                     Impact bodyImpact = this.testSweptCircleCircle(body, body.getPos(), radius, other, otherPos, radiusOther, endPos, vector);
@@ -542,7 +555,7 @@ public class Collision {
         return this.map;
     }
 
-    private Tile inTrapOrLava(Position position) {
+    public Tile inTrapOrLava(Position position) {
         if (map.isDamaging(position)) {
             return map.getTile(position);
         }
