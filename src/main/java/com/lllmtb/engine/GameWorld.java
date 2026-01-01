@@ -104,7 +104,7 @@ public class GameWorld {
         this.turnManager = new TurnManager(this, settings.turnDuration);
 
         //Init ShopManager
-        this.shopManager = new ShopManager();
+        this.shopManager = new ShopManager(this.bus);
     }
 
     public Map getMap() {

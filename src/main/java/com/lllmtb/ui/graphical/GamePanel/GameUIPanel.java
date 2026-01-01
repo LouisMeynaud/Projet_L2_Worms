@@ -8,6 +8,7 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Image;
@@ -39,6 +40,7 @@ import com.lllmtb.events.game.ToolSelectedEvent;
 import com.lllmtb.events.game.WeaponSelectedEvent;
 import com.lllmtb.events.game.WorldCreatedEvent;
 import com.lllmtb.events.turn.TurnSkipEvent;
+import com.lllmtb.events.ui.graphical.NotificationEvent;
 import com.lllmtb.events.ui.graphical.ShootMode;
 import com.lllmtb.events.ui.graphical.RequestFocus;
 import com.lllmtb.events.ui.graphical.ScreenHomeEvent;
@@ -97,7 +99,6 @@ public class GameUIPanel extends JPanel {
         this.eventBus = eventBus;
         ToolTipManager.sharedInstance().setInitialDelay(0);
         ToolTipManager.sharedInstance().setReshowDelay(0);
-        this.shopManager = new ShopManager();
         setOpaque(false);
         setLayout(new BorderLayout());
         setupCenterContainer();
@@ -106,7 +107,10 @@ public class GameUIPanel extends JPanel {
         createShopContainer();
         setupHUD();
         subscribeToSystemEvents();
-        this.uiRefreshTimer = new Timer(100, e -> updateTimerDisplay());
+        this.uiRefreshTimer = new Timer(100, e -> {
+            updateTimerDisplay();
+            this.repaint();
+        });
         this.uiRefreshTimer.start();
 
 
@@ -214,6 +218,8 @@ public class GameUIPanel extends JPanel {
 
         eventBus.subscribe(WorldCreatedEvent.class, event -> {
             this.world = event.getWorld();
+            this.shopManager = world.getShopManager();
+            this.world.getBus().subscribe(NotificationEvent.class, notif -> Popup.add(notif));
             updateTimerDisplay();
         });
 
@@ -673,5 +679,11 @@ public class GameUIPanel extends JPanel {
             Image scaledHover = imgHover.getScaledInstance(size, size, Image.SCALE_SMOOTH);
             btn.setRolloverIcon(new ImageIcon(scaledHover));
         }
+    }
+
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        Popup.draw((Graphics2D) g);
     }
 }

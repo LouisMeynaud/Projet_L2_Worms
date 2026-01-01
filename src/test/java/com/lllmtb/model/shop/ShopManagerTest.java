@@ -8,6 +8,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import com.lllmtb.events.EventBus;
 import com.lllmtb.model.entity.team.Team;
 import com.lllmtb.model.item.inventory.Inventory;
 import com.lllmtb.model.item.tool.ToolId;
@@ -21,8 +22,8 @@ class ShopManagerTest {
 
     @BeforeEach
     void setUp() {
-        shopManager = new ShopManager();
-        
+        EventBus bus = new EventBus();
+        shopManager = new ShopManager(bus);
         mockTeam = Mockito.mock(Team.class);
         mockInventory = Mockito.mock(Inventory.class);
         when(mockTeam.getInventory()).thenReturn(mockInventory);

@@ -23,6 +23,7 @@ public class TextureManager {
     public static final Map<String, BufferedImage> PROJECTILES = new HashMap<>();
     public static final Map<String, BufferedImage> BACKGROUND = new HashMap<>();
     public static final Map<String, BufferedImage> EFFECT = new HashMap<>();
+    public static final Map<String, BufferedImage> NOTIFICATIONS = new HashMap<>();
 
 
     /**
@@ -106,6 +107,9 @@ public class TextureManager {
             EFFECT.put("HealingBazookaExplosion", ImageIO.read(TextureManager.class.getResource("/sprites/effect/HealingBazookaExplosion.png")));
             EFFECT.put("MissileExplosion", ImageIO.read(TextureManager.class.getResource("/sprites/effect/MissileExplosion.png")));
 
+            NOTIFICATIONS.putAll(UI);
+            NOTIFICATIONS.putAll(WEAPONS);
+            NOTIFICATIONS.putAll(TOOLS);
 
         } catch (IOException e) {
             Logger.logger.error("Error while loading textures : ", e);
