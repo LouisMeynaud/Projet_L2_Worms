@@ -140,6 +140,16 @@ public class EventsTest {
     }
 
     @Test
+    void MapUpdateEvent() {
+        Position center = new Position(100, 200);
+        int radius = 50;
+        MapUpdateEvent event = new MapUpdateEvent(center, radius);
+        assertFalse(event.isFullUpdate());
+        assertEquals(center, event.getCenter());
+        assertEquals(radius, event.getRadius());
+    }
+
+    @Test
     public void eventsWithoutArgumentsTest() { // for JaCoCo - these events are just empty triggers
         new GameStateUpdatedEvent();
         new ScreenGenerateMap();

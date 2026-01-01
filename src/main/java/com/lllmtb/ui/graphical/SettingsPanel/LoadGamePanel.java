@@ -4,7 +4,6 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.Font;
-import java.io.File; // Import nécessaire pour manipuler le fichier
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -23,6 +22,10 @@ public class LoadGamePanel extends JPanel {
     private PanelListe panelListe;
     private final EventBus eventBus;
 
+    /**
+     * Constructor for LoadGamePanel.
+     * @param eventBus The EventBus for posting events.
+     */
     public LoadGamePanel(EventBus eventBus) {
         this.eventBus = eventBus;
         this.setLayout(new BorderLayout(10, 10));
@@ -38,7 +41,7 @@ public class LoadGamePanel extends JPanel {
 
 
 
-        this.panelListe = new PanelListe(MapLoader.getListeDossiersMaps());
+        this.panelListe = new PanelListe(MapLoader.getListeNomsMaps());
         this.add(panelListe, BorderLayout.CENTER);
 
 
@@ -50,14 +53,14 @@ public class LoadGamePanel extends JPanel {
 
 
         backButton.addActionListener(e -> {
-            eventBus.postQueued(new ScreenNewOrLoadEvent());
+            this.eventBus.postQueued(new ScreenNewOrLoadEvent());
         });
 
 
         starButton.addActionListener(e -> {
-            File dossierSelectionne = panelListe.getFichierSelectionne();
+            String dossierSelectionne = panelListe.getSelectedMapName();
             if (dossierSelectionne != null) {
-                Logger.logger.debug("Chargement du dossier : " + dossierSelectionne.getAbsolutePath());
+                Logger.logger.debug("Chargement du dossier : " + dossierSelectionne);
                 // TODO : mettre la logique une fois loadGame fait
 
             } else {

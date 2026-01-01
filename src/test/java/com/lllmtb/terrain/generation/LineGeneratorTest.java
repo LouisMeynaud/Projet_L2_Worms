@@ -24,4 +24,9 @@ public class LineGeneratorTest {
             assertTrue(h >= 0 && h < height);
         }
     }
+
+    @Test
+    void Constructor() {
+        new LineGeneratorTest();
+ }
 }
