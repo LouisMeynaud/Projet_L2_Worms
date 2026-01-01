@@ -33,9 +33,9 @@ public class ShopManager {
         items.add(new ShopElement(WeaponId.ELECTRONCANON, "ELECTRONCANON", 250, 70, 1));
         items.add(new ShopElement(WeaponId.HEALINGBAZOOKA, "HEALINGBAZOOKA", 100, 40, 1));
         items.add(new ShopElement(WeaponId.BOW, "BOW", 100, 40, 3));
-        items.add(new ShopElement(WeaponId.GRENADE, "GRENADE", 100, 60, 1));
-
         //Tools
+        items.add(new ShopElement(ToolId.GRENADE, "GRENADE", 100, 60, 1));
+
         items.add(new ShopElement(ToolId.JETPACK, "JETPACK", 150, 90, 1));
         items.add(new ShopElement(ToolId.CALLSTRIKE, "CALLSTRIKE", 150, 90, 1));
         items.add(new ShopElement(ToolId.PARACHUTE, "PARACHUTE", 50, 20, 1));
