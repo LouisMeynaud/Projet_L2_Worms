@@ -67,8 +67,6 @@ public class TurnManagerTest {
         GameSettings settings = new GameSettings("blabla", 2, new String[]{"TeamTest1", "TeamTest2"}, 1, 100, 10, false, null, false, 370, LandScape.HILLY, 2,GameMode.NORMAL, true, false);
         this.eb = new EventBus();
         this.gw = new GameWorld(settings, eb);
-        gw.start();
-        gw.pause(true);
         this.turnManager = gw.getTurnManager();
 
         assertNotNull(turnManager.getWorld());
