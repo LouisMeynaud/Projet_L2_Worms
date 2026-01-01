@@ -95,6 +95,9 @@ public class GameWorld {
 
         //Init ShopManager
         this.shopManager = new ShopManager();
+
+        //Init credit from current Team
+        this.teams.get(indexTeam).addCredits(-150);
     }
 
     public GameWorld(GameSettings settings, EventBus eventBus) {
