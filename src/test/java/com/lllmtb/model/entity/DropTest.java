@@ -14,6 +14,7 @@ import com.lllmtb.physics.GameMode;
 import com.lllmtb.physics.PhysicsBody;
 import com.lllmtb.physics.Position;
 import com.lllmtb.terrain.generation.LandScape;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -28,10 +29,20 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class DropTest {
     private Drop drop;
+    private EventBus eb;
+    private GameWorld world;
 
     @BeforeEach
     public void setUp(){
         this.drop = new Drop(new Position(1,1), WeaponId.GUN);
+        GameSettings settings = new GameSettings("blabla", 2, new String[]{"TeamTest1", "TeamTest2"}, 1, 100, 10, false, null, false, 370, LandScape.HILLY, 2,GameMode.NORMAL, true, false);
+        this.eb = new EventBus();
+        this.world = new GameWorld(settings, eb);
+    }
+
+    @AfterEach
+    public void endSetUp(){
+        world.stop();
     }
 
     @Test
@@ -47,9 +58,6 @@ public class DropTest {
 
     @Test
     public void testAddModifierTouchTheGround(){
-        GameSettings settings = new GameSettings("blabla", 1, new String[]{"Team"}, 1, 100, 10, false, null, false, 200, LandScape.FLAT,2, GameMode.NORMAL, true, false);
-        EventBus eb = new EventBus();
-        GameWorld world = new GameWorld(settings, eb);
         world.start();
         List<GameCommand> commands =  drop.addModifier();
         PhysicsBody ancientPhysicsBody = drop.getBody();
@@ -65,9 +73,6 @@ public class DropTest {
 
     @Test
     public void testDropCollisionEventWeaponItem(){
-        GameSettings settings = new GameSettings("blabla", 1, new String[]{"Team"}, 1, 100, 10, false, null, false, 200, LandScape.FLAT,2, GameMode.NORMAL, true, false);
-        EventBus eb = new EventBus();
-        GameWorld world = new GameWorld(settings, eb);
         world.start();
         Team team = new Team("Test", 1, new Position[]{new Position(1,1)}, 0);
         Drop drop = new Drop(new Position(1, 1), WeaponId.SHOTGUN);
@@ -81,9 +86,6 @@ public class DropTest {
 
     @Test
     public void testDropCollisionEventToolItem(){
-        GameSettings settings = new GameSettings("blabla", 1, new String[]{"Team"}, 1, 100, 10, false, null, false, 200, LandScape.FLAT,2, GameMode.NORMAL, true, false);
-        EventBus eb = new EventBus();
-        GameWorld world = new GameWorld(settings, eb);
         world.start();
         Team team = new Team("Test", 1, new Position[]{new Position(1,1)}, 0);
         Drop drop = new Drop(new Position(1, 1), ToolId.JETPACK);
