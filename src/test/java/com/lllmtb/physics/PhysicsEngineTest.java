@@ -452,7 +452,7 @@ class PhysicsEngineTest {
         Position pos = new Position(10, 10);
         RocketProjectile rocket = new RocketProjectile(new UseParams(0, pos, owner, 0));
         pE.add(rocket.getBody());
-        pE.createExplosion(rocket, 10, 15, 30, 100);
+        pE.createExplosion(rocket, 10, 15, 30, 100, false);
         assertEquals(2, bus.queuedEventCount());//verifie que les event sont bien crée(explosion et mapUpdate)
     }
 

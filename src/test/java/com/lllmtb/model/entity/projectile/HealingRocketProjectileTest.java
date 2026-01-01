@@ -64,6 +64,6 @@ class HealingRocketProjectileTest {
         for (GameCommand cmd : commands) {
             cmd.execute(worldMock);
         }
-        verify(physicsMock).createExplosion(eq(healing), eq(0), eq(15), eq(-20), eq(0.0));
+        verify(physicsMock).createExplosion(eq(healing), eq(0), eq(15), eq(-20), eq(0.0), eq(true));
     }
 }

@@ -1,9 +1,11 @@
 package com.lllmtb.engine.turn;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.Random;
 
 import com.lllmtb.engine.GameWorld;
+import com.lllmtb.engine.commands.GameCommand;
 import com.lllmtb.engine.logger.Logger;
 import com.lllmtb.events.EventListener;
 import com.lllmtb.events.game.CoinCollisionEvent;
@@ -243,6 +245,19 @@ public final class TurnManager {
         world.getBus().postQueued(new TurnEndEvent());
         this.turnFinish = true;
         this.turn.getTeam().setCurrentWormNull();
+        applyStatusEffectsToAllWorms();
+    }
+
+    /**
+     * apply to all worms the status effect at each end of turn
+     */
+    private void applyStatusEffectsToAllWorms() {
+        for (Team team : world.getTeams()) {
+            for (Worm worm : team.getTeamWorms()) {
+                List<GameCommand> commands = worm.applyStatusEffects();
+                world.queueCommands(commands);
+            }
+        }
     }
 
     /**
