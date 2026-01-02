@@ -1,4 +1,5 @@
-package com.lllmtb.model.item.weapon;
+package com.lllmtb.model.item.tool;
+
 
 import com.lllmtb.engine.commands.GameCommand;
 import com.lllmtb.engine.commands.RegisterProjectileCommand;
@@ -10,17 +11,17 @@ import java.util.List;
 import java.util.Objects;
 
 
-public final class GrenadeWeapon extends Weapon {
+public final class GrenadeTools extends Tool {
 
 
     @Override
-    public WeaponId id() {
-        return WeaponId.GRENADE;
+    public ToolId id() {
+        return ToolId.GRENADE;
     }
 
 
     @Override
-    public List<GameCommand> fire(@NonNull UseParams params) {
+    public List<GameCommand> use(@NonNull UseParams params) {
         GameCommand cmd = new RegisterProjectileCommand(new GrenadeProjectile(Objects.requireNonNull(params)), params.owner);
         return List.of(cmd);
     }
