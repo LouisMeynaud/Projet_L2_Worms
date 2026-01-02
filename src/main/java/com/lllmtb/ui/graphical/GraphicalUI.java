@@ -11,7 +11,6 @@ import javax.swing.UIManager;
 import com.lllmtb.engine.logger.Logger;
 import com.lllmtb.events.EventBus;
 import com.lllmtb.events.game.StartGameEvent;
-import com.lllmtb.events.ui.graphical.ScreenEndGameEvent;
 import com.lllmtb.events.ui.graphical.ScreenHomeEvent;
 import com.lllmtb.events.ui.graphical.ScreenLoadGame;
 import com.lllmtb.events.ui.graphical.ScreenMusicSettingsEvent;
@@ -29,7 +28,6 @@ public class GraphicalUI implements UI {
     public EventBus eventBus;
     public CardLayout cardLayout; // the container for all pages
     public JPanel mainPanel;
-    private EndGameScreenPanel endGameScreen;
 
 
     /**
@@ -73,13 +71,11 @@ public class GraphicalUI implements UI {
         GameScreen gamePanel = new GameScreen(eventbus);
         NewOrLoadPanel newOrLoadPanel = new NewOrLoadPanel(eventbus);
         LoadGamePanel loadGamePanel = new LoadGamePanel(eventbus);
-        this.endGameScreen = new EndGameScreenPanel(eventbus);
         mainPanel.add(homeScreen, "homeScreen"); // the principal page
         mainPanel.add(startSettingScreen, "startSettingScreen"); // the game launch settings page
         mainPanel.add(gamePanel, "gamePanel"); // la page de jeu
         mainPanel.add(newOrLoadPanel, "newOrLoadPanel"); //The page allowing you to choose whether you want to load or create a game
         mainPanel.add(loadGamePanel, "loadGamePanel");
-        mainPanel.add(endGameScreen, "endGameScreen"); // the endgame page
         mainPanel.add(musicSettingsScreen, "musicSettingsScreen"); // the page containing the music settings
         windows.add(mainPanel); // the page containing the others, (the card layout).
 
@@ -118,12 +114,6 @@ public class GraphicalUI implements UI {
             cardLayout.show(mainPanel, "loadGamePanel");
             Logger.logger.debug("Show loadGamePanel");
 
-        });
-
-        eventBus.subscribe(ScreenEndGameEvent.class, event -> {
-            this.endGameScreen.setWinner(event.getTeam(), event.getWorld());
-            cardLayout.show(mainPanel, "endGameScreen");
-            Logger.logger.debug("Show endGameScreen");
         });
 
         eventBus.subscribe(ScreenMusicSettingsEvent.class, event -> {

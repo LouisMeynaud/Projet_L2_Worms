@@ -15,7 +15,7 @@ import com.lllmtb.engine.logger.Logger;
 import com.lllmtb.engine.turn.TurnManager;
 import com.lllmtb.events.EventBus;
 import com.lllmtb.events.game.GameStateUpdatedEvent;
-import com.lllmtb.events.turn.TurnFinishEvent;
+import com.lllmtb.events.ui.graphical.ScreenEndGameEvent;
 import com.lllmtb.model.entity.Entity;
 import com.lllmtb.model.entity.team.Team;
 import com.lllmtb.model.entity.worm.Worm;
@@ -209,7 +209,7 @@ public class GameWorld {
         } while (!teams.get(indexTeam).oneAlive());
         if (indexTeam == currentIndexTeam) {
             Logger.logger.info("The team {} wins !!", teams.get(indexTeam).name);
-            bus.postQueued(new TurnFinishEvent(teams.get(indexTeam)));
+            bus.postQueued(new ScreenEndGameEvent(teams.get(indexTeam)));
             //TODO : Event or GameCommand for tell the winnerTeam and the game has been finish
         } else {
             this.turnManager.startTurn(teams.get(indexTeam));

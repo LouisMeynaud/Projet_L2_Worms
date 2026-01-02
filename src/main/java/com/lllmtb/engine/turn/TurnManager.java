@@ -16,12 +16,10 @@ import com.lllmtb.events.input.UseInputEvent;
 import com.lllmtb.events.input.MoveInputEvent;
 import com.lllmtb.events.turn.ChangeWormsEvent;
 import com.lllmtb.events.turn.TurnEndEvent;
-import com.lllmtb.events.turn.TurnFinishEvent;
 import com.lllmtb.events.turn.TurnSkipEvent;
 import com.lllmtb.events.turn.TurnStartEvent;
 import com.lllmtb.events.turn.TurnStopEvent;
 import com.lllmtb.events.turn.WormPlayable;
-import com.lllmtb.events.ui.graphical.ScreenEndGameEvent;
 import com.lllmtb.model.entity.Coin;
 import com.lllmtb.model.entity.Drop;
 import com.lllmtb.model.entity.projectile.Projectile;
@@ -308,10 +306,6 @@ public final class TurnManager {
             }
         };
 
-        EventListener<TurnFinishEvent> turnFinishListener = event -> {
-            world.getBus().postQueued(new ScreenEndGameEvent(event.winningTeam, world));
-        };
-
         EventListener<WeaponSelectedEvent> weaponSelectedEventEventListener = event -> {
             turn.getTeam().selectWeapon(event.getWeaponId());
         };
@@ -395,7 +389,6 @@ public final class TurnManager {
         world.getBus().subscribe(WeaponSelectedEvent.class, weaponSelectedEventEventListener);
         world.getBus().subscribe(ToolSelectedEvent.class, toolSelectedEventEventListener);
         world.getBus().subscribe(UseInputEvent.class, useInputEventListener);
-        world.getBus().subscribe(TurnFinishEvent.class, turnFinishListener);
         world.getBus().subscribe(CoinCollisionEvent.class, coinListener);
         world.getBus().subscribe(DropCollisionEvent.class, dropListener);
         world.getBus().subscribe(ChangeWormsEvent.class, changeWormDuringTurn);
