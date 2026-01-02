@@ -11,6 +11,7 @@ public enum ToolId implements ItemId {
     MINE(false, "A volatile trap that detonates instantly if anyone dares to step on it.", 3000),
     GRENADE(false, "A timed bomb that bounces off terrain before exploding.", 4000),
     MEDKIT(false, "Restores a portion of the active worm's health.", 0),
+    TRAP(false, "A throwing trap that releases poison", 3000),
     NONE;
 
     private final boolean usesCrosshair;

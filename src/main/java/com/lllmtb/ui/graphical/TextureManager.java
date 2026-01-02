@@ -101,6 +101,7 @@ public class TextureManager {
             PROJECTILES.put("ElectronProjectile", ImageIO.read(TextureManager.class.getResource("/sprites/projectile/ElectronProjectile.png")));
             PROJECTILES.put("GasProjectile", ImageIO.read(TextureManager.class.getResource("/sprites/projectile/GasProjectile.png")));
             PROJECTILES.put("MineProjectile", ImageIO.read(TextureManager.class.getResource("/sprites/projectile/MineProjectile.png")));
+            PROJECTILES.put("TrapProjectile", ImageIO.read(TextureManager.class.getResource("/sprites/projectile/TrapProjectile.png")));
 
 
             /////////////EFFECT/////////////////

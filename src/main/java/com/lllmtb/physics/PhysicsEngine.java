@@ -12,6 +12,8 @@ import com.lllmtb.engine.logger.Logger;
 import com.lllmtb.events.physics.*;
 import com.lllmtb.model.entity.Drop;
 import com.lllmtb.model.entity.effect.BurnEffect;
+import com.lllmtb.model.entity.effect.PoisonEffect;
+
 import org.eclipse.jdt.annotation.NonNull;
 
 import com.lllmtb.engine.GameWorld;
@@ -441,6 +443,10 @@ public class PhysicsEngine {
                 if (tile == Tile.LAVA) {
                     world.queueCommand(worm.damageWorm(Tile.LAVA.getDamage()));
                     world.queueCommand(worm.addStatusEffect(new BurnEffect()));
+                }
+                if (tile == Tile.TRAP) {
+                    world.queueCommand(worm.damageWorm(Tile.TRAP.getDamage()));
+                    world.queueCommand(worm.addStatusEffect(new PoisonEffect()));
                 }
             }
         }
