@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 import com.lllmtb.engine.GameWorld;
 import com.lllmtb.model.entity.Coin;
 import com.lllmtb.model.entity.Drop;
+import com.lllmtb.model.entity.projectile.CatConcreteProjectile;
 import com.lllmtb.model.entity.projectile.Projectile;
 import com.lllmtb.model.entity.team.TeamColor;
 import com.lllmtb.model.entity.worm.Statistics;
@@ -322,6 +323,10 @@ public class WorldRenderer {
         double yEcran = bounds[1];
         double largeurProjPx = bounds[2];
         double hauteurProjPx = bounds[3];
+
+        if (projectile.getEntity() instanceof CatConcreteProjectile) {
+            xEcran -= largeurProjPx / 2;
+        }
 
         BufferedImage textureProjectile = TextureManager.PROJECTILES.get(projectile.getEntity().getClass().getSimpleName());
         if (textureProjectile != null) {
