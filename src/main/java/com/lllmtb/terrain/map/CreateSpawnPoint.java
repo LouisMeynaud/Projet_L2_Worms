@@ -38,10 +38,11 @@ public class CreateSpawnPoint {
             for (int y = mapHeight - 1; y > waterLevel; y--) {
                 Position headPos = new Position(x, y);
 
-                boolean headIsFree = !map.isSolid(new Position(x, y));
-                boolean feetAreSolid = map.isSolid(new Position(x, y - 2));
+                boolean headIsgood = !map.isSolid(new Position(x, y)) && map.getTile(new Position(x, y)).getDamage() == 0;
+                boolean bodyIsGood = !map.isSolid(new Position(x, y - 1)) && map.getTile(new Position(x, y)).getDamage() == 0;
+                boolean feetIsGood = map.isSolid(new Position(x, y - 2)) && map.getTile(new Position(x, y)).getDamage() == 0;
 
-                if (headIsFree && feetAreSolid) {
+                if (headIsgood && bodyIsGood && feetIsGood) {
                     boolean occupied = false;
                     for (int j = 0; j < i; j++) {
                         Position existingWorm = spawnPointPos[j];
