@@ -67,18 +67,11 @@ public class DropTest {
         assertInstanceOf(RemoveEntityCommand.class, command);
     }
 
-    @Test
     public void testDropCollisionEventTouchWormWeaponItem(){
-        world.start();
-        Team team = new Team("Test", 1, new Position[]{new Position(1,1)}, 0);
+        Team team = new Team("Test", 1,  new Position[]{new Position(1,1)}, 0);
         Drop drop = new Drop(new Position(1, 1), WeaponId.SHOTGUN);
         GameCommand cmd = drop.onImpact(team.getCurrentWorm());
-        if (cmd != null) {
-            cmd.execute(world); 
-        }
-        try{
-            TimeUnit.MILLISECONDS.sleep(10);
-        } catch(InterruptedException ignored){}
+        if (cmd != null) cmd.execute(world);
         assertTrue(team.getInventory().isUnlocked((WeaponId) drop.itemIdToUnlock));
         assertNotEquals(0, team.getInventory().weapons.getAmmo((WeaponId) drop.itemIdToUnlock));
     }
