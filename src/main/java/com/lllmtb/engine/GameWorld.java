@@ -112,7 +112,7 @@ public class GameWorld {
         this.shopManager = new ShopManager();
 
         //Init credit from current Team
-        this.teams.get(indexTeam).addCredits(-150);
+        this.teams.get(indexTeam).removeCredits(150);
     }
 
     public GameWorld(GameSettings settings, EventBus eventBus) {
