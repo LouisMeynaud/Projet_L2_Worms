@@ -7,6 +7,7 @@ import java.awt.event.*;
 
 import com.lllmtb.events.EventBus;
 
+
 public class GameScreen extends JLayeredPane {
 
     private GameWorldPanel gameWorldPanel;
@@ -39,7 +40,8 @@ public class GameScreen extends JLayeredPane {
                 // We force both panels to take up all the space
                 gameWorldPanel.setBounds(0, 0, width, height);
                 gameUIPanel.setBounds(0, 0, width, height);
-                revalidate(); //allows you to properly reposition the buttons etc
+                gameUIPanel.revalidate(); //allows you to properly reposition the buttons etc
+                gameWorldPanel.revalidate();
                 repaint();
             }
         });

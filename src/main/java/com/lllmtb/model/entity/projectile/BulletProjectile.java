@@ -17,6 +17,10 @@ public final class BulletProjectile extends Projectile {
     private static final double width  = 1;
     private static final int damage = 20;
 
+    /**
+     * Constructor for BulletProjectile.
+     * @param params UseParams containing initial parameters for the projectile.
+     */
     public BulletProjectile(@NonNull UseParams params) {
         super(params, force, mass, height, width);
     }
@@ -29,13 +33,13 @@ public final class BulletProjectile extends Projectile {
     @Override
     public List<GameCommand> onImpact(Entity entity) {
         List<GameCommand> list = new ArrayList<GameCommand>();
-        hitWorm(list, entity, damage);
-        list.add(removeProjectileBody());
+        handleHit(list, entity, damage);
+        list.add(delete());
         return list;
     }
 
     @Override
-    public int getDamage() {
+    public double getDamage() {
         return damage;
     }
 }

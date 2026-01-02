@@ -1,6 +1,8 @@
 package com.lllmtb.model.entity.projectile;
 
 import com.lllmtb.engine.commands.GameCommand;
+import com.lllmtb.engine.commands.RemoveEntityCommand;
+import com.lllmtb.engine.logger.Logger;
 import com.lllmtb.model.entity.Entity;
 import com.lllmtb.model.entity.worm.Worm;
 import com.lllmtb.model.item.UseParams;
@@ -14,7 +16,22 @@ import java.util.Objects;
 public abstract class Projectile extends Entity {
     private final PhysicsBody body;
     private final Worm owner;
-    private int damage = 0;
+    private static boolean friendlyfire = true;
+    public enum PROJECTILE {
+    BabyTowerProjectile,
+    BowProjectile,
+    BulletProjectile,
+    CatConcreteProjectile,
+    ElectronProjectile,
+    GasProjectile,
+    GrenadeProjectile,
+    HealingProjectile,
+    MineProjectile,
+    MissileProjectile,
+    RocketProjectile,
+    ShotGunProjectile,
+    TowerProjectile,
+}
 
     /**
      * Create a new Projectile
@@ -36,23 +53,45 @@ public abstract class Projectile extends Entity {
         return owner;
     }
 
+    public boolean blocksTurnEnd() {
+        return true;
+    }
+
+    public static void setFriendlyFire(boolean friendlyfire) {
+        Projectile.friendlyfire = friendlyfire;
+    }
+
     /**
      * Called by collision detection when an impact is detected.
      */
     public abstract List<GameCommand> onImpact(Entity entity);
 
-    public abstract int getDamage();
+    public abstract double getDamage();
 
-    protected void hitWorm(List<GameCommand> list, Entity entity, int damage) {
+    /**
+     * Handle the hit on an entity, applying damage if it's a Worm.
+     * @param list the list of GameCommands to add to
+     * @param entity the entity that was hit
+     * @param damage the damage to apply
+     */
+    protected void handleHit(List<GameCommand> list, Entity entity, double damage) {
         if (entity instanceof Worm worm) {
-            worm.damageWorm(damage);
+            if (!friendlyfire && Worm.isInTheSameTeam(this.owner, worm)) {
+                Logger.logger.debug("Worm in the same Team");
+            } else {
+                list.add(worm.damageWorm(damage));
+            }
             if (!worm.isAlive()) {
-                list.add(world -> world.getPhysics().remove(worm.getBody()));
+                list.add(new RemoveEntityCommand(worm));
             }
         }
     }
 
-    protected GameCommand removeProjectileBody() {
-        return (world -> world.getPhysics().remove(this.getBody()));
+    protected GameCommand delete() {
+        return new RemoveEntityCommand(this);
+    }
+
+    public List<GameCommand> update(long dt) {
+        return new java.util.ArrayList<>();
     }
 }

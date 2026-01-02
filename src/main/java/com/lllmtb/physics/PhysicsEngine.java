@@ -7,8 +7,11 @@ import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import com.lllmtb.engine.commands.GameCommand;
 import com.lllmtb.engine.logger.Logger;
 import com.lllmtb.events.physics.*;
+import com.lllmtb.model.entity.Drop;
+import com.lllmtb.model.entity.effect.BurnEffect;
 import org.eclipse.jdt.annotation.NonNull;
 
 import com.lllmtb.engine.GameWorld;
@@ -16,6 +19,7 @@ import com.lllmtb.events.game.MapUpdateEvent;
 import com.lllmtb.events.physics.ExplosionEvent;
 import com.lllmtb.events.physics.PhysicsModifierAddedEvent;
 import com.lllmtb.events.physics.PhysicsModifierRemovedEvent;
+import com.lllmtb.model.entity.Entity;
 import com.lllmtb.model.entity.projectile.ExplosiveProjectile;
 import com.lllmtb.model.entity.projectile.Projectile;
 import com.lllmtb.model.entity.worm.Worm;
@@ -84,7 +88,7 @@ public class PhysicsEngine {
         this.world = world;
         this.bodies = new CopyOnWriteArrayList<>();
         this.modifiers = new ConcurrentHashMap<>();
-        this.collision = new Collision(map, this.bodies);
+        this.collision = new Collision(map, this.bodies, world.getBus());
         this.gravity = gameMode.getGravity();
         this.hasWind = hasWind;
         this.wind = new Vector(0, 0);
@@ -352,8 +356,7 @@ public class PhysicsEngine {
 
                 switch (body.getEntity().getCollisionType()) {
                     // if body slides along cliffs (if the collision is with the ground)
-                    case SLIDE -> collision.slide(body, impact, dt, world.getBus());
-
+                    case SLIDE -> collision.slide(body, impact, dt, world);
                     // if body bounces
                     case BOUNCE -> collision.bounce(body, impact, 0.5);
 
@@ -367,22 +370,35 @@ public class PhysicsEngine {
                     remove(body);
                     Logger.logger.debug("Entity out of map");
                     if (body.getEntity() instanceof Worm worm) {
-                        worm.damageWorm(worm.getStats().getHp());
+                        world.queueCommand(worm.damageWorm(worm.getStats().getHp()));
                         world.getTurnManager().endTurn();
                     }
 
                 } else {
                     if (impact.hitBody == null) {
                         //Collision with ground/Map
-                        if (body.getEntity() instanceof Projectile) {
-                            if ((body.getEntity() instanceof Projectile proj)) {
-                                world.queueCommands(proj.onImpact(null));
-                            }
+                        if (body.getEntity() instanceof Projectile proj) {
+                            world.queueCommands(proj.onImpact(null));
+                        } else if (body.getEntity() instanceof Drop drop) {
+                            world.queueCommand(drop.setOnGround());
                         }
                     } else {
                         // Collision wih another entity impactEntity and currentBody
                         if (body.getEntity() instanceof Projectile proj) {
                             world.queueCommands(proj.onImpact(impact.hitBody.getEntity()));
+                            if (impact.hitBody.getEntity() instanceof Drop drop) {
+                                world.queueCommand(drop.onImpact(proj));
+                            }
+                        } else if (impact.hitBody.getEntity() instanceof Projectile proj) {
+                            world.queueCommands(proj.onImpact(body.getEntity()));
+                        }
+                        if (body.getEntity() instanceof Drop drop) {
+                            world.queueCommand(drop.onImpact(impact.hitBody.getEntity()));
+                        }
+                        if (body.getEntity() instanceof Worm worm) {
+                            if (impact.hitBody.getEntity() instanceof Drop drop) {
+                                world.queueCommand(drop.onImpact(worm));
+                            }
                         }
                     }
                 }
@@ -419,6 +435,13 @@ public class PhysicsEngine {
 
                 body.setVector(new Vector(newVelX, currentVector.getY()));
             }
+            if (body.getEntity() instanceof Worm worm) {
+                Tile tile = collision.inTrapOrLavaWithBody(body);
+                if (tile == Tile.LAVA) {
+                    world.queueCommand(worm.damageWorm(Tile.LAVA.getDamage()));
+                    world.queueCommand(worm.addStatusEffect(new BurnEffect()));
+                }
+            }
         }
     }
 
@@ -439,18 +462,85 @@ public class PhysicsEngine {
         }
         nextStep(ticktime / 1000.0);
     }
+    /**
+     * Updates all physics bodies and processes their game commands.
+     * <p>
+     * This method iterates through all {@link PhysicsBody} instances managed by the engine,
+     * calls their associated entities' update methods, and collects any resulting
+     * {@link GameCommand} objects. All collected commands are then executed in the context
+     * of the current {@link GameWorld}.
+     * </p>
+     * @param tickTime the duration of the simulation tick (in milliseconds).
+     */
+    public void update(double tickTime) {
+        List<GameCommand> commands = new ArrayList<>();
+        for (PhysicsBody body : bodies) {
+            Entity entity = body.getEntity();
+            List<GameCommand> commandsList = entity.update((long) tickTime);
+            commands.addAll(commandsList);
 
-    public void createExplosion(Projectile projectile, int rayonDegatMap, int rayonSuffle, int degats, double forceSuffle) {
-        Position position = projectile.getBody().getPos();
-        Explosion.explosionDamageEffect(position, rayonSuffle, degats, bodies);
-        Explosion.explosionMapEffect(position, rayonDegatMap, collision.getMap());
-        Explosion.explosionSuffleEffect(position, rayonSuffle, forceSuffle, collision.getMap(), bodies);
-        world.getBus().postQueued(new ExplosionEvent(position, rayonSuffle, ((ExplosiveProjectile) projectile).getExplosionTexture()));
-        world.getBus().postQueued(new MapUpdateEvent());
+        }
+        for (GameCommand cmd : commands) {
+            cmd.execute(this.world);
+        }
     }
 
+    /**
+     * Creates an explosion at the location of a given projectile.
+     * <p>
+     * This method applies damage to entities within the blast radius,
+     * modifies the terrain within the map damage radius, and applies
+     * a blast effect to nearby bodies based on the blast force.
+     * </p>
+     * @param projectile       the {@link Projectile} that caused the explosion.
+     * @param mapDamageRadius  the radius (in tiles) around the explosion center where the map will be damaged.
+     * @param blastRadius      the radius (in units) around the explosion center where entities will be affected.
+     * @param damage           the amount of damage to apply to entities within the blast radius.
+     * @param blastForce       the force applied to bodies within the blast radius.
+     */
+    public void createExplosion(@NonNull Projectile projectile, int mapDamageRadius, int blastRadius, int damage, double blastForce, boolean heal) {
+        Position position = projectile.getBody().getPos();
+        List<GameCommand> death = Explosion.explosionDamageEffect(position, blastRadius, damage, bodies, heal);
+        if (death != null) {
+            for (GameCommand command : death) {
+                world.queueCommand(command);
+            }
+        }
+        Explosion.explosionMapEffect(position, mapDamageRadius, collision.getMap());
+        Explosion.explosionSuffleEffect(position, blastRadius, blastForce, collision.getMap(), bodies);
+        world.getBus().postQueued(new ExplosionEvent(position, blastRadius, ((ExplosiveProjectile) projectile).getExplosionTexture()));
+        world.getBus().postQueued(new MapUpdateEvent());
+    }
+    /**
+     * Finds the closest enemy worm to a given position, excluding a specified worm.
+     * <p>
+     * This method searches through all physics bodies managed by the engine,
+     * identifies those that are worms belonging to enemy teams, and calculates
+     * the distance from the specified position. The closest enemy worm is returned.
+     * </p>
+     * @param searchPos      the {@link Position} from which to search for the closest enemy worm.
+     * @param ownerTeam      the team of the searching entity, used to identify enemies.
+     * @param wormToExclude  the {@link Worm} instance to exclude from the search (typically the searching worm itself).
+     * @return the closest enemy {@link Worm} instance, or {@code null} if no enemies are found.
+     */
     public Worm findClosestEnemyFromPosition(Position searchPos, Object ownerTeam, Worm wormToExclude) {
-    return bodies.stream()
+        return findClosestEnemyFromPosition(searchPos, ownerTeam, wormToExclude, this.bodies);
+    }
+    /**
+     * Finds the closest enemy worm to a given position from a specified list of bodies, excluding a specified worm.
+     * <p>
+     * This method searches through the provided list of physics bodies,
+     * identifies those that are worms belonging to enemy teams, and calculates
+     * the distance from the specified position. The closest enemy worm is returned.
+     * </p>
+     * @param searchPos      the {@link Position} from which to search for the closest enemy worm.
+     * @param ownerTeam      the team of the searching entity, used to identify enemies.
+     * @param wormToExclude  the {@link Worm} instance to exclude from the search (typically the searching worm itself).
+     * @param bodiesList     the list of {@link PhysicsBody} instances to search through.
+     * @return the closest enemy {@link Worm} instance, or {@code null} if no enemies are found.
+     */
+    public Worm findClosestEnemyFromPosition(Position searchPos, Object ownerTeam, Worm wormToExclude, List<PhysicsBody> bodiesList) {
+    return bodiesList.stream()
         .filter(b -> b.getEntity() instanceof Worm)
         .map(b -> (Worm) b.getEntity())
         .filter(w -> !Objects.equals(w.getTeam(), ownerTeam))
@@ -462,16 +552,33 @@ public class PhysicsEngine {
             return (dx * dx) + (dy * dy);
         }))
         .orElse(null);
-}
 
+    }
 
-    public static void fallDamage(Worm worm) {
+    public static GameCommand fallDamage(Worm worm) {
         int seuil = -50;
+        GameCommand death = null;
         double speedy = worm.getBody().getVector().getY();
         if (speedy < seuil) {
             int damage = (int) Math.ceil((speedy - seuil) * -0.5);
-            worm.damageWorm(damage);
+            death = worm.damageWorm(damage);
             Logger.logger.info("{} has fallen and lost {} health points!", worm.name, damage);
         }
+        return death;
     }
+
+    /**
+     * Calculates the angle in radians from a given position to the center of a target physics body.
+     * @param fromPos the {@link Position} from which to calculate the angle.
+     * @param targetBody the target {@link PhysicsBody} to which the angle is calculated.
+     * @return the angle in radians from {@code fromPos} to the center of {@code targetBody}.
+     */
+    public static double calculateAngleToBody(Position fromPos, PhysicsBody targetBody) {
+    Position targetPos = targetBody.getPos();
+    double targetCenterX = targetPos.getX() + (targetBody.getWidth() / 2.0);
+    double targetCenterY = targetPos.getY() + (targetBody.getHeight() / 2.0);
+    double dx = targetCenterX - fromPos.getX();
+    double dy = targetCenterY - fromPos.getY();
+    return Math.atan2(dy, dx);
+}
 }

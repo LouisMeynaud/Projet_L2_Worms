@@ -11,6 +11,7 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 
 import com.lllmtb.events.EventBus;
+import com.lllmtb.events.ui.graphical.ScreenMusicSettingsEvent;
 import com.lllmtb.events.ui.graphical.ScreenNewOrLoadEvent;
 
 public class HomeScreenPanel extends JPanel {
@@ -28,11 +29,19 @@ public class HomeScreenPanel extends JPanel {
 
 
         JButton playButton = Utilitaire.createImageButton(TextureManager.UI, "Panel", 256, 128, 256, 128, "Start", "Arial", 23, Color.WHITE);
-        JButton settingButton = Utilitaire.createImageButton(TextureManager.UI, "Panel", 256, 128, 256, 128, "Game Settings", "Arial", 23, Color.WHITE);
+        JButton settingButton = Utilitaire.createImageButton(TextureManager.UI, "Panel", 256, 128, 256, 128, "Audio Settings", "Arial", 23, Color.WHITE);
         JButton closeButton = Utilitaire.createImageButton(TextureManager.UI, "Panel", 256, 128, 256, 128, "Close", "Arial", 23, Color.WHITE);
 
         playButton.addActionListener(e -> {
             eventBus.postQueued(new ScreenNewOrLoadEvent());
+        });
+
+        settingButton.addActionListener(e -> {
+            eventBus.postQueued(new ScreenMusicSettingsEvent());
+        });
+
+        closeButton.addActionListener(e -> {
+            System.exit(0);
         });
         gbc.gridy = 0;
         this.add(playButton, gbc);
@@ -40,6 +49,10 @@ public class HomeScreenPanel extends JPanel {
         this.add(settingButton, gbc);
         gbc.gridy = 2;
         this.add(closeButton, gbc);
+
+        if (SoundPlayer.getCurrentMusic() == null) SoundPlayer.playMusique("MusiqueGame1");
+
+
     }
 
     protected void paintComponent(Graphics g) {

@@ -26,6 +26,11 @@ public class SettingsStartPanel extends JPanel {
     SettingMapPanel mapSettingPanel;
     SettingGamePanel gameSettingsPanel;
 
+    /**
+     * This panel contains both the map settings and game settings panels,
+     * along with buttons to start the game or go back.
+     * @param eventBus the event bus of the game
+     */
     public SettingsStartPanel(EventBus eventBus) {
         this.eventBus = eventBus;
         panelSetting();
@@ -33,6 +38,10 @@ public class SettingsStartPanel extends JPanel {
 
     }
 
+    /**
+     * This panel contains both the map settings and game settings panels,
+     * along with buttons to start the game or go back.
+     */
     public void panelSetting() {
 
         this.setLayout(new BorderLayout(10, 10)); // North zone, South,...
@@ -81,28 +90,35 @@ public class SettingsStartPanel extends JPanel {
         });
     }
 
-
+    /**
+     * Sets the game settings based on user input from the game settings panel.
+     * @param gameSettingsPanel The panel containing game settings input fields.
+     * @return A GameSettings object populated with the user's selections.
+     */
     private GameSettings setSettings(SettingGamePanel gameSettingsPanel) {
         int nbEquipes = gameSettingsPanel.getNbEquipes();
         int nbVWorms = gameSettingsPanel.getNbWorms();
         String[] nomsEquipes = gameSettingsPanel.getNomsEquipes();
         boolean wind = gameSettingsPanel.getWind();
-        boolean friendlyFire = gameSettingsPanel.getFriendlyFire(); //TODO : ajouter le friendlyFire au setting une fois les modif necessaire faite dans team etc
+        boolean friendlyFire = gameSettingsPanel.getFriendlyFire();
         int turnDuration = gameSettingsPanel.getTurnDuration();
         int maxLife = gameSettingsPanel.getMaxLife();
         int maxJump = gameSettingsPanel.getMaxJumps();
         String gameName = gameSettingsPanel.getGameName();
         GameMode gameMode = gameSettingsPanel.getGameMode();
+        boolean coinCheat = gameSettingsPanel.getCoinCheat();
         if (this.mapSettingPanel.loadMap) {
-            String mapFileName = this.mapSettingPanel.panelListeMap.getFichierSelectionne().getName();
-            return new GameSettings(gameName, nbEquipes, nomsEquipes, nbVWorms, maxLife, turnDuration, wind, mapFileName, false, 0, null, maxJump, gameMode);
+            String mapFileName = this.mapSettingPanel.panelListeMap.getSelectedMapName();
+            return new GameSettings(gameName, nbEquipes, nomsEquipes, nbVWorms, maxLife, turnDuration, wind, mapFileName,
+                    false, 0, null, maxJump, gameMode, friendlyFire, coinCheat);
 
 
         } else {
             LandScape terrainType = this.mapSettingPanel.generateMapPanel.getReliefType();
             int widthMap = this.mapSettingPanel.generateMapPanel.getWidthMapSlider();
             boolean flightIsland = this.mapSettingPanel.generateMapPanel.getflightIsland();
-            return new GameSettings(gameName, nbEquipes, nomsEquipes, nbVWorms, maxLife, turnDuration, wind, null, flightIsland, widthMap, terrainType, maxJump, gameMode);
+            return new GameSettings(gameName, nbEquipes, nomsEquipes, nbVWorms, maxLife, turnDuration, wind, null,
+                    flightIsland, widthMap, terrainType, maxJump, gameMode, friendlyFire, coinCheat);
 
 
         }

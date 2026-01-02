@@ -24,14 +24,14 @@ import com.lllmtb.model.item.weapon.WeaponId;
 
 
 /**
- * classe utilitaire fournissans des methode statique pour eviter de dupliquer du code
- * Contient par exemple des methode pour crée des bouton avec des image , des slider , generer un "hashCode" etc
+ * classe utilitaire fournissans des methode statique pour eviter de dupliquer du code.
+ * Contient par exemple des methode pour crée des bouton avec des image , des slider , generer un "hashCode" etc.
  */
 public class Utilitaire {
 
 
     /**
-     * cree un bouton swing personnaliser avec une image de fond et une image de survol(HOVER)
+     * cree un bouton swing personnaliser avec une image de fond et une image de survol(HOVER).
      * @param <T> Le type de la cle dans la map contenant les texture
      * @param textureMap Le map contenant les texture
      * @param name la cle de l'image dans le map
@@ -104,9 +104,10 @@ public class Utilitaire {
      * @param weaponkey l'id de l'arme
      * @param ammoCount le nombre de munition
      * @param isUnlocked le boolean indiquant si l'arme est unlock ou non
+     * @param size la taille du bouton
      * @return le bouton
      */
-    public static JButton createWeaponButton(WeaponId weaponkey, int ammoCount, boolean isUnlocked) {
+    public static JButton createWeaponButton(WeaponId weaponkey, int ammoCount, boolean isUnlocked, int size) {
         String searchKey;
         //l'image a chercher (lock ou non)
         if (isUnlocked) {
@@ -116,7 +117,7 @@ public class Utilitaire {
 
         }
         String ammoKey = "Ammo" + weaponkey.toString();
-        return createBaseItemButton(searchKey, ammoKey, ammoCount, isUnlocked, TextureManager.WEAPONS);
+        return createBaseItemButton(searchKey, ammoKey, ammoCount, isUnlocked, TextureManager.WEAPONS, size);
     }
 
    /**
@@ -124,14 +125,15 @@ public class Utilitaire {
     * @param id l'id de l'outil
     * @param ammoCount le nombre de munition
     * @param isUnlocked le boolean indiquant si l'outils est unlock ou non
+    * @param size la taille du bouton
     * @return le bouton
     */
-    public static JButton createToolButton(ToolId id, int ammoCount, boolean isUnlocked) {
+    public static JButton createToolButton(ToolId id, int ammoCount, boolean isUnlocked, int size) {
         String searchKey = id.toString();
         String ammoKey = "Ammo" + id.toString();
 
 
-        return createBaseItemButton(searchKey, ammoKey, ammoCount, isUnlocked, TextureManager.TOOLS);
+        return createBaseItemButton(searchKey, ammoKey, ammoCount, isUnlocked, TextureManager.TOOLS, size);
     }
 
 
@@ -143,12 +145,13 @@ public class Utilitaire {
      * @param ammoCount le nombre de munition
      * @param isUnlocked le boolean indiquant si l'objet est unlock ou non
      * @param texture le texture map ou chercher les image
+     * @param size la taille du bouton
      * @return le bouton
      */
-    private static JButton createBaseItemButton(String searchKey, String ammoKey, int ammoCount, boolean isUnlocked, Map<String, BufferedImage> texture) {
+    private static JButton createBaseItemButton(String searchKey, String ammoKey, int ammoCount, boolean isUnlocked, Map<String, BufferedImage> texture, int size) {
         JButton button = new JButton();
         button.setLayout(new BorderLayout());
-        button.setPreferredSize(new Dimension(160, 160));
+        button.setPreferredSize(new Dimension(size, size));
         button.setBackground(Color.DARK_GRAY);
 
         JLabel caseLabel = new JLabel("", SwingConstants.CENTER); // Label vide par défaut // place se qu'il contient au milieu
@@ -156,7 +159,8 @@ public class Utilitaire {
             BufferedImage img = texture.get(searchKey);
 
             if (img != null) {
-                Image scaled = img.getScaledInstance(96, 96, Image.SCALE_REPLICATE); //replicate: resize sans floutage des pixel
+                int imgSize = Math.max(1, size - 25);
+                Image scaled = img.getScaledInstance(imgSize, imgSize, Image.SCALE_REPLICATE); //replicate: resize sans floutage des pixel
                 caseLabel.setIcon(new ImageIcon(scaled));
             }
         } catch (Exception e) {
@@ -173,7 +177,8 @@ public class Utilitaire {
             try {
                 BufferedImage ammoImg = texture.get(ammoKey);
                 if (ammoImg != null) {
-                    Image scaledAmmo = ammoImg.getScaledInstance(32, 32, Image.SCALE_REPLICATE);
+                    int ammoSize = Math.max(12, size / 5);
+                    Image scaledAmmo = ammoImg.getScaledInstance(ammoSize, ammoSize, Image.SCALE_REPLICATE);
                     ammoPanel.add(new JLabel(new ImageIcon(scaledAmmo)));
                 }
             } catch (Exception e) {
@@ -181,8 +186,10 @@ public class Utilitaire {
             }
 
             //nombre
-            JLabel nbLabel = new JLabel(String.valueOf(ammoCount));
-            nbLabel.setFont(new Font("Arial", Font.BOLD, 12));
+
+            String ammoDisplay = ammoCount < 0 ? "∞" : String.valueOf(ammoCount);
+            JLabel nbLabel = new JLabel(ammoDisplay);
+            nbLabel.setFont(new Font("Arial", Font.BOLD, Math.max(10, size / 8)));
             ammoPanel.add(nbLabel);
 
             button.add(ammoPanel, BorderLayout.SOUTH);
@@ -234,6 +241,39 @@ public class Utilitaire {
             }
         }
         return sprites;
+    }
+    /**
+     * crée un bouton pour le shop avec une image et un texte.
+     * change la couleur du texte en fonction de si l'objet peut etre acheter ou non.
+     * @param img l'image de l'objet
+     * @param text le texte a afficher
+     * @param canBuy boolean indiquant si l'objet peut etre acheter ou non
+     * @return le bouton
+     */
+    public static JButton createShopButton(BufferedImage img, String text, boolean canBuy) {
+        JButton button = new JButton();
+        button.setLayout(new BorderLayout());
+        button.setPreferredSize(new Dimension(80, 80));
+        button.setBackground(Color.LIGHT_GRAY);
+        button.setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
+
+        if (img != null) {
+            Image scaled = img.getScaledInstance(48, 48, Image.SCALE_REPLICATE);
+            button.setIcon(new ImageIcon(scaled));
+        }
+
+        button.setText(text);
+        button.setFont(new Font("Arial", Font.BOLD, 12));
+        if (canBuy) {
+            button.setForeground(Color.BLUE);
+            button.setBackground(Color.LIGHT_GRAY);
+        } else {
+            button.setForeground(Color.RED);
+            button.setBackground(Color.DARK_GRAY);
+        }
+        button.setVerticalTextPosition(SwingConstants.BOTTOM);
+        button.setHorizontalTextPosition(SwingConstants.CENTER);
+        return button;
     }
 
 }

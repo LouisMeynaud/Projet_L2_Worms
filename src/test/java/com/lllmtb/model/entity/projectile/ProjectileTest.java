@@ -5,8 +5,11 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -25,11 +28,11 @@ public class ProjectileTest {
 
     @BeforeEach
     public void setUp() {
-        Team team = new Team("TestTeam", 1, new Position[]{new Position(0, 0)});
+        Team team = new Team("TestTeam", 1, new Position[]{new Position(0, 0)}, 0);
         this.owner = new Worm("Test", team);
         this.spawn = new Position(3.0, 0.0);
         double angle = Math.PI / 4.0;
-        this.params = new UseParams(angle, spawn, owner);
+        this.params = new UseParams(angle, spawn, owner, 0);
     }
 
     @Test
@@ -61,22 +64,49 @@ public class ProjectileTest {
 
     @Test
     public void onImpact_doesNotThrow() {
-        BulletProjectile bullet = new BulletProjectile(params);
-        RocketProjectile rocket = new RocketProjectile(params);
         Team t = Mockito.mock(Team.class);
         Worm worm = new Worm("Test", t);
 
-        List<GameCommand> list = rocket.onImpact(worm);
-        assertFalse(list.isEmpty());
+        BulletProjectile bullet = new BulletProjectile(params);
+        List<GameCommand> lbullet = bullet.onImpact(worm);
+        assertFalse(lbullet.isEmpty());
 
+        RocketProjectile rocket = new RocketProjectile(params);
+        List<GameCommand> lrocket = rocket.onImpact(worm);
+        assertFalse(lrocket.isEmpty());
+
+        MissileProjectile missile = new MissileProjectile(params);
+        List<GameCommand> lmissile = missile.onImpact(worm);
+        assertFalse(lmissile.isEmpty());
     }
 
     @Test
     public void onImpact_whenWormDies_addsRemoveWormCommand() {
         RocketProjectile rocket = new RocketProjectile(params);
+
         Worm deadWorm = Mockito.mock(Worm.class);
         Mockito.when(deadWorm.isAlive()).thenReturn(false);
         List<GameCommand> commands = rocket.onImpact(deadWorm);
-        assertEquals(3, commands.size());
+        assertEquals(4, commands.size());
+    }
+
+    @Test
+    public void onimpact_whenFriendlyFireEnabled(){
+        BulletProjectile bullet = new BulletProjectile(params);
+        Projectile.setFriendlyFire(true);
+        Worm wormHit = new Worm("Test",this.owner.getTeam());
+        double hp = wormHit.getStats().getHp();
+        bullet.onImpact(wormHit);
+        assertNotEquals(wormHit.getStats().getHp(), hp);
+    }
+
+    @Test
+    public void onimpact_whenFriendlyFireDisable(){
+        BulletProjectile bullet = new BulletProjectile(params);
+        Projectile.setFriendlyFire(false);
+        Worm wormHit = new Worm("Test",this.owner.getTeam());
+        double hp = wormHit.getStats().getHp();
+        bullet.onImpact(wormHit);
+        assertEquals(wormHit.getStats().getHp(), hp);
     }
 }

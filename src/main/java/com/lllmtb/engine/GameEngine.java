@@ -12,7 +12,7 @@ import com.lllmtb.events.game.GamePauseEvent;
 import com.lllmtb.events.game.SaveEvent;
 import com.lllmtb.events.game.StartGameEvent;
 import com.lllmtb.events.game.WorldCreatedEvent;
-import com.lllmtb.ui.ConsoleUI;
+import com.lllmtb.ui.console.ConsoleUI;
 import com.lllmtb.ui.UI;
 import com.lllmtb.ui.graphical.GraphicalUI;
 import com.lllmtb.ui.graphical.SoundManager;

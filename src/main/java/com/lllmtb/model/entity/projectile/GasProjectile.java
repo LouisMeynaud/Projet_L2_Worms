@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import com.lllmtb.model.entity.effect.PoisonEffect;
 import org.eclipse.jdt.annotation.NonNull;
 
 import com.lllmtb.engine.commands.GameCommand;
@@ -15,15 +16,15 @@ import com.lllmtb.physics.PhysicsBody;
 import com.lllmtb.physics.Position;
 
 public final class GasProjectile extends Projectile {
-    private static final double force  = 5;
+    private static final double force  = 10;
     private static final double mass   = 0;
     private static final double height = 10;
     private static final double width  = 10;
-    private static final int damage = 1;
+    private static final double damage = 0.5;
     private static final double radius = 6.0;
 
     public GasProjectile(@NonNull UseParams params) {
-        super(params, force, mass, height, width);
+        super(new UseParams(params.angleRadians, new Position(params.pos.getX() - width / 2, params.pos.getY() - height / 2), params.owner, 0), force, mass, height, width);
     }
 
     @Override
@@ -51,9 +52,8 @@ public final class GasProjectile extends Projectile {
                     double distance = Math.sqrt(dx * dx + dy * dy);
 
                     if (distance <= radius) {
-                        if (Math.random() < 0.3) {
-                            worm.damageWorm(damage); // ne pouvant pas mettre de degas inferieur a 1 (car int)  , j'ai mis une proba de 40% de faire 1 degat
-                        }
+                        list.add(worm.damageWorm(damage));
+                        list.add(worm.addStatusEffect(new PoisonEffect()));
                     }
                 }
             }
@@ -62,7 +62,7 @@ public final class GasProjectile extends Projectile {
     }
 
     @Override
-    public int getDamage() {
+    public double getDamage() {
         return damage;
     }
 }

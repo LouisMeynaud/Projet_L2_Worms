@@ -38,7 +38,7 @@ public class GameCommandTest {
 
     @BeforeEach
     void setUp() throws Exception {
-        GameSettings settings = new GameSettings("blabla", 1, new String[]{"Team"}, 1, 100, 10, false, null, false, 200, LandScape.FLAT,2,GameMode.NORMAL);
+        GameSettings settings = new GameSettings("blabla", 1, new String[]{"Team"}, 1, 100, 10, false, null, false, 200, LandScape.FLAT,2,GameMode.NORMAL, true, false);
         bus = mock(EventBus.class);
         world = new GameWorld(settings, bus);
 
@@ -67,7 +67,7 @@ public class GameCommandTest {
     }
 
     @Test
-    void whenRegisterProjectileCommandExecutesItAddsProjectileBodyAndPostsProjectileRegisteredEvent() {
+    void postsProjectileRegisteredEventWhenRegisterProjectileCommandIsExecuted() {
         Projectile projectile = mock(Projectile.class);
         Entity owner = mock(Entity.class);
 
@@ -81,6 +81,18 @@ public class GameCommandTest {
                         && ((ProjectileRegisteredEvent) e).projectile() == projectile
                         && ((ProjectileRegisteredEvent) e).source() == owner
         ));
+    }
+
+    @Test
+    void invokesPhysicsRemoveModifierWhenRemovePhysicsModifierCommandIsExecuted() {
+        Entity target = mock(Entity.class);
+        PhysicsModifier modifier = mock(PhysicsModifier.class);
+
+        RemovePhysicsModifierCommand cmd = new RemovePhysicsModifierCommand(target, modifier);
+
+        cmd.execute(world);
+
+        verify(physics).removeModifier(isNull(), same(modifier));
     }
 
     @Test

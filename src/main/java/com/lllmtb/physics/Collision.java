@@ -2,9 +2,13 @@ package com.lllmtb.physics;
 
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import com.lllmtb.engine.GameWorld;
 import com.lllmtb.events.EventBus;
-import com.lllmtb.events.move.GroundCheckCollision;
+import com.lllmtb.events.game.CoinCollisionEvent;
+import com.lllmtb.events.physics.GroundCheckCollision;
+import com.lllmtb.model.entity.Coin;
 import com.lllmtb.model.entity.CollisionType;
+import com.lllmtb.model.entity.projectile.CatConcreteProjectile;
 import com.lllmtb.model.entity.worm.Worm;
 import com.lllmtb.terrain.map.Map;
 import com.lllmtb.terrain.map.Tile;
@@ -18,6 +22,7 @@ public class Collision {
 
     private final Map map;
     private final CopyOnWriteArrayList<PhysicsBody> bodies;
+    private final EventBus eventBus;
     private static final double EPSILON = 0.002;
 
     /**
@@ -25,9 +30,10 @@ public class Collision {
      * @param m the {@link Map} of the game
      * @param b the {@link CopyOnWriteArrayList} containing active Entity's {@link PhysicsBody}.
      */
-    public Collision(Map m, CopyOnWriteArrayList<PhysicsBody> b) {
+    public Collision(Map m, CopyOnWriteArrayList<PhysicsBody> b, EventBus eventBus) {
         this.map = m;
         this.bodies = b;
+        this.eventBus = eventBus;
     }
 
     /**
@@ -106,6 +112,17 @@ public class Collision {
             // test with other bodies on the map without other worms
             for (PhysicsBody other : this.bodies) {
                 if ((body != other) && !(other.getEntity() instanceof Worm)) {
+
+                    // Special case for coins
+                    if (other.getEntity() instanceof Coin) {
+                        double radiusOther = other.getWidth() / 2;
+                        Position otherPos = new Position(other.getPos().getX() + 0.5, other.getPos().getY() + 0.5);
+                        Impact coinImpact = this.testSweptCircleCircle(body, body.getPos(), radius, other, otherPos, radiusOther, endPos, vector);
+                        if (coinImpact.ti < finalImpact.ti) { // Collision with coin
+                            eventBus.postQueued(new CoinCollisionEvent((Coin) other.getEntity(), ((Worm) body.getEntity()).getTeam()));
+                        }
+                        continue;
+                    }
                     double radiusOther = other.getHeight() / 2;
                     Position otherPos = new Position(other.getPos().getX() + 0.5, other.getPos().getY() + 0.5);
                     Impact bodyImpact = this.testSweptCircleCircle(body, body.getPos(), radius, other, otherPos, radiusOther, endPos, vector);
@@ -118,6 +135,13 @@ public class Collision {
                     }
                 }
             }
+        } else if (body.getEntity() instanceof CatConcreteProjectile) {
+            double radius = body.getHeight() / 2;
+            // Entity-Map Test: searches for the earliest impact time
+            Impact mapImpact = this.testSweptCircleTile(body, body.getPos(), radius, endPos, vector);
+            if (mapImpact.collided && mapImpact.ti < finalImpact.ti) {
+                finalImpact = mapImpact;
+            }
         } else {
             // if the body is not a worm
             double radius = body.getHeight() / 2;
@@ -129,7 +153,7 @@ public class Collision {
 
             // Entity-Entity Test: iterates over all other bodies to find the earliest impact time
             for (PhysicsBody other : this.bodies) {
-                if (other != body) {
+                if (other != body && !(other.getEntity() instanceof Coin)) {
                     double radiusOther = other.getWidth() / 2;
                     Position otherPos = new Position(other.getPos().getX() + 0.5, other.getPos().getY() + 0.5);
 
@@ -419,9 +443,9 @@ public class Collision {
      * @param body the {@link PhysicsBody} which move
      * @param impact the {@link Impact} with collision's information
      * @param ticktime the duration of a simulation tick
-     * @param bus the {@link EventBus} of the collisions
+     * @param world the {@link GameWorld} of the collisions
      */
-    public void slide(PhysicsBody body, Impact impact, double ticktime, EventBus bus) {
+    public void slide(PhysicsBody body, Impact impact, double ticktime, GameWorld world) {
         Position safePos = new Position(
                 impact.collisionPos.getX() + impact.normal.getX() * EPSILON,
                 impact.collisionPos.getY() + impact.normal.getY() * EPSILON
@@ -436,14 +460,16 @@ public class Collision {
                 ((Worm) body.getEntity()).setOnGround(false);
             }
         } else {
-            PhysicsEngine.fallDamage((Worm) body.getEntity());
+            if (body.getEntity() instanceof Worm worm) {
+                world.queueCommand(PhysicsEngine.fallDamage(worm));
+            }
             body.setVector(new Vector(body.getVector().getX(), 0));
             // if the worm touch the ground, it can jump again
             if (impact.normal.getY() == 1) {
                 if (body.getEntity() instanceof Worm) {
                     ((Worm) body.getEntity()).setOnGround(true);
                 }
-                bus.postQueued(new GroundCheckCollision(body.getEntity()));
+                world.getBus().postQueued(new GroundCheckCollision(body.getEntity()));
             } else if (impact.normal.getY() == -1) {
                 // Hit ceiling - mark as not on ground
                 if (body.getEntity() instanceof Worm) {
@@ -463,7 +489,7 @@ public class Collision {
 
             if (i.normal.getY() == 1 && body.getEntity() instanceof Worm) {
                 ((Worm) body.getEntity()).setOnGround(true);
-                bus.postQueued(new GroundCheckCollision(body.getEntity()));
+                world.getBus().postQueued(new GroundCheckCollision(body.getEntity()));
             }
         } else {
             body.setPos(nextPos);
@@ -502,11 +528,15 @@ public class Collision {
      * @param impact the {@link Impact} with collision's information
      */
     public void touch(PhysicsBody body, Impact impact) {
-        Position safePos = new Position(
-                impact.collisionPos.getX() + impact.normal.getX() * EPSILON,
-                impact.collisionPos.getY() + impact.normal.getY() * EPSILON
-        );
-        body.setPos(safePos);
+        if (impact.normal.getY() > 0) {
+            body.setPos(impact.collisionPos);
+        } else {
+            Position safePos = new Position(
+                    impact.collisionPos.getX() + impact.normal.getX() * EPSILON,
+                    impact.collisionPos.getY() + impact.normal.getY() * EPSILON
+            );
+            body.setPos(safePos);
+        }
         // body's vector set to (0, 0)
         body.setVector(new Vector(0, 0));
     }
@@ -519,7 +549,89 @@ public class Collision {
     public void cross(PhysicsBody body, Position pos) {
         body.setPos(pos);
     }
+
     public Map getMap() {
         return this.map;
+    }
+
+    public Tile inTrapOrLava(Position position) {
+        if (map.isDamaging(position)) {
+            return map.getTile(position);
+        }
+        Position pos = new Position(position.getX(), position.getY() + 1);
+        if (map.isDamaging(pos)) {
+            return map.getTile(pos);
+        }
+        double xdown = Math.floor(position.getX());
+        double xup = Math.ceil(position.getX());
+        double ydown = Math.floor(position.getY());
+        double yup = Math.ceil(position.getY());
+        if (xdown != xup) {
+            Position pos1 = new Position(xup, position.getY());
+            Position pos2 = new Position(xup, position.getY() + 1);
+            if (map.isDamaging(pos1)) {
+                return map.getTile(pos1);
+            }
+            if (map.isDamaging(pos2)) {
+                return map.getTile(pos2);
+            }
+        }
+        if (ydown != yup) {
+            Position pos1 = new Position(position.getX(), yup + 1);
+            if (map.isDamaging(pos1)) {
+                return map.getTile(pos1);
+            }
+        }
+        if (xdown != xup && ydown != yup) {
+            Position pos1 = new Position(xup, yup + 1);
+            if (map.isDamaging(pos1)) {
+                return map.getTile(pos1);
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Checks if a physics body is in damaging terrain (lava, traps).
+     * This method tests multiple points around the body to detect when only part
+     * of the body is in damaging terrain.
+     * @param body the {@link PhysicsBody} to check
+     * @return the {@link Tile} if the body is in damaging terrain, {@code null} otherwise
+     */
+    public Tile inTrapOrLavaWithBody(PhysicsBody body) {
+        Position pos = body.getPos();
+        double height = body.getHeight();
+        double width = body.getWidth();
+
+        // Test the center position
+        Tile tile = inTrapOrLava(pos);
+        if (tile != null) {
+            return tile;
+        }
+
+        // Test multiple points in the lower half of the body to catch partial immersion
+        // This ensures detection even when only the lower portion is in lava
+        for (double offsetY = 0; offsetY < height / 2; offsetY += 0.25) {
+            Position testPos = new Position(pos.getX(), pos.getY() - offsetY);
+            tile = inTrapOrLava(testPos);
+            if (tile != null) {
+                return tile;
+            }
+        }
+
+        // Test left and right sides of the lower portion
+        Position leftPos = new Position(pos.getX() - width / 2, pos.getY() - height / 4);
+        tile = inTrapOrLava(leftPos);
+        if (tile != null) {
+            return tile;
+        }
+
+        Position rightPos = new Position(pos.getX() + width / 2, pos.getY() - height / 4);
+        tile = inTrapOrLava(rightPos);
+        if (tile != null) {
+            return tile;
+        }
+
+        return null;
     }
 }

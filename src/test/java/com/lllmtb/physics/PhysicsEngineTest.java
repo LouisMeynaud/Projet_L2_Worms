@@ -15,8 +15,8 @@ import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
-import com.lllmtb.engine.GameSettings;
 import com.lllmtb.engine.GameWorld;
 import com.lllmtb.engine.turn.TurnManager;
 import com.lllmtb.events.EventBus;
@@ -32,18 +32,6 @@ import com.lllmtb.model.item.tool.ToolId;
 import com.lllmtb.model.item.weapon.WeaponId;
 import com.lllmtb.terrain.map.Map;
 import com.lllmtb.terrain.map.MapLoader;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
-
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicReference;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class PhysicsEngineTest {
     private Map map;
@@ -61,10 +49,10 @@ class PhysicsEngineTest {
         Mockito.when(world.getBus()).thenReturn(bus);
         pE = new PhysicsEngine(map, world, true, GameMode.NORMAL);
         Position pw = new Position(4, 4);
-        Worm w = new Worm("José", new Team("Team", 1, new Position[]{pw}));
+        Worm w = new Worm("José", new Team("Team", 1, new Position[]{pw}, 0));
         assertTrue(map.inMap(pw));
         Position pBP = new Position(0, 5);
-        BulletProjectile bP = new BulletProjectile(new UseParams(0, pBP, w));
+        BulletProjectile bP = new BulletProjectile(new UseParams(0, pBP, w, 0));
         assertTrue(map.inMap(pw));
         pBWorm = w.getBody();
         pBBP = bP.getBody();
@@ -191,8 +179,8 @@ class PhysicsEngineTest {
         tpE.add(pBWorm);
         tpE.add(pBBP);
         tpE.nextStep(dt);
-        assertEquals(0.9985857864376269, pBBP.getPos().getX());
-        assertEquals(5.001414213562373, pBBP.getPos().getY());
+        assertEquals(1.0, pBBP.getPos().getX());
+        assertEquals(5.0, pBBP.getPos().getY());
         assertEquals(2.0, pBWorm.getPos().getX());
         assertEquals(4.0, pBWorm.getPos().getY());
     }
@@ -202,8 +190,9 @@ class PhysicsEngineTest {
         double ticktime = 16.7;
         TurnManager t = new TurnManager(world, 10000);
         Map map = Mockito.mock(Map.class);
+        Mockito.when(map.getWidth()).thenReturn(100);
         Mockito.when(map.getHeightWater()).thenReturn(0);
-        Team team = new Team("TestTeam", 1, new Position[]{new Position(2,4)});
+        Team team = new Team("TestTeam", 1, new Position[]{new Position(2,4)}, 0);
         Mockito.when(world.getTurnManager()).thenReturn(t);
         Mockito.when(world.getMap()).thenReturn(map);
         t.startTurn(team);
@@ -447,7 +436,7 @@ class PhysicsEngineTest {
 
     @Test
     void actualizeBodiesTest(){
-        Worm worm = new Worm("Test", new Team("TestTeam", 1, new Position[]{new Position(3,3)}));
+        Worm worm = new Worm("Test", new Team("TestTeam", 1, new Position[]{new Position(3,3)}, 0));
         pE.add(worm.getBody());
         int size = pE.getBodies().size();
         worm.damageWorm(worm.getStats().getHp());
@@ -461,9 +450,9 @@ class PhysicsEngineTest {
 
         Worm owner = (Worm) pBWorm.getEntity();
         Position pos = new Position(10, 10);
-        RocketProjectile rocket = new RocketProjectile(new UseParams(0, pos, owner));
+        RocketProjectile rocket = new RocketProjectile(new UseParams(0, pos, owner, 0));
         pE.add(rocket.getBody());
-        pE.createExplosion(rocket, 10, 15, 30, 100);
+        pE.createExplosion(rocket, 10, 15, 30, 100, false);
         assertEquals(2, bus.queuedEventCount());//verifie que les event sont bien crée(explosion et mapUpdate)
     }
 
@@ -475,6 +464,19 @@ class PhysicsEngineTest {
         PhysicsEngine.fallDamage(worm);
         //Worm has 100 HP and check if it loses some
         assertNotEquals(100, worm.getStats().getHp() );
+
+    }
+
+    @Test
+    void checkIfWormDeathAfterFallDamage(){
+        Team team = Mockito.mock(Team.class);
+        Worm worm = new Worm("TestWorm", team);
+        worm.damageWorm(90);
+        assertTrue(worm.isAlive());
+        worm.getBody().setVector(new Vector(0, -200));
+        PhysicsEngine.fallDamage(worm);
+        //Worm has 100 HP and check if it loses some
+        assertFalse(worm.isAlive());
 
     }
 }

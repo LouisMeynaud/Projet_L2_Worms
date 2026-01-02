@@ -5,18 +5,24 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import com.lllmtb.engine.GameWorld;
+import com.lllmtb.model.entity.Coin;
+import com.lllmtb.model.entity.Drop;
+import com.lllmtb.model.entity.projectile.CatConcreteProjectile;
 import com.lllmtb.model.entity.projectile.Projectile;
 import com.lllmtb.model.entity.team.TeamColor;
 import com.lllmtb.model.entity.worm.Statistics;
 import com.lllmtb.model.entity.worm.Worm;
+import com.lllmtb.model.item.ItemId;
+import com.lllmtb.model.item.tool.ToolId;
+import com.lllmtb.model.item.weapon.WeaponId;
 import com.lllmtb.physics.GameMode;
 import com.lllmtb.physics.PhysicsBody;
+import com.lllmtb.physics.PhysicsModifier;
+import com.lllmtb.physics.Position;
 import com.lllmtb.terrain.map.Tile;
 import com.lllmtb.ui.graphical.TextureManager;
 import com.lllmtb.ui.graphical.Utilitaire;
@@ -37,7 +43,11 @@ public class WorldRenderer {
     private final Map<TeamColor, Animation> teamAnimations = new HashMap<>(); //le tableau stockant les animation des worms
     private BufferedImage mapCache = null;
 
-
+    /**
+     * le constructeur.
+     * @param panel le panel ou l'on dessine
+     * @param world le monde du jeu
+     */
     public WorldRenderer(GameWorldPanel panel, GameWorld world) {
         this.panel = panel;
         this.world = world;
@@ -74,8 +84,38 @@ public class WorldRenderer {
         int width = panel.mapWidth();
         int height = panel.mapHeight();
 
-        mapCache = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-        Graphics2D g2d = mapCache.createGraphics(); //cree un crayon dans mapCache
+        if (mapCache == null) {
+            mapCache = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+        }
+
+        int mapW = world.getMap().getWidth();
+        int mapH = world.getMap().getHeight();
+
+        Position center = new Position(mapW / 2.0, mapH / 2.0);
+        int maxRadius = Math.max(mapW, mapH) + 10;
+
+        updateMapCacheRegion(center, maxRadius);
+
+        if (!panel.initialFitDone && panel.getWidth() > 0) {
+            panel.fitMapToScreen();
+        }
+        panel.checkCameraBounds();
+    }
+
+
+    public void updateMapCacheRegion(Position center, int radius) {
+        if (mapCache == null) {
+            updateMapCache();
+            return;
+        }
+
+        Graphics2D g2d = mapCache.createGraphics();
+
+        int startX = Math.max(0, (int) center.getX() - radius - 2);
+        int startY = Math.max(0, (int) center.getY() - radius - 2);
+        int endX = Math.min(world.getMap().getWidth(), (int) center.getX() + radius + 2);
+        int endY = Math.min(world.getMap().getHeight(), (int) center.getY() + radius + 2);
+
         Color skyColor;
         if (world.getGameMode() == GameMode.MOON) {
             skyColor = new Color(25, 10, 40); // Violet sombre
@@ -83,13 +123,19 @@ public class WorldRenderer {
             skyColor = new Color(135, 206, 235); // Bleu clair
         }
         g2d.setColor(skyColor);
-        g2d.fillRect(0, 0, width, height); //dessine tout le fond de la couleur du ciel
+
+        int pxX = startX * panel.tileSize;
+        int pxY = startY * panel.tileSize;
+        int pxWidth = (endX - startX) * panel.tileSize;
+        int pxHeight = (endY - startY) * panel.tileSize;
+        g2d.fillRect(pxX, pxY, pxWidth, pxHeight);
 
         Tile[][] mapMatrix = world.getMap().getMapMatrix();
 
-        //desinne les tuiles.
-        for (int y = 0; y < mapMatrix.length; y++) {
-            for (int x = 0; x < mapMatrix[y].length; x++) {
+        for (int y = startY; y < endY; y++) {
+            if (y >= mapMatrix.length) break;
+            for (int x = startX; x < endX; x++) {
+                if (x >= mapMatrix[y].length) break;
                 String tileType = mapMatrix[y][x].toString();
                 if (mapMatrix[y][x] != Tile.AIR) {
                     BufferedImage texture;
@@ -105,11 +151,6 @@ public class WorldRenderer {
             }
         }
         g2d.dispose();
-
-        if (!panel.initialFitDone && panel.getWidth() > 0) {
-            panel.fitMapToScreen();
-        }
-        panel.checkCameraBounds();
     }
 
     //////////////Animation and effect/////////////////////////////
@@ -214,17 +255,59 @@ public class WorldRenderer {
             tx.translate(-spriteWidthScaled / 2, 0);
         }
 
-        g2d.drawImage(textureWorm, tx, null);
+        double xCenter = xEcran + (largeurVerPx / 2.0);
+        double yCenter = yEcran + (hauteurVerPx / 2.0);
+        paintEquipment(g2d, worm, xCenter, yCenter);
 
         paintHealthBar(g2d, (Worm) worm.getEntity(), xEcran, yEcran, largeurVerPx);
 
+        g2d.drawImage(textureWorm, tx, null);
+
         if (worm.getEntity() == activeWorm) {
-            double xCenter = xEcran + (largeurVerPx / 2.0);
-            double yCenter = yEcran + (hauteurVerPx / 2.0);
-            paintCurrentWormsArrow(g2d, xEcran, yEcran, largeurVerPx);
-            paintWeapon(g2d, xCenter, yCenter);
+            paintCurrentWormsArrow(g2d, xEcran, yEcran, largeurVerPx, wormEntity.getTeam().teamColor);
+            paintItem(g2d, xCenter, yCenter);
             paintAim(g2d, xCenter, yCenter);
+            paintChargeBar(g2d, xEcran, yEcran, largeurVerPx); // AJOUT: Dessin de la barre
         }
+    }
+
+    /**
+     * Dessine la barre de charge (puissance).
+     */
+    private void paintChargeBar(Graphics2D g2d, double x, double y, double width) {
+        if (!panel.shootMode) return;
+
+        ItemId item = world.getPlayingTeam().getHand();
+        if (item == null || item.getMaxChargeTime() <= 0) return;
+
+        double ratio = 0.0;
+        if (panel.chargeStartTime > 0) {
+            long duration = System.currentTimeMillis() - panel.chargeStartTime;
+            double maxTime = item.getMaxChargeTime();
+            ratio = duration / maxTime;
+            if (ratio > 1.0) ratio = 1.0;
+        }
+
+        int barHeight = 4;
+        int barWidth = (int) width + 10;
+        int barX = (int) (x - 5);
+        int barY = (int) (y - barHeight - 18);
+
+        g2d.setColor(Color.DARK_GRAY);
+        g2d.fillRect(barX, barY, barWidth, barHeight);
+
+        if (ratio > 0) {
+            int fillWidth = (int) (barWidth * ratio);
+            if (ratio < 0.5) g2d.setColor(Color.YELLOW);
+            else g2d.setColor(Color.ORANGE);
+            if (ratio >= 0.95) g2d.setColor(Color.RED);
+
+            g2d.fillRect(barX, barY, fillWidth, barHeight);
+        }
+
+        g2d.setColor(Color.BLACK);
+        g2d.setStroke(new BasicStroke(1));
+        g2d.drawRect(barX, barY, barWidth, barHeight);
     }
 
     /**
@@ -241,6 +324,10 @@ public class WorldRenderer {
         double largeurProjPx = bounds[2];
         double hauteurProjPx = bounds[3];
 
+        if (projectile.getEntity() instanceof CatConcreteProjectile) {
+            xEcran -= largeurProjPx / 2;
+        }
+
         BufferedImage textureProjectile = TextureManager.PROJECTILES.get(projectile.getEntity().getClass().getSimpleName());
         if (textureProjectile != null) {
             AffineTransform tx = new AffineTransform();
@@ -252,6 +339,50 @@ public class WorldRenderer {
 
             g2d.drawImage(textureProjectile, tx, null);
         }
+    }
+
+    private void drawCoin(Graphics2D g2d, PhysicsBody body) {
+        double[] bounds = panel.getScreenBounds(body); // Convertit position monde -> écran
+        double xEcran = bounds[0];
+        double yEcran = bounds[1];
+        double largeurPx = bounds[2];
+        double hauteurPx = bounds[3];
+
+
+        BufferedImage texture = TextureManager.UI.get("Coin");
+        AffineTransform tx = new AffineTransform();
+        tx.translate(xEcran, yEcran);
+
+        double echelleX = largeurPx / texture.getWidth();
+        double echelleY = hauteurPx / texture.getHeight();
+        tx.scale(echelleX, echelleY);
+
+        g2d.drawImage(texture, tx, null);
+    }
+
+    private void drawDrop(Graphics2D g2d, PhysicsBody body, Drop drop) {
+        double[] bounds = panel.getScreenBounds(body); // Convertit position monde -> écran
+        double xEcran = bounds[0];
+        double yEcran = bounds[1];
+        double largeurPx = bounds[2];
+        double hauteurPx = bounds[3];
+
+        BufferedImage texture = null;
+        if (drop.isOnGround()) {
+            texture = TextureManager.UI.get("DropOnGround");
+        } else {
+            texture = TextureManager.UI.get("DropAerials");
+            hauteurPx = hauteurPx * 2;
+            yEcran -= hauteurPx / 2;
+        }
+        AffineTransform tx = new AffineTransform();
+        tx.translate(xEcran, yEcran);
+
+        double echelleX = largeurPx / texture.getWidth();
+        double echelleY = hauteurPx / texture.getHeight();
+        tx.scale(echelleX, echelleY);
+
+        g2d.drawImage(texture, tx, null);
     }
 
     /**
@@ -268,6 +399,10 @@ public class WorldRenderer {
                     drawWorm(g2d, body, activeWorm);
                 } else if (body.getEntity() instanceof Projectile) {
                     drawProjectile(g2d, body);
+                } else if (body.getEntity() instanceof Coin) {
+                    drawCoin(g2d, body);
+                } else if (body.getEntity() instanceof Drop drop) {
+                    drawDrop(g2d, body, drop);
                 }
             }
         }
@@ -280,8 +415,9 @@ public class WorldRenderer {
      * @param x la position x du worms a l'ecran
      * @param y la position y du worms a l'ecran
      * @param width la largeur du worms a l'ecran
+     * @param color la couleur de la team
      */
-    private void paintCurrentWormsArrow(Graphics2D g2d, double x, double y, double width) {
+    private void paintCurrentWormsArrow(Graphics2D g2d, double x, double y, double width, TeamColor color) {
 
         double offsetAnimation = Math.sin(world.getGameLoop().getTicks() / 10) * 5; //fonction sinuosidale , (qui monte et descend)
         int centerX = (int) (x + (width / 2.0));
@@ -290,8 +426,15 @@ public class WorldRenderer {
 
         int[] xPoints = {centerX - size, centerX + size, centerX };
         int[] yPoints = {bottomY - size, bottomY - size, bottomY };
-
-        g2d.setColor(Color.YELLOW);
+        Color paintColor;
+        switch (color) {
+            case GREEN : paintColor = Color.GREEN; break;
+            case YELLOW : paintColor = Color.YELLOW; break;
+            case RED : paintColor = Color.RED; break;
+            case BLUE : paintColor = Color.BLUE; break;
+            default : paintColor = Color.BLACK; break;
+        }
+        g2d.setColor(paintColor);
         g2d.fillPolygon(xPoints, yPoints, 3); //dessine le triange remplie
 
         g2d.setColor(Color.BLACK);
@@ -310,8 +453,8 @@ public class WorldRenderer {
      */
     private void paintHealthBar(Graphics2D g2d, Worm worm, double x, double y, double width) {
 
-        int maxHp = Statistics.getMaxHp();
-        int currentHp = worm.getStats().getHp();
+        double maxHp = Statistics.getMaxHp();
+        double currentHp = worm.getStats().getHp();
 
         int barHeight = 4;
         int barWidth = (int) width + 10;
@@ -346,20 +489,28 @@ public class WorldRenderer {
         Worm currentWorm = world.getTurnManager().getTurn().getWormPlayable();
         if (currentWorm != null && panel.shootMode) {
             g2d.setColor(Color.RED);
-            g2d.setStroke(new BasicStroke(3)); // epaisseur du trait
 
-            double vecX = panel.mouseWorldX - xCenter;
-            double vecY = panel.mouseWorldY - yCenter;
-
-            double distance = Math.sqrt(vecX * vecX + vecY * vecY);
-            double maxLen = 100.0;
-
-            if (distance > maxLen) {
-                double ratio = maxLen / distance;
-                vecX = vecX * ratio;
-                vecY = vecY * ratio;
+            ItemId handItem = world.getPlayingTeam().getHand();
+            if (handItem != null && handItem.usesCrosshair()) {
+                int crosshairSize = 15;
+                int mouseX = (int) panel.mouseWorldX;
+                int mouseY = (int) panel.mouseWorldY;
+                g2d.setStroke(new BasicStroke(3)); // epaisseur du trait
+                g2d.drawLine(mouseX - crosshairSize, mouseY, mouseX + crosshairSize, mouseY);
+                g2d.drawLine(mouseX, mouseY - crosshairSize, mouseX, mouseY + crosshairSize);
+            } else {
+                double vecX = panel.mouseWorldX - xCenter;
+                double vecY = panel.mouseWorldY - yCenter;
+                double distance = Math.sqrt(vecX * vecX + vecY * vecY);
+                double maxLen = 100.0;
+                if (distance > maxLen) {
+                    double ratio = maxLen / distance;
+                    vecX = vecX * ratio;
+                    vecY = vecY * ratio;
+                }
+                g2d.setStroke(new BasicStroke(3)); // epaisseur du trait
+                g2d.drawLine((int) xCenter, (int) yCenter, (int) (xCenter + vecX), (int) (yCenter + vecY));
             }
-            g2d.drawLine((int) xCenter, (int) yCenter, (int) (xCenter + vecX), (int) (yCenter + vecY));
         }
     }
 
@@ -370,23 +521,16 @@ public class WorldRenderer {
      * @param xCenter le centre du vers a l'ecran
      * @param yCenter le centre du vers a l'ecran
      */
-    private void paintWeapon(Graphics2D g2d, double xCenter, double yCenter) {
+    private void paintItem(Graphics2D g2d, double xCenter, double yCenter) {
         Worm activeWorm = world.getTurnManager().getTurn().getWormPlayable();
-        if (activeWorm == null) {
-            return;
-        }
-        Object handItem = world.getTurnManager().getTurn().getTeam().getHand();
-        if (handItem == null) {
-            return;
+        if (activeWorm == null) return;
 
-        }
-        String textureName = "Hand" + handItem.toString();
-        BufferedImage texture = TextureManager.WEAPONS.get(textureName);
-        if (texture == null) {
-            return;
+        ItemId handItem = world.getTurnManager().getTurn().getTeam().getHand();
+        if (handItem == null) return;
 
-        }
-
+        String textureName = "Hand" + handItem;
+        BufferedImage texture = handItem instanceof WeaponId ? TextureManager.WEAPONS.get(textureName) : TextureManager.TOOLS.get(textureName);
+        if (texture == null) return;
 
         AffineTransform tx = new AffineTransform();
         tx.translate(xCenter, yCenter);
@@ -400,6 +544,38 @@ public class WorldRenderer {
 
         tx.translate(-texture.getWidth() / 2.0, -texture.getHeight() / 2.0);
         g2d.drawImage(texture, tx, null);
+    }
+
+    /**
+     * Draws the active equipment on the worm (parachute, jetpack...).
+     *
+     * @param g2d the graphics context
+     * @param worm the physics body of the worm
+     * @param xCenter the x-coordinate of the worm's center on screen
+     * @param yCenter the y-coordinate of the worm's center on screen
+     */
+    private void paintEquipment(Graphics2D g2d, PhysicsBody worm, double xCenter, double yCenter) {
+        List<PhysicsModifier> modifiers = world.getPhysics().getModifiers().get(worm);
+        if (modifiers == null) return;
+
+        Set<ToolId> activeTools = modifiers.stream()
+                .filter(modifier -> modifier.source instanceof ToolId)
+                .map(modifier -> (ToolId) modifier.source)
+                .collect(Collectors.toSet());
+
+        for (ToolId tool : activeTools) {
+            String textureName = "Equipped" + tool;
+            BufferedImage texture = TextureManager.TOOLS.get(textureName);
+            if (texture == null) return;
+            AffineTransform tx = new AffineTransform();
+            tx.translate(-texture.getWidth() / 2.0, -texture.getHeight() / 2.0);
+
+            switch (tool) {
+                case PARACHUTE -> tx.translate(xCenter, yCenter - 20);
+                default -> tx.translate(xCenter, yCenter);
+            }
+            g2d.drawImage(texture, tx, null);
+        }
     }
 
     /**
@@ -423,6 +599,7 @@ public class WorldRenderer {
      * @param g2d le pinceaux
      */
     public void render(Graphics2D g2d) {
+        panel.checkCameraBounds();
         g2d.translate(panel.cameraOffsetX, panel.cameraOffsetY); //decalle le pinceau en fonction de la position camera (si negatif le dessin est deplacer vers la gauche)
         g2d.scale(panel.currentZoom, panel.currentZoom);
 

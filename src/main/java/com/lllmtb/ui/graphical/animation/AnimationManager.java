@@ -44,11 +44,15 @@ public class AnimationManager {
         BufferedImage bazookaSheet = TextureManager.EFFECT.get("BazookaExplosion");
         if (bazookaSheet != null) {
             FRAMES_MAP.put("BazookaExplosion", Utilitaire.cutSpriteSheet(bazookaSheet, 4, 4));
-    }
-    BufferedImage healingBazookaSheet = TextureManager.EFFECT.get("HealingBazookaExplosion");
+        }
+        BufferedImage healingBazookaSheet = TextureManager.EFFECT.get("HealingBazookaExplosion");
         if (healingBazookaSheet != null) {
             FRAMES_MAP.put("HealingBazookaExplosion", Utilitaire.cutSpriteSheet(healingBazookaSheet, 4, 4));
-    }
+        }
+        BufferedImage missileSheet = TextureManager.EFFECT.get("MissileExplosion");
+        if (missileSheet != null) {
+            FRAMES_MAP.put("MissileExplosion", Utilitaire.cutSpriteSheet(missileSheet, 4, 4));
+        }
 
 
     }

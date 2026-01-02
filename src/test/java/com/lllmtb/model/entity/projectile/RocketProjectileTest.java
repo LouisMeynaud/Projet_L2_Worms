@@ -5,6 +5,8 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+import com.lllmtb.events.EventBus;
 import org.junit.jupiter.api.Test;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
@@ -25,9 +27,9 @@ class RocketProjectileTest {
     @Test
     void testValeursRocketProjectile() {
         Position pos = new Position(0, 0);
-        Team team = new Team("TeamTest", 1, new Position[]{pos});
+        Team team = new Team("TeamTest", 1, new Position[]{pos},0);
         Worm worm = new Worm("WormTest", team) {};
-        UseParams params = new UseParams(0.0, pos, worm);
+        UseParams params = new UseParams(0.0, pos, worm, 0);
         
         RocketProjectile rocket = new RocketProjectile(params);
 
@@ -43,16 +45,18 @@ class RocketProjectileTest {
     @Test
         void testOnImpact_ReturnsExplosionCommand() {
             Position pos = new Position(0, 0);
-            Team team = new Team("TeamTest", 1, new Position[]{pos});
+            Team team = new Team("TeamTest", 1, new Position[]{pos}, 0);
             Worm worm = mock(Worm.class);
             when(worm.getTeam()).thenReturn(team);
 
-            UseParams params = new UseParams(0.0, pos, worm);
+            UseParams params = new UseParams(0.0, pos, worm, 0);
             RocketProjectile rocket = new RocketProjectile(params);
 
             GameWorld worldMock = mock(GameWorld.class);
             PhysicsEngine physicsMock = mock(PhysicsEngine.class);
             when(worldMock.getPhysics()).thenReturn(physicsMock);
+            EventBus busMock = mock(EventBus.class);
+            when(worldMock.getBus()).thenReturn(busMock);
 
             List<GameCommand> commands = rocket.onImpact(null);
             assertNotNull(commands);
@@ -62,6 +66,6 @@ class RocketProjectileTest {
                 cmd.execute(worldMock);
             }
 
-            verify(physicsMock).createExplosion(eq(rocket), eq(10), eq(15), eq(30), eq(100.0));
+            verify(physicsMock).createExplosion(eq(rocket), eq(10), eq(15), eq(30), eq(100.0), eq(false));
         }
 }

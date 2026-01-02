@@ -4,6 +4,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -31,7 +33,7 @@ class ExplosionTest {
 
     private Worm createWorm() {
         Position[] spawn = new Position[]{new Position(0,0)};
-        Team team = new Team("TestTeam", 1, spawn);
+        Team team = new Team("TestTeam", 1, spawn, 0);
         return new Worm("TestWorm", team) {
         };
     }
@@ -63,34 +65,48 @@ class ExplosionTest {
     @Test
     void testEffetDegatsExplosion() {
         Worm worm = createWorm();
-        int initialHp = worm.getStats().getHp();
+        double initialHp = worm.getStats().getHp();
         
         PhysicsBody body = new PhysicsBody(worm, new Position(0, 0), new Vector(0, 0), 1, 2, 1);
         bodies.add(body);
         
-        Explosion.explosionDamageEffect(new Position(0, 0), 10, 50, bodies);
+        Explosion.explosionDamageEffect(new Position(0, 0), 10, 50, bodies, false);
         assertEquals(initialHp - 50, worm.getStats().getHp());
     }
 
     @Test
     void testEffetDegatsExplosion_degatDistance() {
         Worm worm = createWorm();
-        int initialHp = worm.getStats().getHp();
+        double initialHp = worm.getStats().getHp();
         
         PhysicsBody body = new PhysicsBody(worm, new Position(5, 0), new Vector(0, 0), 1, 2, 1);
         bodies.add(body);
-        Explosion.explosionDamageEffect(new Position(0, 0), 10, 50, bodies);
+        Explosion.explosionDamageEffect(new Position(0, 0), 10, 50, bodies, false);
         assertEquals(initialHp - 25, worm.getStats().getHp());
     }
 
     @Test
     void testEffetDegatsExplosion_PasDegatTropLoin() {
         Worm worm = createWorm();
-        int initialHp = worm.getStats().getHp();
+        double initialHp = worm.getStats().getHp();
         
         PhysicsBody body = new PhysicsBody(worm, new Position(20, 20), new Vector(0, 0), 1, 2, 1);
         bodies.add(body);
-        Explosion.explosionDamageEffect(new Position(0, 0), 10, 50, bodies);
+        Explosion.explosionDamageEffect(new Position(0, 0), 10, 50, bodies, false);
         assertEquals(initialHp, worm.getStats().getHp());
+    }
+
+    @Test
+    void checkIfWormDeathAfterExplosion(){
+        Worm worm = createWorm();
+        worm.damageWorm(90);
+        assertTrue(worm.isAlive());
+
+        PhysicsBody body = new PhysicsBody(worm, new Position(0, 0), new Vector(0, 0), 1, 2, 1);
+        bodies.add(body);
+
+        Explosion.explosionDamageEffect(new Position(0, 0), 10, 100, bodies, false);
+        assertFalse(worm.isAlive());
+
     }
 }

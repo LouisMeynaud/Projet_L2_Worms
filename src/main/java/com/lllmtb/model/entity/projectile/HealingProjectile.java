@@ -17,13 +17,16 @@ public final class HealingProjectile extends Projectile implements ExplosiveProj
     private static final double width  = 1;
     private static final int damage = -20;
 
-
     private static final int RAYON_DEGAT_MAP = 0;
     private static final int RAYON_SOUFFLE = 15;
     private static final int DEGATS = -20;
     private static final double FORCE_SOUFFLE = 0;
     private static final String TEXTURE_KEY = "HealingBazookaExplosion";
 
+    /**
+     * Constructor for HealingProjectile.
+     * @param params UseParams containing initial parameters for the projectile.
+     */
     public HealingProjectile(@NonNull UseParams params) {
         super(params, force, mass, height, width);
     }
@@ -36,11 +39,11 @@ public final class HealingProjectile extends Projectile implements ExplosiveProj
     @Override
     public List<GameCommand> onImpact(Entity entity) {
         List<GameCommand> list = new ArrayList<GameCommand>();
-        hitWorm(list, entity, damage);
+        handleHit(list, entity, damage);
         list.add((world -> {
-            world.getPhysics().createExplosion(this, RAYON_DEGAT_MAP, RAYON_SOUFFLE, DEGATS, FORCE_SOUFFLE);
+            world.getPhysics().createExplosion(this, RAYON_DEGAT_MAP, RAYON_SOUFFLE, DEGATS, FORCE_SOUFFLE, true);
         }));
-        list.add(removeProjectileBody());
+        list.add(delete());
         return list;
 
     }
@@ -71,7 +74,7 @@ public final class HealingProjectile extends Projectile implements ExplosiveProj
     }
 
     @Override
-    public int getDamage() {
+    public double getDamage() {
         return damage;
     }
 }

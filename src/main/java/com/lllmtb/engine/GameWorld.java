@@ -7,7 +7,7 @@ import java.util.Objects;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
-import com.lllmtb.events.turn.TurnFinishEvent;
+import com.lllmtb.model.entity.projectile.Projectile;
 import org.eclipse.jdt.annotation.NonNull;
 
 import com.lllmtb.engine.commands.GameCommand;
@@ -18,6 +18,7 @@ import com.lllmtb.events.game.GameStateUpdatedEvent;
 import com.lllmtb.model.entity.Entity;
 import com.lllmtb.model.entity.team.Team;
 import com.lllmtb.model.entity.worm.Worm;
+import com.lllmtb.model.shop.ShopManager;
 import com.lllmtb.physics.GameMode;
 import com.lllmtb.physics.Move;
 import com.lllmtb.physics.PhysicsEngine;
@@ -37,6 +38,7 @@ public class GameWorld {
     private final TurnManager turnManager;
     private String gameName;
     private GameMode gameMode;
+    private ShopManager shopManager;
     Thread loopThread;
 
     private final BlockingQueue<GameCommand> commandQueue;
@@ -80,7 +82,8 @@ public class GameWorld {
         for (int i = 0; i < settings.nbTeams; i++) {
             try {
                 Worm.setMaxHp(settings.maxHp);
-                Team team = new Team(settings.teamNames[i], settings.nbWorms, tmap.getSpawnPoint()[i]);
+                int coin = settings.coinCheat ? -1 : 0;
+                Team team = new Team(settings.teamNames[i], settings.nbWorms, tmap.getSpawnPoint()[i], coin);
                 teams.add(team);
                 team.getTeamWorms().forEach(this::registerEntity);
                 Logger.logger.info("{} | {} - {} - {}\n", i, team.name, team.id, team.teamColor);
@@ -89,12 +92,18 @@ public class GameWorld {
             }
         }
 
+        //Init FriendlyFire
+        Projectile.setFriendlyFire(settings.friendlyfire);
+
         // Init GameLoop
         this.gameLoop = new GameLoop(this);
         Logger.logger.debug("Game initialised");
 
         //Init TurnManager
         this.turnManager = new TurnManager(this, settings.turnDuration);
+
+        //Init ShopManager
+        this.shopManager = new ShopManager(this.bus);
     }
 
     public Map getMap() {
@@ -143,13 +152,17 @@ public class GameWorld {
         return gameMode;
     }
 
+    public ShopManager getShopManager() {
+        return this.shopManager;
+    }
+
     public void start() {
         if (loopThread != null && loopThread.isAlive()) return;
         Logger.logger.debug("Starting the game loop...");
         loopThread = new Thread(gameLoop, "gameloop");
         indexTeam = -1;
-        nextTeamTurn();
         loopThread.start();
+        nextTeamTurn();
     }
 
     public void pause(boolean paused) {
@@ -180,6 +193,7 @@ public class GameWorld {
         processCommands();
         physics.next(tickTime);
         turnManager.updateTurn(tickTime);
+        physics.update(tickTime);
         bus.postQueued(new GameStateUpdatedEvent());
     }
 
@@ -188,17 +202,10 @@ public class GameWorld {
             Logger.logger.warn("No teams available to take a turn.");
             return;
         }
-        int currentIndexTeam = indexTeam;
         do {
             indexTeam = (indexTeam + 1) % teams.size();
         } while (!teams.get(indexTeam).oneAlive());
-        if (indexTeam == currentIndexTeam) {
-            Logger.logger.info("The team {} wins !!", teams.get(indexTeam).name);
-            bus.postQueued(new TurnFinishEvent());
-            //TODO : Event or GameCommand for tell the winnerTeam and the game has been finish
-        } else {
-            this.turnManager.startTurn(teams.get(indexTeam));
-        }
+        this.turnManager.startTurn(teams.get(indexTeam));
     }
 
     /**
@@ -219,6 +226,7 @@ public class GameWorld {
      * @return true if all commands were successfully queued, false otherwise
      */
     public boolean queueCommands(List<GameCommand> cmds) {
+        if (cmds == null || cmds.isEmpty()) return false;
         boolean allQueued = true;
         for (GameCommand cmd : cmds) {
             if (!queueCommand(cmd)) allQueued = false;

@@ -1,17 +1,25 @@
 package com.lllmtb.physics;
 
-import com.lllmtb.events.EventBus;
-import com.lllmtb.model.entity.projectile.BulletProjectile;
-import com.lllmtb.model.entity.worm.Worm;
-import com.lllmtb.model.entity.team.Team;
-import com.lllmtb.model.item.UseParams;
-import com.lllmtb.terrain.map.Map;
-import com.lllmtb.terrain.map.MapLoader;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import com.lllmtb.engine.GameSettings;
+import com.lllmtb.engine.GameWorld;
+import com.lllmtb.events.EventBus;
+import com.lllmtb.model.entity.projectile.BulletProjectile;
+import com.lllmtb.model.entity.team.Team;
+import com.lllmtb.model.entity.worm.Worm;
+import com.lllmtb.model.item.UseParams;
+import com.lllmtb.terrain.generation.LandScape;
+import com.lllmtb.terrain.map.Map;
+import com.lllmtb.terrain.map.MapLoader;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class CollisionTest {
@@ -37,7 +45,7 @@ public class CollisionTest {
         Position posW1 = new Position(0, 14);
         Position posW2 = new Position(14, 14);
         Position[] positions = {posW1, posW2};
-        team = new Team("Jeff team", 2, positions);
+        team = new Team("Jeff team", 2, positions,0);
         worm1 = new Worm("Jeff", team);
         worm2 = new Worm("José", team);
         team.addWorm(worm1);
@@ -45,11 +53,11 @@ public class CollisionTest {
         pBWorm1 = new PhysicsBody(worm1, posW1, new Vector(5, 0), 1, 2, 1);
         pBWorm2 = new PhysicsBody(worm2, posW2, new Vector(5, 0), 1, 2, 1);
         Position posBP1 = new Position(14, 18);
-        fP1 = new UseParams(0, posBP1, worm1);
+        fP1 = new UseParams(0, posBP1, worm1, 0);
         bP1 = new BulletProjectile(fP1);
         pBBP1 = new PhysicsBody(bP1, posBP1, new Vector(0,0), 1, 1, 1);
         Position posBP2 = new Position(4, 6);
-        fP2 = new UseParams(0, posBP2, worm2);
+        fP2 = new UseParams(0, posBP2, worm2, 0);
         bP2 = new BulletProjectile(fP2);
         pBBP2 = new PhysicsBody(bP2, posBP2, new Vector(1, 0), 1, 1, 1);
         bodies = new CopyOnWriteArrayList<>();
@@ -57,7 +65,7 @@ public class CollisionTest {
         bodies.add(pBWorm2);
         bodies.add(pBBP1);
         bodies.add(pBBP2);
-        collision = new Collision(map, bodies);
+        collision = new Collision(map, bodies, new EventBus());
     }
 
     @Test
@@ -274,9 +282,12 @@ public class CollisionTest {
     void slide() {
         pBWorm1.setPos(new Position(7, 10));
         pBWorm1.setVector(new Vector(5, -2));
+        GameSettings settings = new GameSettings("blabla", 1, new String[]{}, 1,100, 10, true, "mapTest", false,370, LandScape.HILLY,2,GameMode.NORMAL, true,false);
+        EventBus eventBus = new EventBus();
+        GameWorld gw = new GameWorld(settings, eventBus);
         Position posFinal = new Position(12, 8);
         Collision.Impact impact = collision.move(pBWorm1, posFinal);
-        collision.slide(pBWorm1, impact, 1, new EventBus());
+        collision.slide(pBWorm1, impact, 1, gw);
         assertEquals(12, pBWorm1.getPos().getX());
         assertEquals(10.002, pBWorm1.getPos().getY());
     }
@@ -310,5 +321,52 @@ public class CollisionTest {
         Position pos = new Position(5, 12);
         collision.cross(pBWorm1, pos);
         assertEquals(pos, pBWorm1.getPos());
+    }
+
+    @Test
+    void testInTrapOrLava_WhenNull() {
+        assertNull(collision.inTrapOrLava(pBWorm1.getPos()));
+    }
+
+    @Test
+    void testInTrapOrLava_WhenInLava1() {
+        Position pos = new Position(27, 6);
+        assertEquals("LAVA", collision.inTrapOrLava(pos).name());
+    }
+
+    @Test
+    void testInTrapOrLava_WhenInLava2() {
+        Position pos = new Position(27, 7);
+        assertEquals("LAVA", collision.inTrapOrLava(pos).name());
+    }
+
+    @Test
+    void testInTrapOrLava_WhenInLava3() {
+        Position pos = new Position(26.5, 6);
+        assertEquals("LAVA", collision.inTrapOrLava(pos).name());
+    }
+
+    @Test
+    void testInTrapOrLava_WhenInLava4() {
+        Position pos = new Position(26.5, 7);
+        assertEquals("LAVA", collision.inTrapOrLava(pos).name());
+    }
+
+    @Test
+    void testInTrapOrLava_WhenInLava5() {
+        Position pos = new Position(27, 5.5);
+        assertEquals("LAVA", collision.inTrapOrLava(pos).name());
+    }
+
+    @Test
+    void testInTrapOrLava_WhenInLava6() {
+        Position pos = new Position(26.5, 5.5);
+        assertEquals("LAVA", collision.inTrapOrLava(pos).name());
+    }
+
+    @Test
+    void testInTrapOrLava_WhenNull2() {
+        Position pos = new Position(0.5, 5.5);
+        assertNull(collision.inTrapOrLava(pos));
     }
 }
