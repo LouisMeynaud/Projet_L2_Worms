@@ -47,7 +47,7 @@ public class Load {
     public static GameSave loadGameSave(String name) throws FileNotFoundException {
         String stringpath = SaveConfig.SAVE_DIRECTORY + name + "/save.json";
         if (name.contains("Test")) {
-            stringpath = "src/test/resources/saveTest/" + name + "/save.json";
+            stringpath = "src/test/resources/savesTest/" + name + "/save.json";
         }
         RuntimeTypeAdapterFactory<Entity> entityAdapter = RuntimeTypeAdapterFactory.of(Entity.class, "type")
                 .registerSubtype(Projectile.class, "projectile")
