@@ -20,6 +20,7 @@ import com.lllmtb.events.turn.TurnSkipEvent;
 import com.lllmtb.events.turn.TurnStartEvent;
 import com.lllmtb.events.turn.TurnStopEvent;
 import com.lllmtb.events.turn.WormPlayable;
+import com.lllmtb.events.ui.graphical.ScreenEndGameEvent;
 import com.lllmtb.model.entity.Coin;
 import com.lllmtb.model.entity.Drop;
 import com.lllmtb.model.entity.projectile.Projectile;
@@ -215,18 +216,25 @@ public final class TurnManager {
      */
     public void updateTurn(double elapsedTime) {
         this.remainingTimeInMs -= (long) elapsedTime;
-        if (turnFinish) {
-            if (cleanTurn()) {
-                this.passNextTurn();
-                world.getGameLoop().setSpeedTurn(1);
+        Team winningTeam = checkWiningTeam();
+        if (winningTeam != null) {
+            Logger.logger.info("The team {} wins !!", winningTeam);
+            world.getBus().postQueued(new ScreenEndGameEvent(winningTeam));
+        }
+        else {
+            if (turnFinish) {
+                if (cleanTurn()) {
+                    this.passNextTurn();
+                    world.getGameLoop().setSpeedTurn(1);
+                } else {
+                    world.getGameLoop().setSpeedTurn(3);
+                }
             } else {
-                world.getGameLoop().setSpeedTurn(3);
-            }
-        } else {
-            if (remainingTimeInMs <= 0 || this.turn.getIsEnd()) {
-                endTurn();
-            } else if (this.turn.teamMaximumShoot()) {
-                this.remainingTimeInMs = Math.min(this.remainingTimeInMs, remainingTimeAfterShootInMs);
+                if (remainingTimeInMs <= 0 || this.turn.getIsEnd()) {
+                    endTurn();
+                } else if (this.turn.teamMaximumShoot()) {
+                    this.remainingTimeInMs = Math.min(this.remainingTimeInMs, remainingTimeAfterShootInMs);
+                }
             }
         }
     }
@@ -272,6 +280,19 @@ public final class TurnManager {
     private void passNextTurn() {
         this.turn.end();
         world.nextTeamTurn();
+    }
+
+    private Team checkWiningTeam(){
+        Team oneTeamAlive = null;
+        for (Team team : world.getTeams()) {
+            if (oneTeamAlive != null && team.oneAlive()) {
+                return null;
+            }
+            if (oneTeamAlive == null && team.oneAlive()) {
+                oneTeamAlive = team;
+            }
+        }
+        return oneTeamAlive;
     }
 
     /**
