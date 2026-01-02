@@ -14,7 +14,6 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
 import com.lllmtb.engine.GameEngine;
-import com.lllmtb.engine.save.Save;
 import com.lllmtb.events.EventBus;
 import com.lllmtb.model.entity.team.Team;
 
