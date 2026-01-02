@@ -218,14 +218,11 @@ public class Save {
     }
 
     public static void eraseSave(String name) {
-        // On définit le chemin du dossier de sauvegarde
-        Path pathToBeDeleted = Paths.get("src/test/resources/SaveTest/", name);
+        Path pathToBeDeleted = Paths.get(SaveConfig.SAVE_DIRECTORY, name);
 
         try {
             if (Files.exists(pathToBeDeleted)) {
-                // Files.walk parcourt l'arborescence (fichiers et sous-dossiers)
                 Files.walk(pathToBeDeleted)
-                        // On trie en ordre inverse pour supprimer le contenu avant le dossier parent
                         .sorted(java.util.Comparator.reverseOrder())
                         .forEach(path -> {
                             try {

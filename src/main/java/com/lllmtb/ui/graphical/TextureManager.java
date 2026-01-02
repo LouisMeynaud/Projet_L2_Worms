@@ -60,6 +60,7 @@ public class TextureManager {
             ///////Background/////////
             BACKGROUND.put("Background", ImageIO.read(TextureManager.class.getResource("/textures/Background.png")));
             BACKGROUND.put("Background2", ImageIO.read(TextureManager.class.getResource("/textures/Background2.png")));
+            BACKGROUND.put("Background3", ImageIO.read(TextureManager.class.getResource("/textures/Background3.png")));
 
             //////Entities//////////
             for (TeamColor color: TeamColor.values()) {

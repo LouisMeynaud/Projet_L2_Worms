@@ -27,6 +27,7 @@ import com.lllmtb.events.input.JetpackBoostInputEvent;
 import com.lllmtb.events.physics.ExplosionEvent;
 import com.lllmtb.events.ui.graphical.ShootMode;
 import com.lllmtb.events.ui.graphical.RequestFocus;
+import com.lllmtb.events.ui.graphical.ScreenEndGameEvent;
 import com.lllmtb.model.entity.worm.Worm;
 import com.lllmtb.model.item.ItemId;
 import com.lllmtb.model.item.weapon.WeaponId;
@@ -244,6 +245,14 @@ public class GameWorldPanel extends JPanel {
 
         eventBus.subscribe(WorldCreatedEvent.class, event -> {
             this.world = event.getWorld();
+
+            if (this.world != null) {
+                this.world.getBus().subscribe(ScreenEndGameEvent.class, e -> {
+                    eventBus.postQueued(e);
+                    this.world.stop();
+                });
+            }
+
             this.renderer = new WorldRenderer(this, this.world);
             subscribeToWorldEvents();
             this.initialFitDone = false;
