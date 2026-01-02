@@ -560,7 +560,7 @@ public class PhysicsEngine {
         GameCommand death = null;
         double speedy = worm.getBody().getVector().getY();
         if (speedy < seuil) {
-            int damage = (int) Math.ceil((speedy - seuil) * -0.5);
+            double damage = ((speedy - seuil) * -0.5);
             death = worm.damageWorm(damage);
             Logger.logger.info("{} has fallen and lost {} health points!", worm.name, damage);
         }
