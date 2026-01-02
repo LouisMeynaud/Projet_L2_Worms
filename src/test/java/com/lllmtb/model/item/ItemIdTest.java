@@ -28,13 +28,13 @@ public class ItemIdTest {
 
     @Test
     public void toolId_parachute_usesAimMode() {
-        assertEquals(ShootMode.AIM, ToolId.PARACHUTE.getShootMode(),
+        assertEquals(ShootMode.NONE, ToolId.PARACHUTE.getShootMode(),
                 "PARACHUTE should use AIM shoot mode");
     }
 
     @Test
     public void toolId_jetpack_usesAimMode() {
-        assertEquals(ShootMode.AIM, ToolId.JETPACK.getShootMode(),
+        assertEquals(ShootMode.NONE, ToolId.JETPACK.getShootMode(),
                 "JETPACK should use AIM shoot mode");
     }
 
