@@ -220,8 +220,7 @@ public final class TurnManager {
         if (winningTeam != null) {
             Logger.logger.info("The team {} wins !!", winningTeam);
             world.getBus().postQueued(new ScreenEndGameEvent(winningTeam));
-        }
-        else {
+        } else {
             if (turnFinish) {
                 if (cleanTurn()) {
                     this.passNextTurn();
@@ -282,7 +281,7 @@ public final class TurnManager {
         world.nextTeamTurn();
     }
 
-    private Team checkWiningTeam(){
+    private Team checkWiningTeam() {
         Team oneTeamAlive = null;
         for (Team team : world.getTeams()) {
             if (oneTeamAlive != null && team.oneAlive()) {
