@@ -153,6 +153,7 @@ public final class TurnManager {
             Logger.logger.info("Level of the water : {}", world.getMap().getHeightWater());
             if (world.getMap().risingWater(1)) {
                 world.getBus().postQueued(new MapUpdateEvent());
+                world.getBus().postQueued(new NotificationEvent("Attention : montée des eaux", "RisingWater"));
             }
         }
     }

@@ -24,6 +24,7 @@ import com.lllmtb.events.input.UseInputEvent;
 import com.lllmtb.events.input.MoveInputEvent;
 import com.lllmtb.events.input.JetpackBoostInputEvent;
 import com.lllmtb.events.ui.graphical.MouseWheelMoveInputEvent;
+import com.lllmtb.events.ui.graphical.NotificationEvent;
 import com.lllmtb.events.ui.graphical.ShootMode;
 import com.lllmtb.events.ui.graphical.RequestFocus;
 import com.lllmtb.events.ui.graphical.ScreenGenerateMap;
@@ -147,6 +148,13 @@ public class EventsTest {
         assertFalse(event.isFullUpdate());
         assertEquals(center, event.getCenter());
         assertEquals(radius, event.getRadius());
+    }
+
+    @Test
+    void NotificationEvent() {
+        NotificationEvent notificationEvent = new NotificationEvent("test", "image");
+        assertEquals("test", notificationEvent.getMessage());
+        assertEquals("image", notificationEvent.getImageName());
     }
 
     @Test
