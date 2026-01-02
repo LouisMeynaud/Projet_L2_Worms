@@ -2,7 +2,6 @@ package com.lllmtb.engine.save;
 
 import com.lllmtb.engine.GameSettings;
 import com.lllmtb.engine.GameWorld;
-import com.lllmtb.engine.turn.Turn;
 import com.lllmtb.engine.turn.TurnManager;
 import com.lllmtb.events.EventBus;
 import com.lllmtb.model.entity.projectile.Projectile;
