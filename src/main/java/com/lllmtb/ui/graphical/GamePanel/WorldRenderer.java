@@ -332,10 +332,16 @@ public class WorldRenderer {
         if (textureProjectile != null) {
             AffineTransform tx = new AffineTransform();
 
-            tx.translate(xEcran, yEcran);
+            double centerX = xEcran + largeurProjPx / 2.0;
+            double centerY = yEcran + hauteurProjPx / 2.0;
+            tx.translate(centerX, centerY);
+            tx.rotate(-projectile.getVector().angle());
+
             double echelleX = largeurProjPx / textureProjectile.getWidth();
             double echelleY = hauteurProjPx / textureProjectile.getHeight();
             tx.scale(echelleX, echelleY);
+
+            tx.translate(-textureProjectile.getWidth() / 2.0, -textureProjectile.getHeight() / 2.0);
 
             g2d.drawImage(textureProjectile, tx, null);
         }
