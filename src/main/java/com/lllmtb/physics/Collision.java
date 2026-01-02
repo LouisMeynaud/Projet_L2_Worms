@@ -5,11 +5,9 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import com.lllmtb.engine.GameWorld;
 import com.lllmtb.events.EventBus;
 import com.lllmtb.events.game.CoinCollisionEvent;
-import com.lllmtb.events.game.DropCollisionEvent;
 import com.lllmtb.events.physics.GroundCheckCollision;
 import com.lllmtb.model.entity.Coin;
 import com.lllmtb.model.entity.CollisionType;
-import com.lllmtb.model.entity.Drop;
 import com.lllmtb.model.entity.projectile.CatConcreteProjectile;
 import com.lllmtb.model.entity.worm.Worm;
 import com.lllmtb.terrain.map.Map;
@@ -125,17 +123,6 @@ public class Collision {
                         }
                         continue;
                     }
-                    //Special case for Drop
-                    if (other.getEntity() instanceof Drop) {
-                        double radiusOther = other.getWidth() / 2;
-                        Position otherPos = new Position(other.getPos().getX() + 0.5, other.getPos().getY() + 0.5);
-                        Impact dropImpact = this.testSweptCircleCircle(body, body.getPos(), radius, other, otherPos, radiusOther, endPos, vector);
-                        if (dropImpact.ti < finalImpact.ti) { // Collision with coin
-                            eventBus.postQueued(new DropCollisionEvent((Drop) other.getEntity(), ((Worm) body.getEntity()).getTeam()));
-                        }
-                        continue;
-                    }
-
                     double radiusOther = other.getHeight() / 2;
                     Position otherPos = new Position(other.getPos().getX() + 0.5, other.getPos().getY() + 0.5);
                     Impact bodyImpact = this.testSweptCircleCircle(body, body.getPos(), radius, other, otherPos, radiusOther, endPos, vector);
@@ -541,11 +528,15 @@ public class Collision {
      * @param impact the {@link Impact} with collision's information
      */
     public void touch(PhysicsBody body, Impact impact) {
-        Position safePos = new Position(
-                impact.collisionPos.getX() + impact.normal.getX() * EPSILON,
-                impact.collisionPos.getY() + impact.normal.getY() * EPSILON
-        );
-        body.setPos(safePos);
+        if (impact.normal.getY() > 0) {
+            body.setPos(impact.collisionPos);
+        } else {
+            Position safePos = new Position(
+                    impact.collisionPos.getX() + impact.normal.getX() * EPSILON,
+                    impact.collisionPos.getY() + impact.normal.getY() * EPSILON
+            );
+            body.setPos(safePos);
+        }
         // body's vector set to (0, 0)
         body.setVector(new Vector(0, 0));
     }
