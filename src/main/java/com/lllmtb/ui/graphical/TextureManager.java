@@ -8,6 +8,7 @@ import java.util.Map;
 import javax.imageio.ImageIO;
 
 import com.lllmtb.engine.logger.Logger;
+import com.lllmtb.model.entity.projectile.Projectile;
 import com.lllmtb.model.entity.team.TeamColor;
 import com.lllmtb.model.item.tool.ToolId;
 import com.lllmtb.model.item.weapon.WeaponId;
@@ -23,6 +24,7 @@ public class TextureManager {
     public static final Map<String, BufferedImage> PROJECTILES = new HashMap<>();
     public static final Map<String, BufferedImage> BACKGROUND = new HashMap<>();
     public static final Map<String, BufferedImage> EFFECT = new HashMap<>();
+    public static final Map<String, BufferedImage> NOTIFICATIONS = new HashMap<>();
 
 
     /**
@@ -88,26 +90,22 @@ public class TextureManager {
             }
 
             ///////////projectile//////////
-            PROJECTILES.put("BowProjectile", ImageIO.read(TextureManager.class.getResource("/sprites/projectile/BowProjectile.png")));
-            PROJECTILES.put("GrenadeProjectile", ImageIO.read(TextureManager.class.getResource("/sprites/projectile/GrenadeProjectile.png")));
-            PROJECTILES.put("CatConcreteProjectile", ImageIO.read(TextureManager.class.getResource("/sprites/projectile/CatConcreteProjectile.png")));
-            PROJECTILES.put("TowerProjectile", ImageIO.read(TextureManager.class.getResource("/sprites/projectile/TowerProjectile.png")));
-            PROJECTILES.put("BabyTowerProjectile", ImageIO.read(TextureManager.class.getResource("/sprites/projectile/BabyTowerProjectile.png")));
-            PROJECTILES.put("BulletProjectile", ImageIO.read(TextureManager.class.getResource("/sprites/projectile/BulletGun.png")));
-            PROJECTILES.put("RocketProjectile", ImageIO.read(TextureManager.class.getResource("/sprites/projectile/BulletBazooka.png")));
-            PROJECTILES.put("MissileProjectile", ImageIO.read(TextureManager.class.getResource("/sprites/projectile/Missile.png")));
-            PROJECTILES.put("HealingProjectile", ImageIO.read(TextureManager.class.getResource("/sprites/projectile/BulletHealingBazooka.png")));
-            PROJECTILES.put("ShotGunProjectile", ImageIO.read(TextureManager.class.getResource("/sprites/projectile/ShotGunProjectile.png")));
-            PROJECTILES.put("ElectronProjectile", ImageIO.read(TextureManager.class.getResource("/sprites/projectile/ElectronProjectile.png")));
-            PROJECTILES.put("GasProjectile", ImageIO.read(TextureManager.class.getResource("/sprites/projectile/GasProjectile.png")));
-            PROJECTILES.put("MineProjectile", ImageIO.read(TextureManager.class.getResource("/sprites/projectile/MineProjectile.png")));
-
+            for (Projectile.PROJECTILE projectile : Projectile.PROJECTILE.values()) {
+                PROJECTILES.put(projectile.toString(), ImageIO.read(TextureManager.class.getResource("/sprites/projectile/" + projectile + ".png")));
+            }
 
             /////////////EFFECT/////////////////
             EFFECT.put("BazookaExplosion", ImageIO.read(TextureManager.class.getResource("/sprites/effect/BazookaExplosion.png")));
             EFFECT.put("HealingBazookaExplosion", ImageIO.read(TextureManager.class.getResource("/sprites/effect/HealingBazookaExplosion.png")));
             EFFECT.put("MissileExplosion", ImageIO.read(TextureManager.class.getResource("/sprites/effect/MissileExplosion.png")));
 
+            NOTIFICATIONS.putAll(WEAPONS);
+            NOTIFICATIONS.putAll(TOOLS);
+            NOTIFICATIONS.put("Skull", ImageIO.read(TextureManager.class.getResource("/textures/notification/Skull.png")));
+            NOTIFICATIONS.put("Coin", ImageIO.read(TextureManager.class.getResource("/textures/notification/Coin.png")));
+            NOTIFICATIONS.put("Poison", ImageIO.read(TextureManager.class.getResource("/textures/notification/Poison.png")));
+            NOTIFICATIONS.put("Burn", ImageIO.read(TextureManager.class.getResource("/textures/notification/Burn.png")));
+            NOTIFICATIONS.put("RisingWater", ImageIO.read(TextureManager.class.getResource("/textures/notification/RisingWater.png")));
 
         } catch (IOException e) {
             Logger.logger.error("Error while loading textures : ", e);

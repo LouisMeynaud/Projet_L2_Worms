@@ -4,6 +4,7 @@ import com.lllmtb.engine.commands.AddPhysicsModifierCommand;
 import com.lllmtb.engine.commands.GameCommand;
 import com.lllmtb.engine.commands.RemoveEntityCommand;
 import com.lllmtb.engine.logger.Logger;
+import com.lllmtb.events.ui.graphical.NotificationEvent;
 import com.lllmtb.model.entity.projectile.Projectile;
 import com.lllmtb.model.entity.team.Team;
 import com.lllmtb.model.entity.worm.Worm;
@@ -67,13 +68,22 @@ public class Drop extends Entity {
             int ammoAmount = random.nextInt(1, 6);
             if (this.itemIdToUnlock instanceof ToolId toolID) {
                 team.addAmmo(toolID, ammoAmount);
+                commands = world -> {
+                    new RemoveEntityCommand(this).execute(world);
+                    world.getBus().postQueued(new NotificationEvent("+ " + ammoAmount + " ammo", toolID.toString()));
+                };
+
                 Logger.logger.debug("Drop ramasse, outil obtenu : {} , nombre d'utilisation : {} !", this.itemIdToUnlock, ammoAmount);
             } else if (this.itemIdToUnlock instanceof WeaponId weaponID) {
                 team.unlockWeapon(weaponID);
                 team.addAmmo(weaponID, ammoAmount);
+                commands = world -> {
+                    new RemoveEntityCommand(this).execute(world);
+                    world.getBus().postQueued(new NotificationEvent("Weapon " + weaponID + " obtained !", weaponID.toString()));
+                                        world.getBus().postQueued(new NotificationEvent("+ " + ammoAmount + " ammo for " + weaponID, weaponID.toString()));
+                };
                 Logger.logger.debug("Drop ramasse, arme obtenu : {} , nombre d'utilisation : {} !", this.itemIdToUnlock, ammoAmount);
             }
-            commands = new RemoveEntityCommand(this);
         } else if (hitEntity instanceof Projectile) {
             commands = new RemoveEntityCommand(this);
         }

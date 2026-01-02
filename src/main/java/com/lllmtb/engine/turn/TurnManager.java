@@ -21,6 +21,7 @@ import com.lllmtb.events.turn.TurnSkipEvent;
 import com.lllmtb.events.turn.TurnStartEvent;
 import com.lllmtb.events.turn.TurnStopEvent;
 import com.lllmtb.events.turn.WormPlayable;
+import com.lllmtb.events.ui.graphical.NotificationEvent;
 import com.lllmtb.events.ui.graphical.ScreenEndGameEvent;
 import com.lllmtb.model.entity.Coin;
 import com.lllmtb.model.entity.Drop;
@@ -151,6 +152,7 @@ public final class TurnManager {
             Logger.logger.info("Level of the water : {}", world.getMap().getHeightWater());
             if (world.getMap().risingWater(1)) {
                 world.getBus().postQueued(new MapUpdateEvent());
+                world.getBus().postQueued(new NotificationEvent("Attention : montée des eaux", "RisingWater"));
             }
         }
     }
@@ -353,9 +355,9 @@ public final class TurnManager {
                 Logger.logger.info("Piece ramasse ! + " + event.coin.value + "$");
                 event.team.addCredits(event.coin.value);
                world.getPhysics().remove(event.coin.getBody());
+               world.getBus().postQueued(new NotificationEvent("+ " + event.coin.value + "$ for : " + event.team.teamColor, "Coin"));
             });
         };
-
 
         EventListener<ChangeWormsEvent> changeWormDuringTurn = event -> {
             Team currentTeam = turn.getTeam();
