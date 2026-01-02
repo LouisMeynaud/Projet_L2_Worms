@@ -215,6 +215,7 @@ public class Save {
         saveInfo(gameWorld, stringPath);
         BufferedImage image = maptoBuffered(gameWorld.getMap());
         saveImage(image, stringPath);
+        gameWorld.pause(false);
     }
 
     public static void eraseSave(String name) {

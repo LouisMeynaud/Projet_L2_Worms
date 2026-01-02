@@ -89,9 +89,9 @@ public class GameEngine {
         //world.getBus().subscribe(Event.class, e -> Logger.logger.info("[EVENT/world]: {}", e.getClass().getSimpleName()));
         systemBus.postSync(new WorldCreatedEvent(world));
         world.getBus().subscribe(SaveEvent.class, e -> {
-            world.getBus().postSync(new FinalSaveEvent());
+            systemBus.postQueued(new FinalSaveEvent());
         });
-        world.getBus().subscribe(FinalSaveEvent.class, e -> {
+        systemBus.subscribe(FinalSaveEvent.class, e -> {
             try {
                 Save.saveAll();
             } catch (IOException ex) {

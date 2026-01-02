@@ -72,6 +72,7 @@ public final class TurnManager {
     public TurnManager(GameWorld world, long turnDuration) {
         this.world = world;
         this.turnDurationInMs = 1000 * turnDuration;
+        this.turn = new Turn(world.getTeams().get(0));
         this.init();
     }
 
@@ -133,6 +134,7 @@ public final class TurnManager {
      * @param team the selected team who will play.
      */
     public void startTurn(Team team) {
+        this.turnFinish = false;
         this.remainingTimeInMs = turnDurationInMs;
         this.turn = new Turn(team);
         this.nbTurn += 1;
@@ -147,7 +149,6 @@ public final class TurnManager {
         }
         restart = false;
 
-        this.turnFinish = false;
         world.getBus().postQueued(new TurnStartEvent(team));
         Logger.logger.info("Start turn for the team {}\n", team.name);
         world.getBus().postQueued(new WormPlayable(turn.getWormPlayable()));
@@ -158,7 +159,8 @@ public final class TurnManager {
             }
         }
         Save.setGameWorld(world);
-        this.world.getBus().postQueued(new SaveEvent());
+        this.world.getBus().postSync(new SaveEvent());
+        this.world.pause(true);
     }
 
     /**
