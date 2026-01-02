@@ -13,6 +13,7 @@ import javax.swing.SwingConstants;
 import com.lllmtb.engine.logger.Logger;
 import com.lllmtb.engine.save.SaveConfig;
 import com.lllmtb.events.EventBus;
+import com.lllmtb.events.game.DeleteSaveEvent;
 import com.lllmtb.events.game.LoadEvent;
 import com.lllmtb.events.ui.graphical.ScreenNewOrLoadEvent;
 import com.lllmtb.terrain.map.MapLoader;
@@ -50,12 +51,25 @@ public class LoadGamePanel extends JPanel {
         JPanel zoneSud = new JPanel(new FlowLayout(FlowLayout.RIGHT, 20, 20));
         zoneSud.setOpaque(false);
         JButton backButton = Utilitaire.createImageButton(TextureManager.UI, "Panel", 150, 75, 150, 75, "Back", "Arial", 16, Color.WHITE);
+        JButton deleteButton = Utilitaire.createImageButton(TextureManager.UI, "Panel", 150, 75, 150, 75, "Delete", "Arial", 16, Color.WHITE);
         JButton starButton = Utilitaire.createImageButton(TextureManager.UI, "Panel", 150, 75, 150, 75, "Start", "Arial", 16, Color.WHITE);
 
 
 
         backButton.addActionListener(e -> {
             this.eventBus.postQueued(new ScreenNewOrLoadEvent());
+        });
+
+        deleteButton.addActionListener(e -> {
+            String dossierSelectionne = panelListe.getSelectedMapName();
+            if (dossierSelectionne != null) {
+                eventBus.postQueued(new DeleteSaveEvent(dossierSelectionne));
+                this.remove(this.panelListe);
+                this.panelListe = new PanelListe(MapLoader.getListeNomsLoads(), SaveConfig.SAVE_DIRECTORY, true);
+                this.add(this.panelListe, BorderLayout.CENTER);
+                this.revalidate();
+                this.repaint();
+            }
         });
 
 
@@ -71,6 +85,7 @@ public class LoadGamePanel extends JPanel {
         });
 
         zoneSud.add(backButton);
+        zoneSud.add(deleteButton);
         zoneSud.add(starButton);
 
         this.add(zoneSud, BorderLayout.SOUTH);

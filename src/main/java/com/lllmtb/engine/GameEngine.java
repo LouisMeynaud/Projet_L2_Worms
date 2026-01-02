@@ -26,7 +26,9 @@ public class GameEngine {
         //systemBus.subscribe(Event.class, e -> Logger.logger.info("[EVENT/system]: {}", e.getClass().getSimpleName()));
         systemBus.subscribe(StartGameEvent.class, GameEngine::startGame);
         systemBus.subscribe(LoadEvent.class, GameEngine::startGame);
-
+        systemBus.subscribe(DeleteSaveEvent.class, event -> {
+            Save.eraseSave(event.getSaveName());
+                });
         // Engine loop thread - processes engine-level events (start, pause, quit...)
         new Thread(() -> {
             Thread current = Thread.currentThread();
