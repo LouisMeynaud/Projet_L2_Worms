@@ -50,7 +50,8 @@ public class TextureManager {
             UI.put("Panel", ImageIO.read(TextureManager.class.getResource("/textures/button/Panel.png")));
             UI.put("PanelHover", ImageIO.read(TextureManager.class.getResource("/textures/button/Panel.png")));
             UI.put("Coin", ImageIO.read(TextureManager.class.getResource("/textures/Coin.png")));
-            UI.put("Drop", ImageIO.read(TextureManager.class.getResource("/textures/Drop.png")));
+            UI.put("DropAerials", ImageIO.read(TextureManager.class.getResource("/textures/DropAerials.png")));
+            UI.put("DropOnGround", ImageIO.read(TextureManager.class.getResource("/textures/DropOnGround.png")));
             UI.put("ShopButton", ImageIO.read(TextureManager.class.getResource("/textures/button/ShopButton.png")));
             UI.put("ShopButtonHover", ImageIO.read(TextureManager.class.getResource("/textures/button/ShopButton.png")));
             UI.put("ChangeWorms", ImageIO.read(TextureManager.class.getResource("/textures/button/changeWorms.png")));

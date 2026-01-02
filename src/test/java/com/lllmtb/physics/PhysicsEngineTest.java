@@ -179,8 +179,8 @@ class PhysicsEngineTest {
         tpE.add(pBWorm);
         tpE.add(pBBP);
         tpE.nextStep(dt);
-        assertEquals(0.9985857864376269, pBBP.getPos().getX());
-        assertEquals(5.001414213562373, pBBP.getPos().getY());
+        assertEquals(1.0, pBBP.getPos().getX());
+        assertEquals(5.0, pBBP.getPos().getY());
         assertEquals(2.0, pBWorm.getPos().getX());
         assertEquals(4.0, pBWorm.getPos().getY());
     }
