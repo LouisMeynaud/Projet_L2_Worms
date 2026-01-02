@@ -13,6 +13,7 @@ import com.lllmtb.model.item.weapon.WeaponId;
 import com.lllmtb.physics.GameMode;
 import com.lllmtb.physics.PhysicsBody;
 import com.lllmtb.physics.Position;
+import com.lllmtb.physics.Vector;
 import com.lllmtb.terrain.generation.LandScape;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -88,5 +89,22 @@ public class DropTest {
             TimeUnit.MILLISECONDS.sleep(10);
         } catch(InterruptedException ignored){}
         assertNotEquals(0, team.getInventory().tools.getAmmo((ToolId) drop.itemIdToUnlock));
+    }
+
+    @Test
+    public void testSpeedMaxDrop(){
+        world.start();
+        Drop drop = new Drop(new Position(1,1), WeaponId.SHOTGUN);
+        world.queueCommands(drop.addModifier());
+        try{
+            TimeUnit.MILLISECONDS.sleep(20);
+        } catch(InterruptedException ignored){}
+        drop.getBody().setVector(new Vector(0, -15));
+        try{
+            TimeUnit.MILLISECONDS.sleep(20);
+        } catch(InterruptedException ignored){}
+        assertTrue(drop.getBody().getVector().getY() <= 9.0);
+
+
     }
 }
