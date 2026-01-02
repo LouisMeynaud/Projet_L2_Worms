@@ -10,7 +10,7 @@ public class Coin extends Entity {
 
     public Coin(Position position, int value) {
         this.value = value;
-        this.body = new PhysicsBody(this, position, new Vector(0, 0), 0, 2, 2);
+        this.body = new PhysicsBody(this, position, new Vector(0, 0), 0.01, 2, 2);
     }
 
     public int getValue() {
@@ -19,7 +19,7 @@ public class Coin extends Entity {
 
     @Override
     public CollisionType getCollisionType() {
-        return CollisionType.CROSS;
+        return CollisionType.TOUCH;
     }
 
     @Override

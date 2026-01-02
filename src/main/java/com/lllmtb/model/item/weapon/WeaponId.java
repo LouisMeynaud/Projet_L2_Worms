@@ -10,7 +10,6 @@ public enum WeaponId implements ItemId {
     ELECTRONCANON(false, "Fires an electron beam that bounces from enemy to enemy.", 0),
     GASGUN(false, "Releases a devastating chemical cloud.", 0),
     BOW(false, "A devastating bow, effective at both short and long range.", 3000),
-    GRENADE(false, "A timed bomb that bounces off terrain before exploding.", 0),
     NONE;
 
     private final boolean usesCrosshair;

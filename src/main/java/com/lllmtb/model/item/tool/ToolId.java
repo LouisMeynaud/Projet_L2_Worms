@@ -9,6 +9,7 @@ public enum ToolId implements ItemId {
     CATCONCRETE(true, "Summons a villainous stone cat to smash through all terrain beneath it.", 0),
     TOWER(false, "Deploys a defensive turret to intercept enemies approaching you in future turns.", 3000),
     MINE(false, "A volatile trap that detonates instantly if anyone dares to step on it.", 3000),
+    GRENADE(false, "A timed bomb that bounces off terrain before exploding.", 4000),
     MEDKIT(false, "Restores a portion of the active worm's health.", 0),
     NONE;
 

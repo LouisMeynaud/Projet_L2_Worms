@@ -34,6 +34,6 @@ public class CoinTest {
     @Test
     void testGetCollisionType() {
         Coin coin = new Coin(new Position(0, 0), 10);
-        assertEquals(CollisionType.CROSS, coin.getCollisionType());
+        assertEquals(CollisionType.TOUCH, coin.getCollisionType());
     }
 }
