@@ -8,7 +8,6 @@ import com.lllmtb.events.game.CoinCollisionEvent;
 import com.lllmtb.events.physics.GroundCheckCollision;
 import com.lllmtb.model.entity.Coin;
 import com.lllmtb.model.entity.CollisionType;
-import com.lllmtb.model.entity.Drop;
 import com.lllmtb.model.entity.projectile.CatConcreteProjectile;
 import com.lllmtb.model.entity.worm.Worm;
 import com.lllmtb.terrain.map.Map;
