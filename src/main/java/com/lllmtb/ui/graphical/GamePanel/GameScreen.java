@@ -5,10 +5,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
-import com.lllmtb.engine.logger.Logger;
 import com.lllmtb.events.EventBus;
-import com.lllmtb.events.ui.graphical.ScreenEndGameEvent;
-import com.lllmtb.ui.graphical.EndGameScreenPanel;
+
 
 public class GameScreen extends JLayeredPane {
 
@@ -28,15 +26,6 @@ public class GameScreen extends JLayeredPane {
         gameUIPanel = new GameUIPanel(eventBus);
         this.add(gameWorldPanel, JLayeredPane.DEFAULT_LAYER); //default_layer : la couche du dessous
         this.add(gameUIPanel, JLayeredPane.PALETTE_LAYER); //pallette_layer = la couche du dessus
-        if (gameWorldPanel.world != null) {
-            this.gameWorldPanel.world.getBus().subscribe(ScreenEndGameEvent.class, event -> {
-                EndGameScreenPanel endGameScreen = new EndGameScreenPanel(this.gameWorldPanel.world.getBus());
-                endGameScreen.setWinner(event.getTeam());
-                this.add(endGameScreen, "endGameScreen"); // the endgame page
-                Logger.logger.info("Show endGameScreen");
-                this.gameWorldPanel.world.stop();
-            });
-        }
         Rectangle bounds = getBounds();
         gameWorldPanel.setBounds(bounds); // the game take all the screen
         gameUIPanel.setBounds(bounds);

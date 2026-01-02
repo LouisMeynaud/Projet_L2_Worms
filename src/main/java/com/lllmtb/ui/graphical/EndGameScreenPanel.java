@@ -31,7 +31,7 @@ public class EndGameScreenPanel extends JPanel {
         gbc.insets = new Insets(15, 0, 15, 0);
 
         this.winnerLabel = new JLabel("");
-        JButton replayButton = Utilitaire.createImageButton(TextureManager.UI, "Panel", 256, 128, 256, 128, "Replay", "Arial", 23, Color.WHITE);
+        JButton replayButton = Utilitaire.createImageButton(TextureManager.UI, "Panel", 256, 128, 256, 128, "Restart", "Arial", 23, Color.WHITE);
         JButton closeButton = Utilitaire.createImageButton(TextureManager.UI, "Panel", 256, 128, 256, 128, "Close", "Arial", 23, Color.WHITE);
 
         replayButton.addActionListener(e -> {
