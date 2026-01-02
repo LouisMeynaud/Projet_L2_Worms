@@ -11,9 +11,10 @@ import java.awt.image.BufferedImage;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 
+import com.lllmtb.engine.GameEngine;
 import com.lllmtb.events.EventBus;
-import com.lllmtb.events.ui.graphical.ScreenHomeEvent;
 import com.lllmtb.model.entity.team.Team;
 
 public class EndGameScreenPanel extends JPanel {
@@ -31,11 +32,12 @@ public class EndGameScreenPanel extends JPanel {
         gbc.insets = new Insets(15, 0, 15, 0);
 
         this.winnerLabel = new JLabel("");
-        JButton replayButton = Utilitaire.createImageButton(TextureManager.UI, "Panel", 256, 128, 256, 128, "Restart", "Arial", 23, Color.WHITE);
+        JButton restartButton = Utilitaire.createImageButton(TextureManager.UI, "Panel", 256, 128, 256, 128, "Restart", "Arial", 23, Color.WHITE);
         JButton closeButton = Utilitaire.createImageButton(TextureManager.UI, "Panel", 256, 128, 256, 128, "Close", "Arial", 23, Color.WHITE);
 
-        replayButton.addActionListener(e -> {
-            eventBus.postQueued(new ScreenHomeEvent());
+        restartButton.addActionListener(e -> {
+            GameEngine.main(null);
+            SwingUtilities.getWindowAncestor(this).dispose();
         });
 
         closeButton.addActionListener(e -> {
@@ -44,21 +46,21 @@ public class EndGameScreenPanel extends JPanel {
         gbc.gridy = 0;
         this.add(winnerLabel, gbc);
         gbc.gridy = 1;
-        this.add(replayButton, gbc);
+        this.add(restartButton, gbc);
         gbc.gridy = 2;
         this.add(closeButton, gbc);
 
     }
 
     public void setWinner(Team team) {
-        winnerLabel.setText("Winner : " + team.getName());
+        winnerLabel.setText(" The Winner is : Team " + team.getName());
         winnerLabel.setForeground(Color.WHITE);
         winnerLabel.setFont(new Font("Arial", Font.BOLD, 32));
     }
 
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        BufferedImage backgroundImage = TextureManager.BACKGROUND.get("Background");
+        BufferedImage backgroundImage = TextureManager.BACKGROUND.get("Background3");
         g.drawImage(backgroundImage, 0, 0, this.getWidth(), this.getHeight(), this);
     }
 
