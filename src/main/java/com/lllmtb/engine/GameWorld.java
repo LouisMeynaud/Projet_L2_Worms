@@ -97,14 +97,13 @@ public class GameWorld {
             Field worldField = TurnManager.class.getDeclaredField("world");
             worldField.setAccessible(true);
             worldField.set(this.turnManager, this);
-            Field turnField = TurnManager.class.getDeclaredField("world");
+            Field turnField = TurnManager.class.getDeclaredField("turn");
             turnField.setAccessible(true);
             turnField.set(this.turnManager, new Turn(this.getPlayingTeam()));
-        } catch (NoSuchFieldException e) {
-            throw new RuntimeException(e);
-        } catch (IllegalAccessException e) {
+        } catch (NoSuchFieldException | IllegalAccessException e) {
             throw new RuntimeException(e);
         }
+        this.turnManager.init();
 
         //Init FriendlyFire
         Projectile.setFriendlyFire(settings.friendlyfire);
