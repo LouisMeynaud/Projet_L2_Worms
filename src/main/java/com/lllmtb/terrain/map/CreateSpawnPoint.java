@@ -24,12 +24,21 @@ public class CreateSpawnPoint {
         int waterLevel = map.getHeightWater();
         int minDistance = 5;
         int attemptsForCurrentWorm = 0;
+        int totalGlobalAttempts = 0;
 
         while (i < nbSpawnPoint) {
             attemptsForCurrentWorm++;
+            totalGlobalAttempts++;
 
             if (attemptsForCurrentWorm % 10 == 0 && minDistance > 0) {
                 minDistance--;
+            }
+
+            if (totalGlobalAttempts > 1000) {
+                spawnPointPos[i] = new Position(random.nextInt(mapWidth), mapHeight - 10);
+                i++;
+                attemptsForCurrentWorm = 0;
+                continue;
             }
 
             int x = random.nextInt(mapWidth);
