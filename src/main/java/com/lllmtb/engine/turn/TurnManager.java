@@ -9,7 +9,6 @@ import com.lllmtb.engine.commands.GameCommand;
 import com.lllmtb.engine.logger.Logger;
 import com.lllmtb.events.EventListener;
 import com.lllmtb.events.game.CoinCollisionEvent;
-import com.lllmtb.events.game.DropCollisionEvent;
 import com.lllmtb.events.game.MapUpdateEvent;
 import com.lllmtb.events.game.ToolSelectedEvent;
 import com.lllmtb.events.game.WeaponSelectedEvent;
@@ -18,12 +17,12 @@ import com.lllmtb.events.input.UseInputEvent;
 import com.lllmtb.events.input.MoveInputEvent;
 import com.lllmtb.events.turn.ChangeWormsEvent;
 import com.lllmtb.events.turn.TurnEndEvent;
-import com.lllmtb.events.turn.TurnFinishEvent;
 import com.lllmtb.events.turn.TurnSkipEvent;
 import com.lllmtb.events.turn.TurnStartEvent;
 import com.lllmtb.events.turn.TurnStopEvent;
 import com.lllmtb.events.turn.WormPlayable;
 import com.lllmtb.events.ui.graphical.NotificationEvent;
+import com.lllmtb.events.ui.graphical.ScreenEndGameEvent;
 import com.lllmtb.model.entity.Coin;
 import com.lllmtb.model.entity.Drop;
 import com.lllmtb.model.entity.projectile.Projectile;
@@ -206,7 +205,7 @@ public final class TurnManager {
             }
 
 
-            Logger.logger.info(" Drop spawn with item : {}", itemId);
+            Logger.logger.debug(" Drop spawn with item : {}", itemId);
             Drop drop = new Drop(new Position(x + 0.25, y), itemId);
             world.queueCommands(drop.addModifier());
             }
@@ -220,18 +219,24 @@ public final class TurnManager {
      */
     public void updateTurn(double elapsedTime) {
         this.remainingTimeInMs -= (long) elapsedTime;
-        if (turnFinish) {
-            if (cleanTurn()) {
-                this.passNextTurn();
-                world.getGameLoop().setSpeedTurn(1);
-            } else {
-                world.getGameLoop().setSpeedTurn(3);
-            }
+        Team winningTeam = checkWiningTeam();
+        if (winningTeam != null) {
+            Logger.logger.info("The team {} wins !!", winningTeam);
+            world.getBus().postQueued(new ScreenEndGameEvent(winningTeam));
         } else {
-            if (remainingTimeInMs <= 0 || this.turn.getIsEnd()) {
-                endTurn();
-            } else if (this.turn.teamMaximumShoot()) {
-                this.remainingTimeInMs = Math.min(this.remainingTimeInMs, remainingTimeAfterShootInMs);
+            if (turnFinish) {
+                if (cleanTurn()) {
+                    this.passNextTurn();
+                    world.getGameLoop().setSpeedTurn(1);
+                } else {
+                    world.getGameLoop().setSpeedTurn(3);
+                }
+            } else {
+                if (remainingTimeInMs <= 0 || this.turn.getIsEnd()) {
+                    endTurn();
+                } else if (this.turn.teamMaximumShoot()) {
+                    this.remainingTimeInMs = Math.min(this.remainingTimeInMs, remainingTimeAfterShootInMs);
+                }
             }
         }
     }
@@ -292,6 +297,19 @@ public final class TurnManager {
         world.nextTeamTurn();
     }
 
+    private Team checkWiningTeam() {
+        Team oneTeamAlive = null;
+        for (Team team : world.getTeams()) {
+            if (oneTeamAlive != null && team.oneAlive()) {
+                return null;
+            }
+            if (oneTeamAlive == null && team.oneAlive()) {
+                oneTeamAlive = team;
+            }
+        }
+        return oneTeamAlive;
+    }
+
     /**
      * Registers and subscribes all game and input event listeners to the world event bus.
      * <p>
@@ -324,12 +342,6 @@ public final class TurnManager {
             }
         };
 
-        EventListener<TurnFinishEvent> turnFinishListener = event -> {
-            //TODO : Close the game properly
-            world.stop();
-
-        };
-
         EventListener<WeaponSelectedEvent> weaponSelectedEventEventListener = event -> {
             turn.getTeam().selectWeapon(event.getWeaponId());
         };
@@ -346,24 +358,6 @@ public final class TurnManager {
                world.getBus().postQueued(new NotificationEvent("+ " + event.coin.value + "$ for : " + event.team.teamColor, "Coin"));
             });
         };
-
-        EventListener<DropCollisionEvent> dropListener = event -> {
-            world.queueCommand(w -> {
-                if (event.drop.itemIdToUnlock instanceof ToolId toolID) {
-                    event.team.addAmmo(toolID, event.ammoAmount);
-                    world.getBus().postQueued(new NotificationEvent("Tool " + event.drop.itemIdToUnlock + " obtained !", toolID.toString()));
-                    Logger.logger.info("Drop ramasse, outil obtenu : " + event.drop.itemIdToUnlock + ", nombre d'utilisation : " + event.ammoAmount + " !");
-                } else if (event.drop.itemIdToUnlock instanceof WeaponId weaponID) {
-                    event.team.unlockWeapon(weaponID);
-                    world.getBus().postQueued(new NotificationEvent("Weapon " + event.drop.itemIdToUnlock + " obtained !", weaponID.toString()));
-                    event.team.addAmmo(weaponID, event.ammoAmount);
-                    world.getBus().postQueued(new NotificationEvent("+ " + event.ammoAmount + " ammo for " + event.drop.itemIdToUnlock, weaponID.toString()));
-                    Logger.logger.info("Drop ramasse, arme obtenu : " + event.drop.itemIdToUnlock + ", nombre de munitions : " + event.ammoAmount + " !");
-                }
-                world.getPhysics().remove(event.drop.getBody());
-            });
-        };
-
 
         EventListener<ChangeWormsEvent> changeWormDuringTurn = event -> {
             Team currentTeam = turn.getTeam();
@@ -417,9 +411,7 @@ public final class TurnManager {
         world.getBus().subscribe(WeaponSelectedEvent.class, weaponSelectedEventEventListener);
         world.getBus().subscribe(ToolSelectedEvent.class, toolSelectedEventEventListener);
         world.getBus().subscribe(UseInputEvent.class, useInputEventListener);
-        world.getBus().subscribe(TurnFinishEvent.class, turnFinishListener);
         world.getBus().subscribe(CoinCollisionEvent.class, coinListener);
-        world.getBus().subscribe(DropCollisionEvent.class, dropListener);
         world.getBus().subscribe(ChangeWormsEvent.class, changeWormDuringTurn);
     }
 }

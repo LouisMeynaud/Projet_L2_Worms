@@ -10,6 +10,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import com.lllmtb.engine.commands.GameCommand;
 import com.lllmtb.engine.logger.Logger;
 import com.lllmtb.events.physics.*;
+import com.lllmtb.model.entity.Drop;
 import com.lllmtb.model.entity.effect.BurnEffect;
 import org.eclipse.jdt.annotation.NonNull;
 
@@ -376,17 +377,28 @@ public class PhysicsEngine {
                 } else {
                     if (impact.hitBody == null) {
                         //Collision with ground/Map
-                        if (body.getEntity() instanceof Projectile) {
-                            if ((body.getEntity() instanceof Projectile proj)) {
-                                world.queueCommands(proj.onImpact(null));
-                            }
+                        if (body.getEntity() instanceof Projectile proj) {
+                            world.queueCommands(proj.onImpact(null));
+                        } else if (body.getEntity() instanceof Drop drop) {
+                            world.queueCommand(drop.setOnGround());
                         }
                     } else {
                         // Collision wih another entity impactEntity and currentBody
                         if (body.getEntity() instanceof Projectile proj) {
                             world.queueCommands(proj.onImpact(impact.hitBody.getEntity()));
+                            if (impact.hitBody.getEntity() instanceof Drop drop) {
+                                world.queueCommand(drop.onImpact(proj));
+                            }
                         } else if (impact.hitBody.getEntity() instanceof Projectile proj) {
                             world.queueCommands(proj.onImpact(body.getEntity()));
+                        }
+                        if (body.getEntity() instanceof Drop drop) {
+                            world.queueCommand(drop.onImpact(impact.hitBody.getEntity()));
+                        }
+                        if (body.getEntity() instanceof Worm worm) {
+                            if (impact.hitBody.getEntity() instanceof Drop drop) {
+                                world.queueCommand(drop.onImpact(worm));
+                            }
                         }
                     }
                 }

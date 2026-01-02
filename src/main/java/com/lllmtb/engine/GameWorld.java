@@ -15,7 +15,6 @@ import com.lllmtb.engine.logger.Logger;
 import com.lllmtb.engine.turn.TurnManager;
 import com.lllmtb.events.EventBus;
 import com.lllmtb.events.game.GameStateUpdatedEvent;
-import com.lllmtb.events.turn.TurnFinishEvent;
 import com.lllmtb.model.entity.Entity;
 import com.lllmtb.model.entity.team.Team;
 import com.lllmtb.model.entity.worm.Worm;
@@ -162,8 +161,8 @@ public class GameWorld {
         Logger.logger.debug("Starting the game loop...");
         loopThread = new Thread(gameLoop, "gameloop");
         indexTeam = -1;
-        nextTeamTurn();
         loopThread.start();
+        nextTeamTurn();
     }
 
     public void pause(boolean paused) {
@@ -203,17 +202,10 @@ public class GameWorld {
             Logger.logger.warn("No teams available to take a turn.");
             return;
         }
-        int currentIndexTeam = indexTeam;
         do {
             indexTeam = (indexTeam + 1) % teams.size();
         } while (!teams.get(indexTeam).oneAlive());
-        if (indexTeam == currentIndexTeam) {
-            Logger.logger.info("The team {} wins !!", teams.get(indexTeam).name);
-            bus.postQueued(new TurnFinishEvent(teams.get(indexTeam)));
-            //TODO : Event or GameCommand for tell the winnerTeam and the game has been finish
-        } else {
-            this.turnManager.startTurn(teams.get(indexTeam));
-        }
+        this.turnManager.startTurn(teams.get(indexTeam));
     }
 
     /**

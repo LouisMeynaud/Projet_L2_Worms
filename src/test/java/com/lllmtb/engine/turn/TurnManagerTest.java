@@ -4,20 +4,15 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import com.lllmtb.events.game.ToolSelectedEvent;
 import com.lllmtb.events.game.WeaponSelectedEvent;
-import com.lllmtb.events.input.MoveInputEvent;
 import com.lllmtb.events.turn.ChangeWormsEvent;
-import com.lllmtb.events.turn.TurnFinishEvent;
 import com.lllmtb.events.turn.TurnSkipEvent;
-import com.lllmtb.model.entity.Coin;
 import com.lllmtb.model.entity.projectile.BulletProjectile;
 import com.lllmtb.model.entity.team.Team;
 import com.lllmtb.model.entity.worm.Worm;
 import com.lllmtb.model.item.UseParams;
 import com.lllmtb.model.item.tool.ToolId;
 import com.lllmtb.model.item.weapon.WeaponId;
-import com.lllmtb.physics.PhysicsBody;
 import com.lllmtb.physics.Position;
-import com.lllmtb.ui.graphical.GamePanel.Direction;
 import org.junit.jupiter.api.AfterEach;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -67,13 +62,11 @@ public class TurnManagerTest {
         GameSettings settings = new GameSettings("blabla", 2, new String[]{"TeamTest1", "TeamTest2"}, 1, 100, 10, false, null, false, 370, LandScape.HILLY, 2,GameMode.NORMAL, true, false);
         this.eb = new EventBus();
         this.gw = new GameWorld(settings, eb);
-        gw.start();
-        gw.pause(true);
         this.turnManager = gw.getTurnManager();
 
         assertNotNull(turnManager.getWorld());
         assertEquals(10000, this.turnManager.getTurnDuration());
-        assertEquals(11, this.eb.listenerCount());
+        assertEquals(10, this.eb.listenerCount());
     }
 
     @Test
@@ -298,9 +291,6 @@ public class TurnManagerTest {
 
     @Test //TODO : TEST THE WINNING
     public void testFinishTurns(){
-        Team team = Mockito.mock(Team.class);
-        TurnFinishEvent tf = new TurnFinishEvent(team);
-        assertSame(tf.winningTeam, team);
-
+        //
     }
 }

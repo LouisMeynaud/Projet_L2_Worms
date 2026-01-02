@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 import com.lllmtb.engine.GameWorld;
 import com.lllmtb.model.entity.Coin;
 import com.lllmtb.model.entity.Drop;
+import com.lllmtb.model.entity.projectile.CatConcreteProjectile;
 import com.lllmtb.model.entity.projectile.Projectile;
 import com.lllmtb.model.entity.team.TeamColor;
 import com.lllmtb.model.entity.worm.Statistics;
@@ -323,6 +324,10 @@ public class WorldRenderer {
         double largeurProjPx = bounds[2];
         double hauteurProjPx = bounds[3];
 
+        if (projectile.getEntity() instanceof CatConcreteProjectile) {
+            xEcran -= largeurProjPx / 2;
+        }
+
         BufferedImage textureProjectile = TextureManager.PROJECTILES.get(projectile.getEntity().getClass().getSimpleName());
         if (textureProjectile != null) {
             AffineTransform tx = new AffineTransform();
@@ -355,15 +360,21 @@ public class WorldRenderer {
         g2d.drawImage(texture, tx, null);
     }
 
-    private void drawDrop(Graphics2D g2d, PhysicsBody body) {
+    private void drawDrop(Graphics2D g2d, PhysicsBody body, Drop drop) {
         double[] bounds = panel.getScreenBounds(body); // Convertit position monde -> écran
         double xEcran = bounds[0];
         double yEcran = bounds[1];
         double largeurPx = bounds[2];
         double hauteurPx = bounds[3];
 
-
-        BufferedImage texture = TextureManager.UI.get("Drop");
+        BufferedImage texture = null;
+        if (drop.isOnGround()) {
+            texture = TextureManager.UI.get("DropOnGround");
+        } else {
+            texture = TextureManager.UI.get("DropAerials");
+            hauteurPx = hauteurPx * 2;
+            yEcran -= hauteurPx / 2;
+        }
         AffineTransform tx = new AffineTransform();
         tx.translate(xEcran, yEcran);
 
@@ -390,8 +401,8 @@ public class WorldRenderer {
                     drawProjectile(g2d, body);
                 } else if (body.getEntity() instanceof Coin) {
                     drawCoin(g2d, body);
-                } else if (body.getEntity() instanceof Drop) {
-                    drawDrop(g2d, body);
+                } else if (body.getEntity() instanceof Drop drop) {
+                    drawDrop(g2d, body, drop);
                 }
             }
         }
