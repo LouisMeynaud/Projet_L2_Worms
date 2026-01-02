@@ -58,6 +58,7 @@ public final class TurnManager {
     private int nbTurn;
     private boolean turnFinish = false;
     private static int remainingTimeAfterShootInMs = 5000;
+    private boolean restart = true;
 
     /**
      * Create a new {@code TurnManager} for the current gameWorld
@@ -136,9 +137,11 @@ public final class TurnManager {
         int passiveIncome = 150; //ajout de beaucoup d'argent pour pouvoir tester les arme et le shop
         team.addCredits(passiveIncome);
         Logger.logger.info("l'equipe : " + team.name + "gagne :" + passiveIncome + "pour le debut du tour");
-        spawnCoins();
-        spawnDrops();
-
+        if (!restart) {
+            spawnCoins();
+            spawnDrops();
+        }
+        restart = false;
 
         this.turnFinish = false;
         world.getBus().postQueued(new TurnStartEvent(team));

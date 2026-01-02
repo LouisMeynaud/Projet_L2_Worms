@@ -100,6 +100,9 @@ public class GameWorld {
             Field turnField = TurnManager.class.getDeclaredField("turn");
             turnField.setAccessible(true);
             turnField.set(this.turnManager, new Turn(this.getPlayingTeam()));
+            Field restartField = TurnManager.class.getDeclaredField("restart");
+            restartField.setAccessible(true);
+            restartField.set(this.turnManager, true);
         } catch (NoSuchFieldException | IllegalAccessException e) {
             throw new RuntimeException(e);
         }
