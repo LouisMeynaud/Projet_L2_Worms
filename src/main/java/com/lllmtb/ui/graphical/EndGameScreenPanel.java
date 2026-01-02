@@ -53,7 +53,7 @@ public class EndGameScreenPanel extends JPanel {
     }
 
     public void setWinner(Team team) {
-        winnerLabel.setText(" The Winner is : Team " + team.getName());
+        winnerLabel.setText(" The Winner is : "+ team.getTeamColor() + " Team " + team.getName());
         winnerLabel.setForeground(Color.WHITE);
         winnerLabel.setFont(new Font("Arial", Font.BOLD, 32));
     }
