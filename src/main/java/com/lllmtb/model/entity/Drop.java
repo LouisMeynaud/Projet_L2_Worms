@@ -67,11 +67,11 @@ public class Drop extends Entity {
             int ammoAmount = random.nextInt(1, 6);
             if (this.itemIdToUnlock instanceof ToolId toolID) {
                 team.addAmmo(toolID, ammoAmount);
-                Logger.logger.info("Drop ramasse, outil obtenu : " + this.itemIdToUnlock + ", nombre d'utilisation : " + ammoAmount + " !");
+                Logger.logger.debug("Drop ramasse, outil obtenu : {} , nombre d'utilisation : {} !", this.itemIdToUnlock, ammoAmount);
             } else if (this.itemIdToUnlock instanceof WeaponId weaponID) {
                 team.unlockWeapon(weaponID);
                 team.addAmmo(weaponID, ammoAmount);
-                Logger.logger.info("Drop ramasse, arme obtenu : " + this.itemIdToUnlock + ", nombre de munitions : " + ammoAmount + " !");
+                Logger.logger.debug("Drop ramasse, arme obtenu : {} , nombre d'utilisation : {} !", this.itemIdToUnlock, ammoAmount);
             }
             commands = new RemoveEntityCommand(this);
         } else if (hitEntity instanceof Projectile) {

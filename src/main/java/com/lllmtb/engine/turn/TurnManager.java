@@ -203,7 +203,7 @@ public final class TurnManager {
             }
 
 
-            Logger.logger.info(" Drop spawn with item : {}", itemId);
+            Logger.logger.debug(" Drop spawn with item : {}", itemId);
             Drop drop = new Drop(new Position(x + 0.25, y), itemId);
             world.queueCommands(drop.addModifier());
             }
