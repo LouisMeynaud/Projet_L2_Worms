@@ -25,6 +25,7 @@ public class Drop extends Entity {
     public final ItemId itemIdToUnlock;
     private static final double DROP_MAX_FALL_SPEED = -9.0;
     private CollisionType collisionType = CollisionType.TOUCH;
+    private boolean onGround = false;
 
     public Drop(Position position, ItemId itemId) {
         this.itemIdToUnlock = itemId;
@@ -77,6 +78,15 @@ public class Drop extends Entity {
             commands = new RemoveEntityCommand(this);
         }
         return commands;
+    }
+
+    public boolean isOnGround() {
+        return onGround;
+    }
+
+    public GameCommand setOnGround() {
+        this.onGround = true;
+        return null;
     }
 }
 

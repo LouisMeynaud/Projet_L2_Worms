@@ -520,11 +520,15 @@ public class Collision {
      * @param impact the {@link Impact} with collision's information
      */
     public void touch(PhysicsBody body, Impact impact) {
-        Position safePos = new Position(
-                impact.collisionPos.getX() + impact.normal.getX() * EPSILON,
-                impact.collisionPos.getY() + impact.normal.getY() * EPSILON
-        );
-        body.setPos(safePos);
+        if (impact.normal.getY() > 0) {
+            body.setPos(impact.collisionPos);
+        } else {
+            Position safePos = new Position(
+                    impact.collisionPos.getX() + impact.normal.getX() * EPSILON,
+                    impact.collisionPos.getY() + impact.normal.getY() * EPSILON
+            );
+            body.setPos(safePos);
+        }
         // body's vector set to (0, 0)
         body.setVector(new Vector(0, 0));
     }

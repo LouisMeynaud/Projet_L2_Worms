@@ -355,15 +355,21 @@ public class WorldRenderer {
         g2d.drawImage(texture, tx, null);
     }
 
-    private void drawDrop(Graphics2D g2d, PhysicsBody body) {
+    private void drawDrop(Graphics2D g2d, PhysicsBody body, Drop drop) {
         double[] bounds = panel.getScreenBounds(body); // Convertit position monde -> écran
         double xEcran = bounds[0];
         double yEcran = bounds[1];
         double largeurPx = bounds[2];
         double hauteurPx = bounds[3];
 
-
-        BufferedImage texture = TextureManager.UI.get("Drop");
+        BufferedImage texture = null;
+        if (drop.isOnGround()) {
+            texture = TextureManager.UI.get("DropOnGround");
+        } else {
+            texture = TextureManager.UI.get("DropAerials");
+            hauteurPx = hauteurPx * 2;
+            yEcran -= hauteurPx / 2;
+        }
         AffineTransform tx = new AffineTransform();
         tx.translate(xEcran, yEcran);
 
@@ -390,8 +396,8 @@ public class WorldRenderer {
                     drawProjectile(g2d, body);
                 } else if (body.getEntity() instanceof Coin) {
                     drawCoin(g2d, body);
-                } else if (body.getEntity() instanceof Drop) {
-                    drawDrop(g2d, body);
+                } else if (body.getEntity() instanceof Drop drop) {
+                    drawDrop(g2d, body, drop);
                 }
             }
         }

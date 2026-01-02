@@ -380,6 +380,8 @@ public class PhysicsEngine {
                         //Collision with ground/Map
                         if (body.getEntity() instanceof Projectile proj) {
                             world.queueCommands(proj.onImpact(null));
+                        } else if (body.getEntity() instanceof Drop drop) {
+                            world.queueCommand(drop.setOnGround());
                         }
                     } else {
                         // Collision wih another entity impactEntity and currentBody
