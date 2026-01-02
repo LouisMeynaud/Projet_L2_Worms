@@ -27,6 +27,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -71,7 +72,10 @@ public class DropTest {
         world.start();
         Team team = new Team("Test", 1, new Position[]{new Position(1,1)}, 0);
         Drop drop = new Drop(new Position(1, 1), WeaponId.SHOTGUN);
-        drop.onImpact(team.getCurrentWorm());
+        GameCommand cmd = drop.onImpact(team.getCurrentWorm());
+        if (cmd != null) {
+            cmd.execute(world); 
+        }
         try{
             TimeUnit.MILLISECONDS.sleep(10);
         } catch(InterruptedException ignored){}
@@ -107,4 +111,21 @@ public class DropTest {
 
 
     }
+
+
+    @Test
+    void testIsOnGround_Initial() {
+
+        Drop drop = new Drop(new Position(10, 10), WeaponId.BAZOOKA);
+        assertFalse(drop.isOnGround());
+    }
+
+    @Test
+    void testSetOnGround() {
+        Drop drop = new Drop(new Position(10, 10), WeaponId.BAZOOKA);
+        GameCommand result = drop.setOnGround();
+        assertTrue(drop.isOnGround());
+        assertNull(result);
+    }
 }
+
