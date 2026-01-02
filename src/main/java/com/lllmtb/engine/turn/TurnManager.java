@@ -17,11 +17,11 @@ import com.lllmtb.events.input.UseInputEvent;
 import com.lllmtb.events.input.MoveInputEvent;
 import com.lllmtb.events.turn.ChangeWormsEvent;
 import com.lllmtb.events.turn.TurnEndEvent;
-import com.lllmtb.events.turn.TurnFinishEvent;
 import com.lllmtb.events.turn.TurnSkipEvent;
 import com.lllmtb.events.turn.TurnStartEvent;
 import com.lllmtb.events.turn.TurnStopEvent;
 import com.lllmtb.events.turn.WormPlayable;
+import com.lllmtb.events.ui.graphical.ScreenEndGameEvent;
 import com.lllmtb.model.entity.Coin;
 import com.lllmtb.model.entity.Drop;
 import com.lllmtb.model.entity.projectile.Projectile;
@@ -217,18 +217,24 @@ public final class TurnManager {
      */
     public void updateTurn(double elapsedTime) {
         this.remainingTimeInMs -= (long) elapsedTime;
-        if (turnFinish) {
-            if (cleanTurn()) {
-                this.passNextTurn();
-                world.getGameLoop().setSpeedTurn(1);
-            } else {
-                world.getGameLoop().setSpeedTurn(3);
-            }
+        Team winningTeam = checkWiningTeam();
+        if (winningTeam != null) {
+            Logger.logger.info("The team {} wins !!", winningTeam);
+            world.getBus().postQueued(new ScreenEndGameEvent(winningTeam));
         } else {
-            if (remainingTimeInMs <= 0 || this.turn.getIsEnd()) {
-                endTurn();
-            } else if (this.turn.teamMaximumShoot()) {
-                this.remainingTimeInMs = Math.min(this.remainingTimeInMs, remainingTimeAfterShootInMs);
+            if (turnFinish) {
+                if (cleanTurn()) {
+                    this.passNextTurn();
+                    world.getGameLoop().setSpeedTurn(1);
+                } else {
+                    world.getGameLoop().setSpeedTurn(3);
+                }
+            } else {
+                if (remainingTimeInMs <= 0 || this.turn.getIsEnd()) {
+                    endTurn();
+                } else if (this.turn.teamMaximumShoot()) {
+                    this.remainingTimeInMs = Math.min(this.remainingTimeInMs, remainingTimeAfterShootInMs);
+                }
             }
         }
     }
@@ -289,6 +295,19 @@ public final class TurnManager {
         world.nextTeamTurn();
     }
 
+    private Team checkWiningTeam() {
+        Team oneTeamAlive = null;
+        for (Team team : world.getTeams()) {
+            if (oneTeamAlive != null && team.oneAlive()) {
+                return null;
+            }
+            if (oneTeamAlive == null && team.oneAlive()) {
+                oneTeamAlive = team;
+            }
+        }
+        return oneTeamAlive;
+    }
+
     /**
      * Registers and subscribes all game and input event listeners to the world event bus.
      * <p>
@@ -319,12 +338,6 @@ public final class TurnManager {
             if (turn.getWormPlayable().uuid == event.worm().uuid) {
                 Move.jumpToMax();
             }
-        };
-
-        EventListener<TurnFinishEvent> turnFinishListener = event -> {
-            //TODO : Close the game properly
-            world.stop();
-
         };
 
         EventListener<WeaponSelectedEvent> weaponSelectedEventEventListener = event -> {
@@ -396,7 +409,6 @@ public final class TurnManager {
         world.getBus().subscribe(WeaponSelectedEvent.class, weaponSelectedEventEventListener);
         world.getBus().subscribe(ToolSelectedEvent.class, toolSelectedEventEventListener);
         world.getBus().subscribe(UseInputEvent.class, useInputEventListener);
-        world.getBus().subscribe(TurnFinishEvent.class, turnFinishListener);
         world.getBus().subscribe(CoinCollisionEvent.class, coinListener);
         world.getBus().subscribe(ChangeWormsEvent.class, changeWormDuringTurn);
     }
