@@ -1,50 +1,55 @@
 package com.lllmtb.model.item.tool;
 
 import com.lllmtb.model.item.ItemId;
+import com.lllmtb.model.item.ShootMode;
 
 public enum ToolId implements ItemId {
-    PARACHUTE(false, "Deploys a canopy for a safe, wind-affected descent.", 0),
-    JETPACK(false, "Fly freely around the map. Mind the fuel gauge!", 0),
-    CALLSTRIKE(true, "Call in a devastating airstrike of missiles on a targeted area.", 0),
-    CATCONCRETE(true, "Summons a villainous stone cat to smash through all terrain beneath it.", 0),
-    TOWER(false, "Deploys a defensive turret to intercept enemies approaching you in future turns.", 3000),
-    MINE(false, "A volatile trap that detonates instantly if anyone dares to step on it.", 3000),
-    GRENADE(false, "A timed bomb that bounces off terrain before exploding.", 4000),
-    MEDKIT(false, "Restores a portion of the active worm's health.", 0),
+    PARACHUTE(ShootMode.NONE, "Deploys a canopy for a safe, wind-affected descent."),
+    JETPACK(ShootMode.NONE, "Fly freely around the map. Mind the fuel gauge!"),
+    CALLSTRIKE(ShootMode.CROSSHAIR, "Call in a devastating airstrike of missiles on a targeted area.", 0),
+    CATCONCRETE(ShootMode.CROSSHAIR, "Summons a villainous stone cat to smash through all terrain beneath it.", 0),
+    TOWER("Deploys a defensive turret to intercept enemies approaching you in future turns.", 3000),
+    MINE("A volatile trap that detonates instantly if anyone dares to step on it.", 3000),
+    GRENADE("A timed bomb that bounces off terrain before exploding.", 4000),
+    MEDKIT(ShootMode.NONE, "Restores a portion of the active worm's health."),
     NONE;
 
-    private final boolean usesCrosshair;
+    private final ShootMode shootMode;
     private final String info;
     private final int maxCharge;
 
-    ToolId(boolean usesCrosshair, String info, int maxCharge) {
-        this.usesCrosshair = usesCrosshair;
+    ToolId(ShootMode shootMode, String info, int maxCharge) {
+        this.shootMode = shootMode;
         this.info = info;
         this.maxCharge = maxCharge;
     }
 
+    ToolId(ShootMode shootMode, String info) {
+        this(shootMode, info, 0);
+    }
+
+    ToolId(String info, int maxCharge) {
+        this(ShootMode.AIM, info, maxCharge);
+    }
+
+    ToolId(String info) {
+        this(ShootMode.AIM, info, 0);
+    }
+
     ToolId() {
-        this(false, "", 0);
+        this(ShootMode.AIM, "", 0);
     }
 
     @Override
-    public boolean usesCrosshair() {
-        return usesCrosshair;
+    public ShootMode getShootMode() {
+        return shootMode;
     }
 
-
-    /**
-     * Gets the information description of the tool.
-     * @return Description string of the tool.
-     */
+    @Override
     public String getInfo() {
         return this.info;
     }
 
-    /**
-     * Gets the maximum charge time for the tool.
-     * @return Maximum charge time in milliseconds.
-     */
     @Override
     public int getMaxChargeTime() {
         return this.maxCharge;

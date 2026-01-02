@@ -1,39 +1,50 @@
 package com.lllmtb.model.item.weapon;
 
 import com.lllmtb.model.item.ItemId;
+import com.lllmtb.model.item.ShootMode;
 
 public enum WeaponId implements ItemId {
-    GUN(false, "A standard handgun for reliable, direct fire.", 0),
-    BAZOOKA(false, "Fires a heavy, explosive rocket.", 1000),
-    HEALINGBAZOOKA(false, "Fires a medical rocket that heals allies in the blast radius.", 1000),
-    SHOTGUN(false, "Fires a spread of pellets, devastating at close range.", 0),
-    ELECTRONCANON(false, "Fires an electron beam that bounces from enemy to enemy.", 0),
-    GASGUN(false, "Releases a devastating chemical cloud.", 0),
-    BOW(false, "A devastating bow, effective at both short and long range.", 3000),
+    GUN("A standard handgun for reliable, direct fire."),
+    BAZOOKA("Fires a heavy, explosive rocket.", 1000),
+    HEALINGBAZOOKA("Fires a medical rocket that heals allies in the blast radius.", 1000),
+    SHOTGUN("Fires a spread of pellets, devastating at close range."),
+    ELECTRONCANON("Fires an electron beam that bounces from enemy to enemy."),
+    GASGUN("Releases a devastating chemical cloud."),
+    BOW("A devastating bow, effective at both short and long range.", 3000),
     NONE;
 
-    private final boolean usesCrosshair;
+    private final ShootMode shootMode;
     private final String info;
     private final int maxCharge;
 
-    WeaponId(boolean usesCrosshair, String info, int maxCharge) {
-        this.usesCrosshair = usesCrosshair;
+    WeaponId(ShootMode shootMode, String info, int maxCharge) {
+        this.shootMode = shootMode;
         this.info = info;
         this.maxCharge = maxCharge;
     }
 
+    WeaponId(ShootMode shootMode, String info) {
+        this(shootMode, info, 0);
+    }
+
+    WeaponId(String info, int maxCharge) {
+        this(ShootMode.AIM, info, maxCharge);
+    }
+
+    WeaponId(String info) {
+        this(ShootMode.AIM, info, 0);
+    }
+
     WeaponId() {
-        this(false, "", 0);
+        this(ShootMode.AIM, "", 0);
     }
 
     @Override
-    public boolean usesCrosshair() {
-        return usesCrosshair;
+    public ShootMode getShootMode() {
+        return shootMode;
     }
-    /**
-     * Gets the information description of the weapon.
-     * @return Description string of the weapon.
-     */
+
+    @Override
     public String getInfo() {
         return this.info;
     }

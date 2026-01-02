@@ -41,7 +41,6 @@ import com.lllmtb.events.game.WeaponSelectedEvent;
 import com.lllmtb.events.game.WorldCreatedEvent;
 import com.lllmtb.events.turn.TurnSkipEvent;
 import com.lllmtb.events.ui.graphical.NotificationEvent;
-import com.lllmtb.events.ui.graphical.ShootMode;
 import com.lllmtb.events.ui.graphical.RequestFocus;
 import com.lllmtb.events.ui.graphical.ScreenHomeEvent;
 import com.lllmtb.model.item.inventory.Inventory;
@@ -56,7 +55,7 @@ import com.lllmtb.ui.graphical.Utilitaire;
 /**
  * panneau principal de l'interface utilisateur du jeu
  *
- * ce panneau se superpose au dessins du jeu et contient les bouton comme shootMode inventaire pose etc
+ * ce panneau se superpose au dessins du jeu et contient les bouton comme inventaire pose etc
  * ainsi que les les panneau d'inventaire de menu pose etc
  *
  * il utilise un cardLayout afin d'afficher les bons élement.
@@ -84,7 +83,6 @@ public class GameUIPanel extends JPanel {
     private ShopManager shopManager;
     private JButton pauseButton;
     private JButton inventoryButton;
-    private JButton shootModeButton;
     private JButton skipTurnButton;
     private JButton shopButton;
     private int currentButtonSize = 80;
@@ -153,13 +151,11 @@ public class GameUIPanel extends JPanel {
         pauseButton = Utilitaire.createImageButton(TextureManager.UI, "Pause", 128, 128, 128, 128, "", "Arial", 16, Color.WHITE);
         inventoryButton = Utilitaire.createImageButton(TextureManager.UI, "InventoryButton", 128, 128, 128, 128, "", "Arial", 16, Color.WHITE);
         shopButton = Utilitaire.createImageButton(TextureManager.UI, "ShopButton", 128, 128, 128, 128, "", "Arial", 12, Color.YELLOW);
-        shootModeButton = Utilitaire.createImageButton(TextureManager.UI, "ShootMode", 120, 120, 120, 120, "", "Arial", 16, Color.WHITE);
         skipTurnButton = Utilitaire.createImageButton(TextureManager.UI, "SkipTurn", 128, 128, 128, 128, "", "Arial", 16, Color.WHITE);
         changeWormsButton = Utilitaire.createImageButton(TextureManager.UI, "ChangeWorms", 128, 128, 128, 128, "", "Arial", 16, Color.WHITE);
 
 
         pauseButton.addActionListener(e -> pauseMenu(true));
-        shootModeButton.addActionListener(e -> world.getBus().postQueued(new ShootMode()));
         inventoryButton.addActionListener(e -> openCloseInventory());
         shopButton.addActionListener(e -> openCloseShop());
         skipTurnButton.addActionListener(e -> world.getBus().postQueued(new TurnSkipEvent()));
@@ -205,7 +201,6 @@ public class GameUIPanel extends JPanel {
 
         lowerBar.add(inventoryButton);
         lowerBar.add(shopButton);
-        lowerBar.add(shootModeButton);
 
         this.add(topBar, BorderLayout.NORTH);
         this.add(lowerBar, BorderLayout.SOUTH);
@@ -262,14 +257,13 @@ public class GameUIPanel extends JPanel {
 
 
         String teamName = this.world.getPlayingTeam().name;
-        Color baseColor;
-        switch (this.world.getPlayingTeam().getTeamColor()) {
-            case RED: baseColor = Color.RED; break;
-            case BLUE: baseColor = Color.BLUE; break;
-            case GREEN: baseColor = Color.GREEN; break;
-            case YELLOW: baseColor = Color.YELLOW; break;
-            default : baseColor = Color.BLACK;
-        }
+        Color baseColor = switch (this.world.getPlayingTeam().getTeamColor()) {
+            case RED -> Color.RED;
+            case BLUE -> Color.BLUE;
+            case GREEN -> Color.GREEN;
+            case YELLOW -> Color.YELLOW;
+            default -> Color.BLACK;
+        };
         Color color = new Color(baseColor.getRed(), baseColor.getGreen(), baseColor.getBlue(), 100);
 
         this.timerContainer.setBackground(color);
@@ -642,7 +636,6 @@ public class GameUIPanel extends JPanel {
 
         updateButtonIcon(pauseButton, "Pause", size);
         updateButtonIcon(inventoryButton, "InventoryButton", size);
-        updateButtonIcon(shootModeButton, "ShootMode", size);
         updateButtonIcon(skipTurnButton, "SkipTurn", size);
         updateButtonIcon(shopButton, "ShopButton", size);
         updateButtonIcon(changeWormsButton, "ChangeWorms", size); //TODO : Change

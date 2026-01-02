@@ -275,8 +275,6 @@ public class WorldRenderer {
      * Dessine la barre de charge (puissance).
      */
     private void paintChargeBar(Graphics2D g2d, double x, double y, double width) {
-        if (!panel.shootMode) return;
-
         ItemId item = world.getPlayingTeam().getHand();
         if (item == null || item.getMaxChargeTime() <= 0) return;
 
@@ -493,18 +491,15 @@ public class WorldRenderer {
      */
     private void paintAim(Graphics2D g2d, double xCenter, double yCenter) {
         Worm currentWorm = world.getTurnManager().getTurn().getWormPlayable();
-        if (currentWorm != null && panel.shootMode) {
-            g2d.setColor(Color.RED);
+        if (currentWorm == null) return;
 
-            ItemId handItem = world.getPlayingTeam().getHand();
-            if (handItem != null && handItem.usesCrosshair()) {
-                int crosshairSize = 15;
-                int mouseX = (int) panel.mouseWorldX;
-                int mouseY = (int) panel.mouseWorldY;
-                g2d.setStroke(new BasicStroke(3)); // epaisseur du trait
-                g2d.drawLine(mouseX - crosshairSize, mouseY, mouseX + crosshairSize, mouseY);
-                g2d.drawLine(mouseX, mouseY - crosshairSize, mouseX, mouseY + crosshairSize);
-            } else {
+        ItemId handItem = world.getPlayingTeam().getHand();
+        if (handItem == null) return;
+
+        g2d.setColor(Color.RED);
+
+        switch (handItem.getShootMode()) {
+            case AIM -> {
                 double vecX = panel.mouseWorldX - xCenter;
                 double vecY = panel.mouseWorldY - yCenter;
                 double distance = Math.sqrt(vecX * vecX + vecY * vecY);
@@ -514,8 +509,19 @@ public class WorldRenderer {
                     vecX = vecX * ratio;
                     vecY = vecY * ratio;
                 }
-                g2d.setStroke(new BasicStroke(3)); // epaisseur du trait
+                g2d.setStroke(new BasicStroke(3));
                 g2d.drawLine((int) xCenter, (int) yCenter, (int) (xCenter + vecX), (int) (yCenter + vecY));
+            }
+            case CROSSHAIR -> {
+                int crosshairSize = 15;
+                int mouseX = (int) panel.mouseWorldX;
+                int mouseY = (int) panel.mouseWorldY;
+                g2d.setStroke(new BasicStroke(3));
+                g2d.drawLine(mouseX - crosshairSize, mouseY, mouseX + crosshairSize, mouseY);
+                g2d.drawLine(mouseX, mouseY - crosshairSize, mouseX, mouseY + crosshairSize);
+            }
+            default -> {
+                // no aim visualisation for other modes
             }
         }
     }
