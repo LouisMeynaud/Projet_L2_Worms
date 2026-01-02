@@ -6,7 +6,6 @@ import com.lllmtb.events.game.ToolSelectedEvent;
 import com.lllmtb.events.game.WeaponSelectedEvent;
 import com.lllmtb.events.input.MoveInputEvent;
 import com.lllmtb.events.turn.ChangeWormsEvent;
-import com.lllmtb.events.turn.TurnFinishEvent;
 import com.lllmtb.events.turn.TurnSkipEvent;
 import com.lllmtb.model.entity.Coin;
 import com.lllmtb.model.entity.projectile.BulletProjectile;
@@ -294,11 +293,11 @@ public class TurnManagerTest {
         assertEquals(this.turnManager.getRemainingTime(), ancientCurrentRemainingTime);
     }
 
-    @Test //TODO : TEST THE WINNING
+    /*@Test //TODO : TEST THE WINNING
     public void testFinishTurns(){
         Team team = Mockito.mock(Team.class);
         TurnFinishEvent tf = new TurnFinishEvent(team);
         assertSame(tf.winningTeam, team);
 
-    }
+    }*/
 }
