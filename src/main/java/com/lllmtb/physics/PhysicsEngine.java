@@ -356,7 +356,6 @@ public class PhysicsEngine {
                 switch (body.getEntity().getCollisionType()) {
                     // if body slides along cliffs (if the collision is with the ground)
                     case SLIDE -> collision.slide(body, impact, dt, world);
-
                     // if body bounces
                     case BOUNCE -> collision.bounce(body, impact, 0.5);
 
@@ -370,7 +369,7 @@ public class PhysicsEngine {
                     remove(body);
                     Logger.logger.debug("Entity out of map");
                     if (body.getEntity() instanceof Worm worm) {
-                        worm.damageWorm(worm.getStats().getHp());
+                        world.queueCommand(worm.damageWorm(worm.getStats().getHp()));
                         world.getTurnManager().endTurn();
                     }
 

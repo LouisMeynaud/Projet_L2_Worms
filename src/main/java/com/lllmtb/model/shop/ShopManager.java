@@ -109,7 +109,7 @@ public class ShopManager {
                 team.addAmmo((ToolId) id, itemBuy.ammoPackSize);
             }
             String key = "Hand" + id.toString();
-            eventBus.postQueued(new NotificationEvent("+ Munitions : " + itemBuy.name, key));
+            eventBus.postQueued(new NotificationEvent("+ " + itemBuy.ammoPackSize + " ammo for " + itemBuy.name, key));
 
             Logger.logger.info("Achat ammo reussie : " + itemBuy.name);
 

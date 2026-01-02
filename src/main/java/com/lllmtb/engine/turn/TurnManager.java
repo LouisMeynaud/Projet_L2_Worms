@@ -23,6 +23,7 @@ import com.lllmtb.events.turn.TurnSkipEvent;
 import com.lllmtb.events.turn.TurnStartEvent;
 import com.lllmtb.events.turn.TurnStopEvent;
 import com.lllmtb.events.turn.WormPlayable;
+import com.lllmtb.events.ui.graphical.NotificationEvent;
 import com.lllmtb.model.entity.Coin;
 import com.lllmtb.model.entity.Drop;
 import com.lllmtb.model.entity.projectile.Projectile;
@@ -341,6 +342,7 @@ public final class TurnManager {
                 Logger.logger.info("Piece ramasse ! + " + event.coin.value + "$");
                 event.team.addCredits(event.coin.value);
                world.getPhysics().remove(event.coin.getBody());
+               world.getBus().postQueued(new NotificationEvent("+ " + event.coin.value + "$ for : " + event.team.teamColor, "Coin"));
             });
         };
 
@@ -348,10 +350,13 @@ public final class TurnManager {
             world.queueCommand(w -> {
                 if (event.drop.itemIdToUnlock instanceof ToolId toolID) {
                     event.team.addAmmo(toolID, event.ammoAmount);
+                    world.getBus().postQueued(new NotificationEvent("Tool " + event.drop.itemIdToUnlock + " obtained !", toolID.toString()));
                     Logger.logger.info("Drop ramasse, outil obtenu : " + event.drop.itemIdToUnlock + ", nombre d'utilisation : " + event.ammoAmount + " !");
                 } else if (event.drop.itemIdToUnlock instanceof WeaponId weaponID) {
                     event.team.unlockWeapon(weaponID);
+                    world.getBus().postQueued(new NotificationEvent("Weapon " + event.drop.itemIdToUnlock + " obtained !", weaponID.toString()));
                     event.team.addAmmo(weaponID, event.ammoAmount);
+                    world.getBus().postQueued(new NotificationEvent("+ " + event.ammoAmount + " ammo for " + event.drop.itemIdToUnlock, weaponID.toString()));
                     Logger.logger.info("Drop ramasse, arme obtenu : " + event.drop.itemIdToUnlock + ", nombre de munitions : " + event.ammoAmount + " !");
                 }
                 world.getPhysics().remove(event.drop.getBody());

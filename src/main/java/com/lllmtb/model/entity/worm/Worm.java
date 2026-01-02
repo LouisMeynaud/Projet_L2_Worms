@@ -3,6 +3,8 @@ package com.lllmtb.model.entity.worm;
 import com.lllmtb.engine.commands.GameCommand;
 import com.lllmtb.engine.commands.RemoveEntityCommand;
 import com.lllmtb.engine.logger.Logger;
+import com.lllmtb.events.ui.graphical.NotificationEvent;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -199,7 +201,12 @@ public class Worm extends Entity {
         if (!this.stats.isAlive()) {
             this.alive = false;
             Logger.logger.debug("Worm {} from the team {} is dead", this.name, this.team.name);
-            return new RemoveEntityCommand(this);
+            GameCommand gameCommand = (world -> {
+                new RemoveEntityCommand(this).execute(world);
+                world.getBus().postQueued(new NotificationEvent("Worm " + this.team.teamColor + " is dead", "Skull"));
+                System.out.println("truc executer");
+            });
+            return gameCommand;
         }
         return null;
     }
@@ -267,6 +274,9 @@ public class Worm extends Entity {
         for (StatusEffect effect : this.statusEffects) {
             if (effect.isActive()) {
                 effect.applyEffect(this);
+                commands.add(world -> {
+                    world.getBus().postQueued(new NotificationEvent("Status Effect Applied: " + effect.getName(), effect.getName()));
+                });
                 // Check again after application if the effect has expired
                 if (!effect.isActive()) {
                     expiredEffects.add(effect);

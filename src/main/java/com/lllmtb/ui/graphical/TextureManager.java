@@ -110,6 +110,10 @@ public class TextureManager {
             NOTIFICATIONS.putAll(UI);
             NOTIFICATIONS.putAll(WEAPONS);
             NOTIFICATIONS.putAll(TOOLS);
+            NOTIFICATIONS.put("Skull", ImageIO.read(TextureManager.class.getResource("/textures/notification/Skull.png")));
+            NOTIFICATIONS.put("Coin", ImageIO.read(TextureManager.class.getResource("/textures/notification/Coin.png")));
+            NOTIFICATIONS.put("Poison", ImageIO.read(TextureManager.class.getResource("/textures/notification/Poison.png")));
+            NOTIFICATIONS.put("Burn", ImageIO.read(TextureManager.class.getResource("/textures/notification/Burn.png")));
 
         } catch (IOException e) {
             Logger.logger.error("Error while loading textures : ", e);
