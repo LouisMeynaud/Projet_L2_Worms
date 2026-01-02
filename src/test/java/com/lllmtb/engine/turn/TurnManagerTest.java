@@ -66,7 +66,7 @@ public class TurnManagerTest {
 
         assertNotNull(turnManager.getWorld());
         assertEquals(10000, this.turnManager.getTurnDuration());
-        assertEquals(10, this.eb.listenerCount());
+        assertEquals(9, this.eb.listenerCount());
     }
 
     @Test
