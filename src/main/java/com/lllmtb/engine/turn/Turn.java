@@ -43,8 +43,8 @@ public class Turn {
         this.isEnd = true;
     }
 
-    public void wormPlayableAlive(){
-        if (!this.getWormPlayable().isAlive()){
+    public void wormPlayableAlive() {
+        if (!this.getWormPlayable().isAlive()) {
             setIsEnd();
         }
     }
