@@ -13,7 +13,7 @@ import java.util.Objects;
  * Command that pushes entities away from a position in a specific direction.
  * Used for melee attacks (e.g. baseball bat)
  */
-public class PushEntitiesCommand implements GameCommand {
+public final class PushEntitiesCommand implements GameCommand {
     private final Position position;
     private final double angleRadians;
     private final double pushRadius;
@@ -55,15 +55,13 @@ public class PushEntitiesCommand implements GameCommand {
                 double normalizedDy = dy / distance;
                 double dotProduct = normalizedDx * swingDirX + normalizedDy * swingDirY;
 
-                if (dotProduct > -0.5) { // 120° cone
+                if (dotProduct > -0.3) { // 120° cone
                     Vector direction = new Vector(normalizedDx, normalizedDy);
-                    double magnitude = Math.sqrt(swingDirX * swingDirX + swingDirY * swingDirY);
-                    direction = direction.scale(1 / magnitude);
-
                     // entities closer get pushed harder
                     double distanceFactor = 1.0 - (distance / pushRadius);
                     double actualForce = pushForce * distanceFactor;
                     Vector pushVector = direction.scale(actualForce);
+                    pushVector = new Vector(pushVector.getX(), Math.max(pushVector.getY(), 10));
                     body.setVector(body.getVector().add(pushVector));
 
                     if (body.getEntity() instanceof Worm) {
