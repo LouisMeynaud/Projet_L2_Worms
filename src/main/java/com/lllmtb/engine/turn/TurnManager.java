@@ -72,7 +72,6 @@ public final class TurnManager {
     public TurnManager(GameWorld world, long turnDuration) {
         this.world = world;
         this.turnDurationInMs = 1000 * turnDuration;
-        this.turn = new Turn(world.getTeams().get(0));
         this.init();
     }
 
