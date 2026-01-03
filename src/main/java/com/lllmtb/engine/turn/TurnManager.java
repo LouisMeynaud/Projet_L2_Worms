@@ -239,6 +239,7 @@ public final class TurnManager {
                     world.getGameLoop().setSpeedTurn(3);
                 }
             } else {
+                this.turn.wormPlayableAlive();
                 if (remainingTimeInMs <= 0 || this.turn.getIsEnd()) {
                     endTurn();
                 } else if (this.turn.teamMaximumShoot()) {

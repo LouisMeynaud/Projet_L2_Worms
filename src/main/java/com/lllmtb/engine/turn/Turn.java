@@ -43,6 +43,12 @@ public class Turn {
         this.isEnd = true;
     }
 
+    public void wormPlayableAlive(){
+        if (!this.getWormPlayable().isAlive()){
+            setIsEnd();
+        }
+    }
+
     public boolean teamMaximumShoot() {
         if (this.team.getShootCount() >= Turn.limitshoot) {
             this.team.emptyHand();

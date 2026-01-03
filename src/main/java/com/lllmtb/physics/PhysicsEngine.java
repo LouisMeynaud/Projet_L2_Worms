@@ -372,7 +372,6 @@ public class PhysicsEngine {
                     Logger.logger.debug("Entity out of map");
                     if (body.getEntity() instanceof Worm worm) {
                         worm.damageWorm(worm.getStats().getHp());
-                        world.getTurnManager().endTurn();
                     }
 
                 } else {
