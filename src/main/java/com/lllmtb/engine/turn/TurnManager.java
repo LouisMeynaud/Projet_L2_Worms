@@ -306,7 +306,11 @@ public final class TurnManager {
                 oneTeamAlive = team;
             }
         }
-        return oneTeamAlive;
+        if (oneTeamAlive != null) {
+            return oneTeamAlive;
+        } else {
+            return new Team("Water", 1, new Position[]{new Position(0, 0)}, 0);
+        }
     }
 
     /**
