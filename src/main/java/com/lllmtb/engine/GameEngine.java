@@ -3,6 +3,7 @@ package com.lllmtb.engine;
 import java.io.IOException;
 import java.util.Objects;
 
+import com.lllmtb.events.Event;
 import org.eclipse.jdt.annotation.NonNull;
 
 import com.lllmtb.engine.logger.Logger;
@@ -28,8 +29,8 @@ public class GameEngine {
         boolean graphical = args.length == 0 || !args[0].equals("console");
 
         systemBus = new EventBus();
-        // Uncomment to log all system events for debugging
-        //systemBus.subscribe(Event.class, e -> Logger.logger.info("[EVENT/system]: {}", e.getClass().getSimpleName()));
+        // Log all system events for debugging
+        systemBus.subscribe(Event.class, e -> Logger.logger.debug("[EVENT/system]: {}", e.getClass().getSimpleName()));
 
         // Engine loop thread - processes engine-level events (start, pause, quit...)
         new Thread(() -> {
@@ -70,8 +71,8 @@ public class GameEngine {
     private static void startGame(@NonNull StartGameEvent event) {
         GameSettings settings = Objects.requireNonNull(event).getSettings();
         EventBus worldBus = new EventBus();
-        // Uncomment to log all world events for debugging
-        //worldBus.subscribe(Event.class, e -> Logger.logger.info("[EVENT/world]: {}", e.getClass().getSimpleName()));
+        // Log all world events for debugging
+        worldBus.subscribe(Event.class, e -> Logger.logger.debug("[EVENT/world]: {}", e.getClass().getSimpleName()));
         world = new GameWorld(settings, worldBus);
         Save.setGameWorld(world);
         systemBus.postSync(new WorldCreatedEvent(world));
