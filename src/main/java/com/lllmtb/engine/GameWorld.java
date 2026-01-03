@@ -39,7 +39,7 @@ public class GameWorld {
     private final PhysicsEngine physics;
     private final List<Team> teams;
     private final GameLoop gameLoop;
-    private int indexTeam;
+    private int indexTeam = - 1;
     private final TurnManager turnManager;
     private String gameName;
     private GameMode gameMode;
@@ -119,6 +119,7 @@ public class GameWorld {
 
         //Init credit from current Team
         this.teams.get(indexTeam).removeCredits(150);
+        this.indexTeam--;
     }
 
     public GameWorld(GameSettings settings, EventBus eventBus) {
@@ -237,7 +238,6 @@ public class GameWorld {
         if (loopThread != null && loopThread.isAlive()) return;
         Logger.logger.debug("Starting the game loop...");
         loopThread = new Thread(gameLoop, "gameloop");
-        indexTeam = -1;
         loopThread.start();
         nextTeamTurn();
     }
