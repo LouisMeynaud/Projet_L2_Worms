@@ -28,8 +28,6 @@ import java.time.format.DateTimeFormatter;
 import com.lllmtb.terrain.map.SaveMap;
 import com.lllmtb.terrain.map.Tile;
 import com.lllmtb.ui.graphical.TextureManager;
-import org.jline.utils.Log;
-
 import javax.imageio.ImageIO;
 
 /**
@@ -208,14 +206,15 @@ public class Save {
      */
     public static void saveAll() {
         String stringPath = SaveConfig.SAVE_DIRECTORY + gameWorld.getGameName();
-        try{
+        try {
         saveMap(gameWorld.getMap(), stringPath);
         saveGameWorld(gameWorld, stringPath);
         saveInfo(gameWorld, stringPath);
         BufferedImage image = maptoBuffered(gameWorld.getMap());
         saveImage(image, stringPath);
-        gameWorld.pause(false);}
-        catch (Exception e) {
+        gameWorld.pause(false);
+
+        } catch (Exception e) {
             Logger.logger.error("Probleme de sauvegarde de save: " + e.getMessage());
         }
     }

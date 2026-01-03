@@ -1,6 +1,5 @@
 package com.lllmtb.engine;
 
-import java.io.IOException;
 import java.util.Objects;
 import com.lllmtb.engine.save.Load;
 import com.lllmtb.events.game.*;
@@ -92,11 +91,7 @@ public class GameEngine {
             systemBus.postQueued(new FinalSaveEvent());
         });
         systemBus.subscribe(FinalSaveEvent.class, e -> {
-            try {
-                Save.saveAll();
-            } catch (IOException ex) {
-                throw new RuntimeException(ex);
-            }
+            Save.saveAll();
         });
         world.start();
         systemBus.subscribe(GamePauseEvent.class, e -> world.pause(e.isPaused));
