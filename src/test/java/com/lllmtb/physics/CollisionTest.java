@@ -325,48 +325,48 @@ public class CollisionTest {
 
     @Test
     void testInTrapOrLava_WhenNull() {
-        assertNull(collision.inTrapOrLava(pBWorm1.getPos()));
+        assertNull(collision.inTrapOrLava(pBWorm1));
     }
 
     @Test
     void testInTrapOrLava_WhenInLava1() {
-        Position pos = new Position(27, 6);
-        assertEquals("LAVA", collision.inTrapOrLava(pos).name());
+        pBWorm1.setPos(new Position(27, 6));
+        assertEquals("LAVA", collision.inTrapOrLava(pBWorm1).name());
     }
 
     @Test
     void testInTrapOrLava_WhenInLava2() {
-        Position pos = new Position(27, 7);
-        assertEquals("LAVA", collision.inTrapOrLava(pos).name());
+        pBWorm1.setPos(new Position(27, 7));
+        assertEquals("LAVA", collision.inTrapOrLava(pBWorm1).name());
     }
 
     @Test
     void testInTrapOrLava_WhenInLava3() {
-        Position pos = new Position(26.5, 6);
-        assertEquals("LAVA", collision.inTrapOrLava(pos).name());
+        pBWorm1.setPos(new Position(26.5, 6));
+        assertEquals("LAVA", collision.inTrapOrLava(pBWorm1).name());
     }
 
     @Test
     void testInTrapOrLava_WhenInLava4() {
-        Position pos = new Position(26.5, 7);
-        assertEquals("LAVA", collision.inTrapOrLava(pos).name());
+        pBWorm1.setPos(new Position(26.5, 7));
+        assertEquals("LAVA", collision.inTrapOrLava(pBWorm1).name());
     }
 
     @Test
     void testInTrapOrLava_WhenInLava5() {
-        Position pos = new Position(27, 5.5);
-        assertEquals("LAVA", collision.inTrapOrLava(pos).name());
+        pBWorm1.setPos(new Position(27, 5.5));
+        assertEquals("LAVA", collision.inTrapOrLava(pBWorm1).name());
     }
 
     @Test
     void testInTrapOrLava_WhenInLava6() {
-        Position pos = new Position(26.5, 5.5);
-        assertEquals("LAVA", collision.inTrapOrLava(pos).name());
+        pBWorm1.setPos(new Position(26.5, 5.5));
+        assertEquals("LAVA", collision.inTrapOrLava(pBWorm1).name());
     }
 
     @Test
     void testInTrapOrLava_WhenNull2() {
-        Position pos = new Position(0.5, 5.5);
-        assertNull(collision.inTrapOrLava(pos));
+        pBWorm1.setPos(new Position(0.5, 5.5));
+        assertNull(collision.inTrapOrLava(pBWorm1));
     }
 }

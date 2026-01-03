@@ -89,10 +89,18 @@ public class Drop extends Entity {
         return commands;
     }
 
+    /**
+     * return if the drop is on the ground
+     * @return {@code true} if the drop is on the ground, {@code false} otherwise
+     */
     public boolean isOnGround() {
         return onGround;
     }
 
+    /**
+     * set the drop on the ground
+     * @return the {@link GameCommand} with value {@code null}
+     */
     public GameCommand setOnGround() {
         this.onGround = true;
         return null;
