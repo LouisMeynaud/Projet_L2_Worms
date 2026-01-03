@@ -58,6 +58,7 @@ public class Load {
 
         Gson gson = new GsonBuilder()
                 .setPrettyPrinting()
+                .serializeSpecialFloatingPointValues()
                 .registerTypeAdapterFactory(entityAdapter)
                 .create();
 
