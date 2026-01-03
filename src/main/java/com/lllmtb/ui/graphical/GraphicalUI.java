@@ -1,7 +1,6 @@
 package com.lllmtb.ui.graphical;
 
-import java.awt.CardLayout;
-import java.awt.Dimension;
+import java.awt.*;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -104,9 +103,13 @@ public class GraphicalUI implements UI {
         });
 
         eventBus.subscribe(StartGameEvent.class, event -> {
-            cardLayout.show(mainPanel, "gamePanel");
+            // Remove old game panel to prevent memory leak
+            for (Component comp : mainPanel.getComponents()) {
+                if (comp instanceof GameScreen) mainPanel.remove(comp);
+            }
             GameScreen gamePanel = new GameScreen(this.eventBus);
-            mainPanel.add(gamePanel, "gamePanel"); // la page de jeu
+            mainPanel.add(gamePanel, "gamePanel");
+            cardLayout.show(mainPanel, "gamePanel");
             Logger.logger.debug("Show GameScreen");
         });
 
