@@ -166,12 +166,9 @@ public class GameWorldPanel extends JPanel {
                     repaint();
                 }
 
-                // if (type == MouseEvent.BUTTON3) {
-                //     isCameraMode = false;
-                //     if (!hasDraggedCamera) {
-                //
-                //     }
-                // }
+                if (type == MouseEvent.BUTTON3) {
+                    isCameraMode = false;
+                }
             }
 
             @Override

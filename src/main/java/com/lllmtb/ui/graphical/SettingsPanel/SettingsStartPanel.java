@@ -86,6 +86,13 @@ public class SettingsStartPanel extends JPanel {
         });
 
         startButton.addActionListener(e -> {
+            if (this.mapSettingPanel.loadMap) {
+                String selectedMap = this.mapSettingPanel.panelListeMap.getSelectedMapName();
+
+                if (selectedMap == null) {
+                    return;
+                }
+            }
             eventBus.postQueued(new StartGameEvent(setSettings(gameSettingsPanel)));
         });
     }
