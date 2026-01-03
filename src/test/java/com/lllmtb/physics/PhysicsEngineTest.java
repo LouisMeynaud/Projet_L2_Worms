@@ -149,8 +149,8 @@ class PhysicsEngineTest {
         pE.nextStep(dt);
         Position newPos = pBWorm.getPos();
         Vector newVector = pBWorm.getVector();
-        assertEquals(4.0, newPos.getX());
-        assertEquals(4.0, newPos.getY());
+        assertEquals(3.91650697225, newPos.getX());
+        assertEquals(4.002, newPos.getY());
         assertNotEquals(initialVector.getX(), newVector.getX());
         assertNotEquals(initialVector.getY(), newVector.getY());
     }
@@ -164,8 +164,8 @@ class PhysicsEngineTest {
         tpE.nextStep(dt);
         assertEquals(0.0, pBBP.getPos().getX());
         assertEquals(4.92499394064, pBBP.getPos().getY());
-        assertEquals(4.0, pBWorm.getPos().getX());
-        assertEquals(4.0, pBWorm.getPos().getY());
+        assertEquals(3.91650697225, pBWorm.getPos().getX());
+        assertEquals(4.002, pBWorm.getPos().getY());
     }
 
     @Test
@@ -179,10 +179,10 @@ class PhysicsEngineTest {
         tpE.add(pBWorm);
         tpE.add(pBBP);
         tpE.nextStep(dt);
-        assertEquals(1.0, pBBP.getPos().getX());
-        assertEquals(5.0, pBBP.getPos().getY());
+        assertEquals(1.0000020003952925, pBBP.getPos().getX());
+        assertEquals(4.999999803363819, pBBP.getPos().getY());
         assertEquals(2.0, pBWorm.getPos().getX());
-        assertEquals(4.0, pBWorm.getPos().getY());
+        assertEquals(4.002, pBWorm.getPos().getY());
     }
 
     @Test

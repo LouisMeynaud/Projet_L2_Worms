@@ -206,6 +206,7 @@ public class Worm extends Entity {
                 world.getBus().postQueued(new NotificationEvent("Worm " + this.team.teamColor + " is dead", "Skull"));
                 System.out.println("truc executer");
             });
+            statusEffects.clear();
             return gameCommand;
         }
         return null;
