@@ -8,6 +8,7 @@ import static org.mockito.Mockito.mock;
 import com.lllmtb.engine.GameSettings;
 import com.lllmtb.engine.GameWorld;
 import com.lllmtb.events.turn.ChangeWormsEvent;
+import com.lllmtb.events.turn.TurnEndEvent;
 import com.lllmtb.events.game.CoinCollisionEvent;
 import com.lllmtb.events.game.GamePauseEvent;
 import com.lllmtb.events.game.GameStateUpdatedEvent;
@@ -20,10 +21,12 @@ import com.lllmtb.events.game.WeaponSelectedEvent;
 import com.lllmtb.events.game.WorldCreatedEvent;
 import com.lllmtb.events.physics.ExplosionEvent;
 import com.lllmtb.events.turn.TurnSkipEvent;
+import com.lllmtb.events.turn.TurnStopEvent;
 import com.lllmtb.events.input.UseInputEvent;
 import com.lllmtb.events.input.MoveInputEvent;
 import com.lllmtb.events.input.JetpackBoostInputEvent;
 import com.lllmtb.events.ui.graphical.MouseWheelMoveInputEvent;
+import com.lllmtb.events.ui.graphical.NotificationEvent;
 import com.lllmtb.events.ui.graphical.ShootMode;
 import com.lllmtb.events.ui.graphical.RequestFocus;
 import com.lllmtb.events.ui.graphical.ScreenGenerateMap;
@@ -150,6 +153,13 @@ public class EventsTest {
     }
 
     @Test
+    void NotificationEvent() {
+        NotificationEvent notificationEvent = new NotificationEvent("test", "image");
+        assertEquals("test", notificationEvent.getMessage());
+        assertEquals("image", notificationEvent.getImageName());
+    }
+
+    @Test
     public void eventsWithoutArgumentsTest() { // for JaCoCo - these events are just empty triggers
         new GameStateUpdatedEvent();
         new ScreenGenerateMap();
@@ -166,6 +176,9 @@ public class EventsTest {
         new ScreenLoadGame();
         new JetpackBoostInputEvent();
         new ChangeWormsEvent();
+        new TurnEndEvent();
+        new TurnStopEvent();
+
     }
 
     @Test

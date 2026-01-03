@@ -10,7 +10,7 @@ public class PoisonEffect extends StatusEffect {
      * Constructor for a poison effect
      */
     public PoisonEffect() {
-        super(1, 5);
+        super(1, 5, "Poison");
     }
 }
 

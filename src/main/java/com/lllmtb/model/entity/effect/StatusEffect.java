@@ -19,13 +19,19 @@ public abstract class StatusEffect {
     protected int remainingTurns;
 
     /**
+     * The name of the effect
+     */
+    protected String name;
+
+    /**
      * Constructor for a status effect
      * @param damagePerTurn the name of the effect
      * @param durationInTurns the duration of the effect in turns
      */
-    public StatusEffect(double damagePerTurn, int durationInTurns) {
+    public StatusEffect(double damagePerTurn, int durationInTurns, String name) {
         this.damagePerTurn = damagePerTurn;
         this.remainingTurns = durationInTurns;
+        this.name = name;
     }
 
     /**
@@ -42,6 +48,14 @@ public abstract class StatusEffect {
      */
     public int getRemainingTurns() {
         return this.remainingTurns;
+    }
+
+    /**
+     * Gets the name of the effect
+     * @return the name of the effect
+     */
+    public String getName() {
+        return name;
     }
 
     /**
