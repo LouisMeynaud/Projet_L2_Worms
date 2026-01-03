@@ -53,7 +53,8 @@ public class GameWorld {
             try {
                 tmap = MapLoader.loadMatrix(settings.mapFileName);
             } catch (Exception e) {
-                Logger.logger.error("Failed to load map '{}', generating new map instead", settings.mapFileName, e);
+                Logger.logger.error("Failed to load map '{}'", settings.mapFileName, e);
+                throw new RuntimeException(e);
             }
         }
         if (tmap == null) {
