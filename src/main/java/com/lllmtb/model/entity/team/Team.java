@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.Random;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.eclipse.jdt.annotation.NonNull;
 
@@ -61,9 +62,9 @@ public class Team {
     public final int id;
 
     /**
-     * Static counter for assigning unique team IDs.
+     * Thread-safe counter for assigning unique team IDs.
      */
-    private static int ids;
+    private static final AtomicInteger idCounter = new AtomicInteger(0);
 
     /**
      * The currently active worm of the team.
@@ -117,7 +118,7 @@ public class Team {
         this.inventory = Objects.requireNonNull(inventory);
         this.name = Objects.requireNonNull(name);
         this.numberOfWorms = numberOfWorms;
-        this.id = ++Team.ids;
+        this.id = idCounter.incrementAndGet();
         this.setUpWorms(numberOfWorms, spawn);
         this.currentWorm = this.worms.get(0);
         this.selectedItem = null;
