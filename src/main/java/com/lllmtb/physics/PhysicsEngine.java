@@ -168,17 +168,6 @@ public class PhysicsEngine {
         modifiers.clear();
     }
 
-    public void actualizeBodies() {
-        for (PhysicsBody body : bodies) {
-            if (body.getEntity() instanceof Worm worm) {
-                if (!(worm.isAlive())) {
-                    bodies.remove(body);
-                    //TODO : Remove a worm from a team or maybe set a state for worm when is dead
-                }
-            }
-        }
-    }
-
     /**
      * Randomly changes the wind vector to simulate natural fluctuations in wind force and direction.
      * <p>
