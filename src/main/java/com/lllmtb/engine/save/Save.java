@@ -13,7 +13,6 @@ import com.lllmtb.model.entity.Coin;
 import com.lllmtb.model.entity.Drop;
 import com.lllmtb.model.entity.Entity;
 import com.lllmtb.model.entity.projectile.Projectile;
-import com.lllmtb.model.entity.team.Team;
 import com.lllmtb.model.entity.worm.Worm;
 import com.lllmtb.terrain.map.Map;
 
