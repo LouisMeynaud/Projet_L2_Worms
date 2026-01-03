@@ -20,6 +20,9 @@ import com.lllmtb.terrain.map.Map;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 import com.lllmtb.terrain.map.SaveMap;
 import com.lllmtb.terrain.map.Tile;
 import com.lllmtb.ui.graphical.TextureManager;
@@ -141,15 +144,14 @@ public class Save {
      * @return A formatted string containing the game name, team list, and the team currently playing.
      */
     private static String  info(GameWorld gameWorld)  {
+        LocalDateTime time = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
+        String dateFormatee = time.format(formatter);
         String info = "";
-        info +=  "Nom de la partie: " + gameWorld.getGameName() + "\n ";
-        info +=  "Les équipes: ";
-        for (Team team : gameWorld.getTeams()) {
-            info += team.name;
-            info += "; ";
-        }
-        info += "\n ";
-        info +=  "Equipe à jouer: " + gameWorld.getPlayingTeam().name + "\n";
+        info +=  "Partie Sauvegardé le: " + dateFormatee + "; ";
+        info += "Tour actuel: "  + gameWorld.getTurnManager().getNbTurn() + "; ";
+
+        info +=  "L'équipe " + gameWorld.getPlayingTeam().name + " joue.";
         return info;
     }
 
