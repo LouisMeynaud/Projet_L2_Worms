@@ -46,6 +46,7 @@ public class ShopManager {
         items.add(new ShopElement(ToolId.TOWER, "tower", 150, 150, 1));
         items.add(new ShopElement(ToolId.MINE, "mine", 100, 100, 1));
         items.add(new ShopElement(ToolId.MEDKIT, "medkit", 75, 75, 1));
+        items.add(new ShopElement(ToolId.TRAP, "trap", 100, 100, 1));
 
     }
 
