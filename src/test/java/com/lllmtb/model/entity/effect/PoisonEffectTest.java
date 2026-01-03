@@ -28,8 +28,8 @@ public class PoisonEffectTest {
     @Test
     public void testPoisonEffectCreation() {
         PoisonEffect poison = new PoisonEffect();
-        assertEquals(1, poison.getDamagePerTurn());
-        assertEquals(5, poison.getRemainingTurns());
+        assertEquals(15, poison.getDamagePerTurn());
+        assertEquals(3, poison.getRemainingTurns());
         assertTrue(poison.isActive());
     }
 
@@ -50,10 +50,10 @@ public class PoisonEffectTest {
         worm.addStatusEffect(poison);
         worm.applyStatusEffects();
 
-        // Health should be reduced by 10
-        assertEquals(initialHealth - 1, worm.getStats().getHp());
+        // Health should be reduced by 15
+        assertEquals(initialHealth - 15, worm.getStats().getHp());
         // Poison duration should be decreased
-        assertEquals(4, poison.getRemainingTurns());
+        assertEquals(2, poison.getRemainingTurns());
     }
 
     @Test
@@ -68,8 +68,8 @@ public class PoisonEffectTest {
             worm.applyStatusEffects();
         }
 
-        // Total damage should be 5 (1 * 5)
-        assertEquals(initialHealth - 5, worm.getStats().getHp());
+        // Total damage should be 15 (1 * 15)
+        assertEquals(initialHealth - 45, worm.getStats().getHp());
         // Poison should be removed from effects list
         assertEquals(0, worm.getStatusEffects().size());
     }
@@ -88,6 +88,6 @@ public class PoisonEffectTest {
         // Apply both poisons
         worm.applyStatusEffects();
 
-        assertEquals(initialHealth - 1, worm.getStats().getHp());
+        assertEquals(initialHealth - 15, worm.getStats().getHp());
     }
 }

@@ -9,7 +9,9 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import com.lllmtb.engine.commands.GameCommand;
 import com.lllmtb.engine.logger.Logger;
+import com.lllmtb.events.game.CoinCollisionEvent;
 import com.lllmtb.events.physics.*;
+import com.lllmtb.model.entity.Coin;
 import com.lllmtb.model.entity.Drop;
 import com.lllmtb.model.entity.effect.BurnEffect;
 import com.lllmtb.model.entity.effect.PoisonEffect;
@@ -384,7 +386,16 @@ public class PhysicsEngine {
                             world.queueCommands(proj.onImpact(body.getEntity()));
                         }
                         if (body.getEntity() instanceof Drop drop) {
+                            if (impact.hitBody.getEntity() instanceof Drop) {
+                                world.queueCommand(drop.setOnGround());
+                            }
                             world.queueCommand(drop.onImpact(impact.hitBody.getEntity()));
+                        }
+                        if (body.getEntity() instanceof Coin coin) {
+                            if (impact.hitBody.getEntity() instanceof Worm worm) {
+                                world.getBus().postQueued(new CoinCollisionEvent(coin, worm.getTeam()));
+                                remove(body);
+                            }
                         }
                         if (body.getEntity() instanceof Worm worm) {
                             if (impact.hitBody.getEntity() instanceof Drop drop) {
@@ -555,7 +566,7 @@ public class PhysicsEngine {
         GameCommand death = null;
         double speedy = worm.getBody().getVector().getY();
         if (speedy < seuil) {
-            int damage = (int) Math.ceil((speedy - seuil) * -0.5);
+            int damage = (int) Math.ceil((speedy - seuil) * -0.7);
             death = worm.damageWorm(damage);
             Logger.logger.info("{} has fallen and lost {} health points!", worm.name, damage);
         }

@@ -19,7 +19,7 @@ public final class CatConcreteProjectile extends Projectile implements Explosive
 
     private static final int RAYON_DEGAT_MAP = 3;
     private static final int RAYON_SOUFFLE = 3;
-    private static final int DEGATS = 2;
+    private static final int DEGATS = 1;
     private static final double FORCE_SOUFFLE = 0;
     private static final String TEXTURE_KEY = "MissileExplosion";
 

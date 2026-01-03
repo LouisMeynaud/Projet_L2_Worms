@@ -36,11 +36,11 @@ class ShopManagerTest {
 
     @Test
     void buyItem_unlocksWeapon_whenEnoughCredits() {
-        when(mockTeam.getCredits()).thenReturn(200);
+        when(mockTeam.getCredits()).thenReturn(300);
 
         shopManager.buyItem(WeaponId.SHOTGUN, mockTeam);
 
-        verify(mockTeam).removeCredits(120);
+        verify(mockTeam).removeCredits(250);
         verify(mockTeam).unlockWeapon(WeaponId.SHOTGUN);
     }
 
@@ -61,8 +61,8 @@ class ShopManagerTest {
 
         shopManager.buyAmmo(WeaponId.SHOTGUN, mockTeam);
 
-        verify(mockTeam).removeCredits(40);
-        verify(mockTeam).addAmmo(WeaponId.SHOTGUN, 5);
+        verify(mockTeam).removeCredits(50);
+        verify(mockTeam).addAmmo(WeaponId.SHOTGUN, 3);
     }
 
     @Test
@@ -80,7 +80,7 @@ class ShopManagerTest {
 
         shopManager.buyAmmo(ToolId.PARACHUTE, mockTeam);
 
-        verify(mockTeam).removeCredits(20); 
+        verify(mockTeam).removeCredits(40); 
         verify(mockTeam).addAmmo(ToolId.PARACHUTE, 1);
     }
 
@@ -88,7 +88,7 @@ class ShopManagerTest {
     void buyItem_withInfiniteCredits() {
         when(mockTeam.getCredits()).thenReturn(-1); // -1 = infinite credits
         shopManager.buyItem(WeaponId.SHOTGUN, mockTeam);
-        verify(mockTeam).removeCredits(120);
+        verify(mockTeam).removeCredits(250);
         verify(mockTeam).unlockWeapon(WeaponId.SHOTGUN);
     }
 
@@ -98,7 +98,7 @@ class ShopManagerTest {
         when(mockTeam.getCredits()).thenReturn(-1); // -1 = infinite credits
         shopManager.buyAmmo(WeaponId.SHOTGUN, mockTeam);
         
-        verify(mockTeam).removeCredits(40);
-        verify(mockTeam).addAmmo(WeaponId.SHOTGUN, 5);
+        verify(mockTeam).removeCredits(50);
+        verify(mockTeam).addAmmo(WeaponId.SHOTGUN, 3);
     }
 }
