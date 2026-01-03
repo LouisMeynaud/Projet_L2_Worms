@@ -27,7 +27,6 @@ import com.lllmtb.events.input.MoveInputEvent;
 import com.lllmtb.events.input.JetpackBoostInputEvent;
 import com.lllmtb.events.ui.graphical.MouseWheelMoveInputEvent;
 import com.lllmtb.events.ui.graphical.NotificationEvent;
-import com.lllmtb.events.ui.graphical.ShootMode;
 import com.lllmtb.events.ui.graphical.RequestFocus;
 import com.lllmtb.events.ui.graphical.ScreenGenerateMap;
 import com.lllmtb.events.ui.graphical.ScreenHomeEvent;
@@ -171,7 +170,6 @@ public class EventsTest {
         new MapUpdateEvent();
         new SaveEvent();
         new RequestFocus();
-        new ShootMode();
         new TurnSkipEvent();
         new ScreenLoadGame();
         new JetpackBoostInputEvent();
