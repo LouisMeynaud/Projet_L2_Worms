@@ -329,6 +329,7 @@ public class Team {
      * @throws UnknownWeaponException if the weapon type is unknown
      */
     public void unlockWeapon(@NonNull WeaponId id) {
+        Logger.logger.info("[TEAM {}] Unlocking weapon {}", this.name, id);
         this.inventory.unlock(id);
     }
 
@@ -338,6 +339,7 @@ public class Team {
      * @throws UnknownWeaponException if the weapon type is unknown
      */
     public void lockWeapon(@NonNull WeaponId id) {
+        Logger.logger.info("[TEAM {}] Locking weapon {}", this.name, id);
         this.inventory.lock(id);
     }
 
@@ -349,6 +351,7 @@ public class Team {
      */
     public void addAmmo(@NonNull WeaponId id, int n) {
         try {
+            Logger.logger.info("[TEAM {}] Adding {} ammo to weapon {}", this.name, n, id);
             this.inventory.weapons.addAmmo(id, n);
         } catch (UnknownItemException e) {
             throw new UnknownWeaponException((WeaponId) e.id);
@@ -363,6 +366,7 @@ public class Team {
      */
     public void addAmmo(@NonNull ToolId id, int n) {
         try {
+            Logger.logger.info("[TEAM {}] Adding {} ammo to tool {}", this.name, n, id);
             this.inventory.tools.addAmmo(id, n);
         } catch (UnknownItemException e) {
             throw new UnknownToolException((ToolId) e.id);
@@ -382,10 +386,12 @@ public class Team {
         Objects.requireNonNull(useParams);
         if (this.selectedItem == null) return null;
         if (this.selectedItem instanceof WeaponId weaponId) {
+            Logger.logger.info("[TEAM {}] Firing weapon {}", this.name, weaponId);
             this.shootCount++;
             return this.inventory.fire(weaponId, useParams);
         }
         if (this.selectedItem instanceof ToolId toolId) {
+            Logger.logger.info("[TEAM {}] Using tool {}", this.name, toolId);
             this.emptyHand();
             return this.inventory.use(toolId, useParams);
         }
@@ -428,6 +434,7 @@ public class Team {
         if (!inventory.canFire(id)) {
             throw new UnusableWeaponException(id, this);
         }
+        Logger.logger.info("[TEAM {}] Selecting weapon {}", this.name, id);
         selectItem(id);
     }
 
@@ -442,6 +449,7 @@ public class Team {
         if (!inventory.canUse(id)) {
             throw new UnusableToolException(id, this);
         }
+        Logger.logger.info("[TEAM {}] Selecting tool {}", this.name, id);
         selectItem(id);
     }
 
@@ -475,19 +483,17 @@ public class Team {
 
     public void addCredits(int amount) {
         if (amount > 0 && credits != -1) {
+            Logger.logger.info("[TEAM {}] Adding {} credits", this.name, amount);
             this.credits += amount;
-            Logger.logger.info("$$$ [TEAM " + this.name + "] Gain de " + amount + " pieces. Total: " + this.credits);
         }
     }
 
     public void removeCredits(int amount) {
-        if (credits == -1) {
-            return;
-        }
+        if (credits == -1) return;
 
         if (amount > 0 && credits >= amount) {
+            Logger.logger.info("[TEAM {}] Removing {} credits", this.name, amount);
             this.credits -= amount;
-            Logger.logger.info("$$$ [TEAM " + this.name + "] achat/perte de " + amount + " pieces. Total: " + this.credits);
         }
     }
 }

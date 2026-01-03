@@ -14,6 +14,7 @@ public final class ToolRegistry extends ItemRegistry<ToolId, Tool> {
         this.register(ToolId.TOWER, new TowerTool());
         this.register(ToolId.GRENADE, new GrenadeTools());
         this.register(ToolId.MINE, new MineTool());
+        this.register(ToolId.TRAP, new TrapTool());
         this.register(ToolId.MEDKIT, new MedkitTool());
     }
 }

@@ -205,7 +205,7 @@ public final class TurnManager {
             if (random.nextInt(2) == 0) {
                 //Weapon Drop
                 WeaponId[] weaponIdValues = WeaponId.values();
-                itemId = weaponIdValues[random.nextInt(1, weaponIdValues.length - 1)]; // Between 1 and length-1 to remove Gun and None in the choice
+                itemId = weaponIdValues[random.nextInt(2, weaponIdValues.length - 1)]; // Between 2 and length-1 to remove Gun, BaseballBat and None in the choice
             } else {
                 // Tool Drop
                 ToolId[] toolIdValues = ToolId.values();

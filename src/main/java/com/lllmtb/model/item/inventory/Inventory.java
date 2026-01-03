@@ -26,6 +26,8 @@ public final class Inventory {
     public Inventory() {
         weapons.addAmmo(WeaponId.GUN, -1);
         unlocked.add(WeaponId.GUN);
+        weapons.addAmmo(WeaponId.BASEBALLBAT, -1);
+        unlocked.add(WeaponId.BASEBALLBAT);
         tools.addAmmo(ToolId.PARACHUTE, 2);
     }
 

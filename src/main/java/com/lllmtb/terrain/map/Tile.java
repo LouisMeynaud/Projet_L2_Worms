@@ -10,6 +10,7 @@ public enum Tile {
     ICE('I', '#', true, 4, 1, 0),
     SNOW('S', '_', true, 4, 1, 0),
     LAVA('L', 'L', false, 4, 0.90, 0.5),
+    TRAP('T', 'T', false, 3, 0.90, 0.5),
     MOONGRASS('M', '_', true, 4, 0.90, 0),
     MOONDIRT('N', '#', true, 4, 0.90, 0),
     MOONUNDERDIRT('X', '#', true, 1, 0.90, 0);

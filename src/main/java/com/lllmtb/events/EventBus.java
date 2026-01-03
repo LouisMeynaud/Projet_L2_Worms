@@ -150,7 +150,7 @@ public class EventBus {
                         ((EventListener<T>) listener).handle(event); // safe to cast
                     } catch (Exception ex) {
                         Logger.logger.error("Error while handling event {} with listener {} : ", event, listener);
-                        Logger.logger.debug("Error while handling event {} with listener {} : ", event, listener, ex);
+                        Logger.logger.debug("Error while handling event {} with listener {} : {} {}", event, listener, ex, ex.getStackTrace());
                     }
                 }
             }

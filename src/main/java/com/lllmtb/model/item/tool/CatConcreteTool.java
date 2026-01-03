@@ -1,7 +1,7 @@
 package com.lllmtb.model.item.tool;
 
 import com.lllmtb.engine.commands.GameCommand;
-import com.lllmtb.engine.commands.RegisterProjectileCommand;
+import com.lllmtb.engine.commands.RegisterEntityCommand;
 import com.lllmtb.model.entity.projectile.CatConcreteProjectile;
 import com.lllmtb.model.item.UseParams;
 import org.eclipse.jdt.annotation.NonNull;
@@ -18,7 +18,7 @@ public final class CatConcreteTool extends Tool {
 
     @Override
     public List<GameCommand> use(@NonNull UseParams params) {
-        GameCommand cmd = new RegisterProjectileCommand(new CatConcreteProjectile(Objects.requireNonNull(params)), params.owner);
+        GameCommand cmd = new RegisterEntityCommand(new CatConcreteProjectile(Objects.requireNonNull(params)), params.owner);
         return List.of(cmd);
     }
 }

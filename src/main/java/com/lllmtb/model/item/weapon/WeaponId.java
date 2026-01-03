@@ -5,6 +5,7 @@ import com.lllmtb.model.item.ShootMode;
 
 public enum WeaponId implements ItemId {
     GUN("A standard handgun for reliable, direct fire."),
+    BASEBALLBAT(ShootMode.NONE, "A melee weapon that pushes away nearby entities.", 1000),
     BAZOOKA("Fires a heavy, explosive rocket.", 1000),
     HEALINGBAZOOKA("Fires a medical rocket that heals allies in the blast radius.", 1000),
     SHOTGUN("Fires a spread of pellets, devastating at close range."),

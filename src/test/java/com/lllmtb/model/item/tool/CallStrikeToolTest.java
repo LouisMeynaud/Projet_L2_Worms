@@ -1,7 +1,7 @@
 package com.lllmtb.model.item.tool;
 
 import com.lllmtb.engine.commands.GameCommand;
-import com.lllmtb.engine.commands.RegisterProjectileCommand;
+import com.lllmtb.engine.commands.RegisterEntityCommand;
 import com.lllmtb.model.entity.projectile.MissileProjectile;
 import com.lllmtb.model.entity.projectile.Projectile;
 import com.lllmtb.model.entity.team.Team;
@@ -36,16 +36,16 @@ public class CallStrikeToolTest {
 
         // First command should be RegisterProjectileCommand
         GameCommand cmd = cmds.get(0);
-        assertInstanceOf(RegisterProjectileCommand.class, cmd);
+        assertInstanceOf(RegisterEntityCommand.class, cmd);
 
         // Assert that the modifier has the correct properties
-        Field ownerField = RegisterProjectileCommand.class.getDeclaredField("owner");
+        Field ownerField = RegisterEntityCommand.class.getDeclaredField("owner");
         ownerField.setAccessible(true);
         Worm o = (Worm) ownerField.get(cmd);
 
         assertEquals(w, o);
 
-        Field projectileField = RegisterProjectileCommand.class.getDeclaredField("projectile");
+        Field projectileField = RegisterEntityCommand.class.getDeclaredField("entity");
         projectileField.setAccessible(true);
         Projectile p = (Projectile) projectileField.get(cmd);
 
