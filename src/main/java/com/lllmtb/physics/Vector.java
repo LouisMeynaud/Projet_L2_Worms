@@ -106,4 +106,12 @@ public class Vector {
     public String toString() {
         return "Vect(" + this.x + "," + this.y + ")";
     }
+
+    /**
+     * Creates a copy of this vector.
+     * @return a new Vector that is a copy of this vector
+     */
+    public Vector copy() {
+        return new Vector(this.x, this.y);
+    }
 }
