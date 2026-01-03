@@ -12,6 +12,7 @@ public enum ToolId implements ItemId {
     MINE("A volatile trap that detonates instantly if anyone dares to step on it.", 3000),
     GRENADE("A timed bomb that bounces off terrain before exploding.", 4000),
     MEDKIT(ShootMode.NONE, "Restores a portion of the active worm's health."),
+    TRAP("A throwable trap that inflicts poison", 3000),
     NONE;
 
     private final ShootMode shootMode;
