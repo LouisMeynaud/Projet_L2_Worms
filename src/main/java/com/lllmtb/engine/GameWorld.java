@@ -92,7 +92,7 @@ public class GameWorld {
         //Init TurnManager
         this.turnManager = gameSave.turnManager;
 
-        // use reflexion to recreate worm instance with correct PhysicsBody
+        // use reflexion
         try {
             Field worldField = TurnManager.class.getDeclaredField("world");
             worldField.setAccessible(true);

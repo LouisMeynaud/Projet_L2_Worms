@@ -106,45 +106,45 @@ public class Load {
         for (PhysicsBodySave saveBody : gameSave.entities) {
             try {
             if (saveBody.entity instanceof Worm worm) {
-                // use reflexion to recreate worm instance with correct PhysicsBody
+                // use reflexion
                     Field bodyWormField = Worm.class.getDeclaredField("body");
                     bodyWormField.setAccessible(true);
                     bodyWormField.set(worm, saveBody.physicsBody);
             } else if (saveBody.entity instanceof Projectile projectile) {
-                // use reflexion to recreate worm instance with correct PhysicsBody
+                // use reflexion
                 Field bodyProjectileField = Projectile.class.getDeclaredField("body");
                 bodyProjectileField.setAccessible(true);
                 bodyProjectileField.set(projectile, saveBody.physicsBody);
 
-                // use reflexion to recreate worm instance with correct PhysicsBody
+                // use reflexion
                 Field entityProjectileField = PhysicsBody.class.getDeclaredField("entity");
                 entityProjectileField.setAccessible(true);
                 entityProjectileField.set(saveBody.physicsBody, projectile);
 
 
             } else if (saveBody.entity instanceof Coin coin) {
-                // use reflexion to recreate worm instance with correct PhysicsBody
+                // use reflexion
                 Field bodyCoinField = Coin.class.getDeclaredField("body");
                 bodyCoinField.setAccessible(true);
                 bodyCoinField.set(coin, saveBody.physicsBody);
 
-                // use reflexion to recreate worm instance with correct PhysicsBody
+                // use reflexion
                 Field entityCoinField = PhysicsBody.class.getDeclaredField("entity");
                 entityCoinField.setAccessible(true);
                 entityCoinField.set(saveBody.physicsBody, coin);
 
             } else if (saveBody.entity instanceof Drop drop) {
-                // use reflexion to recreate worm instance with correct PhysicsBody
+                // use reflexion
                 Field bodyDropField = Drop.class.getDeclaredField("body");
                 bodyDropField.setAccessible(true);
                 bodyDropField.set(drop, saveBody.physicsBody);
 
-                // use reflexion to recreate worm instance with correct PhysicsBody
+                // use reflexion
                 Field entityDropField = PhysicsBody.class.getDeclaredField("entity");
                 entityDropField.setAccessible(true);
                 entityDropField.set(saveBody.physicsBody, drop);
 
-                // use reflexion to recreate worm instance with correct PhysicsBody
+                // use reflexion
                 Field itemIdField = Drop.class.getDeclaredField("itemIdToUnlock");
                 itemIdField.setAccessible(true);
                 itemIdField.set(drop, Load.recoverItem(drop.getItemCategory(), drop.getItemName()));
