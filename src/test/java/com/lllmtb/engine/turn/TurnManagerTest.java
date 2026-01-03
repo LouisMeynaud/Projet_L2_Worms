@@ -33,7 +33,6 @@
  import com.lllmtb.events.turn.TurnEndEvent;
  import com.lllmtb.events.turn.TurnStartEvent;
  import com.lllmtb.events.turn.TurnStopEvent;
- import com.lllmtb.events.turn.WormPlayable;
  import com.lllmtb.physics.GameMode;
  import com.lllmtb.terrain.generation.LandScape;
  import org.mockito.Mockito;
@@ -117,21 +116,6 @@
          } catch (InterruptedException ignored) {}
          assertTrue(event1.get());
      }
-
-     @Test
-     void testStartWormPlayable(){
-         AtomicBoolean event2 = new AtomicBoolean(false);
-         this.gw.getBus().subscribe(WormPlayable.class, event -> {
-             event2.set(true);
-         });
-         gw.getBus().postQueued(new TurnStopEvent());
-         try {
-             Thread.sleep(1000);
-         } catch (InterruptedException ignored) {}
-         assertTrue(event2.get());
-
-     }
-
 
      @Test
      void testUpdateEndWithTime(){
