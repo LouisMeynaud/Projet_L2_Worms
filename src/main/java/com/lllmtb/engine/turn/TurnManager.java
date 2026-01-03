@@ -171,7 +171,7 @@ public final class TurnManager {
             int x = random.nextInt(mapWidth);
             for (int y = mapHeight - 1; y > 0; y--) {
                 if (world.getMap().isSolid(new Position(x, y))) {
-                    int coinY = y + 1;
+                    int coinY = y + 3;
                     Coin coin = new Coin(new Position(x + 0.25, coinY), 50);
                     world.getPhysics().getBodies().add(coin.getBody());
                     break;
