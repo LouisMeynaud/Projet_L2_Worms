@@ -103,6 +103,9 @@ public class GameWorld {
             Field restartField = TurnManager.class.getDeclaredField("restart");
             restartField.setAccessible(true);
             restartField.set(this.turnManager, true);
+            Field nbTurnField = TurnManager.class.getDeclaredField("nbTurn");
+            nbTurnField.setAccessible(true);
+            nbTurnField.set(this.turnManager, this.turnManager.getNbTurn() - 1);
         } catch (NoSuchFieldException | IllegalAccessException e) {
             throw new RuntimeException(e);
         }
