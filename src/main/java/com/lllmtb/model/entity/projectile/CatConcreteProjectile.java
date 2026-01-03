@@ -15,7 +15,7 @@ public final class CatConcreteProjectile extends Projectile implements Explosive
     private static final double height = 4;
     private static final double width  = 4;
     private static final double damage = 0;
-    private int hits = 20;
+    private int hits = 12;
 
     private static final int RAYON_DEGAT_MAP = 3;
     private static final int RAYON_SOUFFLE = 3;
