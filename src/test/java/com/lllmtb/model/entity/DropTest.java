@@ -107,4 +107,11 @@ public class DropTest {
 
 
     }
+
+    @Test
+    public void getTest(){
+        world.start();
+        assertEquals(WeaponId.GUN.name(), drop.getItemName());
+        assertEquals("WEAPONID", drop.getItemCategory());
+    }
 }

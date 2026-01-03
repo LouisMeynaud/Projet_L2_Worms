@@ -1,5 +1,6 @@
 package com.lllmtb.events;
 
+import com.lllmtb.events.game.*;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -8,16 +9,6 @@ import static org.mockito.Mockito.mock;
 import com.lllmtb.engine.GameSettings;
 import com.lllmtb.engine.GameWorld;
 import com.lllmtb.events.turn.ChangeWormsEvent;
-import com.lllmtb.events.game.CoinCollisionEvent;
-import com.lllmtb.events.game.GamePauseEvent;
-import com.lllmtb.events.game.GameStateUpdatedEvent;
-import com.lllmtb.events.game.LoadEvent;
-import com.lllmtb.events.game.MapUpdateEvent;
-import com.lllmtb.events.game.SaveEvent;
-import com.lllmtb.events.game.StartGameEvent;
-import com.lllmtb.events.game.ToolSelectedEvent;
-import com.lllmtb.events.game.WeaponSelectedEvent;
-import com.lllmtb.events.game.WorldCreatedEvent;
 import com.lllmtb.events.physics.ExplosionEvent;
 import com.lllmtb.events.turn.TurnSkipEvent;
 import com.lllmtb.events.input.UseInputEvent;
@@ -166,6 +157,7 @@ public class EventsTest {
         new ScreenLoadGame();
         new JetpackBoostInputEvent();
         new ChangeWormsEvent();
+        new FinalSaveEvent();
     }
 
     @Test
@@ -178,5 +170,10 @@ public class EventsTest {
 //        assertNotNull(event);
 //        assertSame(movingBodyMock, event.getMovingBody());
 //        assertSame(hitBodyMock, event.getHitBody());
+    }
+    @Test
+    void DeleteSaveEventTest() {
+        DeleteSaveEvent deleteSaveEvent = new DeleteSaveEvent( "Test");
+        assertEquals("Test", deleteSaveEvent.getSaveName());
     }
 }
