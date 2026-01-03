@@ -260,9 +260,9 @@ public final class TurnManager {
         this.turn.getTeam().emptyHand();
         Logger.logger.info("End turn - switch Team\n");
         world.getBus().postQueued(new TurnEndEvent());
+        applyStatusEffectsToAllWorms();
         this.turnFinish = true;
         this.turn.getTeam().setCurrentWormNull();
-        applyStatusEffectsToAllWorms();
     }
 
     /**
@@ -271,8 +271,10 @@ public final class TurnManager {
     private void applyStatusEffectsToAllWorms() {
         for (Team team : world.getTeams()) {
             for (Worm worm : team.getTeamWorms()) {
-                List<GameCommand> commands = worm.applyStatusEffects();
-                world.queueCommands(commands);
+                if (worm.isAlive()) {
+                    List<GameCommand> commands = worm.applyStatusEffects();
+                    world.queueCommands(commands);
+                }
             }
         }
     }
