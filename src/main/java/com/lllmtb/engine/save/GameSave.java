@@ -23,7 +23,7 @@ public class GameSave {
     public boolean hasWind;
     public Vector wind;
     public Vector gravity;
-    public ConcurrentHashMap<Integer, ArrayList<PhysicsModifier>> modifiers;
+    public transient ConcurrentHashMap<Integer, ArrayList<PhysicsModifier>> modifiers;
     public GameSettings gameSettings;
     public TurnManager turnManager;
 

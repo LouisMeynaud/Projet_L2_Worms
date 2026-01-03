@@ -51,6 +51,7 @@ public class GameWorld {
     public GameWorld(GameSave gameSave, Map map) {
         GameSettings settings = gameSave.gameSettings;
         this.gameName = gameSave.gameSettings.gameName;
+        this.indexTeam = gameSave.indexTeam;
         // Init Map (we'll have to handle this better once MapLoader throws catchable exceptions)
 
         if (map == null) {

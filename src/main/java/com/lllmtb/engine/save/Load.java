@@ -10,6 +10,9 @@ import com.lllmtb.model.entity.Entity;
 import com.lllmtb.model.entity.projectile.Projectile;
 import com.lllmtb.model.entity.team.Team;
 import com.lllmtb.model.entity.worm.Worm;
+import com.lllmtb.model.item.ItemId;
+import com.lllmtb.model.item.tool.ToolId;
+import com.lllmtb.model.item.weapon.WeaponId;
 import com.lllmtb.physics.PhysicsBody;
 import com.lllmtb.terrain.map.Map;
 import com.lllmtb.terrain.map.MapLoader;
@@ -137,6 +140,11 @@ public class Load {
                 Field entityDropField = PhysicsBody.class.getDeclaredField("entity");
                 entityDropField.setAccessible(true);
                 entityDropField.set(saveBody.physicsBody, drop);
+
+                // use reflexion to recreate worm instance with correct PhysicsBody
+                Field itemIdField = Drop.class.getDeclaredField("itemIdToUnlock");
+                itemIdField.setAccessible(true);
+                itemIdField.set(drop, Load.recoverItem(drop.getItemCategory(), drop.getItemName()));
             }
 
 
@@ -194,6 +202,14 @@ public class Load {
             return new GameWorld(gameSave, map);
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    public static ItemId recoverItem(String category, String name) {
+        if ("WEAPONID".equals(category)) {
+            return WeaponId.valueOf(name);
+        } else {
+            return ToolId.valueOf(name);
         }
     }
 }
