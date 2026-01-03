@@ -11,7 +11,7 @@ import java.util.Objects;
 
 public final class BaseballBatWeapon extends Weapon {
     private static final double PUSH_RADIUS = 5.0;
-    private static final double PUSH_FORCE = 500.0;
+    private static final double PUSH_FORCE = 50.0;
 
     @Override
     public WeaponId id() {
@@ -30,7 +30,7 @@ public final class BaseballBatWeapon extends Weapon {
             new Position(centerX, centerY),
             params.angleRadians,
             PUSH_RADIUS,
-            PUSH_FORCE,
+            PUSH_FORCE * Math.min(params.duration / 100, 3),
             params.owner
         );
 
