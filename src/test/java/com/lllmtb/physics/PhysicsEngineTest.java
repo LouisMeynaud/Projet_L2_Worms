@@ -186,7 +186,7 @@ class PhysicsEngineTest {
     }
 
     @Test
-    void testWindChangesEvery600Ticks() {
+    void testWindChangesEvery1250Ticks() {
         double ticktime = 16.7;
         TurnManager t = new TurnManager(world, 10000);
         Map map = Mockito.mock(Map.class);
@@ -197,7 +197,7 @@ class PhysicsEngineTest {
         Mockito.when(world.getMap()).thenReturn(map);
         t.startTurn(team);
         Vector windBefore = pE.getWind();
-        for (int i = 0; i < 605; i++) {
+        for (int i = 0; i < 1260; i++) {
             pE.next(ticktime);
         }
         Vector windAfter = pE.getWind();
