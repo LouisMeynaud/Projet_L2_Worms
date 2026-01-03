@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 import static org.mockito.Mockito.mock;
 
 import com.lllmtb.engine.commands.GameCommand;
-import com.lllmtb.engine.commands.RegisterProjectileCommand;
+import com.lllmtb.engine.commands.RegisterEntityCommand;
 import com.lllmtb.model.entity.projectile.ShotGunProjectile;
 import com.lllmtb.model.entity.worm.Worm;
 import com.lllmtb.model.item.UseParams;
@@ -34,15 +34,15 @@ public class ShotGunWeaponTest {
         assertEquals(5, cmds.size());
 
         GameCommand cmd = cmds.get(0);
-        assertInstanceOf(RegisterProjectileCommand.class, cmd);
+        assertInstanceOf(RegisterEntityCommand.class, cmd);
 
         // Assert that the projectile has the correct properties
-        Field projectileField = RegisterProjectileCommand.class.getDeclaredField("projectile");
+        Field projectileField = RegisterEntityCommand.class.getDeclaredField("projectile");
         projectileField.setAccessible(true);
         Object projectile = projectileField.get(cmd);
         assertInstanceOf(ShotGunProjectile.class, projectile);
 
-        Field ownerField = RegisterProjectileCommand.class.getDeclaredField("owner");
+        Field ownerField = RegisterEntityCommand.class.getDeclaredField("owner");
         ownerField.setAccessible(true);
         Object owner = ownerField.get(cmd);
         assertEquals(w, owner);

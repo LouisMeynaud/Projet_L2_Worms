@@ -2,6 +2,7 @@ package com.lllmtb.model.entity;
 
 import com.lllmtb.engine.commands.AddPhysicsModifierCommand;
 import com.lllmtb.engine.commands.GameCommand;
+import com.lllmtb.engine.commands.RegisterEntityCommand;
 import com.lllmtb.engine.commands.RemoveEntityCommand;
 import com.lllmtb.engine.logger.Logger;
 import com.lllmtb.events.ui.graphical.NotificationEvent;
@@ -44,8 +45,8 @@ public class Drop extends Entity {
     }
 
     public List<GameCommand> addModifier() {
-        List<GameCommand> commands = new ArrayList<GameCommand>();
-        Drop drop = this;
+        List<GameCommand> commands = new ArrayList<>();
+        commands.add(new RegisterEntityCommand(this));
 
         Transform transform = (v) -> {
             double vy = v.getY();
@@ -53,8 +54,6 @@ public class Drop extends Entity {
             return new Vector(v.getX(), vy);
         };
         PhysicsModifier modifier = new PhysicsModifier(transform, null, Double.POSITIVE_INFINITY, true);
-
-        commands.add(world -> world.getPhysics().add(drop.getBody()));
         commands.add(new AddPhysicsModifierCommand(this, modifier));
 
         return commands;

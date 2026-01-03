@@ -21,7 +21,7 @@ import static org.mockito.Mockito.verify;
 import com.lllmtb.engine.GameSettings;
 import com.lllmtb.engine.GameWorld;
 import com.lllmtb.events.EventBus;
-import com.lllmtb.events.physics.ProjectileRegisteredEvent;
+import com.lllmtb.events.physics.EntityRegisteredEvent;
 import com.lllmtb.model.entity.Entity;
 import com.lllmtb.model.entity.projectile.Projectile;
 import com.lllmtb.physics.GameMode;
@@ -71,15 +71,15 @@ public class GameCommandTest {
         Projectile projectile = mock(Projectile.class);
         Entity owner = mock(Entity.class);
 
-        RegisterProjectileCommand cmd = new RegisterProjectileCommand(projectile, owner);
+        RegisterEntityCommand cmd = new RegisterEntityCommand(projectile, owner);
 
         cmd.execute(world);
 
         verify(physics).add(isNull());
         verify(bus).postQueued(argThat(e ->
-                e instanceof ProjectileRegisteredEvent
-                        && ((ProjectileRegisteredEvent) e).projectile() == projectile
-                        && ((ProjectileRegisteredEvent) e).source() == owner
+                e instanceof EntityRegisteredEvent
+                        && ((EntityRegisteredEvent) e).projectile() == projectile
+                        && ((EntityRegisteredEvent) e).source() == owner
         ));
     }
 

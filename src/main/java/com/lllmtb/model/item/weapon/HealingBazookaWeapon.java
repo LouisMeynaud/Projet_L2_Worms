@@ -6,7 +6,7 @@ import java.util.Objects;
 import org.eclipse.jdt.annotation.NonNull;
 
 import com.lllmtb.engine.commands.GameCommand;
-import com.lllmtb.engine.commands.RegisterProjectileCommand;
+import com.lllmtb.engine.commands.RegisterEntityCommand;
 import com.lllmtb.model.entity.projectile.HealingProjectile;
 import com.lllmtb.model.item.UseParams;
 
@@ -19,7 +19,7 @@ public final class HealingBazookaWeapon extends Weapon {
 
     @Override
     public List<GameCommand> fire(@NonNull UseParams params) {
-        GameCommand cmd = new RegisterProjectileCommand(new HealingProjectile(Objects.requireNonNull(params)), params.owner);
+        GameCommand cmd = new RegisterEntityCommand(new HealingProjectile(Objects.requireNonNull(params)), params.owner);
         return List.of(cmd);
     }
 }

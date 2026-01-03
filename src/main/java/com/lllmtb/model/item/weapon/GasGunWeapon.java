@@ -6,7 +6,7 @@ import java.util.Objects;
 import org.eclipse.jdt.annotation.NonNull;
 
 import com.lllmtb.engine.commands.GameCommand;
-import com.lllmtb.engine.commands.RegisterProjectileCommand;
+import com.lllmtb.engine.commands.RegisterEntityCommand;
 import com.lllmtb.model.entity.projectile.GasProjectile;
 import com.lllmtb.model.item.UseParams;
 
@@ -19,7 +19,7 @@ public final class GasGunWeapon extends Weapon {
 
     @Override
     public List<GameCommand> fire(@NonNull UseParams params) {
-        GameCommand cmd = new RegisterProjectileCommand(new GasProjectile(Objects.requireNonNull(params)), params.owner);
+        GameCommand cmd = new RegisterEntityCommand(new GasProjectile(Objects.requireNonNull(params)), params.owner);
         return List.of(cmd);
     }
 }
