@@ -98,17 +98,17 @@ public class PanelListe extends JPanel {
 
         try {
             String cheminInfo = "/map/" + nomDossier + "/" + NOM_FICHIER_INFO;
-            InputStream isText = getClass().getResourceAsStream(cheminInfo);
-
-            if (isText != null) {
-                BufferedReader reader = new BufferedReader(new InputStreamReader(isText));
-                String ligne1 = reader.readLine();
-                if (ligne1 != null) {
-                    description = ligne1;
+            try (InputStream isText = getClass().getResourceAsStream(cheminInfo)) {
+                if (isText != null) {
+                    try (BufferedReader reader = new BufferedReader(new InputStreamReader(isText))) {
+                        String ligne1 = reader.readLine();
+                        if (ligne1 != null) {
+                            description = ligne1;
+                        }
+                    }
+                } else {
+                    description = "Pas de fichier info";
                 }
-                reader.close();
-            } else {
-                description = "Pas de fichier info";
             }
 
             String cheminImage = "/map/" + nomDossier + "/" + NOM_FICHIER_IMAGE;
