@@ -14,7 +14,7 @@ public final class GrenadeProjectile extends Projectile implements ExplosiveProj
     private static final double mass   = 0.0060;
     private static final double height = 1;
     private static final double width  = 1;
-    private static final double damage    = 60;
+    private static final double damage = 60;
 
     private static final int RAYON_DEGAT_MAP = 7;
     private static final int RAYON_SOUFFLE   = 7;

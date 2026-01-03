@@ -58,4 +58,14 @@ public class VectorTest {
         Vector v1 = new Vector(3,4);
         assertEquals("Vect(3.0,4.0)",v1.toString());
     }
+    @Test
+    void testCopy() {
+        Vector v1 = new Vector(3, 4);
+        Vector v2 = v1.copy();
+        assertEquals(v1.getX(), v2.getX());
+        assertEquals(v1.getY(), v2.getY());
+        v2 = v2.add(new Vector(1, 1));
+        assertEquals(3, v1.getX());
+        assertEquals(4, v1.getY());
+    }
 }

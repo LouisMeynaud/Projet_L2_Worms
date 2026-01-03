@@ -47,8 +47,6 @@ public class TextureManager {
             UI.put("InventoryButtonHover", ImageIO.read(TextureManager.class.getResource("/textures/button/InventoryButton.png")));
             UI.put("SkipTurn", ImageIO.read(TextureManager.class.getResource("/textures/button/SkipTurn.png")));
             UI.put("SkipTurnHover", ImageIO.read(TextureManager.class.getResource("/textures/button/SkipTurn.png")));
-            UI.put("ShootMode", ImageIO.read(TextureManager.class.getResource("/textures/button/ShootMode.png")));
-            UI.put("ShootModeHover", ImageIO.read(TextureManager.class.getResource("/textures/button/ShootMode.png")));
             UI.put("Panel", ImageIO.read(TextureManager.class.getResource("/textures/button/Panel.png")));
             UI.put("PanelHover", ImageIO.read(TextureManager.class.getResource("/textures/button/Panel.png")));
             UI.put("Coin", ImageIO.read(TextureManager.class.getResource("/textures/Coin.png")));
@@ -98,6 +96,12 @@ public class TextureManager {
             EFFECT.put("BazookaExplosion", ImageIO.read(TextureManager.class.getResource("/sprites/effect/BazookaExplosion.png")));
             EFFECT.put("HealingBazookaExplosion", ImageIO.read(TextureManager.class.getResource("/sprites/effect/HealingBazookaExplosion.png")));
             EFFECT.put("MissileExplosion", ImageIO.read(TextureManager.class.getResource("/sprites/effect/MissileExplosion.png")));
+            EFFECT.put("MineExplosion", ImageIO.read(TextureManager.class.getResource("/sprites/effect/MineExplosion.png")));
+
+            EFFECT.put("Poison", ImageIO.read(TextureManager.class.getResource("/textures/effect/poison.png")));
+            EFFECT.put("Burn", ImageIO.read(TextureManager.class.getResource("/textures/effect/burn.png")));
+
+
 
             NOTIFICATIONS.putAll(WEAPONS);
             NOTIFICATIONS.putAll(TOOLS);

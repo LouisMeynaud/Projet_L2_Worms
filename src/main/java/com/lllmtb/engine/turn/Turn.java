@@ -32,6 +32,7 @@ public class Turn {
 
     public void end() {
         this.team.resetShootCount();
+        this.team.resetWormChangeCount();
         this.team.nextWorm();
     }
 

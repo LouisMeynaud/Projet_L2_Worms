@@ -9,9 +9,13 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import com.lllmtb.engine.commands.GameCommand;
 import com.lllmtb.engine.logger.Logger;
+import com.lllmtb.events.game.CoinCollisionEvent;
 import com.lllmtb.events.physics.*;
+import com.lllmtb.model.entity.Coin;
 import com.lllmtb.model.entity.Drop;
 import com.lllmtb.model.entity.effect.BurnEffect;
+import com.lllmtb.model.entity.effect.PoisonEffect;
+
 import org.eclipse.jdt.annotation.NonNull;
 
 import com.lllmtb.engine.GameWorld;
@@ -166,17 +170,6 @@ public class PhysicsEngine {
         modifiers.clear();
     }
 
-    public void actualizeBodies() {
-        for (PhysicsBody body : bodies) {
-            if (body.getEntity() instanceof Worm worm) {
-                if (!(worm.isAlive())) {
-                    bodies.remove(body);
-                    //TODO : Remove a worm from a team or maybe set a state for worm when is dead
-                }
-            }
-        }
-    }
-
     /**
      * Randomly changes the wind vector to simulate natural fluctuations in wind force and direction.
      * <p>
@@ -190,8 +183,8 @@ public class PhysicsEngine {
      */
     protected void changeWind() {
         if (this.hasWind) {
-            Vector random = new Vector(Math.random() / 3 - 1f / 3f, Math.random() / 3 - 1f / 3f);
-            this.wind = this.wind.add(random);
+            Vector random = new Vector(Math.random() / 2 - 1f / 4f, Math.random() / 2 - 1f / 4f);
+            this.wind = random.scale(10000);
         }
     }
 
@@ -393,7 +386,16 @@ public class PhysicsEngine {
                             world.queueCommands(proj.onImpact(body.getEntity()));
                         }
                         if (body.getEntity() instanceof Drop drop) {
+                            if (impact.hitBody.getEntity() instanceof Drop) {
+                                world.queueCommand(drop.setOnGround());
+                            }
                             world.queueCommand(drop.onImpact(impact.hitBody.getEntity()));
+                        }
+                        if (body.getEntity() instanceof Coin coin) {
+                            if (impact.hitBody.getEntity() instanceof Worm worm) {
+                                world.getBus().postQueued(new CoinCollisionEvent(coin, worm.getTeam()));
+                                remove(body);
+                            }
                         }
                         if (body.getEntity() instanceof Worm worm) {
                             if (impact.hitBody.getEntity() instanceof Drop drop) {
@@ -441,6 +443,10 @@ public class PhysicsEngine {
                     world.queueCommand(worm.damageWorm(Tile.LAVA.getDamage()));
                     world.queueCommand(worm.addStatusEffect(new BurnEffect()));
                 }
+                if (tile == Tile.TRAP) {
+                    world.queueCommand(worm.damageWorm(Tile.TRAP.getDamage()));
+                    world.queueCommand(worm.addStatusEffect(new PoisonEffect()));
+                }
             }
         }
     }
@@ -449,14 +455,14 @@ public class PhysicsEngine {
      * Updates the simulation state by one tick.
      * <p>
      * This method increments the internal time counter, periodically updates the wind
-     * vector (every 600 ticks if enabled), and performs one simulation step through
+     * vector (every 1250 ticks if enabled), and performs one simulation step through
      * {@link #nextStep(double)}.
      * </p>
      * @param ticktime the duration of the simulation tick (in milliseconds).
      */
     public void next(double ticktime) {
         cpt++;
-        if (cpt >= 600) {
+        if (cpt >= 1250) {
             cpt = 0;
             changeWind();
         }
@@ -560,7 +566,7 @@ public class PhysicsEngine {
         GameCommand death = null;
         double speedy = worm.getBody().getVector().getY();
         if (speedy < seuil) {
-            double damage = ((speedy - seuil) * -0.5);
+            double damage = ((speedy - seuil) * -0.7);
             death = worm.damageWorm(damage);
             Logger.logger.info("{} has fallen and lost {} health points!", worm.name, damage);
         }

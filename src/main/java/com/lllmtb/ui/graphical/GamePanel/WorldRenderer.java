@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 import com.lllmtb.engine.GameWorld;
 import com.lllmtb.model.entity.Coin;
 import com.lllmtb.model.entity.Drop;
+import com.lllmtb.model.entity.effect.StatusEffect;
 import com.lllmtb.model.entity.projectile.CatConcreteProjectile;
 import com.lllmtb.model.entity.projectile.Projectile;
 import com.lllmtb.model.entity.team.TeamColor;
@@ -260,6 +261,7 @@ public class WorldRenderer {
         paintEquipment(g2d, worm, xCenter, yCenter);
 
         paintHealthBar(g2d, (Worm) worm.getEntity(), xEcran, yEcran, largeurVerPx);
+       paintStatusEffects(g2d, (Worm) worm.getEntity(), xEcran, yEcran, largeurVerPx);
 
         g2d.drawImage(textureWorm, tx, null);
 
@@ -267,7 +269,21 @@ public class WorldRenderer {
             paintCurrentWormsArrow(g2d, xEcran, yEcran, largeurVerPx, wormEntity.getTeam().teamColor);
             paintItem(g2d, xCenter, yCenter);
             paintAim(g2d, xCenter, yCenter);
-            paintChargeBar(g2d, xEcran, yEcran, largeurVerPx); // AJOUT: Dessin de la barre
+            paintChargeBar(g2d, xEcran, yEcran, largeurVerPx);
+        }
+    }
+
+    private void paintStatusEffects(Graphics2D g2d, Worm worm, double xEcran, double yEcran, double wormWidth) {
+        List<StatusEffect> effects = worm.getStatusEffects();
+        if (effects == null || effects.isEmpty()) return;
+
+        int imgSize = 12;
+
+        double startX = xEcran + wormWidth + 8;
+        double startY = yEcran - 18;
+        for (int i = 0; i < effects.size(); i++) {
+            BufferedImage texture = TextureManager.EFFECT.get(effects.get(i).getName());
+            g2d.drawImage(texture, (int) startX + (i * 14), (int) startY, imgSize, imgSize, null);
         }
     }
 
@@ -275,8 +291,6 @@ public class WorldRenderer {
      * Dessine la barre de charge (puissance).
      */
     private void paintChargeBar(Graphics2D g2d, double x, double y, double width) {
-        if (!panel.shootMode) return;
-
         ItemId item = world.getPlayingTeam().getHand();
         if (item == null || item.getMaxChargeTime() <= 0) return;
 
@@ -332,10 +346,17 @@ public class WorldRenderer {
         if (textureProjectile != null) {
             AffineTransform tx = new AffineTransform();
 
-            tx.translate(xEcran, yEcran);
+            double centerX = xEcran + largeurProjPx / 2.0;
+            double centerY = yEcran + hauteurProjPx / 2.0;
+            tx.translate(centerX, centerY);
+            if (!(projectile.getEntity() instanceof CatConcreteProjectile))
+                tx.rotate(-projectile.getVector().angle());
+
             double echelleX = largeurProjPx / textureProjectile.getWidth();
             double echelleY = hauteurProjPx / textureProjectile.getHeight();
             tx.scale(echelleX, echelleY);
+
+            tx.translate(-textureProjectile.getWidth() / 2.0, -textureProjectile.getHeight() / 2.0);
 
             g2d.drawImage(textureProjectile, tx, null);
         }
@@ -487,18 +508,15 @@ public class WorldRenderer {
      */
     private void paintAim(Graphics2D g2d, double xCenter, double yCenter) {
         Worm currentWorm = world.getTurnManager().getTurn().getWormPlayable();
-        if (currentWorm != null && panel.shootMode) {
-            g2d.setColor(Color.RED);
+        if (currentWorm == null) return;
 
-            ItemId handItem = world.getPlayingTeam().getHand();
-            if (handItem != null && handItem.usesCrosshair()) {
-                int crosshairSize = 15;
-                int mouseX = (int) panel.mouseWorldX;
-                int mouseY = (int) panel.mouseWorldY;
-                g2d.setStroke(new BasicStroke(3)); // epaisseur du trait
-                g2d.drawLine(mouseX - crosshairSize, mouseY, mouseX + crosshairSize, mouseY);
-                g2d.drawLine(mouseX, mouseY - crosshairSize, mouseX, mouseY + crosshairSize);
-            } else {
+        ItemId handItem = world.getPlayingTeam().getHand();
+        if (handItem == null) return;
+
+        g2d.setColor(Color.RED);
+
+        switch (handItem.getShootMode()) {
+            case AIM -> {
                 double vecX = panel.mouseWorldX - xCenter;
                 double vecY = panel.mouseWorldY - yCenter;
                 double distance = Math.sqrt(vecX * vecX + vecY * vecY);
@@ -508,8 +526,19 @@ public class WorldRenderer {
                     vecX = vecX * ratio;
                     vecY = vecY * ratio;
                 }
-                g2d.setStroke(new BasicStroke(3)); // epaisseur du trait
+                g2d.setStroke(new BasicStroke(3));
                 g2d.drawLine((int) xCenter, (int) yCenter, (int) (xCenter + vecX), (int) (yCenter + vecY));
+            }
+            case CROSSHAIR -> {
+                int crosshairSize = 15;
+                int mouseX = (int) panel.mouseWorldX;
+                int mouseY = (int) panel.mouseWorldY;
+                g2d.setStroke(new BasicStroke(3));
+                g2d.drawLine(mouseX - crosshairSize, mouseY, mouseX + crosshairSize, mouseY);
+                g2d.drawLine(mouseX, mouseY - crosshairSize, mouseX, mouseY + crosshairSize);
+            }
+            default -> {
+                // no aim visualisation for other modes
             }
         }
     }

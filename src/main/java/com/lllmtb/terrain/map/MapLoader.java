@@ -32,7 +32,7 @@ public class MapLoader {
             return tileMatrix;
 
         } catch (Exception e) {
-            System.out.println(e); // NB. Il faudra mieux gérer cette exception
+            System.out.println(e);
             return null;
         }
     }

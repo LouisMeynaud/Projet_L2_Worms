@@ -71,6 +71,14 @@ public class Vector {
     }
 
     /**
+     * Calculates the angle of this vector in radians.
+     * @return the angle of the vector in radians
+     */
+    public double angle() {
+        return Math.atan2(this.y, this.x);
+    }
+
+    /**
      * Checks if this vector is equal to another vector.
      * @param other the vector to compare with
      * @return true if the vectors are equal, false otherwise
@@ -97,5 +105,13 @@ public class Vector {
     @Override
     public String toString() {
         return "Vect(" + this.x + "," + this.y + ")";
+    }
+
+    /**
+     * Creates a copy of this vector.
+     * @return a new Vector that is a copy of this vector
+     */
+    public Vector copy() {
+        return new Vector(this.x, this.y);
     }
 }

@@ -53,6 +53,10 @@ public class AnimationManager {
         if (missileSheet != null) {
             FRAMES_MAP.put("MissileExplosion", Utilitaire.cutSpriteSheet(missileSheet, 4, 4));
         }
+       BufferedImage mineSheet = TextureManager.EFFECT.get("MineExplosion");
+       if (missileSheet != null) {
+           FRAMES_MAP.put("MineExplosion", Utilitaire.cutSpriteSheet(mineSheet, 4, 4));
+       }
 
 
     }

@@ -28,6 +28,7 @@ import com.lllmtb.model.entity.projectile.Projectile;
 import com.lllmtb.model.entity.team.Team;
 import com.lllmtb.model.entity.worm.Worm;
 import com.lllmtb.model.item.ItemId;
+import com.lllmtb.model.item.ShootMode;
 import com.lllmtb.model.item.UseParams;
 import com.lllmtb.model.item.tool.ToolId;
 import com.lllmtb.model.item.weapon.WeaponId;
@@ -168,7 +169,7 @@ public final class TurnManager {
             int x = random.nextInt(mapWidth);
             for (int y = mapHeight - 1; y > 0; y--) {
                 if (world.getMap().isSolid(new Position(x, y))) {
-                    int coinY = y + 1;
+                    int coinY = y + 3;
                     Coin coin = new Coin(new Position(x + 0.25, coinY), 50);
                     world.getPhysics().getBodies().add(coin.getBody());
                     break;
@@ -195,7 +196,7 @@ public final class TurnManager {
             if (random.nextInt(2) == 0) {
                 //Weapon Drop
                 WeaponId[] weaponIdValues = WeaponId.values();
-                itemId = weaponIdValues[random.nextInt(1, weaponIdValues.length - 1)]; // Between 1 and length-1 to remove Gun and None in the choice
+                itemId = weaponIdValues[random.nextInt(2, weaponIdValues.length - 1)]; // Between 2 and length-1 to remove Gun, BaseballBat and None in the choice
             } else {
                 // Tool Drop
                 ToolId[] toolIdValues = ToolId.values();
@@ -384,14 +385,14 @@ public final class TurnManager {
 
             double dist = 1;
             if (turn.getTeam().getHand() == WeaponId.GASGUN) {
-                dist =  6;
+                dist = 6;
             }
             double spawnX = centerX + (Math.cos(angle) * dist);
             double spawnY = centerY + (Math.sin(angle) * dist);
 
             Position spawnBullet = new Position(spawnX, spawnY);
 
-            if (turn.getTeam().getHand().usesCrosshair()) {
+            if (turn.getTeam().getHand().getShootMode() == ShootMode.CROSSHAIR) {
                 spawnBullet = new Position(mouseX, world.getMap().getHeight() - 1);
                 angle = -Math.PI / 2;
             }
