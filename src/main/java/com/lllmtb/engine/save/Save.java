@@ -9,10 +9,13 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.typeadapters.RuntimeTypeAdapterFactory;
 import com.lllmtb.engine.GameWorld;
+import com.lllmtb.engine.logger.Logger;
 import com.lllmtb.model.entity.Coin;
 import com.lllmtb.model.entity.Drop;
 import com.lllmtb.model.entity.Entity;
+import com.lllmtb.model.entity.projectile.MineProjectile;
 import com.lllmtb.model.entity.projectile.Projectile;
+import com.lllmtb.model.entity.projectile.TowerProjectile;
 import com.lllmtb.model.entity.worm.Worm;
 import com.lllmtb.terrain.map.Map;
 
@@ -25,6 +28,7 @@ import java.time.format.DateTimeFormatter;
 import com.lllmtb.terrain.map.SaveMap;
 import com.lllmtb.terrain.map.Tile;
 import com.lllmtb.ui.graphical.TextureManager;
+import org.jline.utils.Log;
 
 import javax.imageio.ImageIO;
 
@@ -66,7 +70,9 @@ public class Save {
                 .registerSubtype(Projectile.class, "projectile")
                 .registerSubtype(Worm.class, "worm")
                 .registerSubtype(Coin.class, "coin")
-                .registerSubtype(Drop.class, "drop");
+                .registerSubtype(Drop.class, "drop")
+                .registerSubtype(TowerProjectile.class, "Tower")
+                .registerSubtype(MineProjectile.class, "Mine");
 
         Gson gson = new GsonBuilder()
                 .setPrettyPrinting()
@@ -79,7 +85,6 @@ public class Save {
         try {
             Files.createDirectories(path);
             Path folderPath = path.resolve("save.json");
-            System.out.println("Game World sauvegardé dans: " + stringPath);
             Files.write(folderPath, json.getBytes());
         } catch (IOException e) {
             e.printStackTrace();
@@ -103,11 +108,8 @@ public class Save {
             Files.createDirectories(path);
             Path filePath = path.resolve("map.txt");
             Files.writeString(filePath, SaveMap.mapToString(map));
-
-            System.out.println("Succès : Map sauvegardée dans " + filePath);
             return true;
         } catch (IOException e) {
-            System.err.println("Erreur lors de la sauvegarde : " + e.getMessage());
             e.printStackTrace();
             return false;
         }
@@ -126,11 +128,7 @@ public class Save {
             Files.createDirectories(path);
             Path filePath = path.resolve("info.txt");
             Files.writeString(filePath, info(gameWorld));
-
-            System.out.println("Succès : Info sauvegardée dans " + filePath);
-
         } catch (IOException e) {
-            System.err.println("Erreur lors de la sauvegarde : " + e.getMessage());
             e.printStackTrace();
 
         }
@@ -188,16 +186,14 @@ public class Save {
 
     public static void saveImage(BufferedImage image, String stringPath) throws IOException {
         if (image == null) {
-            System.err.println("Erreur : L'image à sauvegarder est nulle !");
             return;
         }
 
         try {
             File outputFile = new File(stringPath + "/image.png");
             ImageIO.write(image, "png", outputFile);
-            System.out.println("Succès : Image sauvegardée dans" + outputFile.getAbsolutePath());
         } catch (IOException e) {
-            System.err.println("Erreur d'écriture : " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
@@ -210,14 +206,18 @@ public class Save {
      *
      * @throws IOException If an error occurs during any of the save processes.
      */
-    public static void saveAll() throws IOException {
+    public static void saveAll() {
         String stringPath = SaveConfig.SAVE_DIRECTORY + gameWorld.getGameName();
+        try{
         saveMap(gameWorld.getMap(), stringPath);
         saveGameWorld(gameWorld, stringPath);
         saveInfo(gameWorld, stringPath);
         BufferedImage image = maptoBuffered(gameWorld.getMap());
         saveImage(image, stringPath);
-        gameWorld.pause(false);
+        gameWorld.pause(false);}
+        catch (Exception e) {
+            Logger.logger.error("Probleme de sauvegarde de save: " + e.getMessage());
+        }
     }
 
     public static void eraseSave(String name) {
@@ -231,16 +231,14 @@ public class Save {
                             try {
                                 Files.delete(path);
                             } catch (IOException e) {
-                                System.err.println("Impossible de supprimer : " + path + " - " + e.getMessage());
+                                Logger.logger.error("Erreur lors de la suppression de la sauvegarde : " + e.getMessage());
                             }
                         });
-                System.out.println("Sauvegarde '" + name + "' supprimée avec succès.");
             } else {
-                System.out.println("La sauvegarde '" + name + "' n'existe pas.");
+                Logger.logger.error("La sauvegarde n'existe pas.");
             }
         } catch (IOException e) {
-            System.err.println("Erreur lors de la suppression de la sauvegarde : " + e.getMessage());
-            e.printStackTrace();
+            Logger.logger.error("Erreur lors de la suppression de la sauvegarde : " + e.getMessage());
         }
     }
 }

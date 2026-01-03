@@ -7,7 +7,9 @@ import com.lllmtb.engine.GameWorld;
 import com.lllmtb.model.entity.Coin;
 import com.lllmtb.model.entity.Drop;
 import com.lllmtb.model.entity.Entity;
+import com.lllmtb.model.entity.projectile.MineProjectile;
 import com.lllmtb.model.entity.projectile.Projectile;
+import com.lllmtb.model.entity.projectile.TowerProjectile;
 import com.lllmtb.model.entity.team.Team;
 import com.lllmtb.model.entity.worm.Worm;
 import com.lllmtb.model.item.ItemId;
@@ -56,8 +58,9 @@ public class Load {
                 .registerSubtype(Projectile.class, "projectile")
                 .registerSubtype(Worm.class, "worm")
                 .registerSubtype(Coin.class, "coin")
-                .registerSubtype(Drop.class, "drop");
-
+                .registerSubtype(Drop.class, "drop")
+                .registerSubtype(TowerProjectile.class, "Tower")
+                .registerSubtype(MineProjectile.class, "Mine");
 
         Gson gson = new GsonBuilder()
                 .setPrettyPrinting()
