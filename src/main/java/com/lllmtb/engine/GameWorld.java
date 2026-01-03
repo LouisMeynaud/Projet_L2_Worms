@@ -115,7 +115,7 @@ public class GameWorld {
         Projectile.setFriendlyFire(settings.friendlyfire);
 
         //Init ShopManager
-        this.shopManager = new ShopManager();
+        this.shopManager = new ShopManager(this.bus);
 
         //Init credit from current Team
         this.teams.get(indexTeam).removeCredits(150);
@@ -180,7 +180,7 @@ public class GameWorld {
         this.turnManager = new TurnManager(this, settings.turnDuration);
 
         //Init ShopManager
-        this.shopManager = new ShopManager();
+        this.shopManager = new ShopManager(this.bus);
     }
 
     public Map getMap() {

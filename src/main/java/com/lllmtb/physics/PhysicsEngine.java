@@ -166,17 +166,6 @@ public class PhysicsEngine {
         modifiers.clear();
     }
 
-    public void actualizeBodies() {
-        for (PhysicsBody body : bodies) {
-            if (body.getEntity() instanceof Worm worm) {
-                if (!(worm.isAlive())) {
-                    bodies.remove(body);
-                    //TODO : Remove a worm from a team or maybe set a state for worm when is dead
-                }
-            }
-        }
-    }
-
     /**
      * Randomly changes the wind vector to simulate natural fluctuations in wind force and direction.
      * <p>
@@ -357,7 +346,6 @@ public class PhysicsEngine {
                 switch (body.getEntity().getCollisionType()) {
                     // if body slides along cliffs (if the collision is with the ground)
                     case SLIDE -> collision.slide(body, impact, dt, world);
-
                     // if body bounces
                     case BOUNCE -> collision.bounce(body, impact, 0.5);
 
@@ -371,7 +359,8 @@ public class PhysicsEngine {
                     remove(body);
                     Logger.logger.debug("Entity out of map");
                     if (body.getEntity() instanceof Worm worm) {
-                        worm.damageWorm(worm.getStats().getHp());
+                        world.queueCommand(worm.damageWorm(worm.getStats().getHp()));
+                        world.getTurnManager().endTurn();
                     }
 
                 } else {

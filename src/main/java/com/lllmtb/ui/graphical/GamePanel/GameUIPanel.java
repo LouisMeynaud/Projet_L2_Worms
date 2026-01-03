@@ -8,6 +8,7 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Image;
@@ -39,7 +40,7 @@ import com.lllmtb.events.game.ToolSelectedEvent;
 import com.lllmtb.events.game.WeaponSelectedEvent;
 import com.lllmtb.events.game.WorldCreatedEvent;
 import com.lllmtb.events.turn.TurnSkipEvent;
-import com.lllmtb.events.ui.graphical.ShootMode;
+import com.lllmtb.events.ui.graphical.NotificationEvent;
 import com.lllmtb.events.ui.graphical.RequestFocus;
 import com.lllmtb.events.ui.graphical.ScreenHomeEvent;
 import com.lllmtb.model.item.inventory.Inventory;
@@ -54,7 +55,7 @@ import com.lllmtb.ui.graphical.Utilitaire;
 /**
  * panneau principal de l'interface utilisateur du jeu
  *
- * ce panneau se superpose au dessins du jeu et contient les bouton comme shootMode inventaire pose etc
+ * ce panneau se superpose au dessins du jeu et contient les bouton comme inventaire pose etc
  * ainsi que les les panneau d'inventaire de menu pose etc
  *
  * il utilise un cardLayout afin d'afficher les bons élement.
@@ -82,7 +83,6 @@ public class GameUIPanel extends JPanel {
     private ShopManager shopManager;
     private JButton pauseButton;
     private JButton inventoryButton;
-    private JButton shootModeButton;
     private JButton skipTurnButton;
     private JButton shopButton;
     private int currentButtonSize = 80;
@@ -97,7 +97,6 @@ public class GameUIPanel extends JPanel {
         this.eventBus = eventBus;
         ToolTipManager.sharedInstance().setInitialDelay(0);
         ToolTipManager.sharedInstance().setReshowDelay(0);
-        this.shopManager = new ShopManager();
         setOpaque(false);
         setLayout(new BorderLayout());
         setupCenterContainer();
@@ -106,7 +105,10 @@ public class GameUIPanel extends JPanel {
         createShopContainer();
         setupHUD();
         subscribeToSystemEvents();
-        this.uiRefreshTimer = new Timer(100, e -> updateTimerDisplay());
+        this.uiRefreshTimer = new Timer(100, e -> {
+            updateTimerDisplay();
+            this.repaint();
+        });
         this.uiRefreshTimer.start();
 
 
@@ -149,13 +151,11 @@ public class GameUIPanel extends JPanel {
         pauseButton = Utilitaire.createImageButton(TextureManager.UI, "Pause", 128, 128, 128, 128, "", "Arial", 16, Color.WHITE);
         inventoryButton = Utilitaire.createImageButton(TextureManager.UI, "InventoryButton", 128, 128, 128, 128, "", "Arial", 16, Color.WHITE);
         shopButton = Utilitaire.createImageButton(TextureManager.UI, "ShopButton", 128, 128, 128, 128, "", "Arial", 12, Color.YELLOW);
-        shootModeButton = Utilitaire.createImageButton(TextureManager.UI, "ShootMode", 120, 120, 120, 120, "", "Arial", 16, Color.WHITE);
         skipTurnButton = Utilitaire.createImageButton(TextureManager.UI, "SkipTurn", 128, 128, 128, 128, "", "Arial", 16, Color.WHITE);
         changeWormsButton = Utilitaire.createImageButton(TextureManager.UI, "ChangeWorms", 128, 128, 128, 128, "", "Arial", 16, Color.WHITE);
 
 
         pauseButton.addActionListener(e -> pauseMenu(true));
-        shootModeButton.addActionListener(e -> world.getBus().postQueued(new ShootMode()));
         inventoryButton.addActionListener(e -> openCloseInventory());
         shopButton.addActionListener(e -> openCloseShop());
         skipTurnButton.addActionListener(e -> world.getBus().postQueued(new TurnSkipEvent()));
@@ -201,7 +201,6 @@ public class GameUIPanel extends JPanel {
 
         lowerBar.add(inventoryButton);
         lowerBar.add(shopButton);
-        lowerBar.add(shootModeButton);
 
         this.add(topBar, BorderLayout.NORTH);
         this.add(lowerBar, BorderLayout.SOUTH);
@@ -214,6 +213,8 @@ public class GameUIPanel extends JPanel {
 
         eventBus.subscribe(WorldCreatedEvent.class, event -> {
             this.world = event.getWorld();
+            this.shopManager = world.getShopManager();
+            this.world.getBus().subscribe(NotificationEvent.class, notif -> Popup.add(notif));
             updateTimerDisplay();
         });
 
@@ -256,19 +257,18 @@ public class GameUIPanel extends JPanel {
 
 
         String teamName = this.world.getPlayingTeam().name;
-        Color baseColor;
-        switch (this.world.getPlayingTeam().getTeamColor()) {
-            case RED: baseColor = Color.RED; break;
-            case BLUE: baseColor = Color.BLUE; break;
-            case GREEN: baseColor = Color.GREEN; break;
-            case YELLOW: baseColor = Color.YELLOW; break;
-            default : baseColor = Color.BLACK;
-        }
+        Color baseColor = switch (this.world.getPlayingTeam().getTeamColor()) {
+            case RED -> Color.RED;
+            case BLUE -> Color.BLUE;
+            case GREEN -> Color.GREEN;
+            case YELLOW -> Color.YELLOW;
+            default -> Color.BLACK;
+        };
         Color color = new Color(baseColor.getRed(), baseColor.getGreen(), baseColor.getBlue(), 100);
 
         this.timerContainer.setBackground(color);
-        this.timerLabel.setText("tour : " + world.getTurnManager().getNbTurn() + ", team : " + teamName + " left shoot: "
-                + (Turn.limitshoot - currentTurn.getTeam().getShootCount()) +  " , time : " + timeString);
+        this.timerLabel.setText("tour : " + world.getTurnManager().getNbTurn() + "| team : " + teamName + "| left shoot: "
+                + (Turn.limitshoot - currentTurn.getTeam().getShootCount()) +  "| time : " + timeString);
         if (this.world.getPlayingTeam().getCredits() == -1) {
             this.moneyLabel.setText("∞ $");
         } else {
@@ -636,7 +636,6 @@ public class GameUIPanel extends JPanel {
 
         updateButtonIcon(pauseButton, "Pause", size);
         updateButtonIcon(inventoryButton, "InventoryButton", size);
-        updateButtonIcon(shootModeButton, "ShootMode", size);
         updateButtonIcon(skipTurnButton, "SkipTurn", size);
         updateButtonIcon(shopButton, "ShopButton", size);
         updateButtonIcon(changeWormsButton, "ChangeWorms", size); //TODO : Change
@@ -673,5 +672,11 @@ public class GameUIPanel extends JPanel {
             Image scaledHover = imgHover.getScaledInstance(size, size, Image.SCALE_SMOOTH);
             btn.setRolloverIcon(new ImageIcon(scaledHover));
         }
+    }
+
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        Popup.draw((Graphics2D) g);
     }
 }

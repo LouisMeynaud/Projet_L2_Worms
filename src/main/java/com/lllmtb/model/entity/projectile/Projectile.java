@@ -17,6 +17,21 @@ public abstract class Projectile extends Entity {
     private final PhysicsBody body;
     private final Worm owner;
     private static boolean friendlyfire = true;
+    public enum PROJECTILE {
+    BabyTowerProjectile,
+    BowProjectile,
+    BulletProjectile,
+    CatConcreteProjectile,
+    ElectronProjectile,
+    GasProjectile,
+    GrenadeProjectile,
+    HealingProjectile,
+    MineProjectile,
+    MissileProjectile,
+    RocketProjectile,
+    ShotGunProjectile,
+    TowerProjectile,
+}
 
     /**
      * Create a new Projectile

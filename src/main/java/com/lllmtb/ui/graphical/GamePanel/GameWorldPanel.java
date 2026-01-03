@@ -25,7 +25,6 @@ import com.lllmtb.events.input.ProcessInputsEvent;
 import com.lllmtb.events.input.UseInputEvent;
 import com.lllmtb.events.input.JetpackBoostInputEvent;
 import com.lllmtb.events.physics.ExplosionEvent;
-import com.lllmtb.events.ui.graphical.ShootMode;
 import com.lllmtb.events.ui.graphical.RequestFocus;
 import com.lllmtb.events.ui.graphical.ScreenEndGameEvent;
 import com.lllmtb.model.entity.worm.Worm;
@@ -56,8 +55,6 @@ public class GameWorldPanel extends JPanel {
     private Position lastWormPos = new Position(0,  0);
 
     protected final Set<Integer> pressedKeys = new HashSet<>();
-    //--imput--//
-    protected boolean shootMode;
 
     private int lastMouseX = 0;
     private int lastMouseY = 0;
@@ -132,7 +129,7 @@ public class GameWorldPanel extends JPanel {
                     isCameraMode = true;
                     hasDraggedCamera = false;
                 }
-                if (e.getButton() == MouseEvent.BUTTON1 && shootMode) {
+                if (e.getButton() == MouseEvent.BUTTON1) {
                     ItemId item = world.getPlayingTeam().getHand();
                     if (item != null) {
                         chargeStartTime = System.currentTimeMillis();
@@ -150,7 +147,7 @@ public class GameWorldPanel extends JPanel {
                 }
                 chargeStartTime = 0;
 
-                if (type == MouseEvent.BUTTON1 && shootMode) {
+                if (type == MouseEvent.BUTTON1) {
                     Position worldPos = screenToWorld(e.getX(), e.getY());
                     ItemId item = world.getPlayingTeam().getHand();
 
@@ -161,8 +158,7 @@ public class GameWorldPanel extends JPanel {
                          }
                     }
 
-                    if ((item != null && item instanceof WeaponId)
-                    && world.getTurnManager().getTurn().getTeam().getInventory().weapons.getAmmo(((WeaponId) item)) != 0) {
+                    if (item instanceof WeaponId && world.getPlayingTeam().getInventory().weapons.getAmmo(((WeaponId) item)) != 0) {
                         String sound = world.getPlayingTeam().getHand().toString();
                         SoundPlayer.playSound(sound + "Shot");
                     }
@@ -279,10 +275,6 @@ public class GameWorldPanel extends JPanel {
             }
             screenFollowCurrentWorms();
             repaint();
-        });
-
-        world.getBus().subscribe(ShootMode.class, event -> {
-            this.shootMode = !this.shootMode;
         });
 
         world.getBus().subscribe(RequestFocus.class, event -> {

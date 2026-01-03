@@ -688,7 +688,7 @@ public class GameWorldScreen implements Runnable {
                 if (world != null && world.getPlayingTeam() != null) {
                     Worm worm = world.getPlayingTeam().getCurrentWorm();
                     if (worm != null) {
-                        line = String.format(" Worm: %s (HP: %d)", worm.name, worm.getStats().getHp());
+                        line = String.format(" Worm: %s (HP: %f)", worm.name, worm.getStats().getHp());
                     }
                 } else {
                     line = " Worm: ---";

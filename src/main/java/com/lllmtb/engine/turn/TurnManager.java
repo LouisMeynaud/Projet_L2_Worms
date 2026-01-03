@@ -22,6 +22,7 @@ import com.lllmtb.events.turn.TurnSkipEvent;
 import com.lllmtb.events.turn.TurnStartEvent;
 import com.lllmtb.events.turn.TurnStopEvent;
 import com.lllmtb.events.turn.WormPlayable;
+import com.lllmtb.events.ui.graphical.NotificationEvent;
 import com.lllmtb.events.ui.graphical.ScreenEndGameEvent;
 import com.lllmtb.model.entity.Coin;
 import com.lllmtb.model.entity.Drop;
@@ -29,6 +30,7 @@ import com.lllmtb.model.entity.projectile.Projectile;
 import com.lllmtb.model.entity.team.Team;
 import com.lllmtb.model.entity.worm.Worm;
 import com.lllmtb.model.item.ItemId;
+import com.lllmtb.model.item.ShootMode;
 import com.lllmtb.model.item.UseParams;
 import com.lllmtb.model.item.tool.ToolId;
 import com.lllmtb.model.item.weapon.WeaponId;
@@ -155,6 +157,7 @@ public final class TurnManager {
             Logger.logger.info("Level of the water : {}", world.getMap().getHeightWater());
             if (world.getMap().risingWater(1)) {
                 world.getBus().postQueued(new MapUpdateEvent());
+                world.getBus().postQueued(new NotificationEvent("Attention : montée des eaux", "RisingWater"));
             }
         }
         Save.setGameWorld(world);
@@ -362,9 +365,9 @@ public final class TurnManager {
                 Logger.logger.info("Piece ramasse ! + " + event.coin.value + "$");
                 event.team.addCredits(event.coin.value);
                world.getPhysics().remove(event.coin.getBody());
+               world.getBus().postQueued(new NotificationEvent("+ " + event.coin.value + "$ for : " + event.team.teamColor, "Coin"));
             });
         };
-
 
         EventListener<ChangeWormsEvent> changeWormDuringTurn = event -> {
             Team currentTeam = turn.getTeam();
@@ -393,14 +396,14 @@ public final class TurnManager {
 
             double dist = 1;
             if (turn.getTeam().getHand() == WeaponId.GASGUN) {
-                dist =  6;
+                dist = 6;
             }
             double spawnX = centerX + (Math.cos(angle) * dist);
             double spawnY = centerY + (Math.sin(angle) * dist);
 
             Position spawnBullet = new Position(spawnX, spawnY);
 
-            if (turn.getTeam().getHand().usesCrosshair()) {
+            if (turn.getTeam().getHand().getShootMode() == ShootMode.CROSSHAIR) {
                 spawnBullet = new Position(mouseX, world.getMap().getHeight() - 1);
                 angle = -Math.PI / 2;
             }
