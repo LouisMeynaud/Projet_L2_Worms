@@ -75,7 +75,9 @@ public class GameEngine {
         systemBus.subscribe(SaveEvent.class, e -> {
             try {
                 Save.saveAll();
+                Logger.logger.info("Game saved successfully");
             } catch (IOException ex) {
+                Logger.logger.error("Failed to save game: {}", ex.getMessage(), ex);
                 throw new RuntimeException(ex);
             }
         });

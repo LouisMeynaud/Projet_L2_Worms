@@ -204,7 +204,6 @@ public class Worm extends Entity {
             GameCommand gameCommand = (world -> {
                 new RemoveEntityCommand(this).execute(world);
                 world.getBus().postQueued(new NotificationEvent("Worm " + this.team.teamColor + " is dead", "Skull"));
-                System.out.println("truc executer");
             });
             statusEffects.clear();
             return gameCommand;

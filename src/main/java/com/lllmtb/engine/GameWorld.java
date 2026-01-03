@@ -57,7 +57,7 @@ public class GameWorld {
             }
         }
         if (tmap == null) {
-            System.out.println("Generating a new map...");
+            Logger.logger.info("Generating a new map...");
             ConfigMap config = new ConfigMap(settings.widthMap, 4, 5, settings.floatingIsland, 17, settings.terrainType, settings.nbTeams, settings.nbWorms, settings.gameMode);
             tmap = GenerateMap.createMap(config);
         }
@@ -97,13 +97,13 @@ public class GameWorld {
 
         // Init GameLoop
         this.gameLoop = new GameLoop(this);
-        Logger.logger.debug("Game initialised");
 
         //Init TurnManager
         this.turnManager = new TurnManager(this, settings.turnDuration);
 
         //Init ShopManager
         this.shopManager = new ShopManager(this.bus);
+        Logger.logger.info("Game successfully initialised");
     }
 
     public Map getMap() {
