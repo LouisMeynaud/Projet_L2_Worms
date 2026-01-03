@@ -179,8 +179,8 @@ public class PhysicsEngine {
      */
     protected void changeWind() {
         if (this.hasWind) {
-            Vector random = new Vector(Math.random() / 3 - 1f / 3f, Math.random() / 3 - 1f / 3f);
-            this.wind = this.wind.add(random);
+            Vector random = new Vector(Math.random() / 2 - 1f / 4f, Math.random() / 2 - 1f / 4f);
+            this.wind = random.scale(10000);
         }
     }
 
@@ -438,14 +438,14 @@ public class PhysicsEngine {
      * Updates the simulation state by one tick.
      * <p>
      * This method increments the internal time counter, periodically updates the wind
-     * vector (every 600 ticks if enabled), and performs one simulation step through
+     * vector (every 1250 ticks if enabled), and performs one simulation step through
      * {@link #nextStep(double)}.
      * </p>
      * @param ticktime the duration of the simulation tick (in milliseconds).
      */
     public void next(double ticktime) {
         cpt++;
-        if (cpt >= 600) {
+        if (cpt >= 1250) {
             cpt = 0;
             changeWind();
         }
