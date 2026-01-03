@@ -10,7 +10,7 @@ import java.util.Objects;
 
 public class MedkitTool extends Tool {
 
-    private static final int HEAL_AMOUNT = 30;
+    private static final int HEAL_AMOUNT = 50;
 
     @Override
     public ToolId id() {

@@ -14,11 +14,11 @@ public final class MissileProjectile extends Projectile implements ExplosiveProj
     private static final double mass   = 0.001;
     private static final double height = 4;
     private static final double width  = 4;
-    private static final int damage = 80;
+    private static final int damage = 5;
 
     private static final int RAYON_DEGAT_MAP = 15;
     private static final int RAYON_SOUFFLE = 20;
-    private static final int DEGATS = 50;
+    private static final int DEGATS = 80;
     private static final double FORCE_SOUFFLE = 150;
     private static final String TEXTURE_KEY = "MissileExplosion";
 

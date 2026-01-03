@@ -36,7 +36,7 @@ class HealingRocketProjectileTest {
         assertEquals(CollisionType.TOUCH, healing.getCollisionType());
         assertEquals(0, healing.getExplosionRadius());
         assertEquals(15, healing.getSuffleRadius());
-        assertEquals(-20, healing.getExplosionDamage());
+        assertEquals(-50, healing.getExplosionDamage());
         assertEquals(0, healing.getExplosionForce());
         assertEquals("HealingBazookaExplosion", healing.getExplosionTexture());
     }
@@ -64,6 +64,6 @@ class HealingRocketProjectileTest {
         for (GameCommand cmd : commands) {
             cmd.execute(worldMock);
         }
-        verify(physicsMock).createExplosion(eq(healing), eq(0), eq(15), eq(-20), eq(0.0), eq(true));
+        verify(physicsMock).createExplosion(eq(healing), eq(0), eq(15), eq(-50), eq(0.0), eq(true));
     }
 }
