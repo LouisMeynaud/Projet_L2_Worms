@@ -24,7 +24,9 @@ public class GameEngine {
     private static GameWorld world;
 
     public static void main(String[] args) {
-        boolean graphique = true;
+        // Pick UI mode based on command line arguments
+        boolean graphical = args.length == 0 || !args[0].equals("console");
+
         systemBus = new EventBus();
         // Uncomment to log all system events for debugging
         //systemBus.subscribe(Event.class, e -> Logger.logger.info("[EVENT/system]: {}", e.getClass().getSimpleName()));
@@ -46,7 +48,7 @@ public class GameEngine {
 
         // Start the chosen UI manager
         UI ui;
-        if (graphique) {
+        if (graphical) {
             Logger.logger.info("Using graphical interface");
             TextureManager.load(); // load textures
             AnimationManager.load(); //load animation
