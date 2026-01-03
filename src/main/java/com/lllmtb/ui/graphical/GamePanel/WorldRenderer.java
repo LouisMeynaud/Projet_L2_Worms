@@ -333,7 +333,8 @@ public class WorldRenderer {
             double centerX = xEcran + largeurProjPx / 2.0;
             double centerY = yEcran + hauteurProjPx / 2.0;
             tx.translate(centerX, centerY);
-            tx.rotate(-projectile.getVector().angle());
+            if (!(projectile.getEntity() instanceof CatConcreteProjectile))
+                tx.rotate(-projectile.getVector().angle());
 
             double echelleX = largeurProjPx / textureProjectile.getWidth();
             double echelleY = hauteurProjPx / textureProjectile.getHeight();
