@@ -97,6 +97,11 @@ public class TextureManager {
             EFFECT.put("HealingBazookaExplosion", ImageIO.read(TextureManager.class.getResource("/sprites/effect/HealingBazookaExplosion.png")));
             EFFECT.put("MissileExplosion", ImageIO.read(TextureManager.class.getResource("/sprites/effect/MissileExplosion.png")));
 
+            EFFECT.put("Poison", ImageIO.read(TextureManager.class.getResource("/textures/effect/poison.png")));
+            EFFECT.put("Burn", ImageIO.read(TextureManager.class.getResource("/textures/effect/burn.png")));
+
+
+
             NOTIFICATIONS.putAll(WEAPONS);
             NOTIFICATIONS.putAll(TOOLS);
             NOTIFICATIONS.put("Skull", ImageIO.read(TextureManager.class.getResource("/textures/notification/Skull.png")));

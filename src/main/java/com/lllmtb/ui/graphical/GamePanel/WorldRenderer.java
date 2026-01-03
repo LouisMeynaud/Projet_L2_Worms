@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 import com.lllmtb.engine.GameWorld;
 import com.lllmtb.model.entity.Coin;
 import com.lllmtb.model.entity.Drop;
+import com.lllmtb.model.entity.effect.StatusEffect;
 import com.lllmtb.model.entity.projectile.CatConcreteProjectile;
 import com.lllmtb.model.entity.projectile.Projectile;
 import com.lllmtb.model.entity.team.TeamColor;
@@ -260,6 +261,7 @@ public class WorldRenderer {
         paintEquipment(g2d, worm, xCenter, yCenter);
 
         paintHealthBar(g2d, (Worm) worm.getEntity(), xEcran, yEcran, largeurVerPx);
+       paintStatusEffects(g2d, (Worm) worm.getEntity(), xEcran, yEcran, largeurVerPx);
 
         g2d.drawImage(textureWorm, tx, null);
 
@@ -267,7 +269,21 @@ public class WorldRenderer {
             paintCurrentWormsArrow(g2d, xEcran, yEcran, largeurVerPx, wormEntity.getTeam().teamColor);
             paintItem(g2d, xCenter, yCenter);
             paintAim(g2d, xCenter, yCenter);
-            paintChargeBar(g2d, xEcran, yEcran, largeurVerPx); // AJOUT: Dessin de la barre
+            paintChargeBar(g2d, xEcran, yEcran, largeurVerPx);
+        }
+    }
+
+    private void paintStatusEffects(Graphics2D g2d, Worm worm, double xEcran, double yEcran, double wormWidth) {
+        List<StatusEffect> effects = worm.getStatusEffects();
+        if (effects == null || effects.isEmpty()) return;
+
+        int imgSize = 12;
+
+        double startX = xEcran + wormWidth + 8;
+        double startY = yEcran - 18;
+        for (int i = 0; i < effects.size(); i++) {
+            BufferedImage texture = TextureManager.EFFECT.get(effects.get(i).getName());
+            g2d.drawImage(texture, (int) startX + (i * 14), (int) startY, imgSize, imgSize, null);
         }
     }
 
