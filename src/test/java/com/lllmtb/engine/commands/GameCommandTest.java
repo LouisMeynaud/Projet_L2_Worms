@@ -68,17 +68,17 @@ public class GameCommandTest {
 
     @Test
     void postsProjectileRegisteredEventWhenRegisterProjectileCommandIsExecuted() {
-        Projectile projectile = mock(Projectile.class);
+        Entity entity = mock(Projectile.class);
         Entity owner = mock(Entity.class);
 
-        RegisterEntityCommand cmd = new RegisterEntityCommand(projectile, owner);
+        RegisterEntityCommand cmd = new RegisterEntityCommand(entity, owner);
 
         cmd.execute(world);
 
         verify(physics).add(isNull());
         verify(bus).postQueued(argThat(e ->
                 e instanceof EntityRegisteredEvent
-                        && ((EntityRegisteredEvent) e).projectile() == projectile
+                        && ((EntityRegisteredEvent) e).entity() == entity
                         && ((EntityRegisteredEvent) e).source() == owner
         ));
     }

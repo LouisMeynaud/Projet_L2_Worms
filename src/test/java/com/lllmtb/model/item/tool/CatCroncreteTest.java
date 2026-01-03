@@ -45,7 +45,7 @@ public class CatCroncreteTest {
 
         assertEquals(w, o);
 
-        Field projectileField = RegisterEntityCommand.class.getDeclaredField("projectile");
+        Field projectileField = RegisterEntityCommand.class.getDeclaredField("entity");
         projectileField.setAccessible(true);
         Projectile p = (Projectile) projectileField.get(cmd);
 

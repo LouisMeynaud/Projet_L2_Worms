@@ -37,7 +37,7 @@ public class ShotGunWeaponTest {
         assertInstanceOf(RegisterEntityCommand.class, cmd);
 
         // Assert that the projectile has the correct properties
-        Field projectileField = RegisterEntityCommand.class.getDeclaredField("projectile");
+        Field projectileField = RegisterEntityCommand.class.getDeclaredField("entity");
         projectileField.setAccessible(true);
         Object projectile = projectileField.get(cmd);
         assertInstanceOf(ShotGunProjectile.class, projectile);

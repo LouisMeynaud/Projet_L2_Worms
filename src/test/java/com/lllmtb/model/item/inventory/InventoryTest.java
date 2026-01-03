@@ -174,7 +174,8 @@ public class InventoryTest {
     public void unlockedWeapons_initialization() {
         Set<WeaponId> unlocked = inventory.unlockedWeapons();
         assertTrue(unlocked.contains(WeaponId.GUN));
-        assertEquals(1, unlocked.size());
+        assertTrue(unlocked.contains(WeaponId.BASEBALLBAT));
+        assertEquals(2, unlocked.size());
     }
 
     @Test
@@ -182,18 +183,21 @@ public class InventoryTest {
         inventory.unlock(WeaponId.BAZOOKA);
         Set<WeaponId> unlocked = inventory.unlockedWeapons();
         assertTrue(unlocked.contains(WeaponId.GUN));
+        assertTrue(unlocked.contains(WeaponId.BASEBALLBAT));
         assertTrue(unlocked.contains(WeaponId.BAZOOKA));
-        assertEquals(2, unlocked.size());
+        assertEquals(3, unlocked.size());
     }
 
     @Test
     public void unlockedWeapons_afterUnlockingMultiple() {
-        inventory.unlock(WeaponId.GUN);
         inventory.unlock(WeaponId.BAZOOKA);
+        inventory.unlock(WeaponId.SHOTGUN);
         Set<WeaponId> unlocked = inventory.unlockedWeapons();
         assertTrue(unlocked.contains(WeaponId.GUN));
+        assertTrue(unlocked.contains(WeaponId.BASEBALLBAT));
         assertTrue(unlocked.contains(WeaponId.BAZOOKA));
-        assertEquals(2, unlocked.size());
+        assertTrue(unlocked.contains(WeaponId.SHOTGUN));
+        assertEquals(4, unlocked.size());
     }
 
     @Test
