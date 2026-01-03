@@ -95,6 +95,10 @@ public class ShopManager {
                 break;
             }
         }
+        if (itemBuy == null) {
+            Logger.logger.warn("Item not found in shop: {}", id);
+            return;
+        }
         if (id instanceof WeaponId) {
             if (!team.getInventory().isUnlocked((WeaponId) id)) {
                 Logger.logger.info("impossible arme non Unlock");
