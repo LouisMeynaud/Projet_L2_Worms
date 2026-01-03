@@ -56,11 +56,11 @@ package:
   stage: package
   script:
     - mvn $MAVEN_CLI_OPTS -DskipTests clean package
-  artifacts:
-    when: on_success
-    paths:
-      - target/*-fat.jar
-    expire_in: 1 week
+  #artifacts:           # disabled because of new upload size restrictions in GitLab 
+  #  when: on_success
+  #  paths:
+  #    - target/*-fat.jar
+  #  expire_in: 1 week
   only:
     - main
     - dev
