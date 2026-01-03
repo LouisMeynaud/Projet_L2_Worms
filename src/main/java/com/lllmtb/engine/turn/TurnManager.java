@@ -54,15 +54,26 @@ import com.lllmtb.physics.Position;
  *
  */
 public final class TurnManager {
-
-    // Champs
     private Turn turn;
     private final GameWorld world;
     private final long turnDurationInMs;
     private long remainingTimeInMs;
     private int nbTurn;
     private boolean turnFinish = false;
-    private static int remainingTimeAfterShootInMs = 5000;
+    private static volatile int remainingTimeAfterShootInMs = 5000;
+
+    private static final int PASSIVE_INCOME = 150;
+
+    // Event listeners (stored for cleanup)
+    private EventListener<TurnStopEvent> turnStopListener;
+    private EventListener<TurnSkipEvent> turnSkipListener;
+    private EventListener<MoveInputEvent> moveListener;
+    private EventListener<GroundCheckCollision> groundCollisionListener;
+    private EventListener<WeaponSelectedEvent> weaponSelectedListener;
+    private EventListener<ToolSelectedEvent> toolSelectedListener;
+    private EventListener<CoinCollisionEvent> coinListener;
+    private EventListener<ChangeWormsEvent> changeWormListener;
+    private EventListener<UseInputEvent> useInputListener;
 
     /**
      * Create a new {@code TurnManager} for the current gameWorld
@@ -138,9 +149,9 @@ public final class TurnManager {
         this.nbTurn += 1;
 
         //economy passive income at the start of the turn
-        int passiveIncome = 150; //ajout de beaucoup d'argent pour pouvoir tester les arme et le shop
+        int passiveIncome = PASSIVE_INCOME; //ajout de beaucoup d'argent pour pouvoir tester les arme et le shop
         team.addCredits(passiveIncome);
-        Logger.logger.info("l'equipe : " + team.name + "gagne :" + passiveIncome + "pour le debut du tour");
+        Logger.logger.info("Team {} received {}$ passive income at the start of their turn. Total credits: {}$", team.name, passiveIncome, team.getCredits());
         spawnCoins();
         spawnDrops();
 
@@ -320,47 +331,45 @@ public final class TurnManager {
      * Listeners persist across turns because they use dynamic data from {@code TurnManager}.
      */
     private void setupEvents() {
-        // TODO - unsubscribe when stopping the gameworld. Note that we can keep these listeners across turns because they use dynamic data
-
-        EventListener<TurnStopEvent> turnStopListener = event -> {
+        turnStopListener = event -> {
             this.turn.setIsEnd();
         };
 
-        EventListener<TurnSkipEvent> turnskipEventListener = event -> {
+        turnSkipListener = event -> {
             if (remainingTimeInMs < turnDurationInMs - 3000) {
                 Logger.logger.info("Turn skipped by team {}", this.turn.getTeam().name);
                 endTurn();
             }
         };
 
-        EventListener<MoveInputEvent> moveListener = event -> {
+        moveListener = event -> {
             world.queueCommand(move(this.turn.getWormPlayable(), event.direction()));
         };
 
-        EventListener<GroundCheckCollision> groundCollisionListener = event -> {
+        groundCollisionListener = event -> {
             if (turn.getWormPlayable().uuid == event.worm().uuid) {
                 Move.jumpToMax();
             }
         };
 
-        EventListener<WeaponSelectedEvent> weaponSelectedEventEventListener = event -> {
+        weaponSelectedListener = event -> {
             turn.getTeam().selectWeapon(event.getWeaponId());
         };
 
-        EventListener<ToolSelectedEvent> toolSelectedEventEventListener = event -> {
+        toolSelectedListener = event -> {
             turn.getTeam().selectTool(event.getToolId());
         };
 
-        EventListener<CoinCollisionEvent> coinListener = event -> {
+        coinListener = event -> {
             world.queueCommand(w -> {
-                Logger.logger.info("Piece ramasse ! + " + event.coin.value + "$");
+                Logger.logger.info("Coin collected! + " + event.coin.value + "$");
                 event.team.addCredits(event.coin.value);
                world.getPhysics().remove(event.coin.getBody());
                world.getBus().postQueued(new NotificationEvent("+ " + event.coin.value + "$ for : " + event.team.teamColor, "Coin"));
             });
         };
 
-        EventListener<ChangeWormsEvent> changeWormDuringTurn = event -> {
+        changeWormListener = event -> {
             Team currentTeam = turn.getTeam();
             if (currentTeam.getMaxChangeWormTeam() <= 0) {
                 Logger.logger.info("It's not possible to change worm playable");
@@ -371,7 +380,7 @@ public final class TurnManager {
             }
         };
 
-        EventListener<UseInputEvent> useInputEventListener = event -> {
+        useInputListener = event -> {
             PhysicsBody wormBody = turn.getWormPlayable().getBody();
 
             double mouseX = event.pos().getX();
@@ -405,14 +414,30 @@ public final class TurnManager {
         };
 
         world.getBus().subscribe(TurnStopEvent.class, turnStopListener);
-        world.getBus().subscribe(TurnSkipEvent.class, turnskipEventListener);
-
+        world.getBus().subscribe(TurnSkipEvent.class, turnSkipListener);
         world.getBus().subscribe(MoveInputEvent.class, moveListener);
         world.getBus().subscribe(GroundCheckCollision.class, groundCollisionListener);
-        world.getBus().subscribe(WeaponSelectedEvent.class, weaponSelectedEventEventListener);
-        world.getBus().subscribe(ToolSelectedEvent.class, toolSelectedEventEventListener);
-        world.getBus().subscribe(UseInputEvent.class, useInputEventListener);
+        world.getBus().subscribe(WeaponSelectedEvent.class, weaponSelectedListener);
+        world.getBus().subscribe(ToolSelectedEvent.class, toolSelectedListener);
+        world.getBus().subscribe(UseInputEvent.class, useInputListener);
         world.getBus().subscribe(CoinCollisionEvent.class, coinListener);
-        world.getBus().subscribe(ChangeWormsEvent.class, changeWormDuringTurn);
+        world.getBus().subscribe(ChangeWormsEvent.class, changeWormListener);
+    }
+
+    /**
+     * Unsubscribes all event listeners registered by this TurnManager.
+     * Should be called when the GameWorld is stopped to prevent memory leaks.
+     */
+    public void cleanup() {
+        Logger.logger.debug("Cleaning up TurnManager event listeners");
+        world.getBus().unsubscribe(TurnStopEvent.class, turnStopListener);
+        world.getBus().unsubscribe(TurnSkipEvent.class, turnSkipListener);
+        world.getBus().unsubscribe(MoveInputEvent.class, moveListener);
+        world.getBus().unsubscribe(GroundCheckCollision.class, groundCollisionListener);
+        world.getBus().unsubscribe(WeaponSelectedEvent.class, weaponSelectedListener);
+        world.getBus().unsubscribe(ToolSelectedEvent.class, toolSelectedListener);
+        world.getBus().unsubscribe(UseInputEvent.class, useInputListener);
+        world.getBus().unsubscribe(CoinCollisionEvent.class, coinListener);
+        world.getBus().unsubscribe(ChangeWormsEvent.class, changeWormListener);
     }
 }

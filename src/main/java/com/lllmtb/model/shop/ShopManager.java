@@ -59,11 +59,11 @@ public class ShopManager {
     }
 
     /**
-     * Buys an item for the given team if they have enough credits.
-     * @param id ItemId of the item to be purchased.
-     * @param team Team attempting to purchase the item.
+     * Buys (unlocks) a weapon for the given team if they have enough credits.
+     * @param id WeaponId of the weapon to be purchased (unlocked).
+     * @param team Team attempting to purchase the weapon.
      */
-    public void buyItem(ItemId id, Team team) {
+    public void buyWeapon(WeaponId id, Team team) {
         ShopElement itemBuy = null;
         for (ShopElement element : items) {
             if (element.id == id) {
@@ -72,17 +72,17 @@ public class ShopManager {
             }
         }
         if (itemBuy == null) {
-            Logger.logger.warn("Item not found in shop: {}", id);
+            Logger.logger.warn("Weapon not found in shop: {}", id);
             return;
         }
         if (team.getCredits() >= itemBuy.unlockPrice || team.getCredits() == -1) {
             team.removeCredits(itemBuy.unlockPrice);
-            team.unlockWeapon((WeaponId) id);
+            team.unlockWeapon(id);
             String cleImage = "Hand" + id;
             eventBus.postQueued(new NotificationEvent("Achat réussi : " + itemBuy.name, cleImage));
-            Logger.logger.info("Successful purchase of {}", itemBuy.name);
+            Logger.logger.info("Successful purchase of weapon {}", itemBuy.name);
         } else {
-            Logger.logger.info("Not enough credits to buy {}", itemBuy.name);
+            Logger.logger.info("Not enough credits to buy weapon {}", itemBuy.name);
         }
     }
 

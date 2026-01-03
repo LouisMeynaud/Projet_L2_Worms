@@ -32,20 +32,17 @@ public class GameWorld {
     private final Map map;
     private final EventBus bus;
     private final PhysicsEngine physics;
-    private final List<Team> teams;
-    private final GameLoop gameLoop;
-    private int indexTeam;
-    private final TurnManager turnManager;
-    private String gameName;
-    private GameMode gameMode;
-    private ShopManager shopManager;
-    Thread loopThread;
-
+    private final String gameName;
+    private final GameMode gameMode;
+    private final ShopManager shopManager;
     private final BlockingQueue<GameCommand> commandQueue;
-
+    private final List<Team> teams;
+    private final TurnManager turnManager;
+    private int indexTeam;
+    private final GameLoop gameLoop;
+    protected Thread loopThread;
 
     public GameWorld(GameSettings settings, EventBus eventBus) {
-        gameName = settings.mapFileName;
         Map tmap = null;
         this.gameName = settings.gameName;
         // Try to load map from file, fall back to generation if loading fails
@@ -175,6 +172,7 @@ public class GameWorld {
 
     public void stop() {
         Logger.logger.debug("Stopping the game loop...");
+        turnManager.cleanup();
         gameLoop.stop();
         if (loopThread != null) {
             loopThread.interrupt();

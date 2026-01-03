@@ -4,9 +4,10 @@ import com.lllmtb.model.entity.team.Team;
 import com.lllmtb.model.entity.worm.Worm;
 
 public class Turn {
+    public static final int FIRE_LIMIT_PER_TURN = 3;
+
     private final Team team;
     private boolean isEnd = false;
-    public static final int limitshoot = 3;
 
     public Turn(Team team) {
         this.team = team;
@@ -44,7 +45,7 @@ public class Turn {
     }
 
     public boolean teamMaximumShoot() {
-        if (this.team.getShootCount() >= Turn.limitshoot) {
+        if (this.team.getShootCount() >= FIRE_LIMIT_PER_TURN) {
             this.team.emptyHand();
             return true;
         }

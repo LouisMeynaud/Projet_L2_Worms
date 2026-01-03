@@ -8,6 +8,7 @@ import com.lllmtb.ui.graphical.GamePanel.Direction;
 import org.eclipse.jdt.annotation.NonNull;
 
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicInteger;
 
 
 /**
@@ -15,14 +16,14 @@ import java.util.Objects;
  * It manages the jump capability and creates movement commands based on the specified direction.
  */
 public class Move {
-    protected static int maxjump;
-    protected static int jump = 0;
+    protected static volatile int maxjump;
+    protected static final AtomicInteger jump = new AtomicInteger(0);
 
     /**
      * Resets the jump count to the maximum allowed jumps.
      */
     public static void jumpToMax() {
-        jump = maxjump;
+        jump.set(maxjump);
     }
 
     /**
@@ -43,9 +44,9 @@ public class Move {
                 yield v -> new Vector(v.getX() + 1, v.getY());
 
             case Up:
-                if (jump > 0) {
+                if (jump.get() > 0) {
                     Logger.logger.debug("Worm {} in team : Up move ", worm);
-                    jump--;
+                    jump.decrementAndGet();
                     worm.setOnGround(false); // Mark worm as not on ground when jumping
                     yield v -> new Vector(v.getX(), 20);
                 }
@@ -64,6 +65,4 @@ public class Move {
     public static void setMaxjump(int maxjump) {
         Move.maxjump = maxjump;
     }
-
-
 }

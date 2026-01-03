@@ -28,7 +28,6 @@ public class GameEngine {
         systemBus = new EventBus();
         // Uncomment to log all system events for debugging
         //systemBus.subscribe(Event.class, e -> Logger.logger.info("[EVENT/system]: {}", e.getClass().getSimpleName()));
-        systemBus.subscribe(StartGameEvent.class, GameEngine::startGame);
 
         // Engine loop thread - processes engine-level events (start, pause, quit...)
         new Thread(() -> {
@@ -57,6 +56,8 @@ public class GameEngine {
             Logger.logger.info("Using console interface");
             ui = new ConsoleUI(systemBus);
         }
+
+        systemBus.subscribe(StartGameEvent.class, GameEngine::startGame);
         ui.start();
     }
 

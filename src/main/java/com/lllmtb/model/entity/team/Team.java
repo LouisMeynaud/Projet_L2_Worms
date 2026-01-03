@@ -343,7 +343,7 @@ public class Team {
      */
     public List<GameCommand> use(@NonNull UseParams useParams) {
         Objects.requireNonNull(useParams);
-        if (this.selectedItem == null) return null;
+        if (this.selectedItem == null) return List.of();
         if (this.selectedItem instanceof WeaponId weaponId) {
             Logger.logger.info("[TEAM {}] Firing weapon {}", this.name, weaponId);
             this.shootCount++;

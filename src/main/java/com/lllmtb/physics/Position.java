@@ -9,8 +9,8 @@ import java.util.Objects;
  * using Cartesian coordinates {@code (x, y)}.
  */
 public class Position {
-    private double x;
-    private double y;
+    private final double x;
+    private final double y;
 
     /**
      * Constructs a new {@code Position} with the specified coordinates.

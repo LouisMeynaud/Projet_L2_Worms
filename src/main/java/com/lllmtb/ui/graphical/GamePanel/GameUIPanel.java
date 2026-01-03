@@ -44,6 +44,7 @@ import com.lllmtb.events.turn.TurnSkipEvent;
 import com.lllmtb.events.ui.graphical.NotificationEvent;
 import com.lllmtb.events.ui.graphical.RequestFocus;
 import com.lllmtb.events.ui.graphical.ScreenHomeEvent;
+import com.lllmtb.model.entity.team.Team;
 import com.lllmtb.model.item.inventory.Inventory;
 import com.lllmtb.model.item.tool.ToolId;
 import com.lllmtb.model.item.weapon.WeaponId;
@@ -140,7 +141,6 @@ public class GameUIPanel extends JPanel {
             } else {
                 g2d.fillOval(centerX - 3, centerY - 3, 6, 6);
             }
-
 
             g2d.setColor(Color.WHITE);
             g2d.setFont(new Font("Arial", Font.BOLD, 12));
@@ -307,8 +307,10 @@ public class GameUIPanel extends JPanel {
      */
     private void updateTimerDisplay() {
         if (this.world == null) return;
-        if (this.world.getPlayingTeam() == null) {
+        Team playingTeam = this.world.getPlayingTeam();
+        if (playingTeam == null) {
             this.timerLabel.setText("--:--");
+            this.timerLabel.repaint();
             return;
         }
 
@@ -319,19 +321,9 @@ public class GameUIPanel extends JPanel {
             this.timerLabel.setForeground(Color.WHITE);
         }
 
+        String timeString = String.format("%02d:%02d", timeLeft / 60, timeLeft % 60);
 
-        String timeString;
-        Turn currentTurn = world.getTurnManager().getTurn();
-        if (currentTurn.getWormPlayable() == null) {
-            this.timerLabel.setForeground(Color.white);
-            timeString = "--:--";
-        } else {
-            timeString = String.format("%02d:%02d", timeLeft / 60, timeLeft % 60);
-        }
-
-
-        String teamName = this.world.getPlayingTeam().name;
-        Color baseColor = switch (this.world.getPlayingTeam().getTeamColor()) {
+        Color baseColor = switch (playingTeam.getTeamColor()) {
             case RED -> Color.RED;
             case BLUE -> Color.BLUE;
             case GREEN -> Color.GREEN;
@@ -341,12 +333,12 @@ public class GameUIPanel extends JPanel {
         Color color = new Color(baseColor.getRed(), baseColor.getGreen(), baseColor.getBlue(), 100);
 
         this.timerContainer.setBackground(color);
-        this.timerLabel.setText("tour : " + world.getTurnManager().getNbTurn() + "| team : " + teamName + "| left shoot: "
-                + (Turn.limitshoot - currentTurn.getTeam().getShootCount()) +  "| time : " + timeString);
-        if (this.world.getPlayingTeam().getCredits() == -1) {
+        this.timerLabel.setText("tour : " + world.getTurnManager().getNbTurn() + "| team : " + playingTeam.name + "| left shoot: "
+                + (Turn.FIRE_LIMIT_PER_TURN - playingTeam.getShootCount()) +  "| time : " + timeString);
+        if (playingTeam.getCredits() == -1) {
             this.moneyLabel.setText("∞ $");
         } else {
-            this.moneyLabel.setText(this.world.getPlayingTeam().getCredits() + " $");
+            this.moneyLabel.setText(playingTeam.getCredits() + " $");
         }
         this.timerLabel.repaint();
         this.moneyLabel.repaint();
@@ -649,7 +641,7 @@ public class GameUIPanel extends JPanel {
 
                     buttonShop.addActionListener(e -> {
                         if (canBuy) {
-                        shopManager.buyItem(weaponId, world.getPlayingTeam());
+                        shopManager.buyWeapon(weaponId, world.getPlayingTeam());
                         eventBus.postQueued(new GameStateUpdatedEvent());
                     }
                     });
@@ -751,6 +743,7 @@ public class GameUIPanel extends JPanel {
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
+        System.out.println("GameUIPanel@" + System.identityHashCode(this) + ": paintComponent, world=" + world);
         if (world == null) {
             g.setColor(Color.WHITE);
             g.setFont(new Font("Arial", Font.BOLD, 30));

@@ -70,13 +70,11 @@ public class GraphicalUI implements UI {
         HomeScreenPanel homeScreen = new HomeScreenPanel(this.eventBus);
         SettingsStartPanel startSettingScreen = new SettingsStartPanel(this.eventBus);
         MusicSettingsScreenPanel musicSettingsScreen = new MusicSettingsScreenPanel(this.eventBus);
-        GameScreen gamePanel = new GameScreen(eventbus);
         NewOrLoadPanel newOrLoadPanel = new NewOrLoadPanel(eventbus);
         LoadGamePanel loadGamePanel = new LoadGamePanel(eventbus);
         endGameScreen = new EndGameScreenPanel(eventbus);
         mainPanel.add(homeScreen, "homeScreen"); // the principal page
         mainPanel.add(startSettingScreen, "startSettingScreen"); // the game launch settings page
-        mainPanel.add(gamePanel, "gamePanel"); // la page de jeu
         mainPanel.add(newOrLoadPanel, "newOrLoadPanel"); //The page allowing you to choose whether you want to load or create a game
         mainPanel.add(loadGamePanel, "loadGamePanel");
         mainPanel.add(musicSettingsScreen, "musicSettingsScreen"); // the page containing the music settings
