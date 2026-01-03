@@ -45,7 +45,7 @@ public class GameWorld {
     public GameWorld(GameSettings settings, EventBus eventBus) {
         Map tmap = null;
         this.gameName = settings.gameName;
-        // Try to load map from file, fall back to generation if loading fails
+        // Try to load map from file
         if (settings.mapFileName != null) {
             try {
                 tmap = MapLoader.loadMatrix(settings.mapFileName);

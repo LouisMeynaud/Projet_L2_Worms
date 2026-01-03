@@ -743,7 +743,6 @@ public class GameUIPanel extends JPanel {
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        System.out.println("GameUIPanel@" + System.identityHashCode(this) + ": paintComponent, world=" + world);
         if (world == null) {
             g.setColor(Color.WHITE);
             g.setFont(new Font("Arial", Font.BOLD, 30));
