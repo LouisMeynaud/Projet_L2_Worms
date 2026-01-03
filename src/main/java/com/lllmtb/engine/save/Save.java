@@ -69,6 +69,7 @@ public class Save {
         Gson gson = new GsonBuilder()
                 .setPrettyPrinting()
                 .registerTypeAdapterFactory(entityAdapter)
+                .serializeSpecialFloatingPointValues()
                 .create();
         GameSave gameSave = new GameSave(gameWorld);
         String json =  gson.toJson(gameSave);
