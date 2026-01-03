@@ -71,14 +71,18 @@ public class ShopManager {
                 break;
             }
         }
+        if (itemBuy == null) {
+            Logger.logger.warn("Item not found in shop: {}", id);
+            return;
+        }
         if (team.getCredits() >= itemBuy.unlockPrice || team.getCredits() == -1) {
-                team.removeCredits(itemBuy.unlockPrice);
-                team.unlockWeapon((WeaponId) id);
-                String cleImage = "Hand" + id.toString();
-                eventBus.postQueued(new NotificationEvent("Achat réussi : " + itemBuy.name, cleImage));
-                Logger.logger.info("Achat arme reussie : " + itemBuy.name);
+            team.removeCredits(itemBuy.unlockPrice);
+            team.unlockWeapon((WeaponId) id);
+            String cleImage = "Hand" + id;
+            eventBus.postQueued(new NotificationEvent("Achat réussi : " + itemBuy.name, cleImage));
+            Logger.logger.info("Successful purchase of {}", itemBuy.name);
         } else {
-            Logger.logger.info("Achat rater pas assez d'argent");
+            Logger.logger.info("Not enough credits to buy {}", itemBuy.name);
         }
     }
 
@@ -101,7 +105,7 @@ public class ShopManager {
         }
         if (id instanceof WeaponId) {
             if (!team.getInventory().isUnlocked((WeaponId) id)) {
-                Logger.logger.info("impossible arme non Unlock");
+                Logger.logger.info("Weapon {} not unlocked for ammo purchase", id);
                 return;
             }
         }
@@ -113,13 +117,13 @@ public class ShopManager {
             } else {
                 team.addAmmo((ToolId) id, itemBuy.ammoPackSize);
             }
-            String key = "Hand" + id.toString();
+            String key = "Hand" + id;
             eventBus.postQueued(new NotificationEvent("+ " + itemBuy.ammoPackSize + " ammo for " + itemBuy.name, key));
 
-            Logger.logger.info("Achat ammo reussie : " + itemBuy.name);
+            Logger.logger.info("Successful ammo purchase for {}", itemBuy.name);
 
         } else {
-            Logger.logger.info("Achat rater pas assez d'argent");
+            Logger.logger.info("Not enough credits to buy ammo for {}", itemBuy.name);
         }
     }
 }
