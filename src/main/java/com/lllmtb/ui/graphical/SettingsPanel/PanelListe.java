@@ -16,6 +16,8 @@ import java.util.ArrayList;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 
+import com.lllmtb.engine.logger.Logger;
+
 
 public class PanelListe extends JPanel {
 
@@ -118,8 +120,7 @@ public class PanelListe extends JPanel {
                 image = new ImageIcon(imgRedimensionnee);
             }
         } catch (Exception e) {
-            System.out.println("Probleme avec la map:" + nomDossier);
-            e.printStackTrace();
+            Logger.logger.error("Problem loading map: {}", nomDossier, e);
             titre = "erreur de lecture";
         }
         return new InfoLigne(titre, description, image, nomDossier);
@@ -164,11 +165,7 @@ public class PanelListe extends JPanel {
             labelImage.setIcon(valeur.image);
             setBackground(Color.GRAY);
 
-            if (isSelected) {
-                setOpaque(true);
-            } else {
-                setOpaque(false);
-            }
+            setOpaque(isSelected);
 
             return this;
         }

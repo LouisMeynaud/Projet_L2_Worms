@@ -20,7 +20,7 @@ import com.lllmtb.ui.UI;
 import com.lllmtb.ui.graphical.GamePanel.GameScreen;
 import com.lllmtb.ui.graphical.SettingsPanel.LoadGamePanel;
 import com.lllmtb.ui.graphical.SettingsPanel.NewOrLoadPanel;
-import com.lllmtb.ui.graphical.SettingsPanel.SettingsStartPanel;;
+import com.lllmtb.ui.graphical.SettingsPanel.SettingsStartPanel;
 
 public class GraphicalUI implements UI {
 
@@ -51,7 +51,7 @@ public class GraphicalUI implements UI {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            Logger.logger.error("Could not set Nimbus Look and Feel", e);
         }
 
         this.eventBus = eventbus;

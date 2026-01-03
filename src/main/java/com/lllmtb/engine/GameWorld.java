@@ -48,12 +48,12 @@ public class GameWorld {
         gameName = settings.mapFileName;
         Map tmap = null;
         this.gameName = settings.gameName;
-        // Init Map (we'll have to handle this better once MapLoader throws catchable exceptions)
+        // Try to load map from file, fall back to generation if loading fails
         if (settings.mapFileName != null) {
             try {
                 tmap = MapLoader.loadMatrix(settings.mapFileName);
             } catch (Exception e) {
-                throw new RuntimeException(e);
+                Logger.logger.error("Failed to load map '{}', generating new map instead", settings.mapFileName, e);
             }
         }
         if (tmap == null) {
