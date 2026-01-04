@@ -17,7 +17,6 @@ cache:
 
 before_script:
   - |
-    env | sort
     if [[ "$RUNNER_PROFILE" == "personal" ]] || [[ "$USER" == "leo" ]]; then
       echo "Proxy disabled"
       export MAVEN_OPTS="-Djava.awt.headless=true"
@@ -25,8 +24,6 @@ before_script:
       echo "Proxy enabled"
       export MAVEN_OPTS="-Dhttps.proxyHost=194.254.199.96 -Dhttps.proxyPort=3128 -Djava.awt.headless=true"
     fi
-
-    echo "MAVEN_OPTS=$MAVEN_OPTS"
 
 # Validate - checkstyle before compile
 validate:
