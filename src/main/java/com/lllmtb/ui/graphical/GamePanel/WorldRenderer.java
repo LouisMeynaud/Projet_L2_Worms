@@ -9,6 +9,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import com.lllmtb.engine.GameWorld;
+import com.lllmtb.engine.logger.Logger;
 import com.lllmtb.model.entity.Coin;
 import com.lllmtb.model.entity.Drop;
 import com.lllmtb.model.entity.effect.StatusEffect;
@@ -628,13 +629,17 @@ public class WorldRenderer {
      * @param g2d le pinceaux
      */
     public void render(Graphics2D g2d) {
-        panel.checkCameraBounds();
-        g2d.translate(panel.cameraOffsetX, panel.cameraOffsetY); //decalle le pinceau en fonction de la position camera (si negatif le dessin est deplacer vers la gauche)
-        g2d.scale(panel.currentZoom, panel.currentZoom);
+        try {
+            panel.checkCameraBounds();
+            g2d.translate(panel.cameraOffsetX, panel.cameraOffsetY); //decalle le pinceau en fonction de la position camera (si negatif le dessin est deplacer vers la gauche)
+            g2d.scale(panel.currentZoom, panel.currentZoom);
 
-        paintMap(g2d);
-        paintEntity(g2d);
-        drawEffects(g2d);
-
+            paintMap(g2d);
+            paintEntity(g2d);
+            drawEffects(g2d);
+        } catch (Exception e) {
+            Logger.logger.error("Erreur lors du rendu graphique : " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 }
