@@ -84,6 +84,5 @@ public final class GameSettings {
         this.gameMode = gameMode;
         this.friendlyFire = friendlyFire;
         this.coinCheat = coinCheat;
-
     }
 }
