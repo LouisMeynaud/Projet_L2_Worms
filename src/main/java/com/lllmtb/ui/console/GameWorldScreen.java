@@ -1,5 +1,7 @@
 package com.lllmtb.ui.console;
 
+import com.lllmtb.events.ui.graphical.ScreenEndGameEvent;
+
 import com.lllmtb.engine.GameWorld;
 import com.lllmtb.engine.logger.Logger;
 import com.lllmtb.events.Event;
@@ -57,6 +59,11 @@ public class GameWorldScreen implements Runnable {
     // Cached map rendering (only redrawn on map updates)
     private String[] cachedMapRows = null;
     private boolean initialRenderDone = false;
+
+    // Game Over state
+    private boolean gameEnded = false;
+    private boolean gameOverRendered = false;
+    private Team winningTeam = null;
 
     // Shooting mode state
     private boolean shootMode = false;
@@ -130,6 +137,14 @@ public class GameWorldScreen implements Runnable {
         if (world == null) return;
 
         EventBus worldBus = world.getBus();
+
+        // Handle Game Over
+        worldBus.subscribe(ScreenEndGameEvent.class, e -> {
+            gameEnded = true;
+            winningTeam = e.getTeam();
+            systemBus.postQueued(e);
+            world.stop();
+        });
 
         // Process movement inputs every tick
         worldBus.subscribe(ProcessInputsEvent.class, e -> processMoveInputs());
@@ -243,7 +258,12 @@ public class GameWorldScreen implements Runnable {
 
             // Main render loop
             while (running) {
-                if (!initialRenderDone) {
+                if (gameEnded) {
+                    if (!gameOverRendered) {
+                        renderGameOver();
+                        gameOverRendered = true;
+                    }
+                } else if (!initialRenderDone) {
                     renderFull();
                     initialRenderDone = true;
                 } else {
@@ -498,6 +518,29 @@ public class GameWorldScreen implements Runnable {
 
         viewportX = Math.max(0, Math.min(viewportX, mapWidth - mainPanelWidth + 2));
         viewportY = Math.max(0, Math.min(viewportY, mapHeight - termHeight + 2));
+    }
+
+    private void renderGameOver() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("\033[2J\033[H");
+
+        String title = "GAME OVER";
+        sb.append("\n\n\n").append(centerText("\033[1;31m" + title + "\033[0m", termWidth));
+
+        if (winningTeam != null) {
+            String winnerText = "Winner: " + winningTeam.name;
+            int color = TEAM_COLORS.getOrDefault(winningTeam.teamColor, 255);
+            sb.append("\n\n\n").append(centerText(String.format("\033[38;5;%dm%s\033[0m", color, winnerText), termWidth));
+        } else {
+            String drawText = "Draw!";
+            sb.append("\n\n\n").append(centerText(drawText, termWidth));
+        }
+
+        String quitText = "Press [Q] to quit.";
+        sb.append("\n\n\n").append(centerText(quitText, termWidth));
+
+        terminal.writer().print(sb);
+        terminal.writer().flush();
     }
 
     private void renderFull() {
