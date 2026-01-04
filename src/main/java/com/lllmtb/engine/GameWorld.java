@@ -106,7 +106,7 @@ public class GameWorld {
         this.turnManager.init();
 
         //Init FriendlyFire
-        Projectile.setFriendlyFire(settings.friendlyfire);
+        Projectile.setFriendlyFire(settings.friendlyFire);
 
         //Init ShopManager
         this.shopManager = new ShopManager(this.bus);
@@ -165,7 +165,7 @@ public class GameWorld {
         }
 
         //Init FriendlyFire
-        Projectile.setFriendlyFire(settings.friendlyfire);
+        Projectile.setFriendlyFire(settings.friendlyFire);
 
         // Init GameLoop
         this.gameLoop = new GameLoop(this);
