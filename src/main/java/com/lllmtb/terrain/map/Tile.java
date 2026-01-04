@@ -79,6 +79,10 @@ public enum Tile {
         return this.friction;
     }
 
+    /**
+     * Gets the damage per tick of the tile.
+     * @return Damage value. (-1 if kill instantly)
+     */
     public double getDamage() {
         return this.damage;
     }
