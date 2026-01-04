@@ -334,32 +334,40 @@ public final class TurnManager {
      */
     private void setupEvents() {
         turnStopListener = event -> {
-            this.turn.setIsEnd();
+            if (this.turn != null) {
+                this.turn.setIsEnd();
+            }
         };
 
         turnSkipListener = event -> {
-            if (remainingTimeInMs < turnDurationInMs - 3000) {
+            if (this.turn != null && remainingTimeInMs < turnDurationInMs - 3000) {
                 Logger.logger.info("Turn skipped by team {}", this.turn.getTeam().name);
                 endTurn();
             }
         };
 
         moveListener = event -> {
-            world.queueCommand(move(this.turn.getWormPlayable(), event.direction()));
+            if (this.turn != null && this.turn.getWormPlayable() != null) {
+                world.queueCommand(move(this.turn.getWormPlayable(), event.direction()));
+            }
         };
 
         groundCollisionListener = event -> {
-            if (turn.getWormPlayable().uuid == event.worm().uuid) {
+            if (turn != null && turn.getWormPlayable() != null && turn.getWormPlayable().uuid == event.worm().uuid) {
                 Move.jumpToMax();
             }
         };
 
         weaponSelectedListener = event -> {
-            turn.getTeam().selectWeapon(event.getWeaponId());
+            if (turn != null && turn.getTeam() != null) {
+                turn.getTeam().selectWeapon(event.getWeaponId());
+            }
         };
 
         toolSelectedListener = event -> {
-            turn.getTeam().selectTool(event.getToolId());
+            if (turn != null && turn.getTeam() != null) {
+                turn.getTeam().selectTool(event.getToolId());
+            }
         };
 
         coinListener = event -> {
@@ -372,6 +380,7 @@ public final class TurnManager {
         };
 
         changeWormListener = event -> {
+            if (turn == null || turn.getTeam() == null) return;
             Team currentTeam = turn.getTeam();
             if (currentTeam.getMaxChangeWormTeam() <= 0) {
                 Logger.logger.info("It's not possible to change worm playable");
@@ -383,6 +392,7 @@ public final class TurnManager {
         };
 
         useInputListener = event -> {
+            if (turn == null || turn.getWormPlayable() == null || turn.getTeam() == null) return;
             PhysicsBody wormBody = turn.getWormPlayable().getBody();
 
             double mouseX = event.pos().getX();

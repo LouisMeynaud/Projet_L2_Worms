@@ -51,11 +51,10 @@ public class GameWorld {
         GameSettings settings = gameSave.gameSettings;
         this.gameName = gameSave.gameSettings.gameName;
         this.indexTeam = gameSave.indexTeam;
-        // Init Map (we'll have to handle this better once MapLoader throws catchable exceptions)
-
+        // Init Map - fail if map is null
         if (map == null) {
-            //TODO Make an Exeption for this case
-            Logger.logger.error("Map vide");
+            Logger.logger.error("Cannot load game: Map is null");
+            throw new IllegalArgumentException("Map cannot be null when loading a saved game");
         }
 
         this.map = map;
