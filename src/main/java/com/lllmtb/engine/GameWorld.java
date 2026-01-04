@@ -1,12 +1,17 @@
 package com.lllmtb.engine;
 
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import com.lllmtb.engine.save.GameSave;
+import com.lllmtb.engine.save.PhysicsBodySave;
+import com.lllmtb.engine.save.TeamSave;
+import com.lllmtb.engine.turn.Turn;
 import com.lllmtb.model.entity.projectile.Projectile;
 import org.eclipse.jdt.annotation.NonNull;
 
@@ -43,6 +48,78 @@ public class GameWorld {
 
     private final BlockingQueue<GameCommand> commandQueue;
 
+    public GameWorld(GameSave gameSave, Map map) {
+        GameSettings settings = gameSave.gameSettings;
+        this.gameName = gameSave.gameSettings.gameName;
+        this.indexTeam = gameSave.indexTeam;
+        // Init Map (we'll have to handle this better once MapLoader throws catchable exceptions)
+
+        if (map == null) {
+            //TODO Make an Exeption for this case
+            Logger.logger.error("Map vide");
+        }
+
+        this.map = map;
+        if (gameSave.bus == null) {
+            this.bus = new EventBus();
+        } else {
+            this.bus = gameSave.bus;
+        }
+        Move.setMaxjump(settings.maxJump);
+
+        // Init GameCommand queue
+        this.commandQueue = new LinkedBlockingQueue<>();
+
+        //Init gameMode
+        this.gameMode = settings.gameMode;
+
+
+        // Init PhysicsEngine
+        this.physics = new PhysicsEngine(map, this, settings.hasWind, settings.gameMode);
+        for (PhysicsBodySave physicsBodySave : gameSave.entities) {
+            physics.add(physicsBodySave.physicsBody);
+        }
+
+        // Init Teams
+        this.teams = new ArrayList<>();
+        for (TeamSave saveTeam :gameSave.teams) {
+            this.teams.add(new Team(saveTeam));
+        }
+        // Init GameLoop
+        this.gameLoop = new GameLoop(this);
+        Logger.logger.debug("Game initialised");
+
+        //Init TurnManager
+        this.turnManager = gameSave.turnManager;
+
+        // use reflexion
+        try {
+            Field worldField = TurnManager.class.getDeclaredField("world");
+            worldField.setAccessible(true);
+            worldField.set(this.turnManager, this);
+            Field turnField = TurnManager.class.getDeclaredField("turn");
+            turnField.setAccessible(true);
+            turnField.set(this.turnManager, new Turn(this.getPlayingTeam()));
+            Field restartField = TurnManager.class.getDeclaredField("restart");
+            restartField.setAccessible(true);
+            restartField.set(this.turnManager, true);
+            Field nbTurnField = TurnManager.class.getDeclaredField("nbTurn");
+            nbTurnField.setAccessible(true);
+            nbTurnField.set(this.turnManager, this.turnManager.getNbTurn() - 1);
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
+        this.turnManager.init();
+
+        //Init FriendlyFire
+        Projectile.setFriendlyFire(settings.friendlyfire);
+
+        //Init ShopManager
+        this.shopManager = new ShopManager(this.bus);
+
+        //Init credit from current Team
+        this.teams.get(indexTeam).removeCredits(150);
+    }
 
     public GameWorld(GameSettings settings, EventBus eventBus) {
         gameName = settings.mapFileName;
@@ -160,8 +237,8 @@ public class GameWorld {
         if (loopThread != null && loopThread.isAlive()) return;
         Logger.logger.debug("Starting the game loop...");
         loopThread = new Thread(gameLoop, "gameloop");
-        indexTeam = -1;
         loopThread.start();
+        this.indexTeam--;
         nextTeamTurn();
     }
 

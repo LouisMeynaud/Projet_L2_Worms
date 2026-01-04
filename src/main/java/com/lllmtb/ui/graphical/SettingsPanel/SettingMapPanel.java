@@ -41,7 +41,7 @@ public class SettingMapPanel extends JPanel {
         JButton generateButton = new JButton("Generate Map");
 
         this.generateMapPanel = new GenerateMapPanel();
-        this.panelListeMap = new PanelListe(MapLoader.getListeNomsMaps());
+        this.panelListeMap = new PanelListe(MapLoader.getListeNomsMaps(), "/map/", false);
 
 
         cardPanel.add(this.panelListeMap, "panelListeMap");

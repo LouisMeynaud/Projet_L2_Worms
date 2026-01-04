@@ -24,14 +24,18 @@ import java.util.Random;
 
 public class Drop extends Entity {
     private PhysicsBody body;
-    public final ItemId itemIdToUnlock;
+    public final transient ItemId itemIdToUnlock;
     private static final double DROP_MAX_FALL_SPEED = -9.0;
     private CollisionType collisionType = CollisionType.TOUCH;
     private boolean onGround = false;
+    private final String itemCategory; // "WEAPONID" ou "TOOLID"
+    private final String itemName;
 
     public Drop(Position position, ItemId itemId) {
         this.itemIdToUnlock = itemId;
         this.body = new PhysicsBody(this, position, new Vector(0, 0), 0.1, 2, 2);
+        this.itemName = ((Enum<?>) itemId).name();
+        this.itemCategory = (itemId instanceof WeaponId) ? "WEAPONID" : "TOOLID";
     }
 
     @Override
@@ -104,6 +108,13 @@ public class Drop extends Entity {
     public GameCommand setOnGround() {
         this.onGround = true;
         return null;
+    }
+
+    public String getItemCategory() {
+        return itemCategory;
+    }
+    public String getItemName() {
+        return itemName;
     }
 }
 

@@ -91,6 +91,10 @@ public abstract class Projectile extends Entity {
         return new RemoveEntityCommand(this);
     }
 
+    public static boolean isFriendlyfire() {
+        return friendlyfire;
+    }
+
     public List<GameCommand> update(long dt) {
         return new java.util.ArrayList<>();
     }

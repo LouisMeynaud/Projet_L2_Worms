@@ -1,5 +1,7 @@
 package com.lllmtb.model.entity.team;
 
+import java.lang.reflect.Field;
+import java.util.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -9,6 +11,7 @@ import java.util.Random;
 import org.eclipse.jdt.annotation.NonNull;
 
 import com.lllmtb.engine.commands.GameCommand;
+import com.lllmtb.engine.save.TeamSave;
 import com.lllmtb.engine.logger.Logger;
 import com.lllmtb.model.entity.worm.Worm;
 import com.lllmtb.model.item.ItemId;
@@ -132,6 +135,45 @@ public class Team {
      */
     public Team(@NonNull String teamName, int numberOfWorms, @NonNull Position[] spawn, int credits) {
         this(teamName, numberOfWorms, new Inventory(), spawn, credits);
+    }
+
+    /**
+     * Public constructor used to initialize a team using the private constructor.
+     * @param teamSave      the save of the team
+     */
+    public Team(@NonNull TeamSave teamSave) {
+        this.inventory = new Inventory();
+        for (WeaponId weaponId: teamSave.inventorySave.unlockedWeapons) {
+            inventory.unlock(weaponId);
+        }
+        for (WeaponId weaponId: teamSave.inventorySave.weaponAmmo.keySet()) {
+            inventory.weapons.addAmmo(weaponId, teamSave.inventorySave.weaponAmmo.get(weaponId));
+        }
+        for (ToolId toolId: teamSave.inventorySave.toolAmmo.keySet()) {
+            inventory.tools.addAmmo(toolId, teamSave.inventorySave.toolAmmo.get(toolId));
+        }
+
+        this.name = teamSave.team.name;
+        this.numberOfWorms =  teamSave.team.numberOfWorms;
+        this.id = teamSave.team.id;
+        this.credits = teamSave.team.credits;
+        for (Worm worm: teamSave.team.getTeamWorms()) {
+            this.worms.add(worm);
+        }
+        this.selectedItem = null;
+        this.teamColor = teamSave.team.teamColor;
+        // use reflexion to recreate worm instance with correct PhysicsBody
+        for (Worm worm : this.worms) {
+                try {
+                    Field teamField = Worm.class.getDeclaredField("team");
+                    teamField.setAccessible(true);
+                    teamField.set(worm, this);
+                } catch (NoSuchFieldException | IllegalAccessException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        this.index = teamSave.team.index;
+        this.currentWorm = this.worms.get(this.index);
     }
 
     /**

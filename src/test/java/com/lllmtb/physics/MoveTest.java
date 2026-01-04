@@ -98,5 +98,10 @@ public class MoveTest {
         GameCommand gameCommand =   Move.move(wormMock, Direction.Down);
         assertNull(gameCommand);
     }
+    @Test
+    void testGetMaxJump() {
+        Move.setMaxjump(2);
+        assertEquals(2, Move.getMaxjump());
+    }
 
 }
