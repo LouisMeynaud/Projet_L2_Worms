@@ -31,6 +31,7 @@ public abstract class Projectile extends Entity {
     RocketProjectile,
     ShotGunProjectile,
     TowerProjectile,
+    TrapProjectile,
 }
 
     /**
