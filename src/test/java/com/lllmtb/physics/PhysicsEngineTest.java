@@ -507,5 +507,59 @@ class PhysicsEngineTest {
         assertFalse(worm.isAlive());
 
     }
+
+    @Test
+    void testFindClosestEnemyFromPosition_withEmptyList() {
+        Position searchPos = new Position(0, 0);
+        Team ownerTeam = Mockito.mock(Team.class);
+        Worm wormToExclude = Mockito.mock(Worm.class);
+        List<PhysicsBody> emptyList = List.of();
+        
+        Worm result = pE.findClosestEnemyFromPosition(searchPos, ownerTeam, wormToExclude, emptyList);
+        assertEquals(null, result);
+    }
+
+    @Test
+    void testFindClosestEnemyFromPosition_withNoEnemies() {
+        Position searchPos = new Position(0, 0);
+        Team ownerTeam = new Team("OwnerTeam", 1, new Position[]{new Position(0,0)}, 0);
+        Worm ownerWorm = new Worm("Owner", ownerTeam);
+        
+        List<PhysicsBody> bodies = List.of(ownerWorm.getBody());
+        Worm result = pE.findClosestEnemyFromPosition(searchPos, ownerTeam, ownerWorm, bodies);
+        assertEquals(null, result);
+    }
+
+    @Test
+    void testFindClosestEnemyFromPosition_withEnemies() {
+        Position searchPos = new Position(0, 0);
+        Team ownerTeam = new Team("OwnerTeam", 1, new Position[]{new Position(0,0)}, 0);
+        Team enemyTeam = new Team("EnemyTeam", 2, new Position[]{new Position(10,10), new Position(15,15)}, 0);
+        
+        Worm ownerWorm = new Worm("Owner", ownerTeam);
+        Worm enemyWorm1 = enemyTeam.getIndexWorm(0);
+        Worm enemyWorm2 = enemyTeam.getIndexWorm(1);
+        
+        ownerWorm.getBody().setPos(new Position(0, 0));
+        enemyWorm1.getBody().setPos(new Position(5, 5));
+        enemyWorm2.getBody().setPos(new Position(10, 10));
+        
+        List<PhysicsBody> bodies = List.of(ownerWorm.getBody(), enemyWorm1.getBody(), enemyWorm2.getBody());
+        Worm result = pE.findClosestEnemyFromPosition(searchPos, ownerTeam, ownerWorm, bodies);
+        assertEquals(enemyWorm1, result);
+    }
+
+    @Test
+    void testCalculateAngleToBody() {
+        Position fromPos = new Position(0, 0);
+        PhysicsBody targetBody = Mockito.mock(PhysicsBody.class);
+        Position targetPos = new Position(1, 1);
+        Mockito.when(targetBody.getPos()).thenReturn(targetPos);
+        Mockito.when(targetBody.getWidth()).thenReturn(2.0);
+        Mockito.when(targetBody.getHeight()).thenReturn(2.0);
+        
+        double angle = PhysicsEngine.calculateAngleToBody(fromPos, targetBody);
+        assertEquals(Math.PI / 4, angle, 0.001);
+    }
 }
 
