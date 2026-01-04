@@ -136,7 +136,7 @@ public class GameWorldScreen implements Runnable {
 
         // Center viewport on every game state update (every tick)
         worldBus.subscribe(GameStateUpdatedEvent.class, e -> {
-            centerViewportOnCurrentWorm();
+            followCurrentWorm();
         });
 
         // Trigger full map redraw only when map is modified
@@ -177,8 +177,8 @@ public class GameWorldScreen implements Runnable {
 
         // Side panels
         infoPanelHeight = 8;
-        inventoryPanelHeight = 10;
-        logPanelHeight = (termHeight - infoPanelHeight - inventoryPanelHeight - 6) / 2; // 2 log panels
+        logPanelHeight = 8;
+        inventoryPanelHeight = termHeight - infoPanelHeight - logPanelHeight * 2 - 3;
     }
 
     private void cacheMapRows() {
@@ -335,6 +335,8 @@ public class GameWorldScreen implements Runnable {
             // Quit
             case 'q', 'Q' -> {
                 running = false;
+                world.stop();
+                System.exit(0);
             }
 
             // Number keys for quick weapon selection
@@ -453,13 +455,48 @@ public class GameWorldScreen implements Runnable {
 
         Position pos = worm.getBody().getPos();
         int mapHeight = world.getMap().getHeight();
+        int mapWidth = world.getMap().getWidth();
 
-        // Center viewport on worm
         viewportX = (int) pos.getX() - (mainPanelWidth - 2) / 2;
         viewportY = (int) (mapHeight - pos.getY()) - (termHeight - 2) / 2;
 
-        // Clamp viewport
-        viewportX = Math.max(0, Math.min(viewportX, world.getMap().getWidth() - mainPanelWidth + 2));
+        viewportX = Math.max(0, Math.min(viewportX, mapWidth - mainPanelWidth + 2));
+        viewportY = Math.max(0, Math.min(viewportY, mapHeight - termHeight + 2));
+    }
+
+    private void followCurrentWorm() {
+        if (world == null) return;
+        Team team = world.getPlayingTeam();
+        if (team == null) return;
+        Worm worm = team.getCurrentWorm();
+        if (worm == null) return;
+
+        Position pos = worm.getBody().getPos();
+        int mapHeight = world.getMap().getHeight();
+        int mapWidth = world.getMap().getWidth();
+
+        int wormMapX = (int) pos.getX();
+        int wormMapY = (int) (mapHeight - pos.getY());
+
+        int marginX = (int) (mainPanelWidth * 0.35);
+        int marginY = (int) (termHeight * 0.35);
+
+        int screenX = wormMapX - viewportX;
+        int screenY = wormMapY - viewportY;
+
+        if (screenX < marginX) {
+            viewportX = wormMapX - marginX;
+        } else if (screenX > mainPanelWidth - marginX) {
+            viewportX = wormMapX - (mainPanelWidth - marginX);
+        }
+
+        if (screenY < marginY) {
+            viewportY = wormMapY - marginY;
+        } else if (screenY > termHeight - marginY) {
+            viewportY = wormMapY - (termHeight - marginY);
+        }
+
+        viewportX = Math.max(0, Math.min(viewportX, mapWidth - mainPanelWidth + 2));
         viewportY = Math.max(0, Math.min(viewportY, mapHeight - termHeight + 2));
     }
 
