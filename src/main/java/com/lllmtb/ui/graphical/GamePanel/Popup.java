@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.lllmtb.events.ui.graphical.NotificationEvent;
-import com.lllmtb.ui.graphical.TextureManager;
+import com.lllmtb.ui.graphical.Utilitaire.TextureManager;
 
 public class Popup {
 

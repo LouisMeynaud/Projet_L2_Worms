@@ -1,4 +1,4 @@
-package com.lllmtb.ui.graphical;
+package com.lllmtb.ui.graphical.Utilitaire;
 
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.FloatControl;

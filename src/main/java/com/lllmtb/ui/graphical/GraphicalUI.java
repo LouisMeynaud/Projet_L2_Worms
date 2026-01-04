@@ -20,9 +20,12 @@ import com.lllmtb.events.ui.graphical.ScreenNewOrLoadEvent;
 import com.lllmtb.events.ui.graphical.ScreenSettingsGame;
 import com.lllmtb.ui.UI;
 import com.lllmtb.ui.graphical.GamePanel.GameScreen;
+import com.lllmtb.ui.graphical.OtherPanel.EndGameScreenPanel;
+import com.lllmtb.ui.graphical.OtherPanel.HomeScreenPanel;
 import com.lllmtb.ui.graphical.SettingsPanel.LoadGamePanel;
 import com.lllmtb.ui.graphical.SettingsPanel.NewOrLoadPanel;
-import com.lllmtb.ui.graphical.SettingsPanel.SettingsStartPanel;;
+import com.lllmtb.ui.graphical.SettingsPanel.SettingsStartPanel;
+import com.lllmtb.ui.graphical.Utilitaire.MusicSettingsScreenPanel;;
 
 public class GraphicalUI implements UI {
 

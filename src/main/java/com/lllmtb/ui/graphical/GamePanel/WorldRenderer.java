@@ -25,11 +25,11 @@ import com.lllmtb.physics.PhysicsBody;
 import com.lllmtb.physics.PhysicsModifier;
 import com.lllmtb.physics.Position;
 import com.lllmtb.terrain.map.Tile;
-import com.lllmtb.ui.graphical.TextureManager;
-import com.lllmtb.ui.graphical.Utilitaire;
-import com.lllmtb.ui.graphical.animation.Animation;
-import com.lllmtb.ui.graphical.animation.AnimationManager;
-import com.lllmtb.ui.graphical.animation.VisualEffect;
+import com.lllmtb.ui.graphical.Utilitaire.TextureManager;
+import com.lllmtb.ui.graphical.Utilitaire.Utilitaire;
+import com.lllmtb.ui.graphical.Utilitaire.animation.Animation;
+import com.lllmtb.ui.graphical.Utilitaire.animation.AnimationManager;
+import com.lllmtb.ui.graphical.Utilitaire.animation.VisualEffect;
 
 /**
  * Classe responsable du rendu graphique de la partit.

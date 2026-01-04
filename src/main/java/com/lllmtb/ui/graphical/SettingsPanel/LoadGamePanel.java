@@ -17,8 +17,8 @@ import com.lllmtb.events.EventBus;
 import com.lllmtb.events.game.DeleteSaveEvent;
 import com.lllmtb.events.game.LoadEvent;
 import com.lllmtb.events.ui.graphical.ScreenNewOrLoadEvent;
-import com.lllmtb.ui.graphical.TextureManager;
-import com.lllmtb.ui.graphical.Utilitaire;
+import com.lllmtb.ui.graphical.Utilitaire.TextureManager;
+import com.lllmtb.ui.graphical.Utilitaire.Utilitaire;
 
 public class LoadGamePanel extends JPanel {
 
