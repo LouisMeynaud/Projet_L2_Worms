@@ -17,9 +17,11 @@ cache:
 
 before_script:
   - |
-    if [[ "$CI_RUNNER_TAGS" == *"personal"* ]] || [[ "$USER" == "leo" ]]; then
+    if [[ "$RUNNER_PROFILE" == "personal" ]] || [[ "$USER" == "leo" ]]; then
+      echo "Proxy disabled"
       export MAVEN_OPTS="-Djava.awt.headless=true"
     else
+      echo "Proxy enabled"
       export MAVEN_OPTS="-Dhttps.proxyHost=194.254.199.96 -Dhttps.proxyPort=3128 -Djava.awt.headless=true"
     fi
 
