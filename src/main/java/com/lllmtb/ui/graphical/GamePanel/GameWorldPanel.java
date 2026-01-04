@@ -405,14 +405,30 @@ public class GameWorldPanel extends JPanel {
         lastWormPos = body.getPos();
 
         if (hasMoved && !isCameraMode) {
-            double targetX = body.getPos().getX() * tileSize;
-            double targetY = (world.getMap().getHeight() - body.getPos().getY()) * tileSize;
+            double wormWorldX = body.getPos().getX() * tileSize;
+            double wormWorldY = (world.getMap().getHeight() - body.getPos().getY()) * tileSize;
 
-            double screenCenterWidth = getWidth() / 2.0;
-            double screenCenterHeight = getHeight() / 2.0;
+            double wormScreenX = (wormWorldX * currentZoom) + cameraOffsetX;
+            double wormScreenY = (wormWorldY * currentZoom) + cameraOffsetY;
 
-            cameraOffsetX = screenCenterWidth - (targetX * currentZoom);
-            cameraOffsetY = screenCenterHeight - (targetY * currentZoom);
+            double screenWidth = getWidth();
+            double screenHeight = getHeight();
+
+            double marginX = screenWidth * 0.35;
+            double marginY = screenHeight * 0.35;
+
+            if (wormScreenX < marginX) {
+                cameraOffsetX += (marginX - wormScreenX);
+            } else if (wormScreenX > screenWidth - marginX) {
+                cameraOffsetX -= (wormScreenX - (screenWidth - marginX));
+            }
+
+            if (wormScreenY < marginY) {
+                cameraOffsetY += (marginY - wormScreenY);
+            } else if (wormScreenY > screenHeight - marginY) {
+                cameraOffsetY -= (wormScreenY - (screenHeight - marginY));
+            }
+
             checkCameraBounds();
         }
     }
