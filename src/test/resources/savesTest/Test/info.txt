@@ -1,0 +1,3 @@
+Nom de la partie: Test
+ Les équipes: 1; 2; 
+ Equipe à jouer: 1

@@ -488,7 +488,7 @@ public class Collision {
             body.setPos(safePos);
             body.setVector(new Vector(body.getVector().getX(), 0));
 
-            if (i.normal.getY() == 1 && body.getEntity() instanceof Worm) {
+            if (i.normal.getY() > 0 && body.getEntity() instanceof Worm) {
                 ((Worm) body.getEntity()).setOnGround(true);
                 world.getBus().postQueued(new GroundCheckCollision(body.getEntity()));
             }

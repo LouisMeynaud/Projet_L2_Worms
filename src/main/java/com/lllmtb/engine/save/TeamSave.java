@@ -4,8 +4,8 @@ import com.lllmtb.model.entity.team.Team;
 
 public class TeamSave {
 
-    protected  Team team;
-    protected  InventorySave inventorySave;
+    public  Team team;
+    public  InventorySave inventorySave;
 
     public  TeamSave() {
 

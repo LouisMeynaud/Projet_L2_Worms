@@ -293,6 +293,58 @@ public class CollisionTest {
     }
 
     @Test
+    void slideWithCollision() {
+        pBWorm1.setPos(new Position(6, 10));
+        pBWorm1.setVector(new Vector(5, -2));
+
+        GameSettings settings = new GameSettings("blabla", 1, new String[]{}, 1,100, 10, true, "mapTest", false,370, LandScape.HILLY,2,GameMode.NORMAL, true,false);
+        EventBus eventBus = new EventBus();
+        GameWorld gw = new GameWorld(settings, eventBus);
+        Collision.Impact impact = new Collision.Impact(0.0, new Vector(5,-2),pBWorm1, new Vector(1,0), null, false);
+        collision.slide(pBWorm1, impact, 1, gw);
+        assertEquals(6.002003999992, pBWorm1.getPos().getX());
+        assertEquals(10.001999996000013, pBWorm1.getPos().getY());
+        assertTrue(worm1.isOnGround());
+    }
+
+    @Test
+    void slideWithNoMovement() {
+        pBWorm1.setPos(new Position(6, 10));
+        pBWorm1.setVector(new Vector(0, 0));
+
+        GameSettings settings = new GameSettings("blabla", 1, new String[]{}, 1,100, 10, true, "mapTest", false,370, LandScape.HILLY,2,GameMode.NORMAL, true,false);
+        EventBus eventBus = new EventBus();
+        GameWorld gw = new GameWorld(settings, eventBus);
+        Collision.Impact impact = new Collision.Impact(0.0, new Vector(5,-2),pBWorm1, new Vector(0,-1), null, false);
+        collision.slide(pBWorm1, impact, 1, gw);
+        assertEquals(6.0, pBWorm1.getPos().getX());
+        assertEquals(10.0, pBWorm1.getPos().getY());
+    }
+
+    @Test
+    void slideImpactNormalIs0() {
+        pBWorm1.setPos(new Position(7, 10));
+        Collision.Impact impact = new Collision.Impact(pBWorm1.getPos());
+        GameSettings settings = new GameSettings("blabla", 1, new String[]{}, 1,100, 10, true, "mapTest", false,370, LandScape.HILLY,2,GameMode.NORMAL, true,false);
+        EventBus eventBus = new EventBus();
+        GameWorld gw = new GameWorld(settings, eventBus);
+        collision.slide(pBWorm1, impact, 1, gw);
+        assertFalse(worm1.isOnGround());
+        assertEquals(0, pBWorm1.getVector().getX());
+    }
+
+    @Test
+    void slideImpactNormalIs0NotWorm() {
+        pBBP1.setPos(new Position(7, 10));
+        Collision.Impact impact = new Collision.Impact(pBBP1.getPos());
+        GameSettings settings = new GameSettings("blabla", 1, new String[]{}, 1,100, 10, true, "mapTest", false,370, LandScape.HILLY,2,GameMode.NORMAL, true,false);
+        EventBus eventBus = new EventBus();
+        GameWorld gw = new GameWorld(settings, eventBus);
+        collision.slide(pBBP1, impact, 1, gw);
+        assertEquals(0, pBBP1.getVector().getX());
+    }
+
+    @Test
     void bounce() {
         pBWorm1.setVector(new Vector(28, 0));
         Position posFinal = new Position(28, 14);

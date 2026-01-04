@@ -10,6 +10,7 @@ import javax.swing.UIManager;
 
 import com.lllmtb.engine.logger.Logger;
 import com.lllmtb.events.EventBus;
+import com.lllmtb.events.game.LoadEvent;
 import com.lllmtb.events.game.StartGameEvent;
 import com.lllmtb.events.ui.graphical.ScreenEndGameEvent;
 import com.lllmtb.events.ui.graphical.ScreenHomeEvent;
@@ -29,7 +30,7 @@ public class GraphicalUI implements UI {
     public EventBus eventBus;
     public CardLayout cardLayout; // the container for all pages
     public JPanel mainPanel;
-
+    public JPanel loadGamePanel;
     private EndGameScreenPanel endGameScreen;
 
 
@@ -73,7 +74,7 @@ public class GraphicalUI implements UI {
         MusicSettingsScreenPanel musicSettingsScreen = new MusicSettingsScreenPanel(this.eventBus);
         GameScreen gamePanel = new GameScreen(eventbus);
         NewOrLoadPanel newOrLoadPanel = new NewOrLoadPanel(eventbus);
-        LoadGamePanel loadGamePanel = new LoadGamePanel(eventbus);
+        this.loadGamePanel = new LoadGamePanel(eventbus);
         endGameScreen = new EndGameScreenPanel(eventbus);
         mainPanel.add(homeScreen, "homeScreen"); // the principal page
         mainPanel.add(startSettingScreen, "startSettingScreen"); // the game launch settings page
@@ -110,12 +111,21 @@ public class GraphicalUI implements UI {
             Logger.logger.debug("Show GameScreen");
         });
 
+        eventBus.subscribe(LoadEvent.class, event -> {
+            cardLayout.show(mainPanel, "gamePanel");
+            GameScreen gamePanel = new GameScreen(this.eventBus);
+            mainPanel.add(gamePanel, "gamePanel"); // la page de jeu
+            Logger.logger.debug("Show GameScreen");
+        });
+
         eventBus.subscribe(ScreenSettingsGame.class, event -> {
             cardLayout.show(mainPanel, "startSettingScreen");
             Logger.logger.debug("Show SettingScreen");
         });
 
         eventBus.subscribe(ScreenLoadGame.class, event -> {
+            this.loadGamePanel =  new LoadGamePanel(this.eventBus);
+            mainPanel.add(loadGamePanel, "loadGamePanel");
             cardLayout.show(mainPanel, "loadGamePanel");
             Logger.logger.debug("Show loadGamePanel");
 

@@ -1,5 +1,6 @@
 package com.lllmtb.events;
 
+import com.lllmtb.events.game.*;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -176,7 +177,7 @@ public class EventsTest {
         new ChangeWormsEvent();
         new TurnEndEvent();
         new TurnStopEvent();
-
+        new FinalSaveEvent();
     }
 
     @Test
@@ -189,5 +190,10 @@ public class EventsTest {
 //        assertNotNull(event);
 //        assertSame(movingBodyMock, event.getMovingBody());
 //        assertSame(hitBodyMock, event.getHitBody());
+    }
+    @Test
+    void DeleteSaveEventTest() {
+        DeleteSaveEvent deleteSaveEvent = new DeleteSaveEvent( "Test");
+        assertEquals("Test", deleteSaveEvent.getSaveName());
     }
 }

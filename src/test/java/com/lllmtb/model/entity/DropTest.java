@@ -24,13 +24,7 @@ import org.mockito.Mockito;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertInstanceOf;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class DropTest {
     private Drop drop;
@@ -92,10 +86,10 @@ public class DropTest {
     @Test
     public void testDropCollisionEventTouchItem(){
         Team team = new Team("Test", 1, new Position[]{new Position(1,1)}, 0);
-        ItemId item = Mockito.mock(ItemId.class);
+        ItemId item = WeaponId.SHOTGUN;
         Drop drop = new Drop(new Position(1, 1), item);
         GameCommand cmd = drop.onImpact(team.getCurrentWorm());
-        assertNull(cmd);
+        assertNotNull(cmd);
     }
 
     @Test
@@ -121,8 +115,13 @@ public class DropTest {
             TimeUnit.MILLISECONDS.sleep(50);
         } catch(InterruptedException ignored){}
         assertTrue(drop.getBody().getVector().getY() <= 9.0);
+    }
 
-
+    @Test
+    public void getTest(){
+        world.start();
+        assertEquals(WeaponId.GUN.name(), drop.getItemName());
+        assertEquals("WEAPONID", drop.getItemCategory());
     }
 
 
@@ -141,4 +140,3 @@ public class DropTest {
         assertNull(result);
     }
 }
-
