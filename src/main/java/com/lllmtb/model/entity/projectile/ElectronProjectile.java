@@ -20,7 +20,7 @@ public final class ElectronProjectile extends Projectile {
     private static final double mass   = 0;
     private static final double height = 2;
     private static final double width  = 2;
-    private static final int damage = 10;
+    private static final int damage = 18;
 
     private int bounces = 5;
 

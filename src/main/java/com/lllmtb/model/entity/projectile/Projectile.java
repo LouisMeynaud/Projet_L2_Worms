@@ -61,6 +61,10 @@ public abstract class Projectile extends Entity {
         Projectile.friendlyfire = friendlyfire;
     }
 
+    public static boolean isFriendlyfire() {
+        return friendlyfire;
+    }
+
     /**
      * Called by collision detection when an impact is detected.
      */

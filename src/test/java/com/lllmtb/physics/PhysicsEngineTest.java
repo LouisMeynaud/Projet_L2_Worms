@@ -13,6 +13,9 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import com.lllmtb.model.entity.Coin;
+import com.lllmtb.model.entity.Drop;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -163,7 +166,7 @@ class PhysicsEngineTest {
         tpE.add(pBBP);
         tpE.nextStep(dt);
         assertEquals(0.0, pBBP.getPos().getX());
-        assertEquals(4.92499394064, pBBP.getPos().getY());
+        assertEquals(4.91678788128, pBBP.getPos().getY());
         assertEquals(3.91650697225, pBWorm.getPos().getX());
         assertEquals(4.002, pBWorm.getPos().getY());
     }
@@ -179,10 +182,45 @@ class PhysicsEngineTest {
         tpE.add(pBWorm);
         tpE.add(pBBP);
         tpE.nextStep(dt);
-        assertEquals(1.0000020003952925, pBBP.getPos().getX());
-        assertEquals(4.999999803363819, pBBP.getPos().getY());
+        assertEquals(1.000002000788798, pBBP.getPos().getX());
+        assertEquals(4.999999606640421, pBBP.getPos().getY());
         assertEquals(2.0, pBWorm.getPos().getX());
         assertEquals(4.002, pBWorm.getPos().getY());
+    }
+
+    @Test
+    void testNextStep_dropOnOtherDrop() {
+        Drop drop1 = new Drop(new Position(0, 4), ToolId.PARACHUTE);
+        Drop drop2 = new Drop(new Position(0, 6), ToolId.PARACHUTE);
+        PhysicsBody body1 = drop1.getBody();
+        PhysicsBody body2 = drop2.getBody();
+        body1.setVector(new Vector(0, -3));
+        body2.setVector(new Vector(0, -3));
+        PhysicsEngine tpE = new PhysicsEngine(map, world, false, GameMode.NORMAL);
+        tpE.add(body1);
+        tpE.add(body2);
+        double dt = 1.0;
+        tpE.nextStep(dt);
+        assertEquals(0.0, body1.getPos().getX());
+        assertEquals(4.0, body1.getPos().getY());
+        assertEquals(0.0, body2.getPos().getX());
+        assertEquals(5.436491673103708, body2.getPos().getY());
+    }
+
+    @Test
+    void testNextStep_coinOnWorm() {
+        Coin coin = new Coin(new Position(4, 6), 10);
+        PhysicsBody coinBody = coin.getBody();
+        coinBody.setVector(new Vector(0, -3));
+        pBWorm.setVector(new Vector(0, 0));
+        PhysicsEngine tpE = new PhysicsEngine(map, world, false, GameMode.NORMAL);
+        tpE.add(pBWorm);
+        tpE.add(coinBody);
+        double dt = 1.0;
+        tpE.nextStep(dt);
+        assertEquals(4.0, pBWorm.getPos().getX());
+        assertEquals(4.002, pBWorm.getPos().getY());
+        assertFalse(tpE.getBodies().contains(coinBody));
     }
 
     @Test

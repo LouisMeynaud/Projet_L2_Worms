@@ -65,4 +65,8 @@ public class Move {
     public static void setMaxjump(int maxjump) {
         Move.maxjump = maxjump;
     }
+
+    public static int getMaxjump() {
+        return maxjump;
+    }
 }

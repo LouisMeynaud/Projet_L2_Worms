@@ -28,25 +28,24 @@ public class ShopManager {
      * Initializes the shop with items, their prices, and ammo pack sizes.
      */
     private void initShop() {
-        //prix temporaires , a changer plus tard
-
-        items.add(new ShopElement(WeaponId.SHOTGUN, "shotgun", 120, 40, 5));
-        items.add(new ShopElement(WeaponId.BAZOOKA, "bazooka", 150, 50, 1));
-        items.add(new ShopElement(WeaponId.GASGUN, "gasgun", 150, 60, 2));
-        items.add(new ShopElement(WeaponId.ELECTRONCANON, "electroncanon", 250, 70, 1));
-        items.add(new ShopElement(WeaponId.HEALINGBAZOOKA, "healingbazooka", 100, 40, 1));
-        items.add(new ShopElement(WeaponId.BOW, "bow", 100, 40, 3));
+        //Weapons
+        items.add(new ShopElement(WeaponId.SHOTGUN, "shotgun", 250, 50, 3));
+        items.add(new ShopElement(WeaponId.BAZOOKA, "bazooka", 400, 80, 1));
+        items.add(new ShopElement(WeaponId.GASGUN, "gasgun", 450, 90, 1));
+        items.add(new ShopElement(WeaponId.ELECTRONCANON, "electroncanon", 600, 120, 1));
+        items.add(new ShopElement(WeaponId.HEALINGBAZOOKA, "healingbazooka", 230, 100, 1));
+        items.add(new ShopElement(WeaponId.BOW, "bow", 140, 30, 3));
 
         //Tools
-        items.add(new ShopElement(ToolId.GRENADE, "grenade", 100, 60, 1));
-        items.add(new ShopElement(ToolId.JETPACK, "jetpack", 150, 90, 1));
-        items.add(new ShopElement(ToolId.CALLSTRIKE, "callstrike", 150, 90, 1));
-        items.add(new ShopElement(ToolId.PARACHUTE, "parachute", 50, 20, 1));
-        items.add(new ShopElement(ToolId.CATCONCRETE, "catconcrete", 150, 90, 1));
+        items.add(new ShopElement(ToolId.GRENADE, "grenade", 150, 150, 1));
+        items.add(new ShopElement(ToolId.JETPACK, "jetpack", 150, 150, 1));
+        items.add(new ShopElement(ToolId.CALLSTRIKE, "callstrike", 400, 400, 1));
+        items.add(new ShopElement(ToolId.PARACHUTE, "parachute", 40, 40, 1));
+        items.add(new ShopElement(ToolId.CATCONCRETE, "catconcrete", 200, 200, 1));
         items.add(new ShopElement(ToolId.TOWER, "tower", 150, 150, 1));
-        items.add(new ShopElement(ToolId.MINE, "mine", 100, 100, 1));
-        items.add(new ShopElement(ToolId.MEDKIT, "medkit", 75, 75, 1));
-        items.add(new ShopElement(ToolId.TRAP, "trap", 100, 100, 1));
+        items.add(new ShopElement(ToolId.MINE, "mine", 80, 80, 1));
+        items.add(new ShopElement(ToolId.MEDKIT, "medkit", 125, 125, 1));
+        items.add(new ShopElement(ToolId.TRAP, "trap", 150, 150, 1));
 
     }
 

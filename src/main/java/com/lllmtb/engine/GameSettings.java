@@ -15,7 +15,7 @@ public final class GameSettings {
     public final long turnDuration;
     public final String gameName;
     public final int maxJump;
-    public final int maxHp;
+    public final double maxHp;
     public GameMode gameMode;
     public final boolean friendlyfire;
     public final boolean coinCheat;
@@ -40,7 +40,7 @@ public final class GameSettings {
      */
 
 
-    public GameSettings(String gameName, int nbTeams, String[] teamNames, int nbWorms, int maxHp, long turnDuration, boolean hasWind, String mapFileName,
+    public GameSettings(String gameName, int nbTeams, String[] teamNames, int nbWorms, double maxHp, long turnDuration, boolean hasWind, String mapFileName,
         boolean floatingIsland, int widthMap, LandScape terrainType, int maxJump, GameMode gameMode, boolean friendlyfire, boolean coinCheat) {
 
 

@@ -33,6 +33,7 @@ public class Turn {
 
     public void end() {
         this.team.resetShootCount();
+        this.team.resetWormChangeCount();
         this.team.nextWorm();
     }
 
@@ -42,6 +43,12 @@ public class Turn {
 
     public void setIsEnd() {
         this.isEnd = true;
+    }
+
+    public void wormPlayableAlive() {
+        if (!this.getWormPlayable().isAlive()) {
+            setIsEnd();
+        }
     }
 
     public boolean teamMaximumShoot() {

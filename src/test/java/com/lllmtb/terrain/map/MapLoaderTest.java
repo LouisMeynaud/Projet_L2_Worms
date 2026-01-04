@@ -1,15 +1,22 @@
 package com.lllmtb.terrain.map;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import com.lllmtb.engine.save.SaveConfig;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class MapLoaderTest {
+    private static final String TEMP_TEST_DIR = "junit_test_map_999";
     public static String mapText;
     public static Map m;
     public static String path;
@@ -21,11 +28,12 @@ public class MapLoaderTest {
         {Tile.WATER, Tile.WATER, Tile.WATER, Tile.WATER, Tile.WATER},
         {Tile.WATER, Tile.WATER, Tile.WATER, Tile.WATER, Tile.WATER}
     };
+
     @BeforeAll
     public static void setUp() throws IOException {
         // path = "src/main/resources/map/mapTest/map.txt";
         // mapText = Files.readString(Path.of(path));
-        m = MapLoader.loadMatrix("mapTest");
+        m = MapLoader.loadMatrix("mapTest");;
     }
 
     @Test
@@ -76,5 +84,45 @@ public class MapLoaderTest {
     void testGetListeDossiers_AvecUnFichier() throws IOException {
         Map resultat = MapLoader.loadMatrix("test.txt");
         assertEquals(null, resultat, "Doit renvoyer null si on donne un fichier au lieu d'un dossier");
+    }
+
+    @Test
+    void testLoadMatrixLoad_Success() throws IOException {
+        Path testDirPath = Paths.get(SaveConfig.SAVE_DIRECTORY, TEMP_TEST_DIR);
+        Files.createDirectories(testDirPath);
+        Path mapFile = testDirPath.resolve("map.txt");
+        String content = "AAA\nDDD";
+        Files.writeString(mapFile, content, StandardCharsets.UTF_8);
+        try {
+            Map result = MapLoader.loadMatrixLoad(TEMP_TEST_DIR);
+            assertNotNull(result);
+            assertEquals(2, result.getMapMatrix().length);
+            assertEquals(Tile.AIR, result.getMapMatrix()[0][0]);
+            assertEquals(Tile.DIRT, result.getMapMatrix()[1][0]);
+        } finally {
+            Files.deleteIfExists(mapFile);
+            Files.deleteIfExists(testDirPath);
+        }
+    }
+
+    @Test
+    void testLoadMatrixLoad_FileNotFound() {
+        Map result = MapLoader.loadMatrixLoad("dossier_totalement_imaginaire_123");
+        assertNull(result);
+    }
+
+    @Test
+    void testGetListeNomsLoads_WithActualFolder() throws IOException {
+        Path testPath = Paths.get(SaveConfig.SAVE_DIRECTORY, "temp_test_list");
+        Files.createDirectories(testPath);
+
+        try {
+            String[] saves = MapLoader.getListeNomsLoads();
+            assertNotNull(saves);
+            List<String> list = Arrays.asList(saves);
+            assertTrue(list.contains("temp_test_list"));
+        } finally {
+            Files.deleteIfExists(testPath);
+        }
     }
 }

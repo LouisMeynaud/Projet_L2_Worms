@@ -37,7 +37,7 @@ class RocketProjectileTest {
         assertEquals(CollisionType.TOUCH, rocket.getCollisionType());
         assertEquals(10, rocket.getExplosionRadius());
         assertEquals(15, rocket.getSuffleRadius());
-        assertEquals(30, rocket.getExplosionDamage());
+        assertEquals(40, rocket.getExplosionDamage());
         assertEquals(100.0, rocket.getExplosionForce());
         assertEquals("BazookaExplosion", rocket.getExplosionTexture());
     }
@@ -66,6 +66,6 @@ class RocketProjectileTest {
                 cmd.execute(worldMock);
             }
 
-            verify(physicsMock).createExplosion(eq(rocket), eq(10), eq(15), eq(30), eq(100.0), eq(false));
+            verify(physicsMock).createExplosion(eq(rocket), eq(10), eq(15), eq(40), eq(100.0), eq(false));
         }
 }

@@ -1,5 +1,8 @@
 package com.lllmtb.model.entity.team;
 
+import com.lllmtb.engine.GameEngine;
+import com.lllmtb.engine.save.GameSave;
+import com.lllmtb.engine.save.TeamSave;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -45,6 +48,15 @@ public class TeamTest {
         Team.getChosenTeamColors().clear();
         Team team2 = new Team("Team2", 1, new Position[]{new Position(0, 0)}, 0);
         assertNotEquals(team.id, team2.id);
+    }
+
+    @Test
+    public void constructor_withTeamSave() {
+            TeamSave teamSave = new TeamSave(team);
+            Team team2 = new Team(teamSave);
+            assertNotNull(team2.id);
+            assertEquals(team.id, team2.id);
+            assertEquals(team.name, team2.name);
     }
 
     @Test

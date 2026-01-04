@@ -7,11 +7,13 @@ import java.util.Random;
 import com.lllmtb.engine.GameWorld;
 import com.lllmtb.engine.commands.GameCommand;
 import com.lllmtb.engine.logger.Logger;
+import com.lllmtb.engine.save.Save;
 import com.lllmtb.events.EventListener;
 import com.lllmtb.events.game.CoinCollisionEvent;
 import com.lllmtb.events.game.MapUpdateEvent;
 import com.lllmtb.events.game.ToolSelectedEvent;
 import com.lllmtb.events.game.WeaponSelectedEvent;
+import com.lllmtb.events.game.*;
 import com.lllmtb.events.physics.GroundCheckCollision;
 import com.lllmtb.events.input.UseInputEvent;
 import com.lllmtb.events.input.MoveInputEvent;
@@ -54,13 +56,14 @@ import com.lllmtb.physics.Position;
  *
  */
 public final class TurnManager {
-    private Turn turn;
-    private final GameWorld world;
+    private transient Turn turn;
+    private final transient GameWorld world;
     private final long turnDurationInMs;
     private long remainingTimeInMs;
     private int nbTurn;
     private boolean turnFinish = false;
     private static volatile int remainingTimeAfterShootInMs = 5000;
+    private boolean restart = true;
 
     private static final int PASSIVE_INCOME = 150;
 
@@ -144,6 +147,7 @@ public final class TurnManager {
      * @param team the selected team who will play.
      */
     public void startTurn(Team team) {
+        this.turnFinish = false;
         this.remainingTimeInMs = turnDurationInMs;
         this.turn = new Turn(team);
         this.nbTurn += 1;
@@ -152,11 +156,12 @@ public final class TurnManager {
         int passiveIncome = PASSIVE_INCOME; //ajout de beaucoup d'argent pour pouvoir tester les arme et le shop
         team.addCredits(passiveIncome);
         Logger.logger.info("Team {} received {}$ passive income at the start of their turn. Total credits: {}$", team.name, passiveIncome, team.getCredits());
-        spawnCoins();
-        spawnDrops();
+        if (!restart) {
+            spawnCoins();
+            spawnDrops();
+        }
+        restart = false;
 
-
-        this.turnFinish = false;
         world.getBus().postQueued(new TurnStartEvent(team));
         Logger.logger.info("Start turn for the team {}\n", team.name);
         world.getBus().postQueued(new WormPlayable(turn.getWormPlayable()));
@@ -167,6 +172,9 @@ public final class TurnManager {
                 world.getBus().postQueued(new NotificationEvent("Attention : montée des eaux", "RisingWater"));
             }
         }
+        Save.setGameWorld(world);
+        this.world.getBus().postSync(new SaveEvent());
+        this.world.pause(true);
     }
 
     /**
@@ -182,7 +190,7 @@ public final class TurnManager {
             int x = random.nextInt(mapWidth);
             for (int y = mapHeight - 1; y > 0; y--) {
                 if (world.getMap().isSolid(new Position(x, y))) {
-                    int coinY = y + 1;
+                    int coinY = y + 3;
                     Coin coin = new Coin(new Position(x + 0.25, coinY), 50);
                     world.getPhysics().getBodies().add(coin.getBody());
                     break;
@@ -234,6 +242,7 @@ public final class TurnManager {
         Team winningTeam = checkWiningTeam();
         if (winningTeam != null) {
             Logger.logger.info("The team {} wins !!", winningTeam);
+            Save.eraseSave(getWorld().getGameName());
             world.getBus().postQueued(new ScreenEndGameEvent(winningTeam));
         } else {
             if (turnFinish) {
@@ -244,6 +253,7 @@ public final class TurnManager {
                     world.getGameLoop().setSpeedTurn(3);
                 }
             } else {
+                this.turn.wormPlayableAlive();
                 if (remainingTimeInMs <= 0 || this.turn.getIsEnd()) {
                     endTurn();
                 } else if (this.turn.teamMaximumShoot()) {
@@ -262,9 +272,9 @@ public final class TurnManager {
         this.turn.getTeam().emptyHand();
         Logger.logger.info("End turn - switch Team\n");
         world.getBus().postQueued(new TurnEndEvent());
+        applyStatusEffectsToAllWorms();
         this.turnFinish = true;
         this.turn.getTeam().setCurrentWormNull();
-        applyStatusEffectsToAllWorms();
     }
 
     /**
@@ -273,8 +283,10 @@ public final class TurnManager {
     private void applyStatusEffectsToAllWorms() {
         for (Team team : world.getTeams()) {
             for (Worm worm : team.getTeamWorms()) {
-                List<GameCommand> commands = worm.applyStatusEffects();
-                world.queueCommands(commands);
+                if (worm.isAlive()) {
+                    List<GameCommand> commands = worm.applyStatusEffects();
+                    world.queueCommands(commands);
+                }
             }
         }
     }

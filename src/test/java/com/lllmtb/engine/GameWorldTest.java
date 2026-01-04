@@ -1,8 +1,11 @@
 package com.lllmtb.engine;
 
+import java.io.FileNotFoundException;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import com.lllmtb.engine.save.GameSave;
+import com.lllmtb.engine.save.Load;
 import org.junit.jupiter.api.AfterEach;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -122,6 +125,14 @@ public class GameWorldTest {
             assertInstanceOf(IllegalStateException.class, e.getCause());
             assertEquals("io fail", e.getCause().getMessage());
         }
+    }
+    @Test
+    void constructor_withGamSave_Map() throws FileNotFoundException {
+        Map map = MapLoader.loadMatrix("Test");
+        GameSave gameSave = Load.loadGameSave("Test");
+        GameWorld gameWorld =new GameWorld(gameSave, map);
+        assertNotNull(gameWorld);
+        assertEquals(gameWorld.getGameName(), "Test");
     }
 
     @Test
