@@ -7,7 +7,6 @@ import com.lllmtb.engine.save.Load;
 import com.lllmtb.engine.logger.Logger;
 import com.lllmtb.engine.save.Save;
 import com.lllmtb.events.EventBus;
-import com.lllmtb.events.Event;
 import com.lllmtb.events.game.*;
 import com.lllmtb.ui.console.ConsoleUI;
 import com.lllmtb.ui.UI;

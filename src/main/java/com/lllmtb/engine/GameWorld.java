@@ -46,68 +46,6 @@ public class GameWorld {
     private final GameLoop gameLoop;
     protected Thread loopThread;
 
-    public GameWorld(GameSettings settings, EventBus eventBus) {
-        Map tmap = null;
-        this.gameName = settings.gameName;
-        // Try to load map from file
-        if (settings.mapFileName != null) {
-            try {
-                tmap = MapLoader.loadMatrix(settings.mapFileName);
-            } catch (Exception e) {
-                Logger.logger.error("Failed to load map '{}'", settings.mapFileName, e);
-                throw new RuntimeException(e);
-            }
-        }
-        if (tmap == null) {
-            Logger.logger.info("Generating a new map...");
-            ConfigMap config = new ConfigMap(settings.widthMap, 4, 5, settings.floatingIsland, 17, settings.terrainType, settings.nbTeams, settings.nbWorms, settings.gameMode);
-            tmap = GenerateMap.createMap(config);
-        }
-        this.map = tmap;
-        this.map.setSpawnPoint(CreateSpawnPoint.createSpawnPoint(settings.nbTeams, settings.nbWorms, tmap));
-
-        this.bus = eventBus;
-        Move.setMaxjump(settings.maxJump);
-
-        // Init GameCommand queue
-        this.commandQueue = new LinkedBlockingQueue<>();
-
-        //Init gameMode
-        this.gameMode = settings.gameMode;
-
-        // Init PhysicsEngine
-        this.physics = new PhysicsEngine(map, this, settings.hasWind, gameMode);
-
-        // Init Teams
-        this.teams = new ArrayList<>();
-        Logger.logger.info("Creating the Teams...");
-        for (int i = 0; i < settings.nbTeams; i++) {
-            try {
-                Worm.setMaxHp(settings.maxHp);
-                int coin = settings.coinCheat ? -1 : 0;
-                Team team = new Team(settings.teamNames[i], settings.nbWorms, tmap.getSpawnPoint()[i], coin);
-                teams.add(team);
-                team.getTeamWorms().forEach(this::registerEntity);
-                Logger.logger.info("{} | {} - {} - {}\n", i, team.name, team.id, team.teamColor);
-            } catch (ArrayIndexOutOfBoundsException e) {
-                break;
-            }
-        }
-
-        //Init FriendlyFire
-        Projectile.setFriendlyFire(settings.friendlyfire);
-
-        // Init GameLoop
-        this.gameLoop = new GameLoop(this);
-
-        //Init TurnManager
-        this.turnManager = new TurnManager(this, settings.turnDuration);
-
-        //Init ShopManager
-        this.shopManager = new ShopManager(this.bus);
-        Logger.logger.info("Game successfully initialised");
-    }
-
     public GameWorld(GameSave gameSave, Map map) {
         Logger.logger.info("Loading GameWorld from save...");
         GameSettings settings = gameSave.gameSettings;
@@ -180,6 +118,68 @@ public class GameWorld {
 
         //Init credit from current Team
         this.teams.get(indexTeam).removeCredits(150);
+        Logger.logger.info("Game successfully loaded from save");
+    }
+
+    public GameWorld(GameSettings settings, EventBus eventBus) {
+        Map tmap = null;
+        this.gameName = settings.gameName;
+        // Try to load map from file
+        if (settings.mapFileName != null) {
+            try {
+                tmap = MapLoader.loadMatrix(settings.mapFileName);
+            } catch (Exception e) {
+                Logger.logger.error("Failed to load map '{}'", settings.mapFileName, e);
+                throw new RuntimeException(e);
+            }
+        }
+        if (tmap == null) {
+            Logger.logger.info("Generating a new map...");
+            ConfigMap config = new ConfigMap(settings.widthMap, 4, 5, settings.floatingIsland, 17, settings.terrainType, settings.nbTeams, settings.nbWorms, settings.gameMode);
+            tmap = GenerateMap.createMap(config);
+        }
+        this.map = tmap;
+        this.map.setSpawnPoint(CreateSpawnPoint.createSpawnPoint(settings.nbTeams, settings.nbWorms, tmap));
+
+        this.bus = eventBus;
+        Move.setMaxjump(settings.maxJump);
+
+        // Init GameCommand queue
+        this.commandQueue = new LinkedBlockingQueue<>();
+
+        //Init gameMode
+        this.gameMode = settings.gameMode;
+
+        // Init PhysicsEngine
+        this.physics = new PhysicsEngine(map, this, settings.hasWind, gameMode);
+
+        // Init Teams
+        this.teams = new ArrayList<>();
+        Logger.logger.info("Creating the Teams...");
+        for (int i = 0; i < settings.nbTeams; i++) {
+            try {
+                Worm.setMaxHp(settings.maxHp);
+                int coin = settings.coinCheat ? -1 : 0;
+                Team team = new Team(settings.teamNames[i], settings.nbWorms, tmap.getSpawnPoint()[i], coin);
+                teams.add(team);
+                team.getTeamWorms().forEach(this::registerEntity);
+                Logger.logger.info("{} | {} - {} - {}\n", i, team.name, team.id, team.teamColor);
+            } catch (ArrayIndexOutOfBoundsException e) {
+                break;
+            }
+        }
+
+        //Init FriendlyFire
+        Projectile.setFriendlyFire(settings.friendlyfire);
+
+        // Init GameLoop
+        this.gameLoop = new GameLoop(this);
+
+        //Init TurnManager
+        this.turnManager = new TurnManager(this, settings.turnDuration);
+
+        //Init ShopManager
+        this.shopManager = new ShopManager(this.bus);
         Logger.logger.info("Game successfully initialised");
     }
 

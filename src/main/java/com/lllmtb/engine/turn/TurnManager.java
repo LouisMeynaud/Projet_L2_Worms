@@ -9,20 +9,11 @@ import com.lllmtb.engine.commands.GameCommand;
 import com.lllmtb.engine.logger.Logger;
 import com.lllmtb.engine.save.Save;
 import com.lllmtb.events.EventListener;
-import com.lllmtb.events.game.CoinCollisionEvent;
-import com.lllmtb.events.game.MapUpdateEvent;
-import com.lllmtb.events.game.ToolSelectedEvent;
-import com.lllmtb.events.game.WeaponSelectedEvent;
 import com.lllmtb.events.game.*;
 import com.lllmtb.events.physics.GroundCheckCollision;
 import com.lllmtb.events.input.UseInputEvent;
 import com.lllmtb.events.input.MoveInputEvent;
-import com.lllmtb.events.turn.ChangeWormsEvent;
-import com.lllmtb.events.turn.TurnEndEvent;
-import com.lllmtb.events.turn.TurnSkipEvent;
-import com.lllmtb.events.turn.TurnStartEvent;
-import com.lllmtb.events.turn.TurnStopEvent;
-import com.lllmtb.events.turn.WormPlayable;
+import com.lllmtb.events.turn.*;
 import com.lllmtb.events.ui.graphical.NotificationEvent;
 import com.lllmtb.events.ui.graphical.ScreenEndGameEvent;
 import com.lllmtb.model.entity.Coin;
@@ -36,9 +27,9 @@ import com.lllmtb.model.item.UseParams;
 import com.lllmtb.model.item.tool.ToolId;
 import com.lllmtb.model.item.weapon.WeaponId;
 import com.lllmtb.physics.Move;
-import static com.lllmtb.physics.Move.move;
 import com.lllmtb.physics.PhysicsBody;
 import com.lllmtb.physics.Position;
+import static com.lllmtb.physics.Move.move;
 
 /**
  * Controls the turn system
@@ -68,15 +59,15 @@ public final class TurnManager {
     private static final int PASSIVE_INCOME = 150;
 
     // Event listeners (stored for cleanup)
-    private EventListener<TurnStopEvent> turnStopListener;
-    private EventListener<TurnSkipEvent> turnSkipListener;
-    private EventListener<MoveInputEvent> moveListener;
-    private EventListener<GroundCheckCollision> groundCollisionListener;
-    private EventListener<WeaponSelectedEvent> weaponSelectedListener;
-    private EventListener<ToolSelectedEvent> toolSelectedListener;
-    private EventListener<CoinCollisionEvent> coinListener;
-    private EventListener<ChangeWormsEvent> changeWormListener;
-    private EventListener<UseInputEvent> useInputListener;
+    private transient EventListener<TurnStopEvent> turnStopListener;
+    private transient EventListener<TurnSkipEvent> turnSkipListener;
+    private transient EventListener<MoveInputEvent> moveListener;
+    private transient EventListener<GroundCheckCollision> groundCollisionListener;
+    private transient EventListener<WeaponSelectedEvent> weaponSelectedListener;
+    private transient EventListener<ToolSelectedEvent> toolSelectedListener;
+    private transient EventListener<CoinCollisionEvent> coinListener;
+    private transient EventListener<ChangeWormsEvent> changeWormListener;
+    private transient EventListener<UseInputEvent> useInputListener;
 
     /**
      * Create a new {@code TurnManager} for the current gameWorld
@@ -224,11 +215,10 @@ public final class TurnManager {
                 itemId = toolIdValues[random.nextInt(toolIdValues.length - 1)];  // Between 0 and length-1 to remove None in the choice
             }
 
-
             Logger.logger.debug(" Drop spawn with item : {}", itemId);
             Drop drop = new Drop(new Position(x + 0.25, y), itemId);
             world.queueCommands(drop.addModifier());
-            }
+        }
     }
 
 
