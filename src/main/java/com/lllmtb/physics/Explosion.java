@@ -39,6 +39,9 @@ public class Explosion {
          * @param bodies the list of bodies in the game
          */
         public static void explosionSuffleEffect(Position position, int suffleRadius, double explosionForce, Map map, CopyOnWriteArrayList<PhysicsBody> bodies) {
+        if (suffleRadius <= 0) {
+            return;
+        }
         for (PhysicsBody body : bodies) {
             Position bodyPos = body.getPos();
 

@@ -134,8 +134,9 @@ public class GameWorld {
             }
         }
         if (tmap == null) {
-            System.out.println("Generating a new map...");
+            Logger.logger.info("Generating a new map...");
             ConfigMap config = new ConfigMap(settings.widthMap, 4, 5, settings.floatingIsland, 17, settings.terrainType, settings.gameMode);
+
             tmap = GenerateMap.createMap(config);
         }
         this.map = tmap;
