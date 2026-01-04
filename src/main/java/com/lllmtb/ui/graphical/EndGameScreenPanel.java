@@ -51,7 +51,10 @@ public class EndGameScreenPanel extends JPanel {
         this.add(closeButton, gbc);
 
     }
-
+    /**
+     * set the winning team.
+     * @param team the winning team
+     */
     public void setWinner(Team team) {
         winnerLabel.setText(" The Winner is : " + team.getTeamColor() + " Team " + team.getName());
         winnerLabel.setForeground(Color.WHITE);

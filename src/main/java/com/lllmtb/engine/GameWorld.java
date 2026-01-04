@@ -128,19 +128,18 @@ public class GameWorld {
         // Init Map (we'll have to handle this better once MapLoader throws catchable exceptions)
         if (settings.mapFileName != null) {
             try {
-                tmap = MapLoader.loadMatrix(settings.mapFileName);
+                tmap = MapLoader.loadMap(settings.mapFileName);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
         }
         if (tmap == null) {
             System.out.println("Generating a new map...");
-            ConfigMap config = new ConfigMap(settings.widthMap, 4, 5, settings.floatingIsland, 17, settings.terrainType, settings.nbTeams, settings.nbWorms, settings.gameMode);
+            ConfigMap config = new ConfigMap(settings.widthMap, 4, 5, settings.floatingIsland, 17, settings.terrainType, settings.gameMode);
             tmap = GenerateMap.createMap(config);
         }
         this.map = tmap;
         this.map.setSpawnPoint(CreateSpawnPoint.createSpawnPoint(settings.nbTeams, settings.nbWorms, tmap));
-
         this.bus = eventBus;
         Move.setMaxjump(settings.maxJump);
 

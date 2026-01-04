@@ -61,9 +61,18 @@ public class Move {
         return new AddPhysicsModifierCommand(worm, new PhysicsModifier(t, null));
     }
 
+    /**
+     * set the number of max jump.
+     * @param maxjump the maximum number of jumps we want to set
+     */
     public static void setMaxjump(int maxjump) {
         Move.maxjump = maxjump;
     }
+
+    /**
+     *
+     * @return the maximum jump
+     */
     public static int getMaxjump() {
         return maxjump;
     }

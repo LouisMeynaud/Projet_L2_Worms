@@ -103,7 +103,11 @@ public class WorldRenderer {
         panel.checkCameraBounds();
     }
 
-
+    /**
+    * Redraws the map only in a specific region.
+    * @param center the circle within which to redraw.
+    * @param radius the radius within the circle within which to redraw.
+    */
     public void updateMapCacheRegion(Position center, int radius) {
         if (mapCache == null) {
             updateMapCache();
@@ -289,6 +293,10 @@ public class WorldRenderer {
 
     /**
      * Dessine la barre de charge (puissance).
+     * @param g2d paintbrushes
+     * @param x the position x for the bottom left corner ChargeBar
+     * @param y the position Y for the bottom left corner ChargeBar
+     * @param width the width of the worms.
      */
     private void paintChargeBar(Graphics2D g2d, double x, double y, double width) {
         ItemId item = world.getPlayingTeam().getHand();

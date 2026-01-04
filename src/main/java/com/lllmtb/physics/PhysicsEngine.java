@@ -10,7 +10,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import com.lllmtb.engine.commands.GameCommand;
 import com.lllmtb.engine.logger.Logger;
 import com.lllmtb.events.game.CoinCollisionEvent;
-import com.lllmtb.events.physics.*;
 import com.lllmtb.model.entity.Coin;
 import com.lllmtb.model.entity.Drop;
 import com.lllmtb.model.entity.effect.BurnEffect;
@@ -50,7 +49,7 @@ public class PhysicsEngine {
     private final ConcurrentHashMap<PhysicsBody, ArrayList<PhysicsModifier>> modifiers;
 
     /**
-     * The {@link Collision} object of the game
+     * The {@link Collision} object of the game.
      */
     private final Collision collision;
 
@@ -87,6 +86,7 @@ public class PhysicsEngine {
      * @param map     the {@code Map} instance representing the environment for collision detection.
      * @param world     the global {@code GameWorld} instance created upstream.
      * @param hasWind if wind should be simulated.
+     * @param gameMode the gameMode of the game.
      */
     public PhysicsEngine(Map map, GameWorld world, boolean hasWind, GameMode gameMode) {
         this.world = world;
@@ -503,6 +503,7 @@ public class PhysicsEngine {
      * @param blastRadius      the radius (in units) around the explosion center where entities will be affected.
      * @param damage           the amount of damage to apply to entities within the blast radius.
      * @param blastForce       the force applied to bodies within the blast radius.
+     * @param heal             true if the Explosion give life , false if she take damage
      */
     public void createExplosion(@NonNull Projectile projectile, int mapDamageRadius, int blastRadius, int damage, double blastForce, boolean heal) {
         Position position = projectile.getBody().getPos();

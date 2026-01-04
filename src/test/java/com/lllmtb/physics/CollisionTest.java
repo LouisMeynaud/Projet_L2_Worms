@@ -41,7 +41,7 @@ public class CollisionTest {
 
     @BeforeEach
     void setUp() {
-        map = MapLoader.loadMatrix("MapTestCollision");
+        map = MapLoader.loadMap("MapTestCollision");
         Position posW1 = new Position(0, 14);
         Position posW2 = new Position(14, 14);
         Position[] positions = {posW1, posW2};

@@ -30,12 +30,19 @@ public class Popup {
     private static final int xStart = 20;
     private static final int yStart = 150;
 
-
+    /**
+     *  Add a notification to the list of pop-ups to display.
+     * @param event the event that corresponds to the notification
+     */
     public static void add(NotificationEvent event) {
         BufferedImage imgTrouvee = TextureManager.NOTIFICATIONS.get(event.getImageName());
         actualPopups.add(new PopupElement(event.getMessage(), imgTrouvee));
     }
 
+    /**
+     * draw the Popop on the ui.
+     * @param g the brushes
+     */
     public static void draw(Graphics2D g) {
         if (actualPopups.isEmpty()) return;
 

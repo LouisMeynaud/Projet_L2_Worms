@@ -12,7 +12,7 @@ import com.lllmtb.terrain.map.Tile;
 public class Explosion {
 
     /**
-     * create whole around the explosion (replace tile by AIR)
+     * create whole around the explosion (replace tile by AIR).
      * @param position the position of center of explosion
      * @param rayon    the rayon of the explosion
      * @param map      the map
@@ -31,7 +31,7 @@ public class Explosion {
     }
 
         /**
-         * projects entities that are within the explosion radius
+         * projects entities that are within the explosion radius.
          * @param position  the position of center of explosion
          * @param suffleRadius  the radius of the wind created by the explosion
          * @param explosionForce the force of the wind
@@ -74,6 +74,8 @@ public class Explosion {
      * @param damageRadius the radius within which the entity takes damage
      * @param maxDamage the maximun damage to the explosion (at the center)
      * @param bodies the list of bodies
+     * @param heal true if the projectile heal worms , false if take damage
+     * @return the commandList to excecute.
      */
     public static List<GameCommand> explosionDamageEffect(Position position, int damageRadius, int maxDamage, CopyOnWriteArrayList<PhysicsBody> bodies, boolean heal) {
         List<GameCommand> death = new ArrayList<>();

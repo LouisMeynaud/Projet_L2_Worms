@@ -44,6 +44,8 @@ public class PanelListe extends JPanel {
     /**
      * Constructor of the panel that displays the list of maps available in the maps folder.
      * @param nomsMaps an array of Strings representing the map directory names.
+     * @param nomDossier the name of the dossier
+     * @param isExternal true if the search file is not in ressource , false else.
      */
     public PanelListe(String[] nomsMaps, String nomDossier, boolean isExternal) {
         setBackground(Color.DARK_GRAY);

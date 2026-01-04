@@ -14,7 +14,7 @@ public class MapFillerTest {
         Map map = new Map(10, 10, "test");
         int[] ligneHaute = { 5, 5, 5, 5, 5, 5, 5, 5, 5, 5 };
         int[] ligneBasse = { 2, 2, 2, 2, 2, 2, 2, 2, 2, 2 };
-        ConfigMap config = new ConfigMap(10, 4, 5, false, 17, LandScape.FLAT, 2, 2,GameMode.NORMAL);
+        ConfigMap config = new ConfigMap(10, 4, 5, false, 17, LandScape.FLAT, GameMode.NORMAL);
         MapFiller.fillingDirt(map, ligneHaute, ligneBasse,config);
 
         for (int i = 0; i < map.getHeight(); i++) {
@@ -39,7 +39,7 @@ public class MapFillerTest {
         int[] ligneHaute = { 5, 5, 5, 5, 5, 5, 5, 5, 5, 5 };
         int[] ligneBasse = { 2, 2, 2, 2, 2, 2, 2, 2, 2, 2 };
         MapFiller.fillingWater(map, 3);
-        ConfigMap config = new ConfigMap(10, 4, 5, false, 17, LandScape.FLAT, 2, 2,GameMode.NORMAL);
+        ConfigMap config = new ConfigMap(10, 4, 5, false, 17, LandScape.FLAT,GameMode.NORMAL);
         MapFiller.fillingDirt(map, ligneHaute, ligneBasse,config);
 
         for (int y = 0; y <= 3; y++) {

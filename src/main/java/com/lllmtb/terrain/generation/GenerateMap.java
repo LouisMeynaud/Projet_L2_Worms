@@ -1,17 +1,14 @@
 package com.lllmtb.terrain.generation;
 
-import com.lllmtb.physics.GameMode;
+
 import com.lllmtb.terrain.map.Map;
 import com.lllmtb.terrain.map.SaveMap;
 
 
 public class GenerateMap {
-    public static ConfigMap world = new ConfigMap(100, 4, 5, false, 17, LandScape.HILLY, 1, 4, GameMode.NORMAL);
-    public static ConfigMap flyingWorld = new ConfigMap(100, 4, 5, true, 17, LandScape.HILLY, 1, 4, GameMode.NORMAL);
-
 
     /**
-     * method for generating a random map
+     * method for generating a random map.
      * @param config takes a config type object in order to generate a map according to presets
      * @return the create map
      */
@@ -48,7 +45,7 @@ public class GenerateMap {
     }
 
     /**
-     * methode pour que la hightLine soit toujours au dessus de la lowLine
+     * methode pour que la hightLine soit toujours au dessus de la lowLine.
      * @param hightLine la ligne haute
      * @param lowLine   la ligne basse
      * @param config    la config de la map

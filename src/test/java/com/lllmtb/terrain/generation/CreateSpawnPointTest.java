@@ -16,7 +16,7 @@ public class CreateSpawnPointTest {
         int nbVers = 6;
         int nbTeams= 1;
         int waterHeight = 2;
-        ConfigMap configtest = new ConfigMap(100, waterHeight, 5, false, 0, LandScape.HILLY,nbTeams,nbVers,GameMode.NORMAL);
+        ConfigMap configtest = new ConfigMap(100, waterHeight, 5, false, 0, LandScape.HILLY,GameMode.NORMAL);
         Map m =GenerateMap.createMap(configtest);
         m.setSpawnPoint(CreateSpawnPoint.createSpawnPoint(nbTeams,nbVers,m));
         assertEquals(m.getSpawnPoint().length, nbTeams);

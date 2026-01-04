@@ -20,15 +20,31 @@ public enum GameMode {
         this.underDirt = underDirt;
     }
 
+    /**
+     *
+     * @return the "Dirt" for this gameMode.
+     */
     public Tile getDirt() {
         return this.dirt;
     }
+    /**
+     *
+     * @return the "Grass" for this gameMode.
+     */
     public Tile getGrass() {
         return this.grass;
     }
+     /**
+     *
+     * @return the "underDirt" for this gameMode.
+     */
     public Tile getUnderDirt() {
         return this.underDirt;
     }
+     /**
+     *
+     * @return the Gravity constant for this gameMode.
+     */
     public Vector getGravity() {
         return this.gravity;
     }
