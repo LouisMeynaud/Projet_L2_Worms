@@ -13,10 +13,9 @@ public class MapLoader {
 
     /**
      * Load a map from a given map name.
-     * @param directoryName
+     * @param directoryName the name of the directory where the map is stored.
      * @return the loaded Map object.
      */
-
     public static Map loadMatrixLoad(String directoryName) {
         try {
             Path path = Paths.get(SaveConfig.SAVE_DIRECTORY + directoryName + "/map.txt");
@@ -38,7 +37,7 @@ public class MapLoader {
 
     /**
      * Load a map from a given map name.
-     * @param mapName
+     * @param mapName the name of the map to load.
      * @return the loaded Map object.
      */
     public static Map loadMatrix(String mapName) {

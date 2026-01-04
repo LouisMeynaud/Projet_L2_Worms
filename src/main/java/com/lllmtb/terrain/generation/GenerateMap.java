@@ -1,21 +1,15 @@
 package com.lllmtb.terrain.generation;
 
 import com.lllmtb.engine.logger.Logger;
-import com.lllmtb.physics.GameMode;
 import com.lllmtb.terrain.map.Map;
 import com.lllmtb.terrain.map.MapLoader;
 import com.lllmtb.terrain.map.SaveMap;
 
-
 public class GenerateMap {
-    public static ConfigMap world = new ConfigMap(100, 4, 5, false, 17, LandScape.HILLY, 1, 4, GameMode.NORMAL);
-    public static ConfigMap flyingWorld = new ConfigMap(100, 4, 5, true, 17, LandScape.HILLY, 1, 4, GameMode.NORMAL);
-
-
     /**
      * method for generating a random map
      * @param config takes a config type object in order to generate a map according to presets
-     * @return the create map
+     * @return the created map
      */
     public static Map createMap(ConfigMap config) {
         try {
@@ -35,7 +29,6 @@ public class GenerateMap {
                 }
             }
 
-
             MapBalancer.leftRightBalancing(lowLine, hightLine, config.getHeight());
             int currentAvgThickness = MapBalancer.averageThickness(lowLine, hightLine, 0, config.getWidth());
 
@@ -49,8 +42,8 @@ public class GenerateMap {
 
             return map;
         } catch (Exception e) {
-            Logger.logger.error("Erreur lors de la génération de la carte.", e);
-            Logger.logger.info("Chargement de la carte par défaut.");
+            Logger.logger.error("Error while loading map", e);
+            Logger.logger.info("Loading default map instead.");
             return MapLoader.loadMatrix("defaultMap");
         }
     }
@@ -71,7 +64,7 @@ public class GenerateMap {
                 }
             }
         } catch (Exception e) {
-            Logger.logger.error("Erreur dans triHightLineLowLine", e);
+            Logger.logger.error("Error in GenerateMap.triHightLineLowLine", e);
         }
     }
 
@@ -95,7 +88,7 @@ public class GenerateMap {
                 }
             }
         } catch (Exception e) {
-            Logger.logger.error("Erreur dans applyIslandBorders", e);
+            Logger.logger.error("Error in GenerateMap.applyIslandBorders", e);
         }
     }
 
@@ -110,7 +103,7 @@ public class GenerateMap {
                 }
             }
         } catch (Exception e) {
-            Logger.logger.error("Erreur dans applyTopSafety", e);
+            Logger.logger.error("Error in GenerateMap.applyTopSafety", e);
         }
     }
 }

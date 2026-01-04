@@ -7,13 +7,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import com.lllmtb.model.entity.Coin;
 import com.lllmtb.model.entity.Drop;
 import org.junit.jupiter.api.BeforeEach;
@@ -35,6 +28,8 @@ import com.lllmtb.model.item.tool.ToolId;
 import com.lllmtb.model.item.weapon.WeaponId;
 import com.lllmtb.terrain.map.Map;
 import com.lllmtb.terrain.map.MapLoader;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 class PhysicsEngineTest {
     private Map map;
@@ -516,7 +511,7 @@ class PhysicsEngineTest {
         List<PhysicsBody> emptyList = List.of();
         
         Worm result = pE.findClosestEnemyFromPosition(searchPos, ownerTeam, wormToExclude, emptyList);
-        assertEquals(null, result);
+        assertNull(result);
     }
 
     @Test
@@ -527,7 +522,7 @@ class PhysicsEngineTest {
         
         List<PhysicsBody> bodies = List.of(ownerWorm.getBody());
         Worm result = pE.findClosestEnemyFromPosition(searchPos, ownerTeam, ownerWorm, bodies);
-        assertEquals(null, result);
+        assertNull(result);
     }
 
     @Test

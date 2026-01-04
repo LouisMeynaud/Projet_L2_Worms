@@ -12,8 +12,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class TextureManagerTest {
 
     @Test
-    void testLoadTexture() throws IOException {
-
+    void testLoadTexture() {
         URL defaultUrl = TextureManager.class.getResource("/default.png");
         assertNotNull(defaultUrl);
 

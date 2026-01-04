@@ -106,9 +106,7 @@ public class GameWorldScreen implements Runnable {
         systemBus.subscribe(WorldCreatedEvent.class, this::onWorldCreated);
 
         // Log all system bus events
-        systemBus.subscribe(Event.class, event -> {
-            addSystemLog(event.getClass().getSimpleName());
-        });
+        systemBus.subscribe(Event.class, event -> addSystemLog(event.getClass().getSimpleName()));
 
         // Handle terminal resize
         terminal.handle(Terminal.Signal.WINCH, sig -> {
@@ -133,14 +131,10 @@ public class GameWorldScreen implements Runnable {
         worldBus.subscribe(ProcessInputsEvent.class, e -> processMoveInputs());
 
         // Center viewport on every game state update (every tick)
-        worldBus.subscribe(GameStateUpdatedEvent.class, e -> {
-            centerViewportOnCurrentWorm();
-        });
+        worldBus.subscribe(GameStateUpdatedEvent.class, e -> centerViewportOnCurrentWorm());
 
         // Trigger full map redraw only when map is modified
-        worldBus.subscribe(MapUpdateEvent.class, e -> {
-            cachedMapRows = null;
-        });
+        worldBus.subscribe(MapUpdateEvent.class, e -> cachedMapRows = null);
 
         // Turn events - add ammo for testing purposes
         worldBus.subscribe(TurnStartEvent.class, e -> {

@@ -34,7 +34,7 @@ import com.lllmtb.ui.graphical.animation.VisualEffect;
 
 /**
  * Classe responsable du rendu graphique de la partit.
- *
+ * </p>
  * elle gere le dessin de la carte (terrain), des entité(worms/projectile)
  * et des effet visuel(animation , barre de vie, current worms etc)
  */
@@ -636,8 +636,7 @@ public class WorldRenderer {
             paintEntity(g2d);
             drawEffects(g2d);
         } catch (Exception e) {
-            Logger.logger.error("Erreur lors du rendu graphique : " + e.getMessage());
-            e.printStackTrace();
+            Logger.logger.error("Error while rendering the world", e);
         }
     }
 }

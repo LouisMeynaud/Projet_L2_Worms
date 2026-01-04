@@ -24,7 +24,7 @@ public class SettingMapPanel extends JPanel {
      *
      * @param eventBus the event bus of the game
      * This page contains  2 panel and 2 button for choose the panel
-     *
+     * </p>
      * 1: panelListeMap for choose a map
      * 2: generateMapPanel for create a map
      *

@@ -26,22 +26,13 @@ public class HomeScreenPanel extends JPanel {
         gbc.gridx = 0;
         gbc.insets = new Insets(15, 0, 15, 0);
 
-
         JButton playButton = Utilitaire.createImageButton(TextureManager.UI, "Panel", 256, 128, 256, 128, "Start", "Arial", 23, Color.WHITE);
         JButton settingButton = Utilitaire.createImageButton(TextureManager.UI, "Panel", 256, 128, 256, 128, "Audio Settings", "Arial", 23, Color.WHITE);
         JButton closeButton = Utilitaire.createImageButton(TextureManager.UI, "Panel", 256, 128, 256, 128, "Close", "Arial", 23, Color.WHITE);
 
-        playButton.addActionListener(e -> {
-            eventBus.postQueued(new ScreenNewOrLoadEvent());
-        });
-
-        settingButton.addActionListener(e -> {
-            eventBus.postQueued(new ScreenMusicSettingsEvent());
-        });
-
-        closeButton.addActionListener(e -> {
-            SwingUtilities.getWindowAncestor(this).dispose();
-        });
+        playButton.addActionListener(e -> eventBus.postQueued(new ScreenNewOrLoadEvent()));
+        settingButton.addActionListener(e -> eventBus.postQueued(new ScreenMusicSettingsEvent()));
+        closeButton.addActionListener(e -> SwingUtilities.getWindowAncestor(this).dispose());
 
         gbc.gridy = 0;
         this.add(playButton, gbc);
