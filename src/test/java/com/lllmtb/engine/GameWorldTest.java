@@ -44,28 +44,12 @@ public class GameWorldTest {
 
     @Test
     void whenMapFileNameIsNull_thenGenerateMapCreatesMap_and_teamsAndWormsRegistered() {
-        // Use floatingIsland = false (WORLD)
-        GameSettings settings = new GameSettings(
-            "blabla",
-                1,                 // nbTeams
-                new String[]{"TeamA"}, // teamNames
-                2,                 // nbWorms
-                100,                //Max Health
-                10,              //Turn Duration
-                false,             // hasWind
-                null,              // mapFileName -> will use GenerateMap.createMap(WORLD)
-                false   ,           // floatingIsland
-                370,    //widthMap
-                LandScape.HILLY,2     //heightMap
-                ,GameMode.NORMAL, //gameMode
-                true,                //Friendlyfire
-                false                //CoinCheat
-
-        );
+        // set mapFileName to null to trigger GenerateMap
+        GameSettings settings = new GameSettings("blabla", 1, new String[]{"TeamA"}, 2, 100, 10, false, null, false, 370, LandScape.HILLY, 2, GameMode.NORMAL, true, false);
         EventBus eventBus = new EventBus();
 
         // Construct GameWorld using real GenerateMap + real PhysicsEngine
-        GameWorld gw = new GameWorld(settings,eventBus);
+        GameWorld gw = new GameWorld(settings, eventBus);
 
         // Map should be set (GenerateMap must have returned a map)
         Map map = gw.getMap();
@@ -99,7 +83,7 @@ public class GameWorldTest {
     void whenMapFileNameProvided_MapLoaderIsUsed_insteadOfGenerateMap() {
         // we only mock MapLoader.loadMatrix to return a real map created by GenerateMap
         Map generated = MapLoader.loadMatrix("mapTest");
-        GameSettings settings = new GameSettings("blabla", 0, new String[]{}, 0,100, 10, true, "mapTest", false,370,LandScape.HILLY,2,GameMode.NORMAL,true, false);
+        GameSettings settings = new GameSettings("blabla", 1, new String[]{"José"}, 1,100, 10, true, "mapTest", false,370,LandScape.HILLY,2,GameMode.NORMAL,true, false);
         EventBus eventBus = new EventBus();
         GameWorld gw = new GameWorld(settings,eventBus);
 
@@ -109,7 +93,7 @@ public class GameWorldTest {
         assertEquals(generated.toString(), gw.getMap().toString());
         // Physics engine exists and has empty bodies (no worms)
         assertNotNull(gw.getPhysics());
-        assertEquals(0, gw.getPhysics().getBodies().size());
+        assertEquals(1, gw.getPhysics().getBodies().size());
     }
 
     @Test
@@ -117,8 +101,7 @@ public class GameWorldTest {
         try (MockedStatic<MapLoader> mocked = Mockito.mockStatic(MapLoader.class)) {
             mocked.when(() -> MapLoader.loadMatrix("badPath")).thenThrow(new IllegalStateException("io fail"));
 
-            GameSettings settings = new GameSettings("blabla", 
-                    0, new String[]{}, 0, 100,10, false, "badPath", false,370,LandScape.HILLY,2,GameMode.NORMAL, true, false);
+            GameSettings settings = new GameSettings("blabla", 1, new String[]{"José"}, 1, 100,10, false, "badPath", false,370,LandScape.HILLY,2,GameMode.NORMAL, true, false);
             EventBus eventBus = new EventBus();
             RuntimeException e = assertThrows(RuntimeException.class, () -> new GameWorld(settings,eventBus));
             assertNotNull(e.getCause());
@@ -129,48 +112,26 @@ public class GameWorldTest {
     @Test
     void constructor_withGamSave_Map() throws FileNotFoundException {
         Map map = MapLoader.loadMatrix("Test");
+        assertNotNull(map);
         GameSave gameSave = Load.loadGameSave("Test");
-        GameWorld gameWorld =new GameWorld(gameSave, map);
+        GameWorld gameWorld = new GameWorld(gameSave, map);
         assertNotNull(gameWorld);
         assertEquals(gameWorld.getGameName(), "Test");
     }
 
     @Test
     void teams_loop_breaks_on_ArrayIndexOutOfBounds_and_only_validTeamsCreated() {
-        // nbTeams = 3 but only one name provided -> GameWorld should create only the first team then break
-        GameSettings settings = new GameSettings(
-            "blabla", 
-                3,
-                new String[]{"SoloTeam"},
-                3,      // 3 worms for the created team
-                100,
-                10000,
-                true,
-                null,   // use GenerateMap
-                true,    // floating island -> FLYINGWORLD
-                370,
-                LandScape.HILLY,2,
-                GameMode.NORMAL,
-                true,
-                false
+        // nbTeams = 3 but only one name provided
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> new GameSettings("blabla", 3, new String[]{"SoloTeam"},3, 100, 10000, true, null, true,370, LandScape.HILLY, 2, GameMode.NORMAL, true, false)
         );
-         EventBus eventBus = new EventBus();
-
-        GameWorld gw = new GameWorld(settings,eventBus);
-
-        // Only one team created (index 0) and 3 worms registered for that team -> physics bodies = 3
-        List<Team> teams = gw.getTeams();
-        assertEquals(1, teams.size(), "Should only create one team (second iteration triggers ArrayIndexOutOfBounds and breaks)");
-        assertEquals("SoloTeam", teams.get(0).name);
-
-        assertEquals(3, gw.getPhysics().getBodies().size(), "Physics should contain 3 worm bodies for the single team");
     }
 
     @Test
     void startRunsLoopAndStopStopsIt_whenStartedInSeparateThread() throws Exception {
-        // use a small, simple world (no teams) so physics starts empty
-        GameSettings settings = new GameSettings("blabla", 0, new String[]{}, 0,100, 10, false, null, false,370,LandScape.HILLY,2,GameMode.NORMAL, true, false);
-         EventBus eventBus = new EventBus();
+        GameSettings settings = new GameSettings("blabla", 1, new String[]{"José"}, 1,100, 10, false, null, false,370,LandScape.HILLY,2,GameMode.NORMAL, true, false);
+        EventBus eventBus = new EventBus();
         GameWorld gw = new GameWorld(settings,eventBus);
 
         // run GameWorld.start() (test thread won't block)
@@ -192,7 +153,7 @@ public class GameWorldTest {
 
     @Test
     void registerEntity_null_throwsNPE() {
-        GameSettings settings = new GameSettings("blabla", 0, new String[]{}, 0,100, 10, false, null, false,370,LandScape.HILLY,2,GameMode.NORMAL, true, false);
+        GameSettings settings = new GameSettings("blabla", 1, new String[]{"José"}, 1,100, 10, false, null, false,370,LandScape.HILLY,2,GameMode.NORMAL, true, false);
          EventBus eventBus = new EventBus();
         GameWorld gw = new GameWorld(settings,eventBus);
 
@@ -201,7 +162,7 @@ public class GameWorldTest {
 
     @Test
     void stopLoop_whenNotRunning() {
-        GameSettings settings = new GameSettings("blabla", 0, new String[]{}, 0,100, 10, false, null, false,370,LandScape.HILLY,2,GameMode.NORMAL, true, false);
+        GameSettings settings = new GameSettings("blabla", 1, new String[]{"José"}, 1,100, 10, false, null, false,370,LandScape.HILLY,2,GameMode.NORMAL, true, false);
          EventBus eventBus = new EventBus();
         GameWorld gw = new GameWorld(settings,eventBus);
 
@@ -212,7 +173,7 @@ public class GameWorldTest {
 
     @Test
     void startLoop_whenAlreadyRunning() throws Exception {
-        GameSettings settings = new GameSettings("blabla", 0, new String[]{}, 0,100, 10, false, null, false,370,LandScape.HILLY,2,GameMode.NORMAL, true, false);
+        GameSettings settings = new GameSettings("blabla", 1, new String[]{"José"}, 1,100, 10, false, null, false,370,LandScape.HILLY,2,GameMode.NORMAL, true, false);
         EventBus eventBus = new EventBus();
         GameWorld gw = new GameWorld(settings,eventBus);
 
@@ -266,7 +227,7 @@ public class GameWorldTest {
 
     @Test
     void getTurnManager() {
-        GameSettings settings = new GameSettings("blabla", 0, new String[]{}, 0, 100, 100, false, null, false, 370, LandScape.HILLY, 2, GameMode.NORMAL, true, false);
+        GameSettings settings = new GameSettings("blabla", 1, new String[]{"José"}, 1, 100, 100, false, null, false, 370, LandScape.HILLY, 2, GameMode.NORMAL, true, false);
         EventBus eventBus = new EventBus();
         GameWorld gw = new GameWorld(settings, eventBus);
 

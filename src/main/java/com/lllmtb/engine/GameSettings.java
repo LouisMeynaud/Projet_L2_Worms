@@ -50,8 +50,8 @@ public final class GameSettings {
         if (gameName == null || gameName.isBlank()) {
             throw new IllegalArgumentException("Game name cannot be null or empty");
         }
-        if (nbTeams < 2) {
-            throw new IllegalArgumentException("Number of teams must be at least 2, got: " + nbTeams);
+        if (nbTeams < 1) {
+            throw new IllegalArgumentException("Number of teams must be at least 1, got: " + nbTeams);
         }
         if (nbWorms < 1) {
             throw new IllegalArgumentException("Number of worms per team must be at least 1, got: " + nbWorms);
