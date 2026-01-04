@@ -76,11 +76,11 @@ public class LoadGamePanel extends JPanel {
         starButton.addActionListener(e -> {
             String dossierSelectionne = panelListe.getSelectedMapName();
             if (dossierSelectionne != null) {
-                Logger.logger.debug("Chargement du dossier : " + dossierSelectionne);
+                Logger.logger.debug("Loading folder : {}", dossierSelectionne);
                 eventBus.postQueued(new LoadEvent(dossierSelectionne));
 
             } else {
-                Logger.logger.debug("aucun dossier choçisi");
+                Logger.logger.debug("No save folder selected to load.");
             }
         });
 

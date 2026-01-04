@@ -204,7 +204,7 @@ public final class TurnManager {
             int y = mapHeight - 1;
 
 
-            ItemId itemId = null;
+            ItemId itemId;
             if (random.nextInt(2) == 0) {
                 //Weapon Drop
                 WeaponId[] weaponIdValues = WeaponId.values();
@@ -360,22 +360,22 @@ public final class TurnManager {
 
         weaponSelectedListener = event -> {
             if (turn != null && turn.getTeam() != null) {
-                turn.getTeam().selectWeapon(event.getWeaponId());
+                turn.getTeam().selectWeapon(event.weaponId());
             }
         };
 
         toolSelectedListener = event -> {
             if (turn != null && turn.getTeam() != null) {
-                turn.getTeam().selectTool(event.getToolId());
+                turn.getTeam().selectTool(event.toolId());
             }
         };
 
         coinListener = event -> {
             world.queueCommand(w -> {
-                Logger.logger.info("Coin collected! + " + event.coin.value + "$");
-                event.team.addCredits(event.coin.value);
-               world.getPhysics().remove(event.coin.getBody());
-               world.getBus().postQueued(new NotificationEvent("+ " + event.coin.value + "$ for : " + event.team.teamColor, "Coin"));
+                Logger.logger.info("Coin collected! + {}$", event.coin().value);
+                event.team().addCredits(event.coin().value);
+               world.getPhysics().remove(event.coin().getBody());
+               world.getBus().postQueued(new NotificationEvent("+ " + event.coin().value + "$ for : " + event.team().teamColor, "Coin"));
             });
         };
 

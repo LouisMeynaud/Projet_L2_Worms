@@ -36,7 +36,7 @@ public class TextureManager {
             ///////Blocs/////////
             for (Tile tile : Tile.values()) {
                 for (int i = 0; i < tile.getNbTexture(); i++) {
-                    TILES.put(tile.toString() + i, ImageIO.read(TextureManager.class.getResource("/textures/block/" + tile.toString() + i + ".png")));
+                    TILES.put(tile.toString() + i, ImageIO.read(TextureManager.class.getResource("/textures/block/" + tile + i + ".png")));
                 }
             }
 

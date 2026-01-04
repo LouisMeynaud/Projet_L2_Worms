@@ -1,7 +1,5 @@
 package com.lllmtb.model.entity.team;
 
-import com.lllmtb.engine.GameEngine;
-import com.lllmtb.engine.save.GameSave;
 import com.lllmtb.engine.save.TeamSave;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -27,12 +25,11 @@ import com.lllmtb.physics.Position;
 
 public class TeamTest {
     private Team team;
-    private Position[] spawnPositions;
 
     @BeforeEach
     public void setUp() {
         Team.getChosenTeamColors().clear();
-        spawnPositions = new Position[]{new Position(0, 0)};
+        Position[] spawnPositions = new Position[]{new Position(0, 0)};
         team = new Team("TestTeam", 1, spawnPositions, 0);
     }
 

@@ -2,11 +2,6 @@ package com.lllmtb.model.entity.team;
 
 import java.lang.reflect.Field;
 import java.util.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
-import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.eclipse.jdt.annotation.NonNull;
@@ -158,29 +153,27 @@ public class Team {
         this.numberOfWorms =  teamSave.team.numberOfWorms;
         this.id = teamSave.team.id;
         this.credits = teamSave.team.credits;
-        for (Worm worm: teamSave.team.getTeamWorms()) {
-            this.worms.add(worm);
-        }
+        this.worms.addAll(teamSave.team.getTeamWorms());
         this.selectedItem = null;
         this.teamColor = teamSave.team.teamColor;
         // use reflexion to recreate worm instance with correct PhysicsBody
         for (Worm worm : this.worms) {
-                try {
-                    Field teamField = Worm.class.getDeclaredField("team");
-                    teamField.setAccessible(true);
-                    teamField.set(worm, this);
-                } catch (NoSuchFieldException | IllegalAccessException e) {
-                    throw new RuntimeException(e);
-                }
+            try {
+                Field teamField = Worm.class.getDeclaredField("team");
+                teamField.setAccessible(true);
+                teamField.set(worm, this);
+            } catch (NoSuchFieldException | IllegalAccessException e) {
+                throw new RuntimeException(e);
             }
+        }
         this.index = teamSave.team.index;
         this.currentWorm = this.worms.get(this.index);
     }
 
     /**
-         * Returns the name associated with the team.
-         * @return the team's name
-         */
+     * Returns the name associated with the team.
+     * @return the team's name
+     */
     public String getName() {
         return this.name;
     }

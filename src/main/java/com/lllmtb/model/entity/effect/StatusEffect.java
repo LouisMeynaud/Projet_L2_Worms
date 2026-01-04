@@ -21,7 +21,7 @@ public abstract class StatusEffect {
     /**
      * The name of the effect
      */
-    protected String name;
+    protected final String name;
 
     /**
      * Constructor for a status effect

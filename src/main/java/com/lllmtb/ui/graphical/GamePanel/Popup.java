@@ -12,12 +12,12 @@ import com.lllmtb.ui.graphical.TextureManager;
 
 public class Popup {
 
-    private static class PopupElement {
-        String message;
-        BufferedImage image;
-        long timeStart;
+    public static class PopupElement {
+        final String message;
+        final BufferedImage image;
+        final long timeStart;
 
-        public PopupElement(String message, BufferedImage image) {
+        private PopupElement(String message, BufferedImage image) {
             this.message = message;
             this.image = image;
             this.timeStart = System.currentTimeMillis();
@@ -32,8 +32,8 @@ public class Popup {
 
 
     public static void add(NotificationEvent event) {
-        BufferedImage imgTrouvee = TextureManager.NOTIFICATIONS.get(event.getImageName());
-        actualPopups.add(new PopupElement(event.getMessage(), imgTrouvee));
+        BufferedImage imgTrouvee = TextureManager.NOTIFICATIONS.get(event.imageName());
+        actualPopups.add(new PopupElement(event.message(), imgTrouvee));
     }
 
     public static void draw(Graphics2D g) {

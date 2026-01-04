@@ -39,11 +39,11 @@ public class VectorTest {
         Vector v3 = new Vector(Double.MIN_VALUE,1);
         Vector v4 = new Vector(2,Double.POSITIVE_INFINITY);
 
-        assertFalse(v.equals(null));
-        assertTrue(v.equals(v1));  // true && true
-        assertFalse(v.equals(v2)); // true && false
-        assertFalse(v.equals(v3)); // false && true
-        assertFalse(v.equals(v4)); // false && false
+        assertNotEquals(null, v);
+        assertEquals(v, v1);  // true && true
+        assertNotEquals(v, v2); // true && false
+        assertNotEquals(v, v3); // false && true
+        assertNotEquals(v, v4); // false && false
     }
     @Test
     void testNewPos() {

@@ -16,7 +16,7 @@ import com.lllmtb.ui.graphical.Utilitaire;
 
 public class NewOrLoadPanel extends JPanel {
 
-    EventBus eventBus;
+    final EventBus eventBus;
 
     /**
      * Constructor of a panel that allows to choose between creating a new game or loading an existing one.

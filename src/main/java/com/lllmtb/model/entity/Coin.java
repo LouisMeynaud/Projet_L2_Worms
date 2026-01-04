@@ -5,7 +5,7 @@ import com.lllmtb.physics.Position;
 import com.lllmtb.physics.Vector;
 
 public class Coin extends Entity {
-    PhysicsBody body;
+    private final PhysicsBody body;
     public final int value;
 
     public Coin(Position position, int value) {

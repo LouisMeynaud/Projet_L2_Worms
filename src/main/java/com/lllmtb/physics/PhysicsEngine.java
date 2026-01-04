@@ -20,9 +20,6 @@ import org.eclipse.jdt.annotation.NonNull;
 
 import com.lllmtb.engine.GameWorld;
 import com.lllmtb.events.game.MapUpdateEvent;
-import com.lllmtb.events.physics.ExplosionEvent;
-import com.lllmtb.events.physics.PhysicsModifierAddedEvent;
-import com.lllmtb.events.physics.PhysicsModifierRemovedEvent;
 import com.lllmtb.model.entity.Entity;
 import com.lllmtb.model.entity.projectile.ExplosiveProjectile;
 import com.lllmtb.model.entity.projectile.Projectile;
@@ -373,7 +370,7 @@ public class PhysicsEngine {
                         if (body.getEntity() instanceof Projectile proj) {
                             world.queueCommands(proj.onImpact(null));
                         } else if (body.getEntity() instanceof Drop drop) {
-                            world.queueCommand(drop.setOnGround());
+                            drop.setOnGround(true);
                         }
                     } else {
                         // Collision wih another entity impactEntity and currentBody
@@ -387,7 +384,7 @@ public class PhysicsEngine {
                         }
                         if (body.getEntity() instanceof Drop drop) {
                             if (impact.hitBody.getEntity() instanceof Drop) {
-                                world.queueCommand(drop.setOnGround());
+                                drop.setOnGround(true);
                             }
                             world.queueCommand(drop.onImpact(impact.hitBody.getEntity()));
                         }
@@ -412,8 +409,7 @@ public class PhysicsEngine {
                 }
             }
 
-            if (body.getEntity() instanceof Worm) {
-                Worm worm = (Worm) body.getEntity();
+            if (body.getEntity() instanceof Worm worm) {
                 Vector currentVector = body.getVector();
                 double newVelX = currentVector.getX();
 
@@ -507,10 +503,8 @@ public class PhysicsEngine {
     public void createExplosion(@NonNull Projectile projectile, int mapDamageRadius, int blastRadius, int damage, double blastForce, boolean heal) {
         Position position = projectile.getBody().getPos();
         List<GameCommand> death = Explosion.explosionDamageEffect(position, blastRadius, damage, bodies, heal);
-        if (death != null) {
-            for (GameCommand command : death) {
-                world.queueCommand(command);
-            }
+        for (GameCommand command : death) {
+            world.queueCommand(command);
         }
         Explosion.explosionMapEffect(position, mapDamageRadius, collision.getMap());
         Explosion.explosionSuffleEffect(position, blastRadius, blastForce, collision.getMap(), bodies);

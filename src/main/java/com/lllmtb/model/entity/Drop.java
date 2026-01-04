@@ -23,10 +23,10 @@ import java.util.List;
 import java.util.Random;
 
 public class Drop extends Entity {
-    private PhysicsBody body;
+    private final PhysicsBody body;
     public final transient ItemId itemIdToUnlock;
     private static final double DROP_MAX_FALL_SPEED = -9.0;
-    private CollisionType collisionType = CollisionType.TOUCH;
+    private final CollisionType collisionType = CollisionType.TOUCH;
     private boolean onGround = false;
     private final String itemCategory; // "WEAPONID" ou "TOOLID"
     private final String itemName;
@@ -97,9 +97,8 @@ public class Drop extends Entity {
         return onGround;
     }
 
-    public GameCommand setOnGround() {
-        this.onGround = true;
-        return null;
+    public void setOnGround(boolean onGround) {
+        this.onGround = onGround;
     }
 
     public String getItemCategory() {

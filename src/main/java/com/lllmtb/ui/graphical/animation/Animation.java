@@ -15,7 +15,7 @@ public class Animation {
     private boolean playOnce = false;
     private boolean hasEnded = false;
 
-    private List<Frame> frames = new ArrayList<Frame>();    // Arraylist of frames
+    private final List<Frame> frames = new ArrayList<>();    // Arraylist of frames
 
     public Animation(BufferedImage[] frames, int frameDelay) {
         this.frameDelay = frameDelay;

@@ -38,13 +38,12 @@ public final class TrapProjectile extends Projectile {
     public List<GameCommand> onImpact(Entity entity) {
         if (entity == null) {
             List<GameCommand> list = new ArrayList<>();
-            handleHit(list, entity, damage);
             list.add((world -> world.getMap().setTile(new Position(this.getBody().getPos().getX(), this.getBody().getPos().getY() - 1), Tile.TRAP)));
             list.add(world -> world.getBus().postQueued(new MapUpdateEvent(new Position(this.getBody().getPos().getX(), this.getBody().getPos().getY() - 1), 2)));
             list.add(delete());
             return list;
         }
-            return null;
+        return null;
     }
 
     @Override

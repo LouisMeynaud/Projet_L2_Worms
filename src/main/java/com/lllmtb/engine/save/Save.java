@@ -201,21 +201,18 @@ public class Save {
      * This method creates a directory based on the game name inside {@code src/test/resources/SaveTest/}
      * and sequentially calls save methods for the Hightline, Map, Info, and GameWorld (JSON).
      * </p>
-     *
-     * @throws IOException If an error occurs during any of the save processes.
      */
     public static void saveAll() {
         String stringPath = SaveConfig.SAVE_DIRECTORY + gameWorld.getGameName();
         try {
-        saveMap(gameWorld.getMap(), stringPath);
-        saveGameWorld(gameWorld, stringPath);
-        saveInfo(gameWorld, stringPath);
-        BufferedImage image = maptoBuffered(gameWorld.getMap());
-        saveImage(image, stringPath);
-        gameWorld.pause(false);
-
+            saveMap(gameWorld.getMap(), stringPath);
+            saveGameWorld(gameWorld, stringPath);
+            saveInfo(gameWorld, stringPath);
+            BufferedImage image = maptoBuffered(gameWorld.getMap());
+            saveImage(image, stringPath);
+            gameWorld.pause(false);
         } catch (Exception e) {
-            Logger.logger.error("Probleme de sauvegarde de save: " + e.getMessage());
+            Logger.logger.error("Error while saving game ", e);
         }
     }
 
@@ -230,14 +227,14 @@ public class Save {
                             try {
                                 Files.delete(path);
                             } catch (IOException e) {
-                                Logger.logger.error("Erreur lors de la suppression de la sauvegarde : " + e.getMessage());
+                                Logger.logger.error("Error deleting save file: {}", path, e);
                             }
                         });
             } else {
-                Logger.logger.error("La sauvegarde n'existe pas.");
+                Logger.logger.error("Save directory does not exist: {}", pathToBeDeleted);
             }
         } catch (IOException e) {
-            Logger.logger.error("Erreur lors de la suppression de la sauvegarde : " + e.getMessage());
+            Logger.logger.error("Error while erasing save: {}", name, e);
         }
     }
 }

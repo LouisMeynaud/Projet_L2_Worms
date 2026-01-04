@@ -33,7 +33,7 @@ public class Worm extends Entity {
     /**
      * The team this worm belongs to.
      */
-    private transient Team team;
+    private final transient Team team;
 
     /**
      * The name of the worm.
@@ -222,8 +222,8 @@ public class Worm extends Entity {
 
     /**
      * Adds a status effect to the worm.
+     * If an effect of the same type already exists, it is replaced.
      * @param effect the {@link StatusEffect} to add
-     * @return the GameCommand {@code null}
      */
     public GameCommand addStatusEffect(StatusEffect effect) {
         if (effect != null) {
@@ -274,9 +274,7 @@ public class Worm extends Entity {
         for (StatusEffect effect : this.statusEffects) {
             if (effect.isActive()) {
                 effect.applyEffect(this);
-                commands.add(world -> {
-                    world.getBus().postQueued(new NotificationEvent("Status Effect Applied: " + effect.getName(), effect.getName()));
-                });
+                commands.add(world -> world.getBus().postQueued(new NotificationEvent("Status Effect Applied: " + effect.getName(), effect.getName())));
                 // Check again after application if the effect has expired
                 if (!effect.isActive()) {
                     expiredEffects.add(effect);

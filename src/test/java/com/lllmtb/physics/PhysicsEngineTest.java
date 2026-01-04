@@ -97,7 +97,7 @@ class PhysicsEngineTest {
         Vector before = tpE.getWind();
         tpE.changeWind();
         Vector after = tpE.getWind();
-        assertTrue(before.equals(after));
+        assertEquals(before, after);
     }
 
     @Test

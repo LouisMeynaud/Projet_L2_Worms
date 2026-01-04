@@ -30,87 +30,65 @@ public class GameSettingsTest
     @Test
     public void testNullGameNameThrowsException() {
         String[] teamNames = {"Team1", "Team2"};
-        assertThrows(IllegalArgumentException.class, () -> {
-            new GameSettings(null, 2, teamNames, 3, 100, 60, false, null, false, 100, LandScape.HILLY, 2, GameMode.NORMAL, false, false);
-        });
+        assertThrows(IllegalArgumentException.class, () -> new GameSettings(null, 2, teamNames, 3, 100, 60, false, null, false, 100, LandScape.HILLY, 2, GameMode.NORMAL, false, false));
     }
 
     @Test
     public void testEmptyGameNameThrowsException() {
         String[] teamNames = {"Team1", "Team2"};
-        assertThrows(IllegalArgumentException.class, () -> {
-            new GameSettings("   ", 2, teamNames, 3, 100, 60, false, null, false, 100, LandScape.HILLY, 2, GameMode.NORMAL, false, false);
-        });
+        assertThrows(IllegalArgumentException.class, () -> new GameSettings("   ", 2, teamNames, 3, 100, 60, false, null, false, 100, LandScape.HILLY, 2, GameMode.NORMAL, false, false));
     }
 
     @Test
     public void testLessThanOneTeamThrowsException() {
         String[] teamNames = {};
-        assertThrows(IllegalArgumentException.class, () -> {
-            new GameSettings("TestGame", 0, teamNames, 3, 100, 60, false, null, false, 100, LandScape.HILLY, 2, GameMode.NORMAL, false, false);
-        });
+        assertThrows(IllegalArgumentException.class, () -> new GameSettings("TestGame", 0, teamNames, 3, 100, 60, false, null, false, 100, LandScape.HILLY, 2, GameMode.NORMAL, false, false));
     }
 
     @Test
     public void testZeroWormsThrowsException() {
         String[] teamNames = {"Team1", "Team2"};
-        assertThrows(IllegalArgumentException.class, () -> {
-            new GameSettings("TestGame", 2, teamNames, 0, 100, 60, false, null, false, 100, LandScape.HILLY, 2, GameMode.NORMAL, false, false);
-        });
+        assertThrows(IllegalArgumentException.class, () -> new GameSettings("TestGame", 2, teamNames, 0, 100, 60, false, null, false, 100, LandScape.HILLY, 2, GameMode.NORMAL, false, false));
     }
 
     @Test
     public void testNullTeamNamesThrowsException() {
-        assertThrows(IllegalArgumentException.class, () -> {
-            new GameSettings("TestGame", 2, null, 3, 100, 60, false, null, false, 100, LandScape.HILLY, 2, GameMode.NORMAL, false, false);
-        });
+        assertThrows(IllegalArgumentException.class, () -> new GameSettings("TestGame", 2, null, 3, 100, 60, false, null, false, 100, LandScape.HILLY, 2, GameMode.NORMAL, false, false));
     }
 
     @Test
     public void testInsufficientTeamNamesThrowsException() {
         String[] teamNames = {"Team1"}; // Only 1 name but 2 teams required
-        assertThrows(IllegalArgumentException.class, () -> {
-            new GameSettings("TestGame", 2, teamNames, 3, 100, 60, false, null, false, 100, LandScape.HILLY, 2, GameMode.NORMAL, false, false);
-        });
+        assertThrows(IllegalArgumentException.class, () -> new GameSettings("TestGame", 2, teamNames, 3, 100, 60, false, null, false, 100, LandScape.HILLY, 2, GameMode.NORMAL, false, false));
     }
 
     @Test
     public void testNegativeMaxHpThrowsException() {
         String[] teamNames = {"Team1", "Team2"};
-        assertThrows(IllegalArgumentException.class, () -> {
-            new GameSettings("TestGame", 2, teamNames, 3, -50, 60, false, null, false, 100, LandScape.HILLY, 2, GameMode.NORMAL, false, false);
-        });
+        assertThrows(IllegalArgumentException.class, () -> new GameSettings("TestGame", 2, teamNames, 3, -50, 60, false, null, false, 100, LandScape.HILLY, 2, GameMode.NORMAL, false, false));
     }
 
     @Test
     public void testZeroTurnDurationThrowsException() {
         String[] teamNames = {"Team1", "Team2"};
-        assertThrows(IllegalArgumentException.class, () -> {
-            new GameSettings("TestGame", 2, teamNames, 3, 100, 0, false, null, false, 100, LandScape.HILLY, 2, GameMode.NORMAL, false, false);
-        });
+        assertThrows(IllegalArgumentException.class, () -> new GameSettings("TestGame", 2, teamNames, 3, 100, 0, false, null, false, 100, LandScape.HILLY, 2, GameMode.NORMAL, false, false));
     }
 
     @Test
     public void testTooSmallMapWidthThrowsException() {
         String[] teamNames = {"Team1", "Team2"};
-        assertThrows(IllegalArgumentException.class, () -> {
-            new GameSettings("TestGame", 2, teamNames, 3, 100, 60, false, null, false, 30, LandScape.HILLY, 2, GameMode.NORMAL, false, false);
-        });
+        assertThrows(IllegalArgumentException.class, () -> new GameSettings("TestGame", 2, teamNames, 3, 100, 60, false, null, false, 30, LandScape.HILLY, 2, GameMode.NORMAL, false, false));
     }
 
     @Test
     public void testNullTerrainTypeThrowsException() {
         String[] teamNames = {"Team1", "Team2"};
-        assertThrows(NullPointerException.class, () -> {
-            new GameSettings("TestGame", 2, teamNames, 3, 100, 60, false, null, false, 100, null, 2, GameMode.NORMAL, false, false);
-        });
+        assertThrows(NullPointerException.class, () -> new GameSettings("TestGame", 2, teamNames, 3, 100, 60, false, null, false, 100, null, 2, GameMode.NORMAL, false, false));
     }
 
     @Test
     public void testNullGameModeThrowsException() {
         String[] teamNames = {"Team1", "Team2"};
-        assertThrows(NullPointerException.class, () -> {
-            new GameSettings("TestGame", 2, teamNames, 3, 100, 60, false, null, false, 100, LandScape.HILLY, 2, null, false, false);
-        });
+        assertThrows(NullPointerException.class, () -> new GameSettings("TestGame", 2, teamNames, 3, 100, 60, false, null, false, 100, LandScape.HILLY, 2, null, false, false));
     }
 }

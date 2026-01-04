@@ -3,39 +3,33 @@ package com.lllmtb.terrain.generation;
 import com.lllmtb.physics.GameMode;
 
 public class ConfigMap {
-
-
-    private int width;              //the length of map
-    private int height;             //the height of the map (prevents the ground from exceeding this height)
-    private int maxSlope;           //the maximum height difference between two consecutive x-coordinates
-    private int maxLength;          //the maximum length during which the height of each consecutive block will increase by slope
-    private int waterHeight;        // the height of water
-    private int heightStart;        //the desired starting height from the ground
-    private int thicknessMin;       // the minimun of the map thickness.
-    private boolean flyingIsland;   //true ifyou want a flying island
-    private int plateauChance;      //the chance of having flat ground (which avoids terrain composed solely of "peaks")
-    public static final double RATIOWIDTHHEIGHT = 0.5625; //for a rectangular world (0.5625 is the ratio between the width and heigth of a commun screen)
+    private final int width;              // the length of map
+    private final int height;             // the height of the map (prevents the ground from exceeding this height)
+    private final int maxSlope;           // the maximum height difference between two consecutive x-coordinates
+    private final int maxLength;          // the maximum length during which the height of each consecutive block will increase by slope
+    private final int waterHeight;        // the height of water
+    private final int heightStart;        // the desired starting height from the ground
+    private final int thicknessMin;       // the minimum map thickness.
+    private final boolean flyingIsland;   // true if you want a flying island
+    private final int plateauChance;      // the chance of having flat ground (which avoids terrain composed solely of "peaks")
+    public static final double RATIOWIDTHHEIGHT = 0.5625; // for a rectangular world (0.5625 is the ratio between the width and heigth of a commun screen)
     private int nbTeam;             //the numbers of Teams.
-    private int nbWarms;            //the numbers of worls
-    private GameMode gameMode;      //the gameMode of the game.
+    private int nbWorms;            //the numbers of worms
+    private final GameMode gameMode;      //the gameMode of the game.
 
     public ConfigMap(int width, int waterHeight, int thicknessMin,
-                     boolean flyingIsland, int heightStart, LandScape terrainType, int nbTeam, int nbWarms, GameMode gameMode) {
+                     boolean flyingIsland, int heightStart, LandScape terrainType, int nbTeam, int nbWorms, GameMode gameMode) {
         this.width = width;
         this.height = (int) (width * RATIOWIDTHHEIGHT); //for a rectangular world (0.5625 is the ratio between the width and heigth of a commun screen)
         this.waterHeight = waterHeight;
         this.thicknessMin = thicknessMin;
         this.flyingIsland = flyingIsland;
         this.heightStart = heightStart;
-        this.maxSlope = 1;
-        this.maxLength = 10;
-        this.plateauChance = 20;
-        this.nbWarms = nbWarms;
+        this.nbWorms = nbWorms;
         this.nbTeam = nbTeam;
         this.gameMode = gameMode;
 
         switch (terrainType) {
-
             case FLAT:
                 this.maxSlope = 1;
                 this.maxLength = 10;
@@ -109,8 +103,8 @@ public class ConfigMap {
         return nbTeam;
     }
 
-    public int getNbWarms() {
-        return nbWarms;
+    public int getNbWorms() {
+        return nbWorms;
     }
 
     public GameMode getGameMode() {
@@ -121,9 +115,7 @@ public class ConfigMap {
         this.nbTeam = nbTeam;
     }
 
-    public void setNbWarms(int nbWarms) {
-        this.nbWarms = nbWarms;
+    public void setNbWorms(int nbWorms) {
+        this.nbWorms = nbWorms;
     }
-
-
 }

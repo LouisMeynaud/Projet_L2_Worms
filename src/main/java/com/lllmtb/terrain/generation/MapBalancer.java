@@ -84,6 +84,6 @@ public class MapBalancer {
         for (int x = start; x < end; x++) {
             somme += (hightLine[x] - lowLine[x]);
         }
-        return (int) somme / (end - start);
+        return somme / (end - start);
     }
 }

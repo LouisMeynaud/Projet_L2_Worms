@@ -58,11 +58,7 @@ public class GameWorld {
         }
 
         this.map = map;
-        if (gameSave.bus == null) {
-            this.bus = new EventBus();
-        } else {
-            this.bus = gameSave.bus;
-        }
+        this.bus = Objects.requireNonNullElseGet(gameSave.bus, EventBus::new);
         Move.setMaxjump(settings.maxJump);
 
         // Init GameCommand queue

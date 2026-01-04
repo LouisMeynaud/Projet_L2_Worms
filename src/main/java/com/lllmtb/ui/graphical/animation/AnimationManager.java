@@ -10,7 +10,6 @@ import com.lllmtb.ui.graphical.Utilitaire;
 
 /**
  * gestionnaire des animation du jeu
- *
  * cette classe charge et stocke les animation dans un map.
  */
 public class AnimationManager {

@@ -57,9 +57,7 @@ public class GameEngine {
 
         systemBus.subscribe(StartGameEvent.class, GameEngine::startGame);
         systemBus.subscribe(LoadEvent.class, GameEngine::startGame);
-        systemBus.subscribe(DeleteSaveEvent.class, event -> {
-            Save.eraseSave(event.getSaveName());
-        });
+        systemBus.subscribe(DeleteSaveEvent.class, event -> Save.eraseSave(event.getSaveName()));
         ui.start();
     }
 
@@ -68,7 +66,7 @@ public class GameEngine {
      * @param event the StartGameEvent containing game settings
      */
     private static void startGame(@NonNull StartGameEvent event) {
-        GameSettings settings = Objects.requireNonNull(event).getSettings();
+        GameSettings settings = Objects.requireNonNull(event).settings();
         EventBus worldBus = new EventBus();
         world = new GameWorld(settings, worldBus);
         start(world);
@@ -95,6 +93,6 @@ public class GameEngine {
         world.getBus().subscribe(SaveEvent.class, e -> systemBus.postQueued(new FinalSaveEvent()));
         systemBus.subscribe(FinalSaveEvent.class, e -> Save.saveAll());
         world.start();
-        systemBus.subscribe(GamePauseEvent.class, e -> world.pause(e.isPaused));
+        systemBus.subscribe(GamePauseEvent.class, e -> world.pause(e.isPaused()));
     }
 }

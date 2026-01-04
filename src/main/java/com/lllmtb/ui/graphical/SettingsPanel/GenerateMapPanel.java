@@ -119,18 +119,13 @@ public class GenerateMapPanel extends JPanel {
      */
     public LandScape getReliefType() {
         int val = this.reliefSlider.getValue();
-        switch (val) {
-            case 0:
-                return LandScape.FLAT;
-            case 1:
-                return LandScape.HILLY;
-            case 2:
-                return LandScape.JAGGED;
-            case 3:
-                return LandScape.CHAOTIC;
-            default:
-                return LandScape.HILLY;
-        }
+        return switch (val) {
+            case 0 -> LandScape.FLAT;
+            case 1 -> LandScape.HILLY;
+            case 2 -> LandScape.JAGGED;
+            case 3 -> LandScape.CHAOTIC;
+            default -> LandScape.HILLY;
+        };
     }
     /**
      * Gets the width of the map from the slider.

@@ -57,10 +57,9 @@ import com.lllmtb.ui.graphical.Utilitaire;
 
 /**
  * panneau principal de l'interface utilisateur du jeu
- *
+ * </p>
  * ce panneau se superpose au dessins du jeu et contient les bouton comme inventaire pose etc
  * ainsi que les les panneau d'inventaire de menu pose etc
- *
  * il utilise un cardLayout afin d'afficher les bons élement.
  */
 public class GameUIPanel extends JPanel {
@@ -286,9 +285,9 @@ public class GameUIPanel extends JPanel {
     private void subscribeToSystemEvents() {
 
         eventBus.subscribe(WorldCreatedEvent.class, event -> {
-            this.world = event.getWorld();
+            this.world = event.world();
             this.shopManager = world.getShopManager();
-            this.world.getBus().subscribe(NotificationEvent.class, notif -> Popup.add(notif));
+            this.world.getBus().subscribe(NotificationEvent.class, Popup::add);
             updateTimerDisplay();
         });
 
@@ -537,7 +536,7 @@ public class GameUIPanel extends JPanel {
                     this.world.getBus().postQueued(new WeaponSelectedEvent(id));
                     openCloseInventory(); // on ferme l'inventaire si on choisie une arme
                 });
-            } else if (isUnlocked && nbAmmo == 0) {
+            } else if (isUnlocked) {
                 itemButton.setEnabled(false);
             }
             this.weaponGrid.add(itemButton);
@@ -628,8 +627,7 @@ public class GameUIPanel extends JPanel {
 
         for (ShopElement element : shopManager.getShopElements()) {
 
-            if (element.id instanceof WeaponId) {
-                WeaponId weaponId = (WeaponId) element.id;
+            if (element.id instanceof WeaponId weaponId) {
                 if (!inventory.isUnlocked(weaponId)) {
                     boolean canBuy = currentMoney >= element.unlockPrice || currentMoney == -1;
                     String text = element.unlockPrice + "$";
@@ -649,7 +647,7 @@ public class GameUIPanel extends JPanel {
                     this.shopWeaponGrid.add(buttonShop);
                 } else {
                     String text = element.ammoPrice + "$ (+" + element.ammoPackSize + ")";
-                    BufferedImage imgAmmo = TextureManager.WEAPONS.get("Ammo" + weaponId.toString());
+                    BufferedImage imgAmmo = TextureManager.WEAPONS.get("Ammo" + weaponId);
                     boolean canBuy = currentMoney >= element.ammoPrice || currentMoney == -1;
 
                     JButton buttonShop = Utilitaire.createShopButton(imgAmmo, text, canBuy);
@@ -665,8 +663,7 @@ public class GameUIPanel extends JPanel {
 
                     this.shopAmmoGrid.add(buttonShop);
                 }
-            } else if (element.id instanceof ToolId) {
-                ToolId tid = (ToolId) element.id;
+            } else if (element.id instanceof ToolId tid) {
                 String text = element.ammoPrice + "$ (+" + element.ammoPackSize + ")";
                 BufferedImage img = TextureManager.TOOLS.get(tid.toString());
                 boolean canBuy = currentMoney >= element.ammoPrice || currentMoney == -1;

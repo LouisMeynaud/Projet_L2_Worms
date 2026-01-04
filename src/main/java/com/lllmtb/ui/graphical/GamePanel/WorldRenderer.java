@@ -186,8 +186,7 @@ public class WorldRenderer {
         }
         for (PhysicsBody body : this.world.getPhysics().getBodies()) {
             Object entity = body.getEntity();
-            if (entity instanceof Worm) {
-                Worm worm = (Worm) entity;
+            if (entity instanceof Worm worm) {
                 getWormAnimation(worm);
                 worm.updateFacingDirection();
             }
@@ -388,7 +387,7 @@ public class WorldRenderer {
         double largeurPx = bounds[2];
         double hauteurPx = bounds[3];
 
-        BufferedImage texture = null;
+        BufferedImage texture;
         if (drop.isOnGround()) {
             texture = TextureManager.UI.get("DropOnGround");
         } else {
@@ -440,21 +439,20 @@ public class WorldRenderer {
      */
     private void paintCurrentWormsArrow(Graphics2D g2d, double x, double y, double width, TeamColor color) {
 
-        double offsetAnimation = Math.sin(world.getGameLoop().getTicks() / 10) * 5; //fonction sinuosidale , (qui monte et descend)
+        double offsetAnimation = Math.sin(world.getGameLoop().getTicks() / 10f) * 5; //fonction sinuosidale , (qui monte et descend)
         int centerX = (int) (x + (width / 2.0));
         int bottomY = (int) (y - 35 + offsetAnimation);
         int size = 12;
 
         int[] xPoints = {centerX - size, centerX + size, centerX };
         int[] yPoints = {bottomY - size, bottomY - size, bottomY };
-        Color paintColor;
-        switch (color) {
-            case GREEN : paintColor = Color.GREEN; break;
-            case YELLOW : paintColor = Color.YELLOW; break;
-            case RED : paintColor = Color.RED; break;
-            case BLUE : paintColor = Color.BLUE; break;
-            default : paintColor = Color.BLACK; break;
-        }
+        Color paintColor = switch (color) {
+            case GREEN -> Color.GREEN;
+            case YELLOW -> Color.YELLOW;
+            case RED -> Color.RED;
+            case BLUE -> Color.BLUE;
+            default -> Color.BLACK;
+        };
         g2d.setColor(paintColor);
         g2d.fillPolygon(xPoints, yPoints, 3); //dessine le triange remplie
 
@@ -487,7 +485,7 @@ public class WorldRenderer {
         g2d.setColor(Color.RED);
         g2d.fillRect(barX, barY, barWidth, barHeight);
 
-        double ratio = (double) currentHp / maxHp;
+        double ratio = currentHp / maxHp;
         int greenBarWidth = (int) (barWidth * ratio);
 
         g2d.setColor(Color.GREEN);

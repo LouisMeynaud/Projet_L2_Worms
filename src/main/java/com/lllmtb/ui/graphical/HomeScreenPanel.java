@@ -7,8 +7,7 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.image.BufferedImage;
 
-import javax.swing.JButton;
-import javax.swing.JPanel;
+import javax.swing.*;
 
 import com.lllmtb.events.EventBus;
 import com.lllmtb.events.ui.graphical.ScreenMusicSettingsEvent;
@@ -41,8 +40,9 @@ public class HomeScreenPanel extends JPanel {
         });
 
         closeButton.addActionListener(e -> {
-            System.exit(0);
+            SwingUtilities.getWindowAncestor(this).dispose();
         });
+
         gbc.gridy = 0;
         this.add(playButton, gbc);
         gbc.gridy = 1;

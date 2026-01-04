@@ -1,5 +1,6 @@
 package com.lllmtb.terrain.map;
 
+import com.lllmtb.engine.logger.Logger;
 import com.lllmtb.engine.save.SaveConfig;
 import java.io.File;
 import java.net.URL;
@@ -50,7 +51,7 @@ public class MapLoader {
             String contentMap = Files.readString(path);
             return  parseMapData(contentMap, mapName);
         } catch (Exception e) {
-            System.out.println(e); // NB. Il faudra mieux gérer cette exception
+            Logger.logger.error("Error while loading map {} : ", mapName, e);
             return null;
         }
     }

@@ -9,9 +9,9 @@ public class Map {
      * A cell in the matrix is ​​represented by an integer x y coordinate (0,0)
      * in the bottom left corner.
      */
-    private int width;
-    private int height;
-    private Tile[][] mapMatrix;
+    private final int width;
+    private final int height;
+    private final Tile[][] mapMatrix;
     private String filesTxt;
     private Position[][] spawnPoint;
     private int heightWater = 0; //devra etre changer

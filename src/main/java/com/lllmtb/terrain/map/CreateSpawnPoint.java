@@ -79,7 +79,6 @@ public class CreateSpawnPoint {
     private static Position[][] separateSpawnTeam(int nbTeams, int nbWorms, Position[] spawnPointPos) {
         Position[][] teamSpawnPointPositions = new Position[nbTeams][nbWorms];
         for (int i = 0; i < nbTeams; i++) {
-            System.out.println("");
             for (int j = 0; j < nbWorms; j++) {
                 teamSpawnPointPositions[i][j] = spawnPointPos[i * nbWorms + j];
             }
