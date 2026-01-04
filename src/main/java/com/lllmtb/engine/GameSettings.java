@@ -19,9 +19,8 @@ public final class GameSettings {
     public final int maxJump;
     public final double maxHp;
     public GameMode gameMode;
-    public final boolean friendlyfire;
+    public final boolean friendlyFire;
     public final boolean coinCheat;
-
 
     /**
      * @param nbTeams        Number of teams
@@ -35,16 +34,14 @@ public final class GameSettings {
      * @param terrainType    Type of terrain to generate
      * @param maxJump        Maximum jump height for worms
      * @param gameName       Name of the game session
-     * @param friendlyfire   Boolean if friendly fire is activated
+     * @param friendlyFire   Boolean if friendly fire is activated
      * @param maxHp         Maximum health points for worms
      * @param gameMode      Game mode selected
      * @param coinCheat     If coin cheat is activated
      * @throws IllegalArgumentException if parameters are invalid
      */
-
-
     public GameSettings(String gameName, int nbTeams, String[] teamNames, int nbWorms, double maxHp, long turnDuration, boolean hasWind, String mapFileName,
-        boolean floatingIsland, int widthMap, LandScape terrainType, int maxJump, GameMode gameMode, boolean friendlyfire, boolean coinCheat) {
+                        boolean floatingIsland, int widthMap, LandScape terrainType, int maxJump, GameMode gameMode, boolean friendlyFire, boolean coinCheat) {
 
         // Validate inputs
         if (gameName == null || gameName.isBlank()) {
@@ -65,10 +62,11 @@ public final class GameSettings {
         if (turnDuration <= 0) {
             throw new IllegalArgumentException("Turn duration must be positive, got: " + turnDuration);
         }
-        if (widthMap < 50) {
-            throw new IllegalArgumentException("Map width must be at least 50, got: " + widthMap);
+        if (mapFileName == null) { // generating a new map
+            if (widthMap < 50) throw new IllegalArgumentException("Map width must be at least 50 when generating a map, got: " + widthMap);
+            Objects.requireNonNull(terrainType, "Terrain type cannot be null when generating a map");
         }
-        Objects.requireNonNull(terrainType, "Terrain type cannot be null");
+
         Objects.requireNonNull(gameMode, "Game mode cannot be null");
 
         this.nbTeams = nbTeams;
@@ -84,7 +82,7 @@ public final class GameSettings {
         this.maxJump = maxJump;
         this.maxHp = maxHp;
         this.gameMode = gameMode;
-        this.friendlyfire = friendlyfire;
+        this.friendlyFire = friendlyFire;
         this.coinCheat = coinCheat;
 
     }
