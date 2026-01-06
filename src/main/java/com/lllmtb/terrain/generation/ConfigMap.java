@@ -36,6 +36,12 @@ public class ConfigMap {
         this.gameMode = gameMode;
 
         switch (terrainType) {
+            case SUPERFLAT:
+                this.maxSlope = 1;
+                this.maxLength = 10;
+                this.plateauChance = 100;
+                break;
+            
             case FLAT:
                 this.maxSlope = 1;
                 this.maxLength = 10;

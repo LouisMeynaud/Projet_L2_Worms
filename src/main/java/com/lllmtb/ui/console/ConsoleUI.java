@@ -239,6 +239,7 @@ public class ConsoleUI implements UI {
         builder.createListPrompt()
                 .name("size")
                 .message("  The type of landscape to use")
+                .newItem("SUPERFLAT").text("Superflat").add()
                 .newItem("FLAT").text("Flat").add()
                 .newItem("HILLY").text("Hilly").add()
                 .newItem("JAGGED").text("Jagged").add()

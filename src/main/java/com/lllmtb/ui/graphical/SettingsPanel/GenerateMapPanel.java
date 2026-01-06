@@ -91,7 +91,7 @@ public class GenerateMapPanel extends JPanel {
      */
     private JSlider createReliefSlider() {
 
-        JSlider slider = new JSlider(JSlider.HORIZONTAL, 0, 3, 1);
+        JSlider slider = new JSlider(JSlider.HORIZONTAL, 0, 4, 1);
 
         slider.setMajorTickSpacing(1);
         slider.setSnapToTicks(true);
@@ -100,10 +100,11 @@ public class GenerateMapPanel extends JPanel {
 
         Hashtable<Integer, JLabel> labelTable = new Hashtable<>();
 
-        labelTable.put(0, new JLabel("Plat"));
-        labelTable.put(1, new JLabel("Vallonné"));
-        labelTable.put(2, new JLabel("Accidenté"));
-        labelTable.put(3, new JLabel("Anarchique"));
+        labelTable.put(0, new JLabel("Super Plat"));
+        labelTable.put(1, new JLabel("Plat"));
+        labelTable.put(2, new JLabel("Vallonné"));
+        labelTable.put(3, new JLabel("Accidenté"));
+        labelTable.put(4, new JLabel("Anarchique"));
 
 
         slider.setLabelTable(labelTable);
@@ -120,10 +121,11 @@ public class GenerateMapPanel extends JPanel {
     public LandScape getReliefType() {
         int val = this.reliefSlider.getValue();
         return switch (val) {
-            case 0 -> LandScape.FLAT;
-            case 1 -> LandScape.HILLY;
-            case 2 -> LandScape.JAGGED;
-            case 3 -> LandScape.CHAOTIC;
+            case 0 -> LandScape.SUPERFLAT;
+            case 1 -> LandScape.FLAT;
+            case 2 -> LandScape.HILLY;
+            case 3 -> LandScape.JAGGED;
+            case 4 -> LandScape.CHAOTIC;
             default -> LandScape.HILLY;
         };
     }
