@@ -394,6 +394,7 @@ public final class TurnManager {
         useInputListener = event -> {
             if (turn == null || turn.getWormPlayable() == null || turn.getTeam() == null) return;
             PhysicsBody wormBody = turn.getWormPlayable().getBody();
+            if (turn.getTeam().getHand() == null) return;
 
             double mouseX = event.pos().getX();
             double mouseY = event.pos().getY();

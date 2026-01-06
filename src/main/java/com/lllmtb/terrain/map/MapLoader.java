@@ -2,7 +2,7 @@ package com.lllmtb.terrain.map;
 
 import com.lllmtb.engine.logger.Logger;
 import com.lllmtb.engine.save.SaveConfig;
-import java.net.URL;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -40,17 +40,15 @@ public class MapLoader {
      * @return the loaded Map object.
      */
     public static Map loadMap(String mapName) {
-        try {
-            URL resource = MapLoader.class.getResource("/map/" + mapName + "/map.txt");
-            if (resource == null) {
-                return null;
+        try (InputStream is = MapLoader.class.getResourceAsStream("/map/" + mapName + "/map.txt")) {
+            if (is == null) {
+                throw new RuntimeException("Resource not found: /map/" + mapName + "/map.txt");
             }
-            Path path = Paths.get(resource.toURI());
-            String contentMap = Files.readString(path);
+            String contentMap = new String(is.readAllBytes(), StandardCharsets.UTF_8);
             return loadMatrix(contentMap, mapName);
         } catch (Exception e) {
             Logger.logger.error("Error while loading map {} : ", mapName, e);
-            return null;
+            throw new RuntimeException(e);
         }
     }
 
