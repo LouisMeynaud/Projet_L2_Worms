@@ -14,7 +14,7 @@ import javax.swing.JSlider;
 import javax.swing.JTextField;
 
 import com.lllmtb.terrain.generation.LandScape;
-import com.lllmtb.ui.graphical.Utilitaire;
+import com.lllmtb.ui.graphical.Utilitaire.Utilitaire;
 
 public class GenerateMapPanel extends JPanel {
 

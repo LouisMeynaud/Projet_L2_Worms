@@ -41,7 +41,7 @@ class PhysicsEngineTest {
 
     @BeforeEach
     void setUp() {
-        map = MapLoader.loadMatrix("mapTest");
+        map = MapLoader.loadMap("mapTest");
         bus = new EventBus(4);
         world = Mockito.mock(GameWorld.class);
         Mockito.when(world.getBus()).thenReturn(bus);

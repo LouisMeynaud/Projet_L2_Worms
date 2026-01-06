@@ -26,9 +26,6 @@ import com.lllmtb.terrain.generation.LandScape;
 import com.lllmtb.terrain.map.Map;
 import com.lllmtb.terrain.map.MapLoader;
 
-/**
- * Tests for GameWorld with minimal Mockito usage.
- */
 public class GameWorldTest {
 
     @Test
@@ -61,7 +58,7 @@ public class GameWorldTest {
     @Test
     void whenMapFileNameProvided_MapLoaderIsUsed_insteadOfGenerateMap() {
         // load the map directly and compare
-        Map generated = MapLoader.loadMatrix("mapTest");
+        Map generated = MapLoader.loadMap("mapTest");
         GameSettings settings = new GameSettings("blabla", 1, new String[]{"José"}, 1,100, 10, true, "mapTest", false,370,LandScape.HILLY,2,GameMode.NORMAL,true, false);
         EventBus eventBus = new EventBus();
         GameWorld gw = new GameWorld(settings,eventBus);
@@ -77,7 +74,7 @@ public class GameWorldTest {
     @Test
     void whenMapLoaderThrows_constructorWrapsAndRethrowsRuntimeException() {
         try (MockedStatic<MapLoader> mocked = Mockito.mockStatic(MapLoader.class)) {
-            mocked.when(() -> MapLoader.loadMatrix("badPath")).thenThrow(new IllegalStateException("io fail"));
+            mocked.when(() -> MapLoader.loadMap("badPath")).thenThrow(new IllegalStateException("io fail"));
 
             GameSettings settings = new GameSettings("blabla", 1, new String[]{"José"}, 1, 100,10, false, "badPath", false,370,LandScape.HILLY,2,GameMode.NORMAL, true, false);
             EventBus eventBus = new EventBus();
@@ -89,7 +86,7 @@ public class GameWorldTest {
     }
     @Test
     void constructor_withGamSave_Map() throws FileNotFoundException {
-        Map map = MapLoader.loadMatrix("Camembert");
+        Map map = MapLoader.loadMap("Camembert");
         assertNotNull(map);
         GameSave gameSave = Load.loadGameSave("Test");
         GameWorld gameWorld = new GameWorld(gameSave, map);

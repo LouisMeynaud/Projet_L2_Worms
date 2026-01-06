@@ -12,7 +12,7 @@ public class LoadTest{
     public static void main(String[] args) throws FileNotFoundException {
         GameSave gameSave = Load.loadGameSave("e_save");
         Load.reforgeGameSave(gameSave);
-        Map map = MapLoader.loadMatrix("e_save");
+        Map map = MapLoader.loadMap("e_save");
 
         for (PhysicsBodySave physicsBodySave : gameSave.entities){
             System.out.println(physicsBodySave.entity);

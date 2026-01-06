@@ -1,4 +1,4 @@
-package com.lllmtb.ui.graphical;
+package com.lllmtb.ui.graphical.Utilitaire;
 
 import java.awt.BorderLayout;
 import java.awt.Color;

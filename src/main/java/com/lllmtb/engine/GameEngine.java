@@ -11,9 +11,9 @@ import com.lllmtb.events.game.*;
 import com.lllmtb.ui.console.ConsoleUI;
 import com.lllmtb.ui.UI;
 import com.lllmtb.ui.graphical.GraphicalUI;
-import com.lllmtb.ui.graphical.SoundManager;
-import com.lllmtb.ui.graphical.TextureManager;
-import com.lllmtb.ui.graphical.animation.AnimationManager;
+import com.lllmtb.ui.graphical.Utilitaire.SoundManager;
+import com.lllmtb.ui.graphical.Utilitaire.TextureManager;
+import com.lllmtb.ui.graphical.Utilitaire.animation.AnimationManager;
 
 public class GameEngine {
     private static EventBus systemBus;

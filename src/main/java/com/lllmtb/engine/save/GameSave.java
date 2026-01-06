@@ -43,7 +43,6 @@ public class GameSave {
         gameWorld.getPhysics().getModifiers().forEach((body, mods) -> {
            this.modifiers.put(body.getEntity().uuid, mods);
         });
-        int j = -1;
         for (PhysicsBody body : gameWorld.getPhysics().getBodies()) {
             entities.add(new PhysicsBodySave(body));
         }

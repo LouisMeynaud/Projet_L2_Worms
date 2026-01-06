@@ -22,10 +22,11 @@ public class MapFiller {
     }
 
     /**
-     * method for filling the area between the top and bottom lines of DIRT
+     * method for filling the area between the top and bottom lines of DIRT.
      * @param map       the map that we want to fill
      * @param hightLine the top line of the map
      * @param lowLine   the bottom line of the map
+     * @param config    the config of the map.
      */
     protected static void fillingDirt(Map map, int[] hightLine, int[] lowLine, ConfigMap config) {
         for (int i = 0; i < map.getHeight(); i++) {

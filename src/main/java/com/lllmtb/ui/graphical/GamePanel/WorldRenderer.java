@@ -26,11 +26,11 @@ import com.lllmtb.physics.PhysicsBody;
 import com.lllmtb.physics.PhysicsModifier;
 import com.lllmtb.physics.Position;
 import com.lllmtb.terrain.map.Tile;
-import com.lllmtb.ui.graphical.TextureManager;
-import com.lllmtb.ui.graphical.Utilitaire;
-import com.lllmtb.ui.graphical.animation.Animation;
-import com.lllmtb.ui.graphical.animation.AnimationManager;
-import com.lllmtb.ui.graphical.animation.VisualEffect;
+import com.lllmtb.ui.graphical.Utilitaire.TextureManager;
+import com.lllmtb.ui.graphical.Utilitaire.Utilitaire;
+import com.lllmtb.ui.graphical.Utilitaire.animation.Animation;
+import com.lllmtb.ui.graphical.Utilitaire.animation.AnimationManager;
+import com.lllmtb.ui.graphical.Utilitaire.animation.VisualEffect;
 
 /**
  * Classe responsable du rendu graphique de la partit.
@@ -104,7 +104,11 @@ public class WorldRenderer {
         panel.checkCameraBounds();
     }
 
-
+    /**
+    * Redraws the map only in a specific region.
+    * @param center the circle within which to redraw.
+    * @param radius the radius within the circle within which to redraw.
+    */
     public void updateMapCacheRegion(Position center, int radius) {
         if (mapCache == null) {
             updateMapCache();
@@ -289,6 +293,10 @@ public class WorldRenderer {
 
     /**
      * Dessine la barre de charge (puissance).
+     * @param g2d paintbrushes
+     * @param x the position x for the bottom left corner ChargeBar
+     * @param y the position Y for the bottom left corner ChargeBar
+     * @param width the width of the worms.
      */
     private void paintChargeBar(Graphics2D g2d, double x, double y, double width) {
         ItemId item = world.getPlayingTeam().getHand();
@@ -381,6 +389,12 @@ public class WorldRenderer {
         g2d.drawImage(texture, tx, null);
     }
 
+    /**
+     * draw a drop, two types of drop depending if it's on the ground or aerial.
+     * @param g2d
+     * @param body
+     * @param drop
+     */
     private void drawDrop(Graphics2D g2d, PhysicsBody body, Drop drop) {
         double[] bounds = panel.getScreenBounds(body); // Convertit position monde -> écran
         double xEcran = bounds[0];
@@ -390,8 +404,10 @@ public class WorldRenderer {
 
         BufferedImage texture;
         if (drop.isOnGround()) {
+            // drop on ground
             texture = TextureManager.UI.get("DropOnGround");
         } else {
+            // aerial drop, use different texture and adjust size/position
             texture = TextureManager.UI.get("DropAerials");
             hauteurPx = hauteurPx * 2;
             yEcran -= hauteurPx / 2;

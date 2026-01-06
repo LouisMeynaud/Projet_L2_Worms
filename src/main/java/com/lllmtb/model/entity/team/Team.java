@@ -75,7 +75,7 @@ public class Team {
     private int index = 0;
 
     /**
-     * The item currently selected by the player
+     * The item currently selected by the player.
      */
     private ItemId selectedItem;
 
@@ -85,7 +85,7 @@ public class Team {
     public final TeamColor teamColor;
 
     /**
-     * The count of shoot in a turn
+     * The count of shoot in a turn.
      */
     private int shootCount;
 
@@ -128,6 +128,7 @@ public class Team {
      * @param teamName      the name of the team
      * @param numberOfWorms number of worms in the team
      * @param spawn         the spawn position where the worms will be placed
+     * @param credits       the money of the team at the start (-1 for infinity)
      */
     public Team(@NonNull String teamName, int numberOfWorms, @NonNull Position[] spawn, int credits) {
         this(teamName, numberOfWorms, new Inventory(), spawn, credits);
@@ -234,25 +235,29 @@ public class Team {
     }
 
     /**
-     * Remove one usage of change worm of the team
+     * Remove one usage of change worm of the team.
      */
     public void oneChangeWorm() {
         this.maxChangeWormTeam--;
     }
 
+    /**
+     *
+     * @return the Chosen team color.
+     */
     public static ArrayList<TeamColor> getChosenTeamColors() {
         return chosenTeamColors;
     }
 
     /**
-     * Reset shoot count
+     * Reset shoot count.
      */
     public void resetShootCount() {
         this.shootCount = 0;
     }
 
     /**
-     * Reset worm change count
+     * Reset worm change count.
      */
     public void resetWormChangeCount() {
         this.maxChangeWormTeam = MAX_CHANGEWORMTEAM;
@@ -407,7 +412,7 @@ public class Team {
     }
 
     /**
-     * Sets the currently selected item to null
+     * Sets the currently selected item to null.
      */
     public void emptyHand() {
         this.selectedItem = null;
@@ -464,7 +469,7 @@ public class Team {
     }
 
     /**
-     * Set currentWorm of the team to null
+     * Set currentWorm of the team to null.
      */
     public void setCurrentWormNull() {
         this.currentWorm = null;
@@ -477,11 +482,18 @@ public class Team {
         return this.teamColor;
     }
 
-
+    /**
+     *
+     * @return the credits of the team.
+     */
     public int getCredits() {
         return credits;
     }
 
+    /**
+     * add credits to a team.
+     * @param amount the ammount of money to add.
+     */
     public void addCredits(int amount) {
         if (amount > 0 && credits != -1) {
             Logger.logger.info("[TEAM {}] Adding {} credits", this.name, amount);
@@ -489,6 +501,10 @@ public class Team {
         }
     }
 
+    /**
+     * remove credits to a team.
+     * @param amount the ammount of money to remove
+     */
     public void removeCredits(int amount) {
         if (credits == -1) return;
 

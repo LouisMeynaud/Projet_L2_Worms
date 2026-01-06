@@ -17,6 +17,7 @@ public class ShopManager {
     private final EventBus eventBus;
     /**
      * Constructor initializes the shop manager and populates the shop with items.
+     * @param eventBus the eventbus of the game.
      */
     public ShopManager(EventBus eventBus) {
         this.items = new ArrayList<>();

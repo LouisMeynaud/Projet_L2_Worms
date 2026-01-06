@@ -1,13 +1,15 @@
 package com.lllmtb.terrain.generation;
 
+
 import com.lllmtb.engine.logger.Logger;
 import com.lllmtb.terrain.map.Map;
 import com.lllmtb.terrain.map.MapLoader;
 import com.lllmtb.terrain.map.SaveMap;
 
 public class GenerateMap {
+
     /**
-     * method for generating a random map
+     * method for generating a random map.
      * @param config takes a config type object in order to generate a map according to presets
      * @return the created map
      */
@@ -44,7 +46,7 @@ public class GenerateMap {
         } catch (Exception e) {
             Logger.logger.error("Error while loading map", e);
             Logger.logger.info("Loading default map instead.");
-            return MapLoader.loadMatrix("defaultMap");
+            return MapLoader.loadMap("defaultMap");
         }
     }
 
@@ -68,7 +70,7 @@ public class GenerateMap {
         }
     }
 
-    // on descend les bord pour avoir un effet ile
+    // on descend les bords pour avoir un effet ile
     private static void applyIslandBorders(int[] hightLine, int[] lowLine, int width, int waterLevel) {
         try {
             int borderSize = 10;
