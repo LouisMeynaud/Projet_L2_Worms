@@ -11,6 +11,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import com.lllmtb.engine.save.GameSave;
 import com.lllmtb.engine.save.PhysicsBodySave;
 import com.lllmtb.engine.save.TeamSave;
+import com.lllmtb.engine.turn.BotController;
 import com.lllmtb.engine.turn.Turn;
 import com.lllmtb.model.entity.projectile.Projectile;
 import org.eclipse.jdt.annotation.NonNull;
@@ -41,6 +42,7 @@ public class GameWorld {
     private final GameLoop gameLoop;
     private int indexTeam;
     private final TurnManager turnManager;
+    private final BotController botController;
     private String gameName;
     private GameMode gameMode;
     private ShopManager shopManager;
@@ -87,11 +89,9 @@ public class GameWorld {
         }
         // Init GameLoop
         this.gameLoop = new GameLoop(this);
-        Logger.logger.debug("Game initialised");
 
         //Init TurnManager
         this.turnManager = gameSave.turnManager;
-
         // use reflexion
         try {
             Field worldField = TurnManager.class.getDeclaredField("world");
@@ -111,6 +111,9 @@ public class GameWorld {
         }
         this.turnManager.init();
 
+        //Init BotController
+        this.botController = new BotController(this);
+
         //Init FriendlyFire
         Projectile.setFriendlyFire(settings.friendlyfire);
 
@@ -119,6 +122,8 @@ public class GameWorld {
 
         //Init credit from current Team
         this.teams.get(indexTeam).removeCredits(150);
+
+        Logger.logger.debug("Game initialised");
     }
 
     public GameWorld(GameSettings settings, EventBus eventBus) {
@@ -156,14 +161,15 @@ public class GameWorld {
         // Init Teams
         this.teams = new ArrayList<>();
         Logger.logger.info("Creating the Teams...");
+        Worm.setMaxHp(settings.maxHp);
         for (int i = 0; i < settings.nbTeams; i++) {
             try {
-                Worm.setMaxHp(settings.maxHp);
                 int coin = settings.coinCheat ? -1 : 0;
                 Team team = new Team(settings.teamNames[i], settings.nbWorms, tmap.getSpawnPoint()[i], coin);
+                if (settings.isBot[i]) team.setBot(true);
                 teams.add(team);
                 team.getTeamWorms().forEach(this::registerEntity);
-                Logger.logger.info("{} | {} - {} - {}\n", i, team.name, team.id, team.teamColor);
+                Logger.logger.info("{} | {} - {} - {} [Bot: {}]\n", i, team.name, team.id, team.teamColor, team.isBot());
             } catch (ArrayIndexOutOfBoundsException e) {
                 break;
             }
@@ -174,13 +180,17 @@ public class GameWorld {
 
         // Init GameLoop
         this.gameLoop = new GameLoop(this);
-        Logger.logger.debug("Game initialised");
 
         //Init TurnManager
         this.turnManager = new TurnManager(this, settings.turnDuration);
 
+        //Init BotController
+        this.botController = new BotController(this);
+
         //Init ShopManager
         this.shopManager = new ShopManager(this.bus);
+
+        Logger.logger.debug("Game initialised");
     }
 
     public Map getMap() {

@@ -54,6 +54,11 @@ public class Team {
     public final String name;
 
     /**
+     * Whether this team is controlled by a bot or not.
+     */
+    private boolean isBot = false;
+
+    /**
      * Number of worms in the team.
      */
     private int numberOfWorms;
@@ -132,6 +137,7 @@ public class Team {
      * @param teamName      the name of the team
      * @param numberOfWorms number of worms in the team
      * @param spawn         the spawn position where the worms will be placed
+     * @param credits       initial amount of credits for the team
      */
     public Team(@NonNull String teamName, int numberOfWorms, @NonNull Position[] spawn, int credits) {
         this(teamName, numberOfWorms, new Inventory(), spawn, credits);
@@ -155,6 +161,7 @@ public class Team {
 
         this.name = teamSave.team.name;
         this.numberOfWorms =  teamSave.team.numberOfWorms;
+        this.isBot = teamSave.team.isBot();
         this.id = teamSave.team.id;
         this.credits = teamSave.team.credits;
         for (Worm worm: teamSave.team.getTeamWorms()) {
@@ -502,5 +509,20 @@ public class Team {
             Logger.logger.info("[TEAM {}] Removing {} credits", this.name, amount);
             this.credits -= amount;
         }
+    }
+
+    /**
+     * @return true if the team is controlled by a bot, false otherwise
+     */
+    public boolean isBot() {
+        return isBot;
+    }
+
+    /**
+     * Sets whether the team is controlled by a bot.
+     * @param isBot true if the team is a bot, false otherwise
+     */
+    public void setBot(boolean isBot) {
+        this.isBot = isBot;
     }
 }

@@ -15,11 +15,11 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class GameSave {
-    public CopyOnWriteArrayList<PhysicsBodySave> entities = new CopyOnWriteArrayList<>();
+    public CopyOnWriteArrayList<PhysicsBodySave> entities;
     public transient EventBus bus;
     public int indexTeam;
     public long turnDuration;
-    public List<TeamSave> teams = new ArrayList<>();
+    public List<TeamSave> teams;
     public boolean hasWind;
     public Vector wind;
     public Vector gravity;
@@ -29,6 +29,7 @@ public class GameSave {
 
 
     public GameSave(GameWorld gameWorld) {
+        this.teams = new ArrayList<>();
         for (Team team : gameWorld.getTeams()) {
             this.teams.add(new TeamSave(team));
         }
@@ -43,31 +44,37 @@ public class GameSave {
         gameWorld.getPhysics().getModifiers().forEach((body, mods) -> {
            this.modifiers.put(body.getEntity().uuid, mods);
         });
-        int j = -1;
+        this.entities = new CopyOnWriteArrayList<>();
         for (PhysicsBody body : gameWorld.getPhysics().getBodies()) {
             entities.add(new PhysicsBodySave(body));
         }
-
         String[] teamNames = new String[gameWorld.getTeams().size()];
         for (int i = 0; i < teamNames.length; i++) {
             teamNames[i] = gameWorld.getTeams().get(i).name;
         }
+        boolean[] isBot = new boolean[gameWorld.getTeams().size()];
+        for (int i = 0; i < isBot.length; i++) {
+            isBot[i] = gameWorld.getTeams().get(i).isBot();
+        }
+
         this.gameSettings = new GameSettings(
-                gameWorld.getGameName(),
-                gameWorld.getTeams().size(),
-                teamNames,
-                -1,
-                Statistics.getMaxHp(),
-                gameWorld.getTurnDuration(),
-                gameWorld.getPhysics().hasWind(),
-                gameWorld.getGameName(),
-                false,
-                gameWorld.getMap().getWidth(),
-                null,
-                Move.getMaxjump(),
-                gameWorld.getGameMode(),
-                Projectile.isFriendlyfire(),
-            false);
+            gameWorld.getGameName(),
+            gameWorld.getTeams().size(),
+            teamNames,
+            isBot,
+            -1,
+            Statistics.getMaxHp(),
+            gameWorld.getTurnDuration(),
+            gameWorld.getPhysics().hasWind(),
+            gameWorld.getGameName(),
+            false,
+            gameWorld.getMap().getWidth(),
+            null,
+            Move.getMaxjump(),
+            gameWorld.getGameMode(),
+            Projectile.isFriendlyfire(),
+            false
+        );
     }
 
 

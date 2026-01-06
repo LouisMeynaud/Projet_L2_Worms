@@ -106,6 +106,7 @@ public class SettingsStartPanel extends JPanel {
         int nbEquipes = gameSettingsPanel.getNbEquipes();
         int nbVWorms = gameSettingsPanel.getNbWorms();
         String[] nomsEquipes = gameSettingsPanel.getNomsEquipes();
+        boolean[] isBot = gameSettingsPanel.getIsBot();
         boolean wind = gameSettingsPanel.getWind();
         boolean friendlyFire = gameSettingsPanel.getFriendlyFire();
         int turnDuration = gameSettingsPanel.getTurnDuration();
@@ -114,17 +115,16 @@ public class SettingsStartPanel extends JPanel {
         String gameName = gameSettingsPanel.getGameName();
         GameMode gameMode = gameSettingsPanel.getGameMode();
         boolean coinCheat = gameSettingsPanel.getCoinCheat();
+
         if (this.mapSettingPanel.loadMap) {
             String mapFileName = this.mapSettingPanel.panelListeMap.getSelectedMapName();
-            return new GameSettings(gameName, nbEquipes, nomsEquipes, nbVWorms, maxLife, turnDuration, wind, mapFileName,
+            return new GameSettings(gameName, nbEquipes, nomsEquipes, isBot, nbVWorms, maxLife, turnDuration, wind, mapFileName,
                     false, 0, null, maxJump, gameMode, friendlyFire, coinCheat);
-
-
         } else {
             LandScape terrainType = this.mapSettingPanel.generateMapPanel.getReliefType();
             int widthMap = this.mapSettingPanel.generateMapPanel.getWidthMapSlider();
             boolean flightIsland = this.mapSettingPanel.generateMapPanel.getflightIsland();
-            return new GameSettings(gameName, nbEquipes, nomsEquipes, nbVWorms, maxLife, turnDuration, wind, null,
+            return new GameSettings(gameName, nbEquipes, nomsEquipes, isBot, nbVWorms, maxLife, turnDuration, wind, null,
                     flightIsland, widthMap, terrainType, maxJump, gameMode, friendlyFire, coinCheat);
 
 

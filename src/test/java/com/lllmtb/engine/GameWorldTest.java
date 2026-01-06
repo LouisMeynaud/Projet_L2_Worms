@@ -44,23 +44,22 @@ public class GameWorldTest {
 
     @Test
     void whenMapFileNameIsNull_thenGenerateMapCreatesMap_and_teamsAndWormsRegistered() {
-        // Use floatingIsland = false (WORLD)
         GameSettings settings = new GameSettings(
             "blabla",
-                1,                 // nbTeams
-                new String[]{"TeamA"}, // teamNames
-                2,                 // nbWorms
-                100,                //Max Health
-                10,              //Turn Duration
-                false,             // hasWind
-                null,              // mapFileName -> will use GenerateMap.createMap(WORLD)
-                false   ,           // floatingIsland
-                370,    //widthMap
-                LandScape.HILLY,2     //heightMap
-                ,GameMode.NORMAL, //gameMode
-                true,                //Friendlyfire
-                false                //CoinCheat
-
+            1,
+            new String[]{"TeamA"},
+            new boolean[]{false},
+            2,
+            100,
+            10,
+            false,
+            null,  // mapFileName = null -> will use GenerateMap.createMap()
+            false,
+            370,
+            LandScape.HILLY,2
+            ,GameMode.NORMAL,
+            true,
+            false
         );
         EventBus eventBus = new EventBus();
 
@@ -99,7 +98,7 @@ public class GameWorldTest {
     void whenMapFileNameProvided_MapLoaderIsUsed_insteadOfGenerateMap() {
         // we only mock MapLoader.loadMatrix to return a real map created by GenerateMap
         Map generated = MapLoader.loadMatrix("mapTest");
-        GameSettings settings = new GameSettings("blabla", 0, new String[]{}, 0,100, 10, true, "mapTest", false,370,LandScape.HILLY,2,GameMode.NORMAL,true, false);
+        GameSettings settings = new GameSettings("blabla", 0, new String[]{}, new boolean[]{}, 0,100, 10, true, "mapTest", false,370,LandScape.HILLY,2,GameMode.NORMAL,true, false);
         EventBus eventBus = new EventBus();
         GameWorld gw = new GameWorld(settings,eventBus);
 
@@ -117,8 +116,7 @@ public class GameWorldTest {
         try (MockedStatic<MapLoader> mocked = Mockito.mockStatic(MapLoader.class)) {
             mocked.when(() -> MapLoader.loadMatrix("badPath")).thenThrow(new IllegalStateException("io fail"));
 
-            GameSettings settings = new GameSettings("blabla", 
-                    0, new String[]{}, 0, 100,10, false, "badPath", false,370,LandScape.HILLY,2,GameMode.NORMAL, true, false);
+            GameSettings settings = new GameSettings("blabla", 0, new String[]{}, new boolean[]{}, 0, 100,10, false, "badPath", false,370,LandScape.HILLY,2,GameMode.NORMAL, true, false);
             EventBus eventBus = new EventBus();
             RuntimeException e = assertThrows(RuntimeException.class, () -> new GameWorld(settings,eventBus));
             assertNotNull(e.getCause());
@@ -142,6 +140,7 @@ public class GameWorldTest {
             "blabla", 
                 3,
                 new String[]{"SoloTeam"},
+                new boolean[]{false},
                 3,      // 3 worms for the created team
                 100,
                 10000,
@@ -169,7 +168,7 @@ public class GameWorldTest {
     @Test
     void startRunsLoopAndStopStopsIt_whenStartedInSeparateThread() throws Exception {
         // use a small, simple world (no teams) so physics starts empty
-        GameSettings settings = new GameSettings("blabla", 0, new String[]{}, 0,100, 10, false, null, false,370,LandScape.HILLY,2,GameMode.NORMAL, true, false);
+        GameSettings settings = new GameSettings("blabla", 0, new String[]{}, new boolean[]{}, 0,100, 10, false, null, false,370,LandScape.HILLY,2,GameMode.NORMAL, true, false);
          EventBus eventBus = new EventBus();
         GameWorld gw = new GameWorld(settings,eventBus);
 
@@ -192,7 +191,7 @@ public class GameWorldTest {
 
     @Test
     void registerEntity_null_throwsNPE() {
-        GameSettings settings = new GameSettings("blabla", 0, new String[]{}, 0,100, 10, false, null, false,370,LandScape.HILLY,2,GameMode.NORMAL, true, false);
+        GameSettings settings = new GameSettings("blabla", 0, new String[]{}, new boolean[]{}, 0,100, 10, false, null, false,370,LandScape.HILLY,2,GameMode.NORMAL, true, false);
          EventBus eventBus = new EventBus();
         GameWorld gw = new GameWorld(settings,eventBus);
 
@@ -201,7 +200,7 @@ public class GameWorldTest {
 
     @Test
     void stopLoop_whenNotRunning() {
-        GameSettings settings = new GameSettings("blabla", 0, new String[]{}, 0,100, 10, false, null, false,370,LandScape.HILLY,2,GameMode.NORMAL, true, false);
+        GameSettings settings = new GameSettings("blabla", 0, new String[]{}, new boolean[]{}, 0,100, 10, false, null, false,370,LandScape.HILLY,2,GameMode.NORMAL, true, false);
          EventBus eventBus = new EventBus();
         GameWorld gw = new GameWorld(settings,eventBus);
 
@@ -212,7 +211,7 @@ public class GameWorldTest {
 
     @Test
     void startLoop_whenAlreadyRunning() throws Exception {
-        GameSettings settings = new GameSettings("blabla", 0, new String[]{}, 0,100, 10, false, null, false,370,LandScape.HILLY,2,GameMode.NORMAL, true, false);
+        GameSettings settings = new GameSettings("blabla", 0, new String[]{}, new boolean[]{}, 0,100, 10, false, null, false,370,LandScape.HILLY,2,GameMode.NORMAL, true, false);
         EventBus eventBus = new EventBus();
         GameWorld gw = new GameWorld(settings,eventBus);
 
@@ -238,7 +237,7 @@ public class GameWorldTest {
 
     @Test
     void pauseAndResume_togglesGameLoopPauseState() throws Exception {
-        GameSettings settings = new GameSettings("blabla", 1, new String[]{"Team1"}, 1, 100,100, false, null, false, 370, LandScape.HILLY, 2,GameMode.NORMAL, true, false);
+        GameSettings settings = new GameSettings("blabla", 1, new String[]{"Team1"}, new boolean[1], 1, 100,100, false, null, false, 370, LandScape.HILLY, 2,GameMode.NORMAL, true, false);
         EventBus eventBus = new EventBus();
         GameWorld gw = new GameWorld(settings, eventBus);
 
@@ -266,7 +265,7 @@ public class GameWorldTest {
 
     @Test
     void getTurnManager() {
-        GameSettings settings = new GameSettings("blabla", 0, new String[]{}, 0, 100, 100, false, null, false, 370, LandScape.HILLY, 2, GameMode.NORMAL, true, false);
+        GameSettings settings = new GameSettings("blabla", 0, new String[]{}, new boolean[]{}, 0, 100, 100, false, null, false, 370, LandScape.HILLY, 2, GameMode.NORMAL, true, false);
         EventBus eventBus = new EventBus();
         GameWorld gw = new GameWorld(settings, eventBus);
 

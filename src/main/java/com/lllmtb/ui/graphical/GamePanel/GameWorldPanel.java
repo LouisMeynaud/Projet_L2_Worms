@@ -105,6 +105,7 @@ public class GameWorldPanel extends JPanel {
         addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
+                if (world.getPlayingTeam().isBot()) return;
                 pressedKeys.add(e.getKeyCode());
                 if (pressedKeys.contains(KeyEvent.VK_UP)) {
                     world.getBus().postQueued(new MoveInputEvent(Direction.Up));
@@ -119,9 +120,10 @@ public class GameWorldPanel extends JPanel {
 
         MouseAdapter mouseHandler = new MouseAdapter() {
 
-
             @Override
             public void mousePressed(MouseEvent e) {
+                if (world.getPlayingTeam().isBot()) return;
+
                 lastMouseX = e.getX();
                 lastMouseY = e.getY();
 
@@ -140,6 +142,8 @@ public class GameWorldPanel extends JPanel {
 
             @Override
             public void mouseReleased(MouseEvent e) {
+                if (world.getPlayingTeam().isBot()) return;
+
                 int type = e.getButton();
                 long duration = 0;
                 if (chargeStartTime > 0) {

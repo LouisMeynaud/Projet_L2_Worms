@@ -508,6 +508,8 @@ public class WorldRenderer {
      * @param yCenter le centre du vers a l'ecran
      */
     private void paintAim(Graphics2D g2d, double xCenter, double yCenter) {
+        if (world.getPlayingTeam().isBot()) return;
+
         Worm currentWorm = world.getTurnManager().getTurn().getWormPlayable();
         if (currentWorm == null) return;
 

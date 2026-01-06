@@ -16,7 +16,7 @@ public class SaveTest {
     @BeforeAll
     static void setUp() {
     eventBus = new EventBus();
-    settings = new GameSettings("blabla", 2, new String[]{"test","test2"}, 2, 100, 10,true, "testGame", true, 200, LandScape.FLAT, 2,GameMode.NORMAL, true, false);
+    settings = new GameSettings("blabla", 2, new String[]{"test","test2"}, new boolean[2], 2, 100, 10,true, "testGame", true, 200, LandScape.FLAT, 2,GameMode.NORMAL, true, false);
     gameWorld = new GameWorld(settings, eventBus);
     Save.setGameWorld(gameWorld);
     }

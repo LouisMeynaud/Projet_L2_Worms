@@ -11,12 +11,13 @@ public class GameSettingsTest
     public void ConstructorTest() {
         int nbTeams = 2;
         String[] TeamNames = {"Java", "Python"};
+        boolean[] isBot = {false, true};
         int numberWorms =4;
         boolean hasWind = true;
         String FileMapName = "tkt.txt";
         boolean GeneratedIsland = true;
         LandScape terrainType = LandScape.HILLY;
-        GameSettings settings = new GameSettings("blabla", nbTeams, TeamNames, numberWorms,100, 10000, hasWind, FileMapName, GeneratedIsland,370,LandScape.HILLY,2,GameMode.NORMAL, true, false);
+        GameSettings settings = new GameSettings("blabla", nbTeams, TeamNames, isBot, numberWorms,100, 10000, hasWind, FileMapName, GeneratedIsland,370,LandScape.HILLY,2,GameMode.NORMAL, true, false);
         assertEquals(nbTeams, settings.nbTeams);
         assertEquals(TeamNames, settings.teamNames);
         assertEquals(numberWorms, settings.nbWorms);

@@ -6,6 +6,7 @@ import com.lllmtb.terrain.generation.LandScape;
 public final class GameSettings {
     public final int nbTeams;
     public final String[] teamNames;
+    public final boolean[] isBot;
     public final int nbWorms;
     public final boolean hasWind;
     public final String mapFileName;
@@ -24,6 +25,7 @@ public final class GameSettings {
     /**
      * @param nbTeams        Number of teams
      * @param teamNames      The name of each team
+     * @param isBot         Array indicating if each team is a bot
      * @param nbWorms        Numbers of Worms in a team
      * @param turnDuration   Duration of each turn in seconds
      * @param hasWind        Is the wind turned on ?
@@ -40,12 +42,11 @@ public final class GameSettings {
      */
 
 
-    public GameSettings(String gameName, int nbTeams, String[] teamNames, int nbWorms, double maxHp, long turnDuration, boolean hasWind, String mapFileName,
+    public GameSettings(String gameName, int nbTeams, String[] teamNames, boolean[] isBot, int nbWorms, double maxHp, long turnDuration, boolean hasWind, String mapFileName,
         boolean floatingIsland, int widthMap, LandScape terrainType, int maxJump, GameMode gameMode, boolean friendlyfire, boolean coinCheat) {
-
-
         this.nbTeams = nbTeams;
         this.teamNames = teamNames;
+        this.isBot = isBot;
         this.nbWorms = nbWorms;
         this.hasWind = hasWind;
         this.mapFileName = mapFileName;
@@ -59,6 +60,5 @@ public final class GameSettings {
         this.gameMode = gameMode;
         this.friendlyfire = friendlyfire;
         this.coinCheat = coinCheat;
-
     }
 }
