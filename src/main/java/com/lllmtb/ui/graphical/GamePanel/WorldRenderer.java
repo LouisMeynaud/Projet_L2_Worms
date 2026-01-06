@@ -382,6 +382,12 @@ public class WorldRenderer {
         g2d.drawImage(texture, tx, null);
     }
 
+    /**
+     * draw a drop, two types of drop depending if it's on the ground or aerial.
+     * @param g2d
+     * @param body
+     * @param drop
+     */
     private void drawDrop(Graphics2D g2d, PhysicsBody body, Drop drop) {
         double[] bounds = panel.getScreenBounds(body); // Convertit position monde -> écran
         double xEcran = bounds[0];
@@ -391,8 +397,10 @@ public class WorldRenderer {
 
         BufferedImage texture = null;
         if (drop.isOnGround()) {
+            // drop on ground
             texture = TextureManager.UI.get("DropOnGround");
         } else {
+            // aerial drop, use different texture and adjust size/position
             texture = TextureManager.UI.get("DropAerials");
             hauteurPx = hauteurPx * 2;
             yEcran -= hauteurPx / 2;

@@ -170,6 +170,11 @@ public class Map {
         return this.getTile(position).isSolid();
     }
 
+    /**
+     *
+     * @param position the checking position
+     * @return true if the tile at the position is damaging, false otherwise.
+     */
     public boolean isDamaging(Position position) {
         Tile tile = this.getTile(position);
         return tile.getDamage() > 0;
