@@ -6,17 +6,29 @@ import java.util.List;
 import com.lllmtb.engine.logger.Logger;
 
 
+/**
+ * Class representing an animation composed of multiple frames.
+ * Allows managing the playback, stopping, and resetting of the animation.
+ */
 public class Animation {
-    private int frameCount;                 // Counts ticks for change
-    private int frameDelay;                 // Delay between frames
-    private int currentFrame;               // Current frame being displayed
-    private final int totalFrames;          // Total number of frames in animation
-    private boolean stopped;                // Is the animation stopped
+
+    private int frameCount;
+    private int frameDelay;
+    private int currentFrame;
+    private final int totalFrames;
+
+    private boolean stopped;
+
     private boolean playOnce = false;
     private boolean hasEnded = false;
 
-    private final List<Frame> frames = new ArrayList<>();    // Arraylist of frames
+    private final List<Frame> frames = new ArrayList<>();
 
+    /**
+     * Constructor to create an animation from an array of images.
+     * @param frames The array of BufferedImage for the frames.
+     * @param frameDelay The delay between each frame in ticks.
+     */
     public Animation(BufferedImage[] frames, int frameDelay) {
         this.frameDelay = frameDelay;
         this.stopped = true;
@@ -32,6 +44,9 @@ public class Animation {
 
     }
 
+    /**
+     * Starts the animation if it is not already running.
+     */
     public void start() {
         if (!stopped) {
             return;
@@ -44,6 +59,9 @@ public class Animation {
         stopped = false;
     }
 
+    /**
+     * Stops the animation.
+     */
     public void stop() {
         if (frames.isEmpty()) {
             return;
@@ -52,6 +70,9 @@ public class Animation {
         stopped = true;
     }
 
+    /**
+     * Restarts the animation from the beginning.
+     */
     public void restart() {
         if (frames.isEmpty()) {
             return;
@@ -62,6 +83,9 @@ public class Animation {
         hasEnded = false;
     }
 
+    /**
+     * Resets the animation to its initial state.
+     */
     public void reset() {
         this.stopped = true;
         this.frameCount = 0;
@@ -79,10 +103,17 @@ public class Animation {
         currentFrame = 0;
     }
 
+    /**
+     * Returns the current image of the animation.
+     * @return The BufferedImage of the current frame.
+     */
     public BufferedImage getSprite() {
         return frames.get(currentFrame).getFrame();
     }
 
+    /**
+     * Updates the animation by advancing to the next frame if necessary.
+     */
     public void update() {
         if (!stopped && !hasEnded) {
             frameCount++;
@@ -104,10 +135,18 @@ public class Animation {
 
     }
 
+    /**
+     * Sets whether the animation should play only once.
+     * @param playOnce true if the animation should stop after one complete play.
+     */
     public void setPlayOnce(boolean playOnce) {
         this.playOnce = playOnce;
     }
 
+    /**
+     * Checks if the animation has ended its playback (only if playOnce is enabled).
+     * @return true if the animation has ended.
+     */
     public boolean hasEnded() {
         return hasEnded;
     }
