@@ -13,20 +13,26 @@ public class ConfigMap {
     private final boolean flyingIsland;   // true if you want a flying island
     private final int plateauChance;      // the chance of having flat ground (which avoids terrain composed solely of "peaks")
     public static final double RATIOWIDTHHEIGHT = 0.5625; // for a rectangular world (0.5625 is the ratio between the width and heigth of a commun screen)
-    private int nbTeam;             //the numbers of Teams.
-    private int nbWorms;            //the numbers of worms
     private final GameMode gameMode;      //the gameMode of the game.
 
+    /**
+     * Creates a new ConfigMap object.
+     * @param width //the length of map
+     * @param waterHeight // the height of water
+     * @param thicknessMin  // the minimun of the map thickness.
+     * @param flyingIsland //true ifyou want a flying island
+     * @param heightStart //the desired starting height from the ground
+     * @param terrainType the type of the terrain (FLAT, HILLY...)
+     * @param gameMode //the gameMode of the game.
+     */
     public ConfigMap(int width, int waterHeight, int thicknessMin,
-                     boolean flyingIsland, int heightStart, LandScape terrainType, int nbTeam, int nbWorms, GameMode gameMode) {
+                     boolean flyingIsland, int heightStart, LandScape terrainType, GameMode gameMode) {
         this.width = width;
         this.height = (int) (width * RATIOWIDTHHEIGHT); //for a rectangular world (0.5625 is the ratio between the width and heigth of a commun screen)
         this.waterHeight = waterHeight;
         this.thicknessMin = thicknessMin;
         this.flyingIsland = flyingIsland;
         this.heightStart = heightStart;
-        this.nbWorms = nbWorms;
-        this.nbTeam = nbTeam;
         this.gameMode = gameMode;
 
         switch (terrainType) {
@@ -63,59 +69,83 @@ public class ConfigMap {
 
     }
 
+    /**
+     *
+     * @return the width of map
+     */
     public int getWidth() {
         return width;
     }
 
+    /**
+     *
+     * @return the height of map
+     */
     public int getHeight() {
         return height;
     }
 
+    /**
+     *
+     * @return the max Slope
+     */
     public int getMaxSlope() {
         return maxSlope;
     }
 
+    /**
+     *
+     * @return the MaxLength during which the height of each consecutive block will increase by slope
+     */
     public int getMaxLength() {
         return maxLength;
     }
 
+    /**
+     *
+     * @return the height of Water in the map
+     */
     public int getWaterHeight() {
         return waterHeight;
     }
 
+    /**
+     *
+     * @return the starting height of the map generation
+     */
     public int getHeightStart() {
         return heightStart;
     }
 
+    /**
+     *
+     * @return the minimum thickness of land.
+     */
     public int getThicknessMin() {
         return thicknessMin;
     }
 
+    /**
+     *
+     * @return true is the map is a FlyingIsland.
+     */
     public boolean isFlyingIsland() {
         return flyingIsland;
     }
 
+    /**
+     *
+     * @return the the chance to have a pleateau at the generation
+     */
     public int getPlateauChance() {
         return plateauChance;
     }
 
-    public int getNbTeam() {
-        return nbTeam;
-    }
-
-    public int getNbWorms() {
-        return nbWorms;
-    }
-
+    /**
+     *
+     * @return the width of map
+     */
     public GameMode getGameMode() {
         return this.gameMode;
-    }
-
-    public void setNbTeam(int nbTeam) {
-        this.nbTeam = nbTeam;
-    }
-
-    public void setNbWorms(int nbWorms) {
-        this.nbWorms = nbWorms;
     }
 }

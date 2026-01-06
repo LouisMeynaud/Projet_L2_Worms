@@ -51,9 +51,9 @@ import com.lllmtb.model.item.weapon.WeaponId;
 import com.lllmtb.model.shop.ShopElement;
 import com.lllmtb.model.shop.ShopManager;
 import com.lllmtb.physics.Vector;
-import com.lllmtb.ui.graphical.SoundPlayer;
-import com.lllmtb.ui.graphical.TextureManager;
-import com.lllmtb.ui.graphical.Utilitaire;
+import com.lllmtb.ui.graphical.Utilitaire.SoundPlayer;
+import com.lllmtb.ui.graphical.Utilitaire.TextureManager;
+import com.lllmtb.ui.graphical.Utilitaire.Utilitaire;
 
 /**
  * panneau principal de l'interface utilisateur du jeu

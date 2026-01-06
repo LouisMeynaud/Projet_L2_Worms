@@ -15,7 +15,7 @@ import javax.swing.JSlider;
 import javax.swing.JTextField;
 
 import com.lllmtb.physics.GameMode;
-import com.lllmtb.ui.graphical.Utilitaire;
+import com.lllmtb.ui.graphical.Utilitaire.Utilitaire;
 
 
 public class SettingGamePanel extends JPanel {

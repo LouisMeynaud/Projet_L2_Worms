@@ -122,7 +122,7 @@ public class GameWorld {
         // Try to load map from file
         if (settings.mapFileName != null) {
             try {
-                tmap = MapLoader.loadMatrix(settings.mapFileName);
+                tmap = MapLoader.loadMap(settings.mapFileName);
             } catch (Exception e) {
                 Logger.logger.error("Failed to load map '{}'", settings.mapFileName, e);
                 throw new RuntimeException(e);
@@ -130,12 +130,12 @@ public class GameWorld {
         }
         if (tmap == null) {
             Logger.logger.info("Generating a new map...");
-            ConfigMap config = new ConfigMap(settings.widthMap, 4, 5, settings.floatingIsland, 17, settings.terrainType, settings.nbTeams, settings.nbWorms, settings.gameMode);
+            ConfigMap config = new ConfigMap(settings.widthMap, 4, 5, settings.floatingIsland, 17, settings.terrainType, settings.gameMode);
+
             tmap = GenerateMap.createMap(config);
         }
         this.map = tmap;
         this.map.setSpawnPoint(CreateSpawnPoint.createSpawnPoint(settings.nbTeams, settings.nbWorms, tmap));
-
         this.bus = eventBus;
         Move.setMaxjump(settings.maxJump);
 

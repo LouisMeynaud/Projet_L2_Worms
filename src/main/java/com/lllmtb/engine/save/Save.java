@@ -27,7 +27,8 @@ import java.time.format.DateTimeFormatter;
 
 import com.lllmtb.terrain.map.SaveMap;
 import com.lllmtb.terrain.map.Tile;
-import com.lllmtb.ui.graphical.TextureManager;
+import com.lllmtb.ui.graphical.Utilitaire.TextureManager;
+
 import javax.imageio.ImageIO;
 
 /**

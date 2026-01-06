@@ -19,7 +19,7 @@ public class GenerateMapTest {
         InputStream originalIn = System.in;//on garde de coter l'entrer original pour la retablir apres
 
         System.setIn(new ByteArrayInputStream(inputSimule.getBytes())); // getbytes transforme le string en tableau d' octet pour byteArrayInpustream qui prend un tableau d'octect
-        ConfigMap configtest = new ConfigMap(60, 5, 5, false, 0, LandScape.HILLY,0,0,GameMode.NORMAL);
+        ConfigMap configtest = new ConfigMap(60, 5, 5, false, 0, LandScape.HILLY,GameMode.NORMAL);
         Map m =GenerateMap.createMap(configtest);
         assertEquals(60, m.getWidth());//grand valeur pour bien tester les ligne qui retrie les tableau
         assertEquals((int)(60*ConfigMap.RATIOWIDTHHEIGHT), m.getHeight());
@@ -36,7 +36,7 @@ public class GenerateMapTest {
         InputStream originalIn = System.in;//on garde de coter l'entrer original pour la retablir apres
 
         System.setIn(new ByteArrayInputStream(inputSimule.getBytes())); // getbytes transforme le string en tableau d' octet pour byteArrayInpustream qui prend un tableau d'octect
-        ConfigMap configtest = new ConfigMap(60, 5, 5, false, 0, LandScape.HILLY,0,0,GameMode.NORMAL);
+        ConfigMap configtest = new ConfigMap(60, 5, 5, false, 0, LandScape.HILLY,GameMode.NORMAL);
         Map m =GenerateMap.createMap(configtest);
         assertEquals(60, m.getWidth());
         assertEquals((int)(60*ConfigMap.RATIOWIDTHHEIGHT), m.getHeight());
@@ -57,7 +57,7 @@ public class GenerateMapTest {
         int[] lowLine = {7,5,3};
         int[] highLineBis = {8,5,4};
         int[] lowLineBis = {7,2,3};
-        ConfigMap config = new ConfigMap(3, 0, 0, false, 0, LandScape.HILLY,0,0,GameMode.NORMAL);
+        ConfigMap config = new ConfigMap(3, 0, 0, false, 0, LandScape.HILLY,GameMode.NORMAL);
         GenerateMap.triHightLineLowLine(highLine,lowLine,config);
         for (int i = 0; i < 3; i++) {
         assertEquals(highLine[i], highLineBis[i]);

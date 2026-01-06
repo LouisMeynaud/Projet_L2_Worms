@@ -12,9 +12,12 @@ import com.lllmtb.events.game.StartGameEvent;
 import com.lllmtb.events.ui.graphical.*;
 import com.lllmtb.ui.UI;
 import com.lllmtb.ui.graphical.GamePanel.GameScreen;
+import com.lllmtb.ui.graphical.OtherPanel.EndGameScreenPanel;
+import com.lllmtb.ui.graphical.OtherPanel.HomeScreenPanel;
 import com.lllmtb.ui.graphical.SettingsPanel.LoadGamePanel;
 import com.lllmtb.ui.graphical.SettingsPanel.NewOrLoadPanel;
 import com.lllmtb.ui.graphical.SettingsPanel.SettingsStartPanel;
+import com.lllmtb.ui.graphical.Utilitaire.MusicSettingsScreenPanel;
 
 public class GraphicalUI implements UI {
 
@@ -25,13 +28,10 @@ public class GraphicalUI implements UI {
     public JPanel loadGamePanel;
     private EndGameScreenPanel endGameScreen;
 
-
     /**
-     *
      * @param eventbus the event bus of the game
-     *
-     *                 This class represents the window; it's the container for all our other pages.
-     *                 We'll display the home screen, the game panel, the start setting screen, the settings, etc., inside it.
+     * This class represents the window; it's the container for all our other pages.
+     * We'll display the home screen, the game panel, the start setting screen, the settings, etc., inside it.
      */
     public GraphicalUI(EventBus eventbus) {
 

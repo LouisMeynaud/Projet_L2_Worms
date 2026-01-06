@@ -10,7 +10,9 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import com.lllmtb.engine.commands.GameCommand;
 import com.lllmtb.engine.logger.Logger;
 import com.lllmtb.events.game.CoinCollisionEvent;
-import com.lllmtb.events.physics.*;
+import com.lllmtb.events.physics.ExplosionEvent;
+import com.lllmtb.events.physics.PhysicsModifierAddedEvent;
+import com.lllmtb.events.physics.PhysicsModifierRemovedEvent;
 import com.lllmtb.model.entity.Coin;
 import com.lllmtb.model.entity.Drop;
 import com.lllmtb.model.entity.effect.BurnEffect;
@@ -47,7 +49,7 @@ public class PhysicsEngine {
     private final ConcurrentHashMap<PhysicsBody, ArrayList<PhysicsModifier>> modifiers;
 
     /**
-     * The {@link Collision} object of the game
+     * The {@link Collision} object of the game.
      */
     private final Collision collision;
 
@@ -82,8 +84,9 @@ public class PhysicsEngine {
      * in meters per second squared.
      * </p>
      * @param map     the {@code Map} instance representing the environment for collision detection.
-     * @param world     the global {@code GameWorld} instance created upstream.
+     * @param world   the global {@code GameWorld} instance created upstream.
      * @param hasWind if wind should be simulated.
+     * @param gameMode the gameMode of the game.
      */
     public PhysicsEngine(Map map, GameWorld world, boolean hasWind, GameMode gameMode) {
         this.world = world;
@@ -340,6 +343,7 @@ public class PhysicsEngine {
 
             Position nextPos = newVector.newPos(body.getPos(), dt);
 
+            // check for collision
             Collision.Impact impact = collision.move(body, nextPos);
             // if collision
             if (impact.collided) {
@@ -356,44 +360,62 @@ public class PhysicsEngine {
                     // else body crosses all (map and entities)
                     default -> collision.cross(body, nextPos);
                 }
+
+                ////////// process impact //////////
+
+                // if the body must die (out of map or touch water)
                 if (impact.die) {
                     remove(body);
                     Logger.logger.debug("Entity out of map");
+                    // if the body is a worm, kill it
                     if (body.getEntity() instanceof Worm worm) {
                         world.queueCommand(worm.damageWorm(worm.getStats().getHp()));
                         world.getTurnManager().endTurn();
                     }
 
                 } else {
+                    // if the collision is with the map
                     if (impact.hitBody == null) {
-                        //Collision with ground/Map
+                        // if the body is a projectile, call its onImpact with null
                         if (body.getEntity() instanceof Projectile proj) {
                             world.queueCommands(proj.onImpact(null));
+                        // if the body is a drop, set it on ground
                         } else if (body.getEntity() instanceof Drop drop) {
                             drop.setOnGround(true);
                         }
+
+                    // if the collision is with another entity
                     } else {
-                        // Collision wih another entity impactEntity and currentBody
+                        // if the body is a projectile, call its onImpact with the hit entity
                         if (body.getEntity() instanceof Projectile proj) {
                             world.queueCommands(proj.onImpact(impact.hitBody.getEntity()));
+                            // if the hit entity is a drop, call its onImpact with the projectile to destroy it
                             if (impact.hitBody.getEntity() instanceof Drop drop) {
                                 world.queueCommand(drop.onImpact(proj));
                             }
+
+                        // if the hit entity is a projectile, call its onImpact with the body entity
                         } else if (impact.hitBody.getEntity() instanceof Projectile proj) {
                             world.queueCommands(proj.onImpact(body.getEntity()));
                         }
+
+                        // if the body is a drop, call its onImpact with the hit entity
                         if (body.getEntity() instanceof Drop drop) {
                             if (impact.hitBody.getEntity() instanceof Drop) {
                                 drop.setOnGround(true);
                             }
                             world.queueCommand(drop.onImpact(impact.hitBody.getEntity()));
                         }
+
+                        // if the body is a coin and the hit entity is a worm, post a CoinCollisionEvent and remove the coin to give it to the worm
                         if (body.getEntity() instanceof Coin coin) {
                             if (impact.hitBody.getEntity() instanceof Worm worm) {
                                 world.getBus().postQueued(new CoinCollisionEvent(coin, worm.getTeam()));
                                 remove(body);
                             }
                         }
+
+                        // if the body is a worm and the hit entity is a drop, call the drop's onImpact with the worm to give it to the worm
                         if (body.getEntity() instanceof Worm worm) {
                             if (impact.hitBody.getEntity() instanceof Drop drop) {
                                 world.queueCommand(drop.onImpact(worm));
@@ -401,6 +423,8 @@ public class PhysicsEngine {
                         }
                     }
                 }
+
+            // if no collision, update position normally
             } else {
                 body.setPos(nextPos);
                 // If the body is a worm, mark it as not on ground when it's in the air
@@ -409,6 +433,7 @@ public class PhysicsEngine {
                 }
             }
 
+            // apply friction / air resistance to worms
             if (body.getEntity() instanceof Worm worm) {
                 Vector currentVector = body.getVector();
                 double newVelX = currentVector.getX();
@@ -433,8 +458,10 @@ public class PhysicsEngine {
 
                 body.setVector(new Vector(newVelX, currentVector.getY()));
             }
+
+            // check if the body is in lava or trap
             if (body.getEntity() instanceof Worm worm) {
-                Tile tile = collision.inTrapOrLavaWithBody(body);
+                Tile tile = collision.inTrapOrLava(body);
                 if (tile == Tile.LAVA) {
                     world.queueCommand(worm.damageWorm(Tile.LAVA.getDamage()));
                     world.queueCommand(worm.addStatusEffect(new BurnEffect()));
@@ -499,6 +526,7 @@ public class PhysicsEngine {
      * @param blastRadius      the radius (in units) around the explosion center where entities will be affected.
      * @param damage           the amount of damage to apply to entities within the blast radius.
      * @param blastForce       the force applied to bodies within the blast radius.
+     * @param heal             true if the Explosion give life , false if she take damage
      */
     public void createExplosion(@NonNull Projectile projectile, int mapDamageRadius, int blastRadius, int damage, double blastForce, boolean heal) {
         Position position = projectile.getBody().getPos();
