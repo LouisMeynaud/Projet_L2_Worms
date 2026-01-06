@@ -395,6 +395,7 @@ public class GameWorldPanel extends JPanel {
      */
     public void screenFollowCurrentWorms() {
         Worm activeWorm = world.getTurnManager().getTurn().getWormPlayable();
+        if (activeWorm == null) return;
         PhysicsBody body = activeWorm.getBody();
         boolean hasMoved = false;
         double diffX = Math.abs(body.getPos().getX() - lastWormPos.getX());
