@@ -35,6 +35,7 @@ import java.util.concurrent.ConcurrentLinkedDeque;
 
 public class GameWorldScreen implements Runnable {
     private final Terminal terminal;
+    private final EventBus systemBus;
     private GameWorld world;
 
     // Panel dimensions (calculated on resize)
@@ -107,6 +108,7 @@ public class GameWorldScreen implements Runnable {
 
     public GameWorldScreen(Terminal terminal, EventBus systemBus) {
         this.terminal = terminal;
+        this.systemBus = systemBus;
         calculatePanelDimensions();
 
         // Handle gameworld creation
