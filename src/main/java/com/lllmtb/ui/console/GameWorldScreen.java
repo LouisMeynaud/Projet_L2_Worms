@@ -1,5 +1,7 @@
 package com.lllmtb.ui.console;
 
+import com.lllmtb.events.ui.graphical.ScreenEndGameEvent;
+
 import com.lllmtb.engine.GameWorld;
 import com.lllmtb.engine.logger.Logger;
 import com.lllmtb.events.Event;
@@ -33,6 +35,7 @@ import java.util.concurrent.ConcurrentLinkedDeque;
 
 public class GameWorldScreen implements Runnable {
     private final Terminal terminal;
+    private final EventBus systemBus;
     private GameWorld world;
 
     // Panel dimensions (calculated on resize)
@@ -56,6 +59,11 @@ public class GameWorldScreen implements Runnable {
     // Cached map rendering (only redrawn on map updates)
     private String[] cachedMapRows = null;
     private boolean initialRenderDone = false;
+
+    // Game Over state
+    private boolean gameEnded = false;
+    private boolean gameOverRendered = false;
+    private Team winningTeam = null;
 
     // Shooting mode state
     private boolean shootMode = false;
@@ -100,6 +108,7 @@ public class GameWorldScreen implements Runnable {
 
     public GameWorldScreen(Terminal terminal, EventBus systemBus) {
         this.terminal = terminal;
+        this.systemBus = systemBus;
         calculatePanelDimensions();
 
         // Handle gameworld creation
@@ -127,11 +136,19 @@ public class GameWorldScreen implements Runnable {
 
         EventBus worldBus = world.getBus();
 
+        // Handle Game Over
+        worldBus.subscribe(ScreenEndGameEvent.class, e -> {
+            gameEnded = true;
+            winningTeam = e.getTeam();
+            systemBus.postQueued(e);
+            world.stop();
+        });
+
         // Process movement inputs every tick
         worldBus.subscribe(ProcessInputsEvent.class, e -> processMoveInputs());
 
         // Center viewport on every game state update (every tick)
-        worldBus.subscribe(GameStateUpdatedEvent.class, e -> centerViewportOnCurrentWorm());
+        worldBus.subscribe(GameStateUpdatedEvent.class, e -> followCurrentWorm());
 
         // Trigger full map redraw only when map is modified
         worldBus.subscribe(MapUpdateEvent.class, e -> cachedMapRows = null);
@@ -169,8 +186,8 @@ public class GameWorldScreen implements Runnable {
 
         // Side panels
         infoPanelHeight = 8;
-        inventoryPanelHeight = 10;
-        logPanelHeight = (termHeight - infoPanelHeight - inventoryPanelHeight - 6) / 2; // 2 log panels
+        logPanelHeight = 8;
+        inventoryPanelHeight = termHeight - infoPanelHeight - logPanelHeight * 2 - 3;
     }
 
     private void cacheMapRows() {
@@ -235,7 +252,12 @@ public class GameWorldScreen implements Runnable {
 
             // Main render loop
             while (running) {
-                if (!initialRenderDone) {
+                if (gameEnded) {
+                    if (!gameOverRendered) {
+                        renderGameOver();
+                        gameOverRendered = true;
+                    }
+                } else if (!initialRenderDone) {
                     renderFull();
                     initialRenderDone = true;
                 } else {
@@ -329,6 +351,8 @@ public class GameWorldScreen implements Runnable {
             // Quit
             case 'q', 'Q' -> {
                 running = false;
+                world.stop();
+                System.exit(0);
             }
 
             // Number keys for quick weapon selection
@@ -447,14 +471,72 @@ public class GameWorldScreen implements Runnable {
 
         Position pos = worm.getBody().getPos();
         int mapHeight = world.getMap().getHeight();
+        int mapWidth = world.getMap().getWidth();
 
-        // Center viewport on worm
         viewportX = (int) pos.getX() - (mainPanelWidth - 2) / 2;
         viewportY = (int) (mapHeight - pos.getY()) - (termHeight - 2) / 2;
 
-        // Clamp viewport
-        viewportX = Math.max(0, Math.min(viewportX, world.getMap().getWidth() - mainPanelWidth + 2));
+        viewportX = Math.max(0, Math.min(viewportX, mapWidth - mainPanelWidth + 2));
         viewportY = Math.max(0, Math.min(viewportY, mapHeight - termHeight + 2));
+    }
+
+    private void followCurrentWorm() {
+        if (world == null) return;
+        Team team = world.getPlayingTeam();
+        if (team == null) return;
+        Worm worm = team.getCurrentWorm();
+        if (worm == null) return;
+
+        Position pos = worm.getBody().getPos();
+        int mapHeight = world.getMap().getHeight();
+        int mapWidth = world.getMap().getWidth();
+
+        int wormMapX = (int) pos.getX();
+        int wormMapY = (int) (mapHeight - pos.getY());
+
+        int marginX = (int) (mainPanelWidth * 0.35);
+        int marginY = (int) (termHeight * 0.35);
+
+        int screenX = wormMapX - viewportX;
+        int screenY = wormMapY - viewportY;
+
+        if (screenX < marginX) {
+            viewportX = wormMapX - marginX;
+        } else if (screenX > mainPanelWidth - marginX) {
+            viewportX = wormMapX - (mainPanelWidth - marginX);
+        }
+
+        if (screenY < marginY) {
+            viewportY = wormMapY - marginY;
+        } else if (screenY > termHeight - marginY) {
+            viewportY = wormMapY - (termHeight - marginY);
+        }
+
+        viewportX = Math.max(0, Math.min(viewportX, mapWidth - mainPanelWidth + 2));
+        viewportY = Math.max(0, Math.min(viewportY, mapHeight - termHeight + 2));
+    }
+
+    private void renderGameOver() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("\033[2J\033[H");
+
+        String title = "GAME OVER";
+        sb.append("\n\n\n").append(centerText("\033[1;31m" + title + "\033[0m", termWidth));
+
+        if (winningTeam != null) {
+            String winnerText = "Winner: " + winningTeam.name;
+            int color = TEAM_COLORS.getOrDefault(winningTeam.teamColor, 255);
+            sb.append("\n\n\n").append(centerText(String.format("\033[38;5;%dm%s\033[0m", color, winnerText), termWidth));
+        } else {
+            String drawText = "Draw!";
+            sb.append("\n\n\n").append(centerText(drawText, termWidth));
+        }
+
+        String quitText = "Press [Q] to quit.";
+        sb.append("\n\n\n").append(centerText(quitText, termWidth));
+
+        terminal.writer().print(sb);
+        terminal.writer().flush();
     }
 
     private void renderFull() {

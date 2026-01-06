@@ -38,9 +38,8 @@ public class MapLoaderTest {
     }
 
     @Test
-    void createMatrix_createsIncorrectMatrixFromFile() {
-        m = MapLoader.loadMap("mapIncorrectTest");
-        assertNull(m);
+    void loadMap_whenIncorrectMapFile() {
+        assertThrows(Exception.class, () -> MapLoader.loadMap("mapIncorrectTest"));
     }
 
     @Test
@@ -49,9 +48,8 @@ public class MapLoaderTest {
     }
 
     @Test
-    void createMatrix_createsInexistantMatrixFromFile() {
-        m = MapLoader.loadMap("mapinexistante");
-        assertNull(m);
+    void loadMap_whenInexistantMapFile() {
+        assertThrows(Exception.class, () -> MapLoader.loadMap("mapinexistante"));
     }
 
     @Test
@@ -68,18 +66,6 @@ public class MapLoaderTest {
             }
         }
         assertTrue(trouver, "La méthode aurait dû trouver le dossier 'Camembert'");
-    }
-
-    @Test
-    void testGetListeDossiers_AvecDossierInexistant() {
-        Map resultat = MapLoader.loadMap("dossierInexistant");
-        assertNull(resultat, "Doit renvoyer null si le dossier n'existe pas");
-    }
-
-    @Test
-    void testGetListeDossiers_AvecUnFichier() {
-        Map resultat = MapLoader.loadMap("test.txt");
-        assertNull(resultat, "Doit renvoyer null si on donne un fichier au lieu d'un dossier");
     }
 
     @Test

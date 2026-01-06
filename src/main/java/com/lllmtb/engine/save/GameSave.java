@@ -55,7 +55,7 @@ public class GameSave {
                 gameWorld.getGameName(),
                 gameWorld.getTeams().size(),
                 teamNames,
-                -1,
+                1,
                 Statistics.getMaxHp(),
                 gameWorld.getTurnDuration(),
                 gameWorld.getPhysics().hasWind(),
