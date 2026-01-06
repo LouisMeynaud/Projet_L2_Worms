@@ -1,11 +1,12 @@
-package com.lllmtb.ui.graphical.animation;
+package com.lllmtb.ui.graphical.Utilitaire.animation;
 
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.lllmtb.ui.graphical.TextureManager;
-import com.lllmtb.ui.graphical.Utilitaire;
+
+import com.lllmtb.ui.graphical.Utilitaire.TextureManager;
+import com.lllmtb.ui.graphical.Utilitaire.Utilitaire;
 
 /**
  * gestionnaire des animation du jeu

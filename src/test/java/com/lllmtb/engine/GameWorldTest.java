@@ -29,7 +29,7 @@ import com.lllmtb.terrain.map.MapLoader;
 
 /**
  * Tests for GameWorld with minimal Mockito usage.
- * - Only MapLoader.loadMatrix(...) (static) is mocked when needed.
+ * - Only MapLoader.loadMap(...) (static) is mocked when needed.
  * - Uses real GenerateMap, PhysicsEngine, GameLoop, Team, Worm implementations.
  *
  * IMPORTANT: these tests assume the other classes (PhysicsEngine, Team, Worm, GenerateMap, MapLoader...)
@@ -97,8 +97,8 @@ public class GameWorldTest {
 
     @Test
     void whenMapFileNameProvided_MapLoaderIsUsed_insteadOfGenerateMap() {
-        // we only mock MapLoader.loadMatrix to return a real map created by GenerateMap
-        Map generated = MapLoader.loadMatrix("mapTest");
+        // we only mock MapLoader.loadMap to return a real map created by GenerateMap
+        Map generated = MapLoader.loadMap("mapTest");
         GameSettings settings = new GameSettings("blabla", 0, new String[]{}, 0,100, 10, true, "mapTest", false,370,LandScape.HILLY,2,GameMode.NORMAL,true, false);
         EventBus eventBus = new EventBus();
         GameWorld gw = new GameWorld(settings,eventBus);
@@ -115,7 +115,7 @@ public class GameWorldTest {
     @Test
     void whenMapLoaderThrows_constructorWrapsAndRethrowsRuntimeException() {
         try (MockedStatic<MapLoader> mocked = Mockito.mockStatic(MapLoader.class)) {
-            mocked.when(() -> MapLoader.loadMatrix("badPath")).thenThrow(new IllegalStateException("io fail"));
+            mocked.when(() -> MapLoader.loadMap("badPath")).thenThrow(new IllegalStateException("io fail"));
 
             GameSettings settings = new GameSettings("blabla", 
                     0, new String[]{}, 0, 100,10, false, "badPath", false,370,LandScape.HILLY,2,GameMode.NORMAL, true, false);
@@ -128,7 +128,7 @@ public class GameWorldTest {
     }
     @Test
     void constructor_withGamSave_Map() throws FileNotFoundException {
-        Map map = MapLoader.loadMatrix("Test");
+        Map map = MapLoader.loadMap("Test");
         GameSave gameSave = Load.loadGameSave("Test");
         GameWorld gameWorld =new GameWorld(gameSave, map);
         assertNotNull(gameWorld);

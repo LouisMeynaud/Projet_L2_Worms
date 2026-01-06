@@ -2,7 +2,8 @@ package com.lllmtb.ui;
 
 import org.junit.jupiter.api.Test;
 
-import com.lllmtb.ui.graphical.TextureManager;
+import com.lllmtb.ui.graphical.Utilitaire.TextureManager;
+
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URL;

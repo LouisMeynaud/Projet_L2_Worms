@@ -1,4 +1,4 @@
-package com.lllmtb.ui.graphical;
+package com.lllmtb.ui.graphical.OtherPanel;
 
 import java.awt.Color;
 import java.awt.Graphics;
@@ -13,6 +13,9 @@ import javax.swing.JPanel;
 import com.lllmtb.events.EventBus;
 import com.lllmtb.events.ui.graphical.ScreenMusicSettingsEvent;
 import com.lllmtb.events.ui.graphical.ScreenNewOrLoadEvent;
+import com.lllmtb.ui.graphical.Utilitaire.SoundPlayer;
+import com.lllmtb.ui.graphical.Utilitaire.TextureManager;
+import com.lllmtb.ui.graphical.Utilitaire.Utilitaire;
 
 public class HomeScreenPanel extends JPanel {
 

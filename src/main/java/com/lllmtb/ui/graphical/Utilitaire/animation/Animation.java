@@ -1,4 +1,4 @@
-package com.lllmtb.ui.graphical.animation;
+package com.lllmtb.ui.graphical.Utilitaire.animation;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;

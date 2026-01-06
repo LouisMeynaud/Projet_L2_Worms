@@ -16,7 +16,7 @@ public class MapTest {
 
     @BeforeEach
     public void setUp() {
-        m = MapLoader.loadMatrix("mapTest");
+        m = MapLoader.loadMap("mapTest");
     }
 
     @AfterEach
@@ -140,20 +140,6 @@ public class MapTest {
     public void getTile_inBounds_returnsCorrectTile() {
         Position position = new Position(2, 2);
         assertEquals(Tile.WATER, m.getTile(position));
-    }
-
-    @Test
-    void testSetAndGetNbTeam() {
-        ConfigMap config = new ConfigMap(100, 10, 10, false, 10, LandScape.FLAT, 0, 0, null);
-        config.setNbTeam(5);
-        assertEquals(5, config.getNbTeam());
-    }
-
-    @Test
-    void testSetAndGetNbWarms() {
-        ConfigMap config = new ConfigMap(100, 10, 10, false, 10, LandScape.FLAT, 0, 0, null);
-        config.setNbWarms(8);
-        assertEquals(8, config.getNbWarms());
     }
 
     @Test

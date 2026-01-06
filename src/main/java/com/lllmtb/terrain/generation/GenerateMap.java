@@ -1,19 +1,16 @@
 package com.lllmtb.terrain.generation;
 
+
 import com.lllmtb.engine.logger.Logger;
-import com.lllmtb.physics.GameMode;
 import com.lllmtb.terrain.map.Map;
 import com.lllmtb.terrain.map.MapLoader;
 import com.lllmtb.terrain.map.SaveMap;
 
 
 public class GenerateMap {
-    public static ConfigMap world = new ConfigMap(100, 4, 5, false, 17, LandScape.HILLY, 1, 4, GameMode.NORMAL);
-    public static ConfigMap flyingWorld = new ConfigMap(100, 4, 5, true, 17, LandScape.HILLY, 1, 4, GameMode.NORMAL);
-
 
     /**
-     * method for generating a random map
+     * method for generating a random map.
      * @param config takes a config type object in order to generate a map according to presets
      * @return the create map
      */
@@ -51,7 +48,7 @@ public class GenerateMap {
         } catch (Exception e) {
             Logger.logger.error("Erreur lors de la génération de la carte.", e);
             Logger.logger.info("Chargement de la carte par défaut.");
-            return MapLoader.loadMatrix("defaultMap");
+            return MapLoader.loadMap("defaultMap");
         }
     }
 

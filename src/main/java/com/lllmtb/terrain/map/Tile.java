@@ -30,6 +30,7 @@ public enum Tile {
      * @param solid True if the tile is solid
      * @param nbTexture Number of textures
      * @param friction Friction of Tile. 1.0 = no friction, 0.0 = full friction
+     * @param damage the damage that the Tile causes upon contact with
      */
     Tile(char fileSymbol, char consoleSymbol, boolean solid, int nbTexture, double friction, double damage) {
         this.fileSymbol = fileSymbol;

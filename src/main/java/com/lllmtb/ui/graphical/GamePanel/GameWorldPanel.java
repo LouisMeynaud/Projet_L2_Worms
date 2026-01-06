@@ -32,7 +32,7 @@ import com.lllmtb.model.item.ItemId;
 import com.lllmtb.model.item.weapon.WeaponId;
 import com.lllmtb.physics.PhysicsBody;
 import com.lllmtb.physics.Position;
-import com.lllmtb.ui.graphical.SoundPlayer;
+import com.lllmtb.ui.graphical.Utilitaire.SoundPlayer;
 
 public class GameWorldPanel extends JPanel {
     //--core--//

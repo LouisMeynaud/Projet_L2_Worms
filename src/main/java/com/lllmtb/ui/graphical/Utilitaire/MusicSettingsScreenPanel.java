@@ -1,4 +1,4 @@
-package com.lllmtb.ui.graphical;
+package com.lllmtb.ui.graphical.Utilitaire;
 
 import java.awt.Color;
 import java.awt.Component;
