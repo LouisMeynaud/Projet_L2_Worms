@@ -36,7 +36,7 @@ import com.lllmtb.ui.graphical.Utilitaire.SoundPlayer;
 
 public class GameWorldPanel extends JPanel {
     //--core--//
-    private EventBus eventBus;
+    private final EventBus eventBus;
     protected GameWorld world;
     private WorldRenderer renderer;
     protected final int tileSize = 12;
@@ -47,7 +47,7 @@ public class GameWorldPanel extends JPanel {
     protected boolean initialFitDone = false;
 
     protected double currentZoom = 1.0;
-    protected double zoomSpeed = 0.2;
+    protected final double zoomSpeed = 0.2;
 
     protected double cameraOffsetX = 0;
     protected double cameraOffsetY = 0;
@@ -237,7 +237,7 @@ public class GameWorldPanel extends JPanel {
     public void subscribeToSystemEvents() {
 
         eventBus.subscribe(WorldCreatedEvent.class, event -> {
-            this.world = event.getWorld();
+            this.world = event.world();
 
             if (this.world != null) {
                 this.world.getBus().subscribe(ScreenEndGameEvent.class, e -> {
@@ -284,10 +284,10 @@ public class GameWorldPanel extends JPanel {
 
         world.getBus().subscribe(ExplosionEvent.class, event -> {
             if (renderer != null) {
-                renderer.addEffect(event.getAnimationKey(), event.getRadius(), event.getPosition());
+                renderer.addEffect(event.animationKey(), event.radius(), event.position());
             }
-            System.out.println(event.getAnimationKey());
-            SoundPlayer.playSound(event.getAnimationKey());
+            System.out.println(event.animationKey());
+            SoundPlayer.playSound(event.animationKey());
         });
     }
 

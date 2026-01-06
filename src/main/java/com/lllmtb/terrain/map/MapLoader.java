@@ -1,5 +1,6 @@
 package com.lllmtb.terrain.map;
 
+import com.lllmtb.engine.logger.Logger;
 import com.lllmtb.engine.save.SaveConfig;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
@@ -11,10 +12,9 @@ public class MapLoader {
 
     /**
      * Load a map from a given map name.
-     * @param directoryName
+     * @param directoryName the name of the directory where the map is stored.
      * @return the loaded Map object.
      */
-
     public static Map loadMapLoad(String directoryName) {
         try {
             Path path = Paths.get(SaveConfig.SAVE_DIRECTORY + directoryName + "/map.txt");
@@ -36,7 +36,7 @@ public class MapLoader {
 
     /**
      * Load a map from a given map name.
-     * @param mapName
+     * @param mapName the name of the map to load.
      * @return the loaded Map object.
      */
     public static Map loadMap(String mapName) {
@@ -47,9 +47,9 @@ public class MapLoader {
             }
             Path path = Paths.get(resource.toURI());
             String contentMap = Files.readString(path);
-            return  loadMatrix(contentMap, mapName);
+            return loadMatrix(contentMap, mapName);
         } catch (Exception e) {
-            System.out.println(e); // NB. Il faudra mieux gérer cette exception
+            Logger.logger.error("Error while loading map {} : ", mapName, e);
             return null;
         }
     }

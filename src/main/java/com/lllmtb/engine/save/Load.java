@@ -70,8 +70,7 @@ public class Load {
                 .create();
 
         try (FileReader reader = new FileReader(stringpath)) {
-            GameSave save = gson.fromJson(reader, GameSave.class);
-            return save;
+            return gson.fromJson(reader, GameSave.class);
     } catch (IOException e) {
             throw new RuntimeException(e);
         }

@@ -2,11 +2,5 @@ package com.lllmtb.events.game;
 
 import com.lllmtb.events.Event;
 
-
-public class GamePauseEvent implements Event {
-    public final boolean isPaused;
-
-    public GamePauseEvent(boolean isPaused) {
-        this.isPaused = isPaused;
-    }
+public record GamePauseEvent(boolean isPaused) implements Event {
 }

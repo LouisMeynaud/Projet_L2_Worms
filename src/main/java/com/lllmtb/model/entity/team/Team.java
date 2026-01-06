@@ -1,11 +1,8 @@
 package com.lllmtb.model.entity.team;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
-import java.util.Random;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.eclipse.jdt.annotation.NonNull;
 
@@ -63,9 +60,9 @@ public class Team {
     public final int id;
 
     /**
-     * Static counter for assigning unique team IDs.
+     * Thread-safe counter for assigning unique team IDs.
      */
-    private static int ids;
+    private static final AtomicInteger idCounter = new AtomicInteger(0);
 
     /**
      * The currently active worm of the team.
@@ -119,7 +116,7 @@ public class Team {
         this.inventory = Objects.requireNonNull(inventory);
         this.name = Objects.requireNonNull(name);
         this.numberOfWorms = numberOfWorms;
-        this.id = ++Team.ids;
+        this.id = idCounter.incrementAndGet();
         this.setUpWorms(numberOfWorms, spawn);
         this.currentWorm = this.worms.get(0);
         this.selectedItem = null;
@@ -157,29 +154,27 @@ public class Team {
         this.numberOfWorms =  teamSave.team.numberOfWorms;
         this.id = teamSave.team.id;
         this.credits = teamSave.team.credits;
-        for (Worm worm: teamSave.team.getTeamWorms()) {
-            this.worms.add(worm);
-        }
+        this.worms.addAll(teamSave.team.getTeamWorms());
         this.selectedItem = null;
         this.teamColor = teamSave.team.teamColor;
         // use reflexion to recreate worm instance with correct PhysicsBody
         for (Worm worm : this.worms) {
-                try {
-                    Field teamField = Worm.class.getDeclaredField("team");
-                    teamField.setAccessible(true);
-                    teamField.set(worm, this);
-                } catch (NoSuchFieldException | IllegalAccessException e) {
-                    throw new RuntimeException(e);
-                }
+            try {
+                Field teamField = Worm.class.getDeclaredField("team");
+                teamField.setAccessible(true);
+                teamField.set(worm, this);
+            } catch (NoSuchFieldException | IllegalAccessException e) {
+                throw new RuntimeException(e);
             }
+        }
         this.index = teamSave.team.index;
         this.currentWorm = this.worms.get(this.index);
     }
 
     /**
-         * Returns the name associated with the team.
-         * @return the team's name
-         */
+     * Returns the name associated with the team.
+     * @return the team's name
+     */
     public String getName() {
         return this.name;
     }
@@ -395,7 +390,7 @@ public class Team {
      */
     public List<GameCommand> use(@NonNull UseParams useParams) {
         Objects.requireNonNull(useParams);
-        if (this.selectedItem == null) return null;
+        if (this.selectedItem == null) return List.of();
         if (this.selectedItem instanceof WeaponId weaponId) {
             Logger.logger.info("[TEAM {}] Firing weapon {}", this.name, weaponId);
             this.shootCount++;

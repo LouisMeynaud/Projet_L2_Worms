@@ -16,7 +16,6 @@ import com.lllmtb.model.item.weapon.WeaponId;
 import com.lllmtb.terrain.map.Tile;
 
 public class TextureManager {
-
     public static final Map<String, BufferedImage> TILES = new HashMap<>();
     public static final Map<String, BufferedImage> ENTITIES = new HashMap<>();
     public static final Map<String, BufferedImage> UI = new HashMap<>();
@@ -54,7 +53,7 @@ public class TextureManager {
         ///////Blocs/////////
         for (Tile tile : Tile.values()) {
             for (int i = 0; i < tile.getNbTexture(); i++) {
-                TILES.put(tile.toString() + i, loadImage("/textures/block/" + tile.toString() + i + ".png"));
+                TILES.put(tile.toString() + i, loadImage("/textures/block/" + tile + i + ".png"));
             }
         }
 

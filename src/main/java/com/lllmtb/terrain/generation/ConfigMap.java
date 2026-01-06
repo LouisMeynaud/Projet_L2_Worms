@@ -3,22 +3,20 @@ package com.lllmtb.terrain.generation;
 import com.lllmtb.physics.GameMode;
 
 public class ConfigMap {
-
-
-    private int width;              //the length of map
-    private int height;             //the height of the map (prevents the ground from exceeding this height)
-    private int maxSlope;           //the maximum height difference between two consecutive x-coordinates
-    private int maxLength;          //the maximum length during which the height of each consecutive block will increase by slope
-    private int waterHeight;        // the height of water
-    private int heightStart;        //the desired starting height from the ground
-    private int thicknessMin;       // the minimun of the map thickness.
-    private boolean flyingIsland;   //true if you want a flying island
-    private int plateauChance;      //the chance of having flat ground (which avoids terrain composed solely of "peaks")
-    public static final double RATIOWIDTHHEIGHT = 0.5625; //for a rectangular world (0.5625 is the ratio between the width and heigth of a commun screen)
-    private GameMode gameMode;      //the gameMode of the game.
+    private final int width;              // the length of map
+    private final int height;             // the height of the map (prevents the ground from exceeding this height)
+    private final int maxSlope;           // the maximum height difference between two consecutive x-coordinates
+    private final int maxLength;          // the maximum length during which the height of each consecutive block will increase by slope
+    private final int waterHeight;        // the height of water
+    private final int heightStart;        // the desired starting height from the ground
+    private final int thicknessMin;       // the minimum map thickness.
+    private final boolean flyingIsland;   // true if you want a flying island
+    private final int plateauChance;      // the chance of having flat ground (which avoids terrain composed solely of "peaks")
+    public static final double RATIOWIDTHHEIGHT = 0.5625; // for a rectangular world (0.5625 is the ratio between the width and heigth of a commun screen)
+    private final GameMode gameMode;      //the gameMode of the game.
 
     /**
-     * the construteur.
+     * Creates a new ConfigMap object.
      * @param width //the length of map
      * @param waterHeight // the height of water
      * @param thicknessMin  // the minimun of the map thickness.
@@ -35,13 +33,9 @@ public class ConfigMap {
         this.thicknessMin = thicknessMin;
         this.flyingIsland = flyingIsland;
         this.heightStart = heightStart;
-        this.maxSlope = 1;
-        this.maxLength = 10;
-        this.plateauChance = 20;
         this.gameMode = gameMode;
 
         switch (terrainType) {
-
             case FLAT:
                 this.maxSlope = 1;
                 this.maxLength = 10;
@@ -154,5 +148,4 @@ public class ConfigMap {
     public GameMode getGameMode() {
         return this.gameMode;
     }
-
 }

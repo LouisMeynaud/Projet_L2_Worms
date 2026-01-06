@@ -1,12 +1,13 @@
 package com.lllmtb.engine;
 
 import java.util.Objects;
-import com.lllmtb.engine.save.Load;
-import com.lllmtb.events.game.*;
 import org.eclipse.jdt.annotation.NonNull;
+
+import com.lllmtb.engine.save.Load;
 import com.lllmtb.engine.logger.Logger;
 import com.lllmtb.engine.save.Save;
 import com.lllmtb.events.EventBus;
+import com.lllmtb.events.game.*;
 import com.lllmtb.ui.console.ConsoleUI;
 import com.lllmtb.ui.UI;
 import com.lllmtb.ui.graphical.GraphicalUI;
@@ -19,15 +20,13 @@ public class GameEngine {
     private static GameWorld world;
 
     public static void main(String[] args) {
-        boolean graphique = true;
+        // Pick UI mode based on command line arguments
+        boolean graphical = args.length == 0 || !args[0].equals("console");
+
         systemBus = new EventBus();
-        // Uncomment to log all system events for debugging
-        //systemBus.subscribe(Event.class, e -> Logger.logger.info("[EVENT/system]: {}", e.getClass().getSimpleName()));
-        systemBus.subscribe(StartGameEvent.class, GameEngine::startGame);
-        systemBus.subscribe(LoadEvent.class, GameEngine::startGame);
-        systemBus.subscribe(DeleteSaveEvent.class, event -> {
-            Save.eraseSave(event.getSaveName());
-                });
+        // Log all system events for debugging
+        //systemBus.subscribe(Event.class, e -> Logger.logger.debug("[EVENT/system]: {}", e.getClass().getSimpleName()));
+
         // Engine loop thread - processes engine-level events (start, pause, quit...)
         new Thread(() -> {
             Thread current = Thread.currentThread();
@@ -45,7 +44,7 @@ public class GameEngine {
 
         // Start the chosen UI manager
         UI ui;
-        if (graphique) {
+        if (graphical) {
             Logger.logger.info("Using graphical interface");
             TextureManager.load(); // load textures
             AnimationManager.load(); //load animation
@@ -55,6 +54,10 @@ public class GameEngine {
             Logger.logger.info("Using console interface");
             ui = new ConsoleUI(systemBus);
         }
+
+        systemBus.subscribe(StartGameEvent.class, GameEngine::startGame);
+        systemBus.subscribe(LoadEvent.class, GameEngine::startGame);
+        systemBus.subscribe(DeleteSaveEvent.class, event -> Save.eraseSave(event.getSaveName()));
         ui.start();
     }
 
@@ -63,7 +66,7 @@ public class GameEngine {
      * @param event the StartGameEvent containing game settings
      */
     private static void startGame(@NonNull StartGameEvent event) {
-        GameSettings settings = Objects.requireNonNull(event).getSettings();
+        GameSettings settings = Objects.requireNonNull(event).settings();
         EventBus worldBus = new EventBus();
         world = new GameWorld(settings, worldBus);
         start(world);
@@ -84,16 +87,12 @@ public class GameEngine {
      */
     private static void start(@NonNull GameWorld world) {
         Objects.requireNonNull(world);
-        // Uncomment to log all world events for debugging
-        //world.getBus().subscribe(Event.class, e -> Logger.logger.info("[EVENT/world]: {}", e.getClass().getSimpleName()));
+        // Log all world events for debugging
+        //world.getBus().subscribe(Event.class, e -> Logger.logger.debug("[EVENT/world]: {}", e.getClass().getSimpleName()));
         systemBus.postSync(new WorldCreatedEvent(world));
-        world.getBus().subscribe(SaveEvent.class, e -> {
-            systemBus.postQueued(new FinalSaveEvent());
-        });
-        systemBus.subscribe(FinalSaveEvent.class, e -> {
-            Save.saveAll();
-        });
+        world.getBus().subscribe(SaveEvent.class, e -> systemBus.postQueued(new FinalSaveEvent()));
+        systemBus.subscribe(FinalSaveEvent.class, e -> Save.saveAll());
         world.start();
-        systemBus.subscribe(GamePauseEvent.class, e -> world.pause(e.isPaused));
+        systemBus.subscribe(GamePauseEvent.class, e -> world.pause(e.isPaused()));
     }
 }

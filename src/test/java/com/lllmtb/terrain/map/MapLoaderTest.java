@@ -12,16 +12,13 @@ import com.lllmtb.engine.save.Load;
 import com.lllmtb.engine.save.SaveConfig;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MapLoaderTest {
     private static final String TEMP_TEST_DIR = "junit_test_map_999";
-    public static String mapText;
     public static Map m;
-    public static String path;
-    public static Tile[][] expectedMatrix = {
+    public static final Tile[][] expectedMatrix = {
         {Tile.AIR,  Tile.AIR,  Tile.AIR,  Tile.AIR,  Tile.AIR},
         {Tile.AIR,  Tile.AIR,  Tile.AIR,  Tile.CAVERN,  Tile.AIR},
         {Tile.DIRT, Tile.DIRT, Tile.DIRT, Tile.GRASS, Tile.DIRT},
@@ -31,10 +28,8 @@ public class MapLoaderTest {
     };
 
     @BeforeAll
-    public static void setUp() throws IOException {
-        // path = "src/main/resources/map/mapTest/map.txt";
-        // mapText = Files.readString(Path.of(path));
-        m = MapLoader.loadMap("mapTest");;
+    public static void setUp() {
+        m = MapLoader.loadMap("mapTest");
     }
 
     @Test
@@ -45,7 +40,7 @@ public class MapLoaderTest {
     @Test
     void createMatrix_createsIncorrectMatrixFromFile() {
         m = MapLoader.loadMap("mapIncorrectTest");
-        assertEquals(m, null);;
+        assertNull(m);
     }
 
     @Test
@@ -56,7 +51,7 @@ public class MapLoaderTest {
     @Test
     void createMatrix_createsInexistantMatrixFromFile() {
         m = MapLoader.loadMap("mapinexistante");
-        assertEquals(m, null);;
+        assertNull(m);
     }
 
     @Test
@@ -78,13 +73,13 @@ public class MapLoaderTest {
     @Test
     void testGetListeDossiers_AvecDossierInexistant() {
         Map resultat = MapLoader.loadMap("dossierInexistant");
-        assertEquals(null, resultat, "Doit renvoyer null si le dossier n'existe pas");
+        assertNull(resultat, "Doit renvoyer null si le dossier n'existe pas");
     }
 
     @Test
-    void testGetListeDossiers_AvecUnFichier() throws IOException {
+    void testGetListeDossiers_AvecUnFichier() {
         Map resultat = MapLoader.loadMap("test.txt");
-        assertEquals(null, resultat, "Doit renvoyer null si on donne un fichier au lieu d'un dossier");
+        assertNull(resultat, "Doit renvoyer null si on donne un fichier au lieu d'un dossier");
     }
 
     @Test

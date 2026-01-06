@@ -22,7 +22,7 @@ import com.lllmtb.ui.graphical.Utilitaire.TextureManager;
 import com.lllmtb.ui.graphical.Utilitaire.Utilitaire;
 
 public class SettingsStartPanel extends JPanel {
-    public EventBus eventBus;
+    public final EventBus eventBus;
     SettingMapPanel mapSettingPanel;
     SettingGamePanel gameSettingsPanel;
 

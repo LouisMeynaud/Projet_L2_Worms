@@ -2,7 +2,7 @@ package com.lllmtb.model.entity.worm;
 
 public class Statistics {
     //Champs
-    private static double maxHp = 100;
+    private static volatile double maxHp = 100;
     private double hp;
     private int speed;
     private int strength;

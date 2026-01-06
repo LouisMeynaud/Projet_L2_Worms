@@ -4,13 +4,12 @@ import java.awt.image.BufferedImage;
 import java.util.HashMap;
 import java.util.Map;
 
-
+import com.lllmtb.engine.logger.Logger;
 import com.lllmtb.ui.graphical.Utilitaire.TextureManager;
 import com.lllmtb.ui.graphical.Utilitaire.Utilitaire;
 
 /**
  * gestionnaire des animation du jeu
- *
  * cette classe charge et stocke les animation dans un map.
  */
 public class AnimationManager {
@@ -55,7 +54,7 @@ public class AnimationManager {
             FRAMES_MAP.put("MissileExplosion", Utilitaire.cutSpriteSheet(missileSheet, 4, 4));
         }
        BufferedImage mineSheet = TextureManager.EFFECT.get("MineExplosion");
-       if (missileSheet != null) {
+       if (mineSheet != null) {
            FRAMES_MAP.put("MineExplosion", Utilitaire.cutSpriteSheet(mineSheet, 4, 4));
        }
 
@@ -71,7 +70,7 @@ public class AnimationManager {
     public static Animation create(String key, int speed) {
         BufferedImage[] frames = FRAMES_MAP.get(key);
         if (frames == null) {
-            System.out.println("animation inexistante : " + key);
+            Logger.logger.warn("Animation not found: {}", key);
             return null;
         }
         return new Animation(frames, speed);

@@ -10,6 +10,9 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import com.lllmtb.engine.commands.GameCommand;
 import com.lllmtb.engine.logger.Logger;
 import com.lllmtb.events.game.CoinCollisionEvent;
+import com.lllmtb.events.physics.ExplosionEvent;
+import com.lllmtb.events.physics.PhysicsModifierAddedEvent;
+import com.lllmtb.events.physics.PhysicsModifierRemovedEvent;
 import com.lllmtb.model.entity.Coin;
 import com.lllmtb.model.entity.Drop;
 import com.lllmtb.model.entity.effect.BurnEffect;
@@ -19,9 +22,6 @@ import org.eclipse.jdt.annotation.NonNull;
 
 import com.lllmtb.engine.GameWorld;
 import com.lllmtb.events.game.MapUpdateEvent;
-import com.lllmtb.events.physics.ExplosionEvent;
-import com.lllmtb.events.physics.PhysicsModifierAddedEvent;
-import com.lllmtb.events.physics.PhysicsModifierRemovedEvent;
 import com.lllmtb.model.entity.Entity;
 import com.lllmtb.model.entity.projectile.ExplosiveProjectile;
 import com.lllmtb.model.entity.projectile.Projectile;
@@ -381,7 +381,7 @@ public class PhysicsEngine {
                             world.queueCommands(proj.onImpact(null));
                         // if the body is a drop, set it on ground
                         } else if (body.getEntity() instanceof Drop drop) {
-                            world.queueCommand(drop.setOnGround());
+                            drop.setOnGround(true);
                         }
 
                     // if the collision is with another entity
@@ -402,7 +402,7 @@ public class PhysicsEngine {
                         // if the body is a drop, call its onImpact with the hit entity
                         if (body.getEntity() instanceof Drop drop) {
                             if (impact.hitBody.getEntity() instanceof Drop) {
-                                world.queueCommand(drop.setOnGround());
+                                drop.setOnGround(true);
                             }
                             world.queueCommand(drop.onImpact(impact.hitBody.getEntity()));
                         }
@@ -434,8 +434,7 @@ public class PhysicsEngine {
             }
 
             // apply friction / air resistance to worms
-            if (body.getEntity() instanceof Worm) {
-                Worm worm = (Worm) body.getEntity();
+            if (body.getEntity() instanceof Worm worm) {
                 Vector currentVector = body.getVector();
                 double newVelX = currentVector.getX();
 
@@ -532,10 +531,8 @@ public class PhysicsEngine {
     public void createExplosion(@NonNull Projectile projectile, int mapDamageRadius, int blastRadius, int damage, double blastForce, boolean heal) {
         Position position = projectile.getBody().getPos();
         List<GameCommand> death = Explosion.explosionDamageEffect(position, blastRadius, damage, bodies, heal);
-        if (death != null) {
-            for (GameCommand command : death) {
-                world.queueCommand(command);
-            }
+        for (GameCommand command : death) {
+            world.queueCommand(command);
         }
         Explosion.explosionMapEffect(position, mapDamageRadius, collision.getMap());
         Explosion.explosionSuffleEffect(position, blastRadius, blastForce, collision.getMap(), bodies);

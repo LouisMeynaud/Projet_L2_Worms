@@ -20,7 +20,7 @@ import com.lllmtb.ui.graphical.Utilitaire.TextureManager;
 import com.lllmtb.ui.graphical.Utilitaire.Utilitaire;
 
 public class EndGameScreenPanel extends JPanel {
-    JLabel winnerLabel;
+    private final JLabel winnerLabel;
 
     /**
      * This page is used for the endgame.
@@ -38,13 +38,14 @@ public class EndGameScreenPanel extends JPanel {
         JButton closeButton = Utilitaire.createImageButton(TextureManager.UI, "Panel", 256, 128, 256, 128, "Close", "Arial", 23, Color.WHITE);
 
         restartButton.addActionListener(e -> {
-            GameEngine.main(null);
+            GameEngine.main(new String[]{});
             SwingUtilities.getWindowAncestor(this).dispose();
         });
 
         closeButton.addActionListener(e -> {
-            System.exit(0);
+            SwingUtilities.getWindowAncestor(this).dispose();
         });
+
         gbc.gridy = 0;
         this.add(winnerLabel, gbc);
         gbc.gridy = 1;

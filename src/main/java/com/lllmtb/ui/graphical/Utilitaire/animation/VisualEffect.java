@@ -7,10 +7,10 @@ import java.awt.image.BufferedImage;
 import com.lllmtb.physics.Position;
 
 public class VisualEffect {
-    private Position position;
-    private Animation animation;
-    private double width;
-    private double height;
+    private final Position position;
+    private final Animation animation;
+    private final double width;
+    private final double height;
 
     /**
      * represente un effet visuel temporaire dans le jeux (exemple explosion)

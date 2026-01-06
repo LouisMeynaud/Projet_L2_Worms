@@ -4,33 +4,31 @@ import com.lllmtb.events.Event;
 import com.lllmtb.physics.Position;
 
 public class MapUpdateEvent implements Event {
-
     private final Position center;
     private final int radius;
-    private final boolean fullUpdate;
-
+    private final boolean isFullUpdate;
 
     public MapUpdateEvent(Position center, int radius) {
         this.center = center;
         this.radius = radius;
-        this.fullUpdate = false;
+        this.isFullUpdate = false;
     }
-
 
     public MapUpdateEvent() {
         this.center = null;
         this.radius = 0;
-        this.fullUpdate = true;
+        this.isFullUpdate = true;
     }
 
-    public Position getCenter() {
+    public Position center() {
         return center;
     }
-    public int getRadius() {
+
+    public int radius() {
         return radius;
     }
-    public boolean isFullUpdate() {
-        return fullUpdate;
 
+    public boolean isFullUpdate() {
+        return isFullUpdate;
     }
 }

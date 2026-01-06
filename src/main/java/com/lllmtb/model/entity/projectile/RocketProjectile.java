@@ -38,11 +38,9 @@ public final class RocketProjectile extends Projectile implements ExplosiveProje
 
     @Override
     public List<GameCommand> onImpact(Entity entity) {
-        List<GameCommand> list = new ArrayList<GameCommand>();
+        List<GameCommand> list = new ArrayList<>();
         handleHit(list, entity, damage);
-        list.add((world -> {
-            world.getPhysics().createExplosion(this, RAYON_DEGAT_MAP, RAYON_SOUFFLE, DEGATS, FORCE_SOUFFLE, false);
-        }));
+        list.add((world -> world.getPhysics().createExplosion(this, RAYON_DEGAT_MAP, RAYON_SOUFFLE, DEGATS, FORCE_SOUFFLE, false)));
         list.add(delete());
         return list;
     }

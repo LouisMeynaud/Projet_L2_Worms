@@ -87,7 +87,7 @@ public class MapTest {
 
     @Test
     public void toStringTest() {
-        String attentue = "width : 5, height : 6, matrice : \n" +
+        String expected = "width : 5, height : 6, matrice : \n" +
                 "\n" +
                 "     \n" +
                 "   ~ \n" +
@@ -95,7 +95,7 @@ public class MapTest {
                 "#oo##\n" +
                 "ooooo\n" +
                 "ooooo";
-        assertEquals(attentue, m.toString());
+        assertEquals(expected, m.toString());
     }
 
     @Test
@@ -109,7 +109,7 @@ public class MapTest {
     @Test
     void testSetFiles(){
         m.setFilesTxt("test");
-        assertEquals(m.getFilesTxt(), "test");
+        assertEquals("test", m.getFilesTxt());
     }
 
     @Test

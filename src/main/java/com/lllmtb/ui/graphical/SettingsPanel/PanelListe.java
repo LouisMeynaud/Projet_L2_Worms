@@ -14,6 +14,8 @@ import java.util.ArrayList;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 
+import com.lllmtb.engine.logger.Logger;
+
 
 public class PanelListe extends JPanel {
 
@@ -22,10 +24,10 @@ public class PanelListe extends JPanel {
     private final JList<InfoLigne> maListe;
 
     private static class InfoLigne {
-        String titre;
-        String description;
-        ImageIcon image;
-        String nomMap;
+        final String titre;
+        final String description;
+        final ImageIcon image;
+        final String nomMap;
 
         public InfoLigne(String titre, String info, ImageIcon image, String nomMap) {
             this.titre = titre;
@@ -93,6 +95,7 @@ public class PanelListe extends JPanel {
         String titre = nomDossier;
         String description = "";
         ImageIcon image = null;
+
         try {
             if (isExternal) {
                 File folder = new File(mainDossier + nomDossier);
@@ -135,8 +138,7 @@ public class PanelListe extends JPanel {
 
                 }
         } catch (Exception e) {
-            System.out.println("Probleme avec la map:" + nomDossier);
-            e.printStackTrace();
+            Logger.logger.error("Problem loading map: {}", nomDossier, e);
             titre = "erreur de lecture";
         }
         return new InfoLigne(titre, description, image, nomDossier);
@@ -145,10 +147,10 @@ public class PanelListe extends JPanel {
 
     private static class ListRenderer extends JPanel implements ListCellRenderer<InfoLigne> {
 
-        JLabel labelImage = new JLabel();
-        JLabel labelTitre = new JLabel();
-        JLabel labelDescription = new JLabel();
-        JPanel panelTextes = new JPanel();
+        final JLabel labelImage = new JLabel();
+        final JLabel labelTitre = new JLabel();
+        final JLabel labelDescription = new JLabel();
+        final JPanel panelTextes = new JPanel();
 
         public ListRenderer() {
             this.setLayout(new BorderLayout(10, 10));
@@ -181,11 +183,7 @@ public class PanelListe extends JPanel {
             labelImage.setIcon(valeur.image);
             setBackground(Color.GRAY);
 
-            if (isSelected) {
-                setOpaque(true);
-            } else {
-                setOpaque(false);
-            }
+            setOpaque(isSelected);
 
             return this;
         }

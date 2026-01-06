@@ -8,8 +8,6 @@ import com.lllmtb.terrain.map.MapLoader;
 
 import java.io.FileNotFoundException;
 
-import static com.lllmtb.engine.save.Save.gameWorld;
-
 public class LoadTest{
     public static void main(String[] args) throws FileNotFoundException {
         GameSave gameSave = Load.loadGameSave("e_save");

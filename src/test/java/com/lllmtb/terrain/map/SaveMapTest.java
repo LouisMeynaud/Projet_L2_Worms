@@ -1,6 +1,8 @@
 package com.lllmtb.terrain.map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import org.junit.jupiter.api.Test;
 
 public class SaveMapTest {
@@ -13,7 +15,7 @@ public class SaveMapTest {
 
     @Test
     public void testMapToString() {
-        String mapAttendue = "AAAAA\n" +
+        String expected = "AAAAA\n" +
                              "AAACA\n" +
                              "DDDGD\n" +
                              "DWWDD\n" +
@@ -21,7 +23,8 @@ public class SaveMapTest {
                              "WWWWW\n";
 
         Map mapObject = MapLoader.loadMap("mapTest");
-        String resultat = SaveMap.mapToString(mapObject); 
-        assertEquals(mapAttendue, resultat);
+        assertNotNull(mapObject);
+        String actual = SaveMap.mapToString(mapObject);
+        assertEquals(expected, actual);
     }
 }

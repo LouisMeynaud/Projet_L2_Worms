@@ -44,6 +44,7 @@ import com.lllmtb.events.turn.TurnSkipEvent;
 import com.lllmtb.events.ui.graphical.NotificationEvent;
 import com.lllmtb.events.ui.graphical.RequestFocus;
 import com.lllmtb.events.ui.graphical.ScreenHomeEvent;
+import com.lllmtb.model.entity.team.Team;
 import com.lllmtb.model.item.inventory.Inventory;
 import com.lllmtb.model.item.tool.ToolId;
 import com.lllmtb.model.item.weapon.WeaponId;
@@ -56,10 +57,9 @@ import com.lllmtb.ui.graphical.Utilitaire.Utilitaire;
 
 /**
  * panneau principal de l'interface utilisateur du jeu
- *
+ * </p>
  * ce panneau se superpose au dessins du jeu et contient les bouton comme inventaire pose etc
  * ainsi que les les panneau d'inventaire de menu pose etc
- *
  * il utilise un cardLayout afin d'afficher les bons élement.
  */
 public class GameUIPanel extends JPanel {
@@ -140,7 +140,6 @@ public class GameUIPanel extends JPanel {
             } else {
                 g2d.fillOval(centerX - 3, centerY - 3, 6, 6);
             }
-
 
             g2d.setColor(Color.WHITE);
             g2d.setFont(new Font("Arial", Font.BOLD, 12));
@@ -286,9 +285,9 @@ public class GameUIPanel extends JPanel {
     private void subscribeToSystemEvents() {
 
         eventBus.subscribe(WorldCreatedEvent.class, event -> {
-            this.world = event.getWorld();
+            this.world = event.world();
             this.shopManager = world.getShopManager();
-            this.world.getBus().subscribe(NotificationEvent.class, notif -> Popup.add(notif));
+            this.world.getBus().subscribe(NotificationEvent.class, Popup::add);
             updateTimerDisplay();
         });
 
@@ -307,8 +306,10 @@ public class GameUIPanel extends JPanel {
      */
     private void updateTimerDisplay() {
         if (this.world == null) return;
-        if (this.world.getPlayingTeam() == null) {
+        Team playingTeam = this.world.getPlayingTeam();
+        if (playingTeam == null) {
             this.timerLabel.setText("--:--");
+            this.timerLabel.repaint();
             return;
         }
 
@@ -319,19 +320,9 @@ public class GameUIPanel extends JPanel {
             this.timerLabel.setForeground(Color.WHITE);
         }
 
+        String timeString = String.format("%02d:%02d", timeLeft / 60, timeLeft % 60);
 
-        String timeString;
-        Turn currentTurn = world.getTurnManager().getTurn();
-        if (currentTurn.getWormPlayable() == null) {
-            this.timerLabel.setForeground(Color.white);
-            timeString = "--:--";
-        } else {
-            timeString = String.format("%02d:%02d", timeLeft / 60, timeLeft % 60);
-        }
-
-
-        String teamName = this.world.getPlayingTeam().name;
-        Color baseColor = switch (this.world.getPlayingTeam().getTeamColor()) {
+        Color baseColor = switch (playingTeam.getTeamColor()) {
             case RED -> Color.RED;
             case BLUE -> Color.BLUE;
             case GREEN -> Color.GREEN;
@@ -341,12 +332,12 @@ public class GameUIPanel extends JPanel {
         Color color = new Color(baseColor.getRed(), baseColor.getGreen(), baseColor.getBlue(), 100);
 
         this.timerContainer.setBackground(color);
-        this.timerLabel.setText("tour : " + world.getTurnManager().getNbTurn() + "| team : " + teamName + "| left shoot: "
-                + (Turn.limitshoot - currentTurn.getTeam().getShootCount()) +  "| time : " + timeString);
-        if (this.world.getPlayingTeam().getCredits() == -1) {
+        this.timerLabel.setText("tour : " + world.getTurnManager().getNbTurn() + "| team : " + playingTeam.name + "| left shoot: "
+                + (Turn.FIRE_LIMIT_PER_TURN - playingTeam.getShootCount()) +  "| time : " + timeString);
+        if (playingTeam.getCredits() == -1) {
             this.moneyLabel.setText("∞ $");
         } else {
-            this.moneyLabel.setText(this.world.getPlayingTeam().getCredits() + " $");
+            this.moneyLabel.setText(playingTeam.getCredits() + " $");
         }
         this.timerLabel.repaint();
         this.moneyLabel.repaint();
@@ -545,7 +536,7 @@ public class GameUIPanel extends JPanel {
                     this.world.getBus().postQueued(new WeaponSelectedEvent(id));
                     openCloseInventory(); // on ferme l'inventaire si on choisie une arme
                 });
-            } else if (isUnlocked && nbAmmo == 0) {
+            } else if (isUnlocked) {
                 itemButton.setEnabled(false);
             }
             this.weaponGrid.add(itemButton);
@@ -636,8 +627,7 @@ public class GameUIPanel extends JPanel {
 
         for (ShopElement element : shopManager.getShopElements()) {
 
-            if (element.id instanceof WeaponId) {
-                WeaponId weaponId = (WeaponId) element.id;
+            if (element.id instanceof WeaponId weaponId) {
                 if (!inventory.isUnlocked(weaponId)) {
                     boolean canBuy = currentMoney >= element.unlockPrice || currentMoney == -1;
                     String text = element.unlockPrice + "$";
@@ -649,7 +639,7 @@ public class GameUIPanel extends JPanel {
 
                     buttonShop.addActionListener(e -> {
                         if (canBuy) {
-                        shopManager.buyItem(weaponId, world.getPlayingTeam());
+                        shopManager.buyWeapon(weaponId, world.getPlayingTeam());
                         eventBus.postQueued(new GameStateUpdatedEvent());
                     }
                     });
@@ -657,7 +647,7 @@ public class GameUIPanel extends JPanel {
                     this.shopWeaponGrid.add(buttonShop);
                 } else {
                     String text = element.ammoPrice + "$ (+" + element.ammoPackSize + ")";
-                    BufferedImage imgAmmo = TextureManager.WEAPONS.get("Ammo" + weaponId.toString());
+                    BufferedImage imgAmmo = TextureManager.WEAPONS.get("Ammo" + weaponId);
                     boolean canBuy = currentMoney >= element.ammoPrice || currentMoney == -1;
 
                     JButton buttonShop = Utilitaire.createShopButton(imgAmmo, text, canBuy);
@@ -673,8 +663,7 @@ public class GameUIPanel extends JPanel {
 
                     this.shopAmmoGrid.add(buttonShop);
                 }
-            } else if (element.id instanceof ToolId) {
-                ToolId tid = (ToolId) element.id;
+            } else if (element.id instanceof ToolId tid) {
                 String text = element.ammoPrice + "$ (+" + element.ammoPackSize + ")";
                 BufferedImage img = TextureManager.TOOLS.get(tid.toString());
                 boolean canBuy = currentMoney >= element.ammoPrice || currentMoney == -1;
