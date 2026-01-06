@@ -15,12 +15,11 @@ import com.lllmtb.physics.Position;
 public class PoisonEffectTest {
 
     private Worm worm;
-    private Team team;
 
     @BeforeEach
     public void setUp() {
         Position pos = new Position(0, 0);
-        team = new Team("Team", 1, new Position[]{pos}, 0);
+        Team team = new Team("Team", 1, new Position[]{pos}, 0);
         worm = new Worm("TestWorm", team);
         Worm.setMaxHp(100);
     }

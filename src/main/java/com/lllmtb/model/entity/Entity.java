@@ -2,18 +2,21 @@ package com.lllmtb.model.entity;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import com.lllmtb.engine.commands.GameCommand;
 import com.lllmtb.physics.PhysicsBody;
 
 public abstract class Entity {
 
-    // Champs
-    private static int uuids = 0;
+
+    // Thread-safe counter for generating unique entity IDs.
+    private static final AtomicInteger uuidCounter = new AtomicInteger(0);
+
     public final int uuid;
 
     public Entity() {
-        this.uuid = ++Entity.uuids;
+        this.uuid = uuidCounter.incrementAndGet();
     }
 
     public abstract PhysicsBody getBody();

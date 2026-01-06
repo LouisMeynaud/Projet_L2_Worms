@@ -1,23 +1,27 @@
 package com.lllmtb.engine;
 
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
-
-import com.lllmtb.model.entity.projectile.Projectile;
 import org.eclipse.jdt.annotation.NonNull;
 
 import com.lllmtb.engine.commands.GameCommand;
 import com.lllmtb.engine.logger.Logger;
 import com.lllmtb.engine.turn.TurnManager;
+import com.lllmtb.engine.save.GameSave;
+import com.lllmtb.engine.save.PhysicsBodySave;
+import com.lllmtb.engine.save.TeamSave;
+import com.lllmtb.engine.turn.Turn;
 import com.lllmtb.events.EventBus;
 import com.lllmtb.events.game.GameStateUpdatedEvent;
 import com.lllmtb.model.entity.Entity;
 import com.lllmtb.model.entity.team.Team;
 import com.lllmtb.model.entity.worm.Worm;
+import com.lllmtb.model.entity.projectile.Projectile;
 import com.lllmtb.model.shop.ShopManager;
 import com.lllmtb.physics.GameMode;
 import com.lllmtb.physics.Move;
@@ -32,38 +36,106 @@ public class GameWorld {
     private final Map map;
     private final EventBus bus;
     private final PhysicsEngine physics;
-    private final List<Team> teams;
-    private final GameLoop gameLoop;
-    private int indexTeam;
-    private final TurnManager turnManager;
-    private String gameName;
-    private GameMode gameMode;
-    private ShopManager shopManager;
-    Thread loopThread;
-
+    private final String gameName;
+    private final GameMode gameMode;
+    private final ShopManager shopManager;
     private final BlockingQueue<GameCommand> commandQueue;
+    private final List<Team> teams;
+    private final TurnManager turnManager;
+    private int indexTeam;
+    private final GameLoop gameLoop;
+    protected Thread loopThread;
 
+    public GameWorld(GameSave gameSave, Map map) {
+        Logger.logger.info("Loading GameWorld from save...");
+        GameSettings settings = gameSave.gameSettings;
+        this.gameName = gameSave.gameSettings.gameName;
+        this.indexTeam = gameSave.indexTeam;
+        // Init Map - fail if map is null
+        if (map == null) {
+            Logger.logger.error("Cannot load game: Map is null");
+            throw new IllegalArgumentException("Map cannot be null when loading a saved game");
+        }
+
+        this.map = map;
+        this.bus = Objects.requireNonNullElseGet(gameSave.bus, EventBus::new);
+        Move.setMaxjump(settings.maxJump);
+
+        // Init GameCommand queue
+        this.commandQueue = new LinkedBlockingQueue<>();
+
+        //Init gameMode
+        this.gameMode = settings.gameMode;
+
+
+        // Init PhysicsEngine
+        this.physics = new PhysicsEngine(map, this, settings.hasWind, settings.gameMode);
+        for (PhysicsBodySave physicsBodySave : gameSave.entities) {
+            physics.add(physicsBodySave.physicsBody);
+        }
+
+        // Init Teams
+        this.teams = new ArrayList<>();
+        for (TeamSave saveTeam :gameSave.teams) {
+            this.teams.add(new Team(saveTeam));
+        }
+        // Init GameLoop
+        this.gameLoop = new GameLoop(this);
+        Logger.logger.debug("Game initialised");
+
+        //Init TurnManager
+        this.turnManager = gameSave.turnManager;
+
+        // use reflexion
+        try {
+            Field worldField = TurnManager.class.getDeclaredField("world");
+            worldField.setAccessible(true);
+            worldField.set(this.turnManager, this);
+            Field turnField = TurnManager.class.getDeclaredField("turn");
+            turnField.setAccessible(true);
+            turnField.set(this.turnManager, new Turn(this.getPlayingTeam()));
+            Field restartField = TurnManager.class.getDeclaredField("restart");
+            restartField.setAccessible(true);
+            restartField.set(this.turnManager, true);
+            Field nbTurnField = TurnManager.class.getDeclaredField("nbTurn");
+            nbTurnField.setAccessible(true);
+            nbTurnField.set(this.turnManager, this.turnManager.getNbTurn() - 1);
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
+        this.turnManager.init();
+
+        //Init FriendlyFire
+        Projectile.setFriendlyFire(settings.friendlyFire);
+
+        //Init ShopManager
+        this.shopManager = new ShopManager(this.bus);
+
+        //Init credit from current Team
+        this.teams.get(indexTeam).removeCredits(150);
+        Logger.logger.info("Game successfully loaded from save");
+    }
 
     public GameWorld(GameSettings settings, EventBus eventBus) {
-        gameName = settings.mapFileName;
         Map tmap = null;
         this.gameName = settings.gameName;
-        // Init Map (we'll have to handle this better once MapLoader throws catchable exceptions)
+        // Try to load map from file
         if (settings.mapFileName != null) {
             try {
-                tmap = MapLoader.loadMatrix(settings.mapFileName);
+                tmap = MapLoader.loadMap(settings.mapFileName);
             } catch (Exception e) {
+                Logger.logger.error("Failed to load map '{}'", settings.mapFileName, e);
                 throw new RuntimeException(e);
             }
         }
         if (tmap == null) {
-            System.out.println("Generating a new map...");
-            ConfigMap config = new ConfigMap(settings.widthMap, 4, 5, settings.floatingIsland, 17, settings.terrainType, settings.nbTeams, settings.nbWorms, settings.gameMode);
+            Logger.logger.info("Generating a new map...");
+            ConfigMap config = new ConfigMap(settings.widthMap, 4, 5, settings.floatingIsland, 17, settings.terrainType, settings.gameMode);
+
             tmap = GenerateMap.createMap(config);
         }
         this.map = tmap;
         this.map.setSpawnPoint(CreateSpawnPoint.createSpawnPoint(settings.nbTeams, settings.nbWorms, tmap));
-
         this.bus = eventBus;
         Move.setMaxjump(settings.maxJump);
 
@@ -93,17 +165,17 @@ public class GameWorld {
         }
 
         //Init FriendlyFire
-        Projectile.setFriendlyFire(settings.friendlyfire);
+        Projectile.setFriendlyFire(settings.friendlyFire);
 
         // Init GameLoop
         this.gameLoop = new GameLoop(this);
-        Logger.logger.debug("Game initialised");
 
         //Init TurnManager
         this.turnManager = new TurnManager(this, settings.turnDuration);
 
         //Init ShopManager
         this.shopManager = new ShopManager(this.bus);
+        Logger.logger.info("Game successfully initialised");
     }
 
     public Map getMap() {
@@ -160,8 +232,8 @@ public class GameWorld {
         if (loopThread != null && loopThread.isAlive()) return;
         Logger.logger.debug("Starting the game loop...");
         loopThread = new Thread(gameLoop, "gameloop");
-        indexTeam = -1;
         loopThread.start();
+        this.indexTeam--;
         nextTeamTurn();
     }
 
@@ -174,6 +246,7 @@ public class GameWorld {
 
     public void stop() {
         Logger.logger.debug("Stopping the game loop...");
+        turnManager.cleanup();
         gameLoop.stop();
         if (loopThread != null) {
             loopThread.interrupt();

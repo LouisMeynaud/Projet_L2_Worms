@@ -7,13 +7,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import com.lllmtb.model.entity.Coin;
 import com.lllmtb.model.entity.Drop;
 import org.junit.jupiter.api.BeforeEach;
@@ -36,6 +29,8 @@ import com.lllmtb.model.item.weapon.WeaponId;
 import com.lllmtb.terrain.map.Map;
 import com.lllmtb.terrain.map.MapLoader;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 class PhysicsEngineTest {
     private Map map;
     private GameWorld world;
@@ -46,7 +41,7 @@ class PhysicsEngineTest {
 
     @BeforeEach
     void setUp() {
-        map = MapLoader.loadMatrix("mapTest");
+        map = MapLoader.loadMap("mapTest");
         bus = new EventBus(4);
         world = Mockito.mock(GameWorld.class);
         Mockito.when(world.getBus()).thenReturn(bus);
@@ -97,7 +92,7 @@ class PhysicsEngineTest {
         Vector before = tpE.getWind();
         tpE.changeWind();
         Vector after = tpE.getWind();
-        assertTrue(before.equals(after));
+        assertEquals(before, after);
     }
 
     @Test
@@ -506,6 +501,60 @@ class PhysicsEngineTest {
         //Worm has 100 HP and check if it loses some
         assertFalse(worm.isAlive());
 
+    }
+
+    @Test
+    void testFindClosestEnemyFromPosition_withEmptyList() {
+        Position searchPos = new Position(0, 0);
+        Team ownerTeam = Mockito.mock(Team.class);
+        Worm wormToExclude = Mockito.mock(Worm.class);
+        List<PhysicsBody> emptyList = List.of();
+        
+        Worm result = pE.findClosestEnemyFromPosition(searchPos, ownerTeam, wormToExclude, emptyList);
+        assertNull(result);
+    }
+
+    @Test
+    void testFindClosestEnemyFromPosition_withNoEnemies() {
+        Position searchPos = new Position(0, 0);
+        Team ownerTeam = new Team("OwnerTeam", 1, new Position[]{new Position(0,0)}, 0);
+        Worm ownerWorm = new Worm("Owner", ownerTeam);
+        
+        List<PhysicsBody> bodies = List.of(ownerWorm.getBody());
+        Worm result = pE.findClosestEnemyFromPosition(searchPos, ownerTeam, ownerWorm, bodies);
+        assertNull(result);
+    }
+
+    @Test
+    void testFindClosestEnemyFromPosition_withEnemies() {
+        Position searchPos = new Position(0, 0);
+        Team ownerTeam = new Team("OwnerTeam", 1, new Position[]{new Position(0,0)}, 0);
+        Team enemyTeam = new Team("EnemyTeam", 2, new Position[]{new Position(10,10), new Position(15,15)}, 0);
+        
+        Worm ownerWorm = new Worm("Owner", ownerTeam);
+        Worm enemyWorm1 = enemyTeam.getIndexWorm(0);
+        Worm enemyWorm2 = enemyTeam.getIndexWorm(1);
+        
+        ownerWorm.getBody().setPos(new Position(0, 0));
+        enemyWorm1.getBody().setPos(new Position(5, 5));
+        enemyWorm2.getBody().setPos(new Position(10, 10));
+        
+        List<PhysicsBody> bodies = List.of(ownerWorm.getBody(), enemyWorm1.getBody(), enemyWorm2.getBody());
+        Worm result = pE.findClosestEnemyFromPosition(searchPos, ownerTeam, ownerWorm, bodies);
+        assertEquals(enemyWorm1, result);
+    }
+
+    @Test
+    void testCalculateAngleToBody() {
+        Position fromPos = new Position(0, 0);
+        PhysicsBody targetBody = Mockito.mock(PhysicsBody.class);
+        Position targetPos = new Position(1, 1);
+        Mockito.when(targetBody.getPos()).thenReturn(targetPos);
+        Mockito.when(targetBody.getWidth()).thenReturn(2.0);
+        Mockito.when(targetBody.getHeight()).thenReturn(2.0);
+        
+        double angle = PhysicsEngine.calculateAngleToBody(fromPos, targetBody);
+        assertEquals(Math.PI / 4, angle, 0.001);
     }
 }
 

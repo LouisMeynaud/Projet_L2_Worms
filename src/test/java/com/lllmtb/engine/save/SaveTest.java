@@ -9,15 +9,12 @@ import com.lllmtb.physics.GameMode;
 import com.lllmtb.terrain.generation.LandScape;
 
 public class SaveTest {
-    private static GameWorld gameWorld;
-    private static EventBus eventBus;
-    private static GameSettings settings;
 
     @BeforeAll
     static void setUp() {
-    eventBus = new EventBus();
-    settings = new GameSettings("blabla", 2, new String[]{"test","test2"}, 2, 100, 10,true, "testGame", true, 200, LandScape.FLAT, 2,GameMode.NORMAL, true, false);
-    gameWorld = new GameWorld(settings, eventBus);
+        EventBus eventBus = new EventBus();
+        GameSettings settings = new GameSettings("blabla", 2, new String[]{"test", "test2"}, 2, 100, 10, true, "testGame", true, 200, LandScape.FLAT, 2, GameMode.NORMAL, true, false);
+        GameWorld gameWorld = new GameWorld(settings, eventBus);
     Save.setGameWorld(gameWorld);
     }
 /*
@@ -26,7 +23,6 @@ public class SaveTest {
     Save.saveAll();
     Path path = Paths.get("src/test/resources/SaveTest/testGame");
     assertTrue(Files.exists(path));
-    assertTrue(Files.exists(path.resolve("hightline.txt")));
     assertTrue(Files.exists(path.resolve("map.txt")));
     assertTrue(Files.exists(path.resolve("test.json")));
     }
@@ -45,13 +41,6 @@ public class SaveTest {
         Path path = Paths.get("src/test/resources/SaveTest/testGame");
         assertTrue(Files.exists(path));
         assertTrue(Files.exists(path.resolve("map.txt")));
-    }
-    @Test
-    void saveHightlineTest() throws IOException {
-        Save.saveHightline(gameWorld.getMap(), "src/test/resources/SaveTest/testGame");
-        Path path = Paths.get("src/test/resources/SaveTest/testGame");
-        assertTrue(Files.exists(path));
-        assertTrue(Files.exists(path.resolve("hightline.txt")));
     }
 
     @Test

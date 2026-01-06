@@ -7,14 +7,14 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.Image;
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.URL;
 import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
+
+import com.lllmtb.engine.logger.Logger;
 
 
 public class PanelListe extends JPanel {
@@ -24,10 +24,10 @@ public class PanelListe extends JPanel {
     private final JList<InfoLigne> maListe;
 
     private static class InfoLigne {
-        String titre;
-        String description;
-        ImageIcon image;
-        String nomMap;
+        final String titre;
+        final String description;
+        final ImageIcon image;
+        final String nomMap;
 
         public InfoLigne(String titre, String info, ImageIcon image, String nomMap) {
             this.titre = titre;
@@ -46,8 +46,10 @@ public class PanelListe extends JPanel {
     /**
      * Constructor of the panel that displays the list of maps available in the maps folder.
      * @param nomsMaps an array of Strings representing the map directory names.
+     * @param nomDossier the name of the dossier
+     * @param isExternal true if the search file is not in ressource , false else.
      */
-    public PanelListe(String[] nomsMaps) {
+    public PanelListe(String[] nomsMaps, String nomDossier, boolean isExternal) {
         setBackground(Color.DARK_GRAY);
         this.setLayout(new BorderLayout());
 
@@ -55,7 +57,7 @@ public class PanelListe extends JPanel {
 
         if (nomsMaps != null) {
             for (String nom : nomsMaps) {
-                InfoLigne info = loadInfoRessource(nom);
+                InfoLigne info = loadInfoRessource(nom, nomDossier, isExternal);
                 donneeMap.add(info);
             }
         }
@@ -89,27 +91,43 @@ public class PanelListe extends JPanel {
     }
 
 
-    private InfoLigne loadInfoRessource(String nomDossier) {
+    private InfoLigne loadInfoRessource(String nomDossier, String mainDossier, boolean isExternal) {
         String titre = nomDossier;
         String description = "";
         ImageIcon image = null;
 
         try {
-            String cheminInfo = "/map/" + nomDossier + "/" + NOM_FICHIER_INFO;
-            InputStream isText = getClass().getResourceAsStream(cheminInfo);
+            if (isExternal) {
+                File folder = new File(mainDossier + nomDossier);
 
-            if (isText != null) {
-                BufferedReader reader = new BufferedReader(new InputStreamReader(isText));
-                String ligne1 = reader.readLine();
-                if (ligne1 != null) {
-                    description = ligne1;
+                File infoFile = new File(folder, NOM_FICHIER_INFO);
+                if (infoFile.exists()) {
+                    BufferedReader bufferedReader = new BufferedReader(new FileReader(infoFile));
+                    description = bufferedReader.readLine();
+                    bufferedReader.close();
                 }
-                reader.close();
+                File imgFile = new File(folder, NOM_FICHIER_IMAGE);
+                if (imgFile.exists()) {
+                    Image img = ImageIO.read(imgFile);
+                    image = new ImageIcon(img.getScaledInstance(100, 100, Image.SCALE_SMOOTH));
+                }
             } else {
-                description = "Pas de fichier info";
-            }
 
-            String cheminImage = "/map/" + nomDossier + "/" + NOM_FICHIER_IMAGE;
+                String cheminInfo = mainDossier + nomDossier + "/" + NOM_FICHIER_INFO;
+                InputStream isText = getClass().getResourceAsStream(cheminInfo);
+
+                if (isText != null) {
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(isText));
+                    String ligne1 = reader.readLine();
+                    if (ligne1 != null) {
+                        description = ligne1;
+                    }
+                    reader.close();
+                } else {
+                    description = "Pas de fichier info";
+                }
+
+            String cheminImage = mainDossier + nomDossier + "/" + NOM_FICHIER_IMAGE;
             URL imageUrl = getClass().getResource(cheminImage);
 
             if (imageUrl != null) {
@@ -117,9 +135,10 @@ public class PanelListe extends JPanel {
                 Image imgRedimensionnee = imgOriginale.getScaledInstance(100, 100, Image.SCALE_FAST);
                 image = new ImageIcon(imgRedimensionnee);
             }
+
+                }
         } catch (Exception e) {
-            System.out.println("Probleme avec la map:" + nomDossier);
-            e.printStackTrace();
+            Logger.logger.error("Problem loading map: {}", nomDossier, e);
             titre = "erreur de lecture";
         }
         return new InfoLigne(titre, description, image, nomDossier);
@@ -128,10 +147,10 @@ public class PanelListe extends JPanel {
 
     private static class ListRenderer extends JPanel implements ListCellRenderer<InfoLigne> {
 
-        JLabel labelImage = new JLabel();
-        JLabel labelTitre = new JLabel();
-        JLabel labelDescription = new JLabel();
-        JPanel panelTextes = new JPanel();
+        final JLabel labelImage = new JLabel();
+        final JLabel labelTitre = new JLabel();
+        final JLabel labelDescription = new JLabel();
+        final JPanel panelTextes = new JPanel();
 
         public ListRenderer() {
             this.setLayout(new BorderLayout(10, 10));
@@ -164,11 +183,7 @@ public class PanelListe extends JPanel {
             labelImage.setIcon(valeur.image);
             setBackground(Color.GRAY);
 
-            if (isSelected) {
-                setOpaque(true);
-            } else {
-                setOpaque(false);
-            }
+            setOpaque(isSelected);
 
             return this;
         }

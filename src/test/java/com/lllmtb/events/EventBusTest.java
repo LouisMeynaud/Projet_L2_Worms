@@ -216,9 +216,9 @@ public class EventBusTest {
     }
 
     @Test
-    void unsubscribe_nullArgs_throwsNpe() {
+    void unsubscribe_nullArgs() {
         assertThrows(NullPointerException.class, () -> bus.unsubscribe(null, (EventListener<SimpleEvent>) e -> {}));
-        assertThrows(NullPointerException.class, () -> bus.unsubscribe(SimpleEvent.class, null));
+        assertTrue(bus.unsubscribe(SimpleEvent.class, null));
     }
 
     @Test

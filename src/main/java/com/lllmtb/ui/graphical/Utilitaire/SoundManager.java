@@ -1,4 +1,4 @@
-package com.lllmtb.ui.graphical;
+package com.lllmtb.ui.graphical.Utilitaire;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -47,7 +47,7 @@ public class SoundManager {
             clip.open(sound); //place le sont dans la place crée
             return clip;
         } catch (Exception e) {
-            Logger.logger.error("Error while loading sound : " + nom + " : ", e);
+            Logger.logger.error("Error while loading sound : {} : ", nom, e);
             return null;
         }
     }

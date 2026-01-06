@@ -1,4 +1,4 @@
-package com.lllmtb.ui.graphical;
+package com.lllmtb.ui.graphical.Utilitaire;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -65,7 +65,7 @@ public class Utilitaire {
             button.setRolloverIcon(new ImageIcon(imgButtonHoverScale));
 
         } catch (Exception e) {
-            Logger.logger.error("Error image " + name + " : " + e.getMessage());
+            Logger.logger.error("Error loading image {}", name, e);
             button.setText(name.toString());
         }
         button.setFocusable(false);
@@ -101,22 +101,15 @@ public class Utilitaire {
     /**
      * crée les bouton d'inventaire pour une arme.
      * gere l'affichage de l'icone locked si une arme est pas debloquer
-     * @param weaponkey l'id de l'arme
+     * @param weaponKey l'id de l'arme
      * @param ammoCount le nombre de munition
      * @param isUnlocked le boolean indiquant si l'arme est unlock ou non
      * @param size la taille du bouton
      * @return le bouton
      */
-    public static JButton createWeaponButton(WeaponId weaponkey, int ammoCount, boolean isUnlocked, int size) {
-        String searchKey;
-        //l'image a chercher (lock ou non)
-        if (isUnlocked) {
-            searchKey = weaponkey.toString();
-        } else {
-            searchKey =  "Locked" + weaponkey.toString();
-
-        }
-        String ammoKey = "Ammo" + weaponkey.toString();
+    public static JButton createWeaponButton(WeaponId weaponKey, int ammoCount, boolean isUnlocked, int size) {
+        String searchKey = isUnlocked ? weaponKey.toString() : ("Locked" + weaponKey.toString());
+        String ammoKey = "Ammo" + weaponKey;
         return createBaseItemButton(searchKey, ammoKey, ammoCount, isUnlocked, TextureManager.WEAPONS, size);
     }
 
@@ -130,8 +123,7 @@ public class Utilitaire {
     */
     public static JButton createToolButton(ToolId id, int ammoCount, boolean isUnlocked, int size) {
         String searchKey = id.toString();
-        String ammoKey = "Ammo" + id.toString();
-
+        String ammoKey = "Ammo" + id;
 
         return createBaseItemButton(searchKey, ammoKey, ammoCount, isUnlocked, TextureManager.TOOLS, size);
     }
@@ -164,8 +156,8 @@ public class Utilitaire {
                 caseLabel.setIcon(new ImageIcon(scaled));
             }
         } catch (Exception e) {
-            Logger.logger.error("Error image " + searchKey + " : " + e.getMessage());
-             }
+            Logger.logger.error("Error loading image {}", searchKey, e);
+        }
 
         button.add(caseLabel, BorderLayout.CENTER);
 
@@ -182,7 +174,7 @@ public class Utilitaire {
                     ammoPanel.add(new JLabel(new ImageIcon(scaledAmmo)));
                 }
             } catch (Exception e) {
-                Logger.logger.error("Error image " + ammoKey + " : " + e.getMessage());
+                Logger.logger.error("Error loading image {}", ammoKey, e);
             }
 
             //nombre
@@ -275,5 +267,4 @@ public class Utilitaire {
         button.setHorizontalTextPosition(SwingConstants.CENTER);
         return button;
     }
-
 }

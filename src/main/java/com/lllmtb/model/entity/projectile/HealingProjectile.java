@@ -38,11 +38,9 @@ public final class HealingProjectile extends Projectile implements ExplosiveProj
 
     @Override
     public List<GameCommand> onImpact(Entity entity) {
-        List<GameCommand> list = new ArrayList<GameCommand>();
+        List<GameCommand> list = new ArrayList<>();
         handleHit(list, entity, damage);
-        list.add((world -> {
-            world.getPhysics().createExplosion(this, RAYON_DEGAT_MAP, RAYON_SOUFFLE, DEGATS, FORCE_SOUFFLE, true);
-        }));
+        list.add((world -> world.getPhysics().createExplosion(this, RAYON_DEGAT_MAP, RAYON_SOUFFLE, DEGATS, FORCE_SOUFFLE, true)));
         list.add(delete());
         return list;
 

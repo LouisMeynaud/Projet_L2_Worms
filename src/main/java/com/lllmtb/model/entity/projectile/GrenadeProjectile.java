@@ -54,9 +54,7 @@ public final class GrenadeProjectile extends Projectile implements ExplosiveProj
         List<GameCommand> cmds = new ArrayList<>();
         this.tempsEcoule += tickTime;
         if (this.tempsEcoule >= this.remainingTime) {
-            cmds.add(world -> {
-                world.getPhysics().createExplosion(this, RAYON_DEGAT_MAP, RAYON_SOUFFLE, DEGATS, FORCE_SOUFFLE, false);
-            });
+            cmds.add(world -> world.getPhysics().createExplosion(this, RAYON_DEGAT_MAP, RAYON_SOUFFLE, DEGATS, FORCE_SOUFFLE, false));
             cmds.add(this.delete());
             this.remainingTime = Long.MAX_VALUE;
         }

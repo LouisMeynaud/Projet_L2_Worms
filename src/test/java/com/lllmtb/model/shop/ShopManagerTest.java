@@ -35,20 +35,20 @@ class ShopManagerTest {
     }
 
     @Test
-    void buyItem_unlocksWeapon_whenEnoughCredits() {
+    void buyWeapon_unlocksWeapon_whenEnoughCredits() {
         when(mockTeam.getCredits()).thenReturn(300);
 
-        shopManager.buyItem(WeaponId.SHOTGUN, mockTeam);
+        shopManager.buyWeapon(WeaponId.SHOTGUN, mockTeam);
 
         verify(mockTeam).removeCredits(250);
         verify(mockTeam).unlockWeapon(WeaponId.SHOTGUN);
     }
 
     @Test
-    void buyItem_doesNothing_whenNotEnoughCredits() {
+    void buyWeapon_doesNothing_whenNotEnoughCredits() {
         when(mockTeam.getCredits()).thenReturn(10); 
 
-        shopManager.buyItem(WeaponId.SHOTGUN, mockTeam);
+        shopManager.buyWeapon(WeaponId.SHOTGUN, mockTeam);
 
         verify(mockTeam, never()).removeCredits(120); // never pour verifier que removeCredits n est pas appeler
     verify(mockTeam, never()).unlockWeapon(WeaponId.SHOTGUN);
@@ -80,14 +80,14 @@ class ShopManagerTest {
 
         shopManager.buyAmmo(ToolId.PARACHUTE, mockTeam);
 
-        verify(mockTeam).removeCredits(40); 
+        verify(mockTeam).removeCredits(40);
         verify(mockTeam).addAmmo(ToolId.PARACHUTE, 1);
     }
 
     @Test
-    void buyItem_withInfiniteCredits() {
+    void buyWeapon_withInfiniteCredits() {
         when(mockTeam.getCredits()).thenReturn(-1); // -1 = infinite credits
-        shopManager.buyItem(WeaponId.SHOTGUN, mockTeam);
+        shopManager.buyWeapon(WeaponId.SHOTGUN, mockTeam);
         verify(mockTeam).removeCredits(250);
         verify(mockTeam).unlockWeapon(WeaponId.SHOTGUN);
     }

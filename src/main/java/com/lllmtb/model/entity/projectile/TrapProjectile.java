@@ -26,7 +26,7 @@ public final class TrapProjectile extends Projectile {
 
     @Override
     public CollisionType getCollisionType() {
-        return CollisionType.TOUCH;
+        return CollisionType.SLIDE;
     }
 
     @Override
@@ -36,15 +36,18 @@ public final class TrapProjectile extends Projectile {
 
     @Override
     public List<GameCommand> onImpact(Entity entity) {
-        if (entity == null) {
+        if (entity == null && this.getBody().getVector().getY() == 0) {
             List<GameCommand> list = new ArrayList<>();
-            handleHit(list, entity, damage);
-            list.add((world -> world.getMap().setTile(new Position(this.getBody().getPos().getX(), this.getBody().getPos().getY() - 1), Tile.TRAP)));
+            Position p = new Position(this.getBody().getPos().getX(), this.getBody().getPos().getY() - 1);
+            list.add((world -> {
+                if (world.getMap().getTile(p) == Tile.AIR) world.getMap().setTile(p, Tile.TRAP);
+                if (world.getMap().getTile(p) == Tile.CAVERN) world.getMap().setTile(p, Tile.TRAPCAVERN);
+            }));
             list.add(world -> world.getBus().postQueued(new MapUpdateEvent(new Position(this.getBody().getPos().getX(), this.getBody().getPos().getY() - 1), 2)));
             list.add(delete());
             return list;
         }
-            return null;
+        return null;
     }
 
     @Override

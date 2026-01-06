@@ -8,7 +8,6 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -23,14 +22,13 @@ import com.lllmtb.physics.Position;
 
 public class ProjectileTest {
     private Worm owner;
-    private Position spawn;
     private UseParams params;
 
     @BeforeEach
     public void setUp() {
         Team team = new Team("TestTeam", 1, new Position[]{new Position(0, 0)}, 0);
         this.owner = new Worm("Test", team);
-        this.spawn = new Position(3.0, 0.0);
+        Position spawn = new Position(3.0, 0.0);
         double angle = Math.PI / 4.0;
         this.params = new UseParams(angle, spawn, owner, 0);
     }

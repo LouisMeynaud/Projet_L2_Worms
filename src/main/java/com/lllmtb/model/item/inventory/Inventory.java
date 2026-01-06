@@ -19,10 +19,23 @@ import java.util.*;
  * The inventory is maintained per team, rather than per worm.
  */
 public final class Inventory {
+    // Registry of all weapons with their ammo counts when the team find them
     public final WeaponRegistry weapons = new WeaponRegistry();
+    // Set of currently unlocked weapons
     private final Set<WeaponId> unlocked = EnumSet.noneOf(WeaponId.class);
+    // Registry of all tools with their ammo counts when the team find them
     public final ToolRegistry tools = new ToolRegistry();
 
+    /**
+     * Constructs a new {@code Inventory} with default weapons and tools.
+     * <p>
+     * By default, the inventory includes:
+     * <ul>
+     *     <li>A gun with infinite ammo</li>
+     *     <li>A baseball bat with infinite ammo</li>
+     *     <li>A parachute tool with 2 uses</li>
+     * </ul>
+     */
     public Inventory() {
         weapons.addAmmo(WeaponId.GUN, -1);
         unlocked.add(WeaponId.GUN);
@@ -68,7 +81,6 @@ public final class Inventory {
 
     /**
      * Checks whether a weapon can currently be fired.
-     * <p>
      * A weapon can fire if it is unlocked and has at least one ammo unit left.
      * @param id the weapon identifier
      * @return {@code true} if the weapon can fire, {@code false} otherwise
@@ -81,10 +93,9 @@ public final class Inventory {
 
     /**
      * Attempts to fire the given weapon.
-     * <p>
      * If the weapon is unlocked and has ammo available, one ammo unit is consumed
      * and a new list of instructions is created and returned.
-     * @param id     the weapon identifier
+     * @param id the weapon identifier
      * @param params the firing parameters (must not be {@code null})
      * @return the newly created {@link List<GameCommand>} commands to execute
      * @throws NullPointerException    if {@code params} is {@code null}
@@ -104,7 +115,6 @@ public final class Inventory {
 
     /**
      * Checks whether a tool can be used.
-     * <p>
      * A tool can be used if it has at least one ammo unit left (more conditions later?).
      * @param id the tool identifier
      * @return {@code true} if the tool can be used, {@code false} otherwise
@@ -117,10 +127,9 @@ public final class Inventory {
 
     /**
      * Attempts to use the given tool.
-     * <p>
      * If the tool has ammo available, one ammo unit is consumed
      * and a new list of instructions is created and returned.
-     * @param id     the tool identifier
+     * @param id the tool identifier
      * @param params the use parameters (must not be {@code null})
      * @return the newly created {@link List<GameCommand>} commands to execute
      * @throws NullPointerException  if {@code params} is {@code null}
