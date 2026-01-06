@@ -82,8 +82,8 @@ public enum Tile {
     }
 
     /**
-     *
-     * @return the damage that the Tile causes upon contact with
+     * Gets the damage per tick of the tile.
+     * @return Damage value. (-1 if kill instantly)
      */
     public double getDamage() {
         return this.damage;
