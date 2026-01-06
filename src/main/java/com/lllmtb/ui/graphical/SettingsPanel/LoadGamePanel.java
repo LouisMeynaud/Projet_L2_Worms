@@ -11,14 +11,14 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
 import com.lllmtb.engine.logger.Logger;
+import com.lllmtb.engine.save.Load;
 import com.lllmtb.engine.save.SaveConfig;
 import com.lllmtb.events.EventBus;
 import com.lllmtb.events.game.DeleteSaveEvent;
 import com.lllmtb.events.game.LoadEvent;
 import com.lllmtb.events.ui.graphical.ScreenNewOrLoadEvent;
-import com.lllmtb.terrain.map.MapLoader;
-import com.lllmtb.ui.graphical.TextureManager;
-import com.lllmtb.ui.graphical.Utilitaire;
+import com.lllmtb.ui.graphical.Utilitaire.TextureManager;
+import com.lllmtb.ui.graphical.Utilitaire.Utilitaire;
 
 public class LoadGamePanel extends JPanel {
 
@@ -44,7 +44,7 @@ public class LoadGamePanel extends JPanel {
 
 
 
-        this.panelListe = new PanelListe(MapLoader.getListeNomsLoads(), SaveConfig.SAVE_DIRECTORY, true);
+        this.panelListe = new PanelListe(Load.getListeNomsLoads(), SaveConfig.SAVE_DIRECTORY, true);
         this.add(panelListe, BorderLayout.CENTER);
 
 
@@ -65,7 +65,7 @@ public class LoadGamePanel extends JPanel {
             if (dossierSelectionne != null) {
                 eventBus.postQueued(new DeleteSaveEvent(dossierSelectionne));
                 this.remove(this.panelListe);
-                this.panelListe = new PanelListe(MapLoader.getListeNomsLoads(), SaveConfig.SAVE_DIRECTORY, true);
+                this.panelListe = new PanelListe(Load.getListeNomsLoads(), SaveConfig.SAVE_DIRECTORY, true);
                 this.add(this.panelListe, BorderLayout.CENTER);
                 this.revalidate();
                 this.repaint();
@@ -76,11 +76,11 @@ public class LoadGamePanel extends JPanel {
         starButton.addActionListener(e -> {
             String dossierSelectionne = panelListe.getSelectedMapName();
             if (dossierSelectionne != null) {
-                Logger.logger.debug("Chargement du dossier : " + dossierSelectionne);
+                Logger.logger.debug("Loading folder : {}", dossierSelectionne);
                 eventBus.postQueued(new LoadEvent(dossierSelectionne));
 
             } else {
-                Logger.logger.debug("aucun dossier choçisi");
+                Logger.logger.debug("No save folder selected to load.");
             }
         });
 

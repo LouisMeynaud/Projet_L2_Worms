@@ -35,7 +35,6 @@ import java.util.concurrent.ConcurrentLinkedDeque;
 
 public class GameWorldScreen implements Runnable {
     private final Terminal terminal;
-    private final EventBus systemBus;
     private GameWorld world;
 
     // Panel dimensions (calculated on resize)
@@ -108,16 +107,13 @@ public class GameWorldScreen implements Runnable {
 
     public GameWorldScreen(Terminal terminal, EventBus systemBus) {
         this.terminal = terminal;
-        this.systemBus = systemBus;
         calculatePanelDimensions();
 
         // Handle gameworld creation
         systemBus.subscribe(WorldCreatedEvent.class, this::onWorldCreated);
 
         // Log all system bus events
-        systemBus.subscribe(Event.class, event -> {
-            addSystemLog(event.getClass().getSimpleName());
-        });
+        systemBus.subscribe(Event.class, event -> addSystemLog(event.getClass().getSimpleName()));
 
         // Handle terminal resize
         terminal.handle(Terminal.Signal.WINCH, sig -> {
@@ -127,7 +123,7 @@ public class GameWorldScreen implements Runnable {
     }
 
     private void onWorldCreated(WorldCreatedEvent event) {
-        this.world = event.getWorld();
+        this.world = event.world();
         subscribeToWorldEvents();
         centerViewportOnCurrentWorm();
         cachedMapRows = null;
@@ -150,14 +146,10 @@ public class GameWorldScreen implements Runnable {
         worldBus.subscribe(ProcessInputsEvent.class, e -> processMoveInputs());
 
         // Center viewport on every game state update (every tick)
-        worldBus.subscribe(GameStateUpdatedEvent.class, e -> {
-            followCurrentWorm();
-        });
+        worldBus.subscribe(GameStateUpdatedEvent.class, e -> followCurrentWorm());
 
         // Trigger full map redraw only when map is modified
-        worldBus.subscribe(MapUpdateEvent.class, e -> {
-            cachedMapRows = null;
-        });
+        worldBus.subscribe(MapUpdateEvent.class, e -> cachedMapRows = null);
 
         // Turn events - add ammo for testing purposes
         worldBus.subscribe(TurnStartEvent.class, e -> {
@@ -270,7 +262,7 @@ public class GameWorldScreen implements Runnable {
                     renderPartial();
                 }
 
-                Thread.sleep(8); // cap tick rate (~125 TPS)
+                Thread.sleep(8); // cap tick rate (~120 TPS)
             }
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
@@ -350,7 +342,9 @@ public class GameWorldScreen implements Runnable {
             }
 
             // Skip turn
-            case 't', 'T' -> world.getBus().postQueued(new TurnSkipEvent());
+            case 't', 'T' -> {
+                world.getBus().postQueued(new TurnSkipEvent());
+            }
 
             // Quit
             case 'q', 'Q' -> {

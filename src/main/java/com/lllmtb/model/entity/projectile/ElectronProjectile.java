@@ -47,7 +47,7 @@ public final class ElectronProjectile extends Projectile {
         if (entity == null) {
             return new ArrayList<>();
         }
-        List<GameCommand> list = new ArrayList<GameCommand>();
+        List<GameCommand> list = new ArrayList<>();
         handleHit(list, entity, damage);
         Worm hitWorm = null;
         if (entity instanceof Worm) {

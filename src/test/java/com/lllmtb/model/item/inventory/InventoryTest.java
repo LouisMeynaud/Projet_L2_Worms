@@ -15,14 +15,13 @@ import java.util.*;
 
 public class InventoryTest {
     private Position testPosition;
-    private Team testTeam;
     private Worm testWorm;
     private Inventory inventory;
 
     @BeforeEach
     public void setUp() {
         testPosition = new Position(0, 0);
-        testTeam = new Team("TestTeam", 1, new Position[]{testPosition}, 0);
+        Team testTeam = new Team("TestTeam", 1, new Position[]{testPosition}, 0);
         testWorm = testTeam.getTeamWorms().get(0);
         inventory = new Inventory();
     }

@@ -4,7 +4,7 @@ import com.lllmtb.engine.logger.Logger;
 /**
  * A class that allows for map balancing after random generation in order to
  * maintain consistency and fairness between the two sides and therefore the two
- * teams
+ * teams.
  */
 public class MapBalancer {
 
@@ -61,6 +61,7 @@ public class MapBalancer {
      * @param thicknessMin the minimum desired thickness
      * @param epaisseur    the current thickness of the card
      * @param hightLine    the upper line which will be increased in order to obtain the desired minimum thickness
+     * @param mapHeight    the maximum height (the height of the map)
      */
     protected static void thicknessBalencer(final int thicknessMin, final int epaisseur, final int[] hightLine, int mapHeight) {
         try {
@@ -94,9 +95,9 @@ public class MapBalancer {
             for (int x = start; x < end; x++) {
                 somme += (hightLine[x] - lowLine[x]);
             }
-            return (int) somme / (end - start);
+            return somme / (end - start);
         } catch (Exception e) {
-            Logger.logger.error("Erreur dans averageThickness", e);
+            Logger.logger.error("Error in averageThickness", e);
             return 0;
         }
     }

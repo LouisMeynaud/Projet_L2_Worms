@@ -32,7 +32,7 @@ public final class BulletProjectile extends Projectile {
 
     @Override
     public List<GameCommand> onImpact(Entity entity) {
-        List<GameCommand> list = new ArrayList<GameCommand>();
+        List<GameCommand> list = new ArrayList<>();
         handleHit(list, entity, damage);
         list.add(delete());
         return list;

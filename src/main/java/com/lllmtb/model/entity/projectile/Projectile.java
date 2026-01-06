@@ -16,7 +16,7 @@ import java.util.Objects;
 public abstract class Projectile extends Entity {
     private final PhysicsBody body;
     private final Worm owner;
-    private static boolean friendlyfire = true;
+    private static volatile boolean friendlyfire = true;
     public enum PROJECTILE {
     BabyTowerProjectile,
     BowProjectile,
@@ -62,6 +62,10 @@ public abstract class Projectile extends Entity {
         Projectile.friendlyfire = friendlyfire;
     }
 
+    public static boolean isFriendlyfire() {
+        return friendlyfire;
+    }
+
     /**
      * Called by collision detection when an impact is detected.
      */
@@ -90,13 +94,5 @@ public abstract class Projectile extends Entity {
 
     protected GameCommand delete() {
         return new RemoveEntityCommand(this);
-    }
-
-    public static boolean isFriendlyfire() {
-        return friendlyfire;
-    }
-
-    public List<GameCommand> update(long dt) {
-        return new java.util.ArrayList<>();
     }
 }

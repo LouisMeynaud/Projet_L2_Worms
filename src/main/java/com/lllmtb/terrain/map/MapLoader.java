@@ -1,7 +1,7 @@
 package com.lllmtb.terrain.map;
 
+import com.lllmtb.engine.logger.Logger;
 import com.lllmtb.engine.save.SaveConfig;
-import java.io.File;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -12,11 +12,10 @@ public class MapLoader {
 
     /**
      * Load a map from a given map name.
-     * @param directoryName
+     * @param directoryName the name of the directory where the map is stored.
      * @return the loaded Map object.
      */
-
-    public static Map loadMatrixLoad(String directoryName) {
+    public static Map loadMapLoad(String directoryName) {
         try {
             Path path = Paths.get(SaveConfig.SAVE_DIRECTORY + directoryName + "/map.txt");
 
@@ -27,7 +26,7 @@ public class MapLoader {
 
             // Lecture du fichier externe
             String contentMap = Files.readString(path, StandardCharsets.UTF_8);
-            return parseMapData(contentMap, directoryName);
+            return loadMatrix(contentMap, directoryName);
 
         } catch (Exception e) {
             System.err.println("Erreur lors du chargement de la sauvegarde : " + e.getMessage());
@@ -37,10 +36,10 @@ public class MapLoader {
 
     /**
      * Load a map from a given map name.
-     * @param mapName
+     * @param mapName the name of the map to load.
      * @return the loaded Map object.
      */
-    public static Map loadMatrix(String mapName) {
+    public static Map loadMap(String mapName) {
         try {
             URL resource = MapLoader.class.getResource("/map/" + mapName + "/map.txt");
             if (resource == null) {
@@ -48,13 +47,20 @@ public class MapLoader {
             }
             Path path = Paths.get(resource.toURI());
             String contentMap = Files.readString(path);
-            return  parseMapData(contentMap, mapName);
+            return loadMatrix(contentMap, mapName);
         } catch (Exception e) {
-            System.out.println(e); // NB. Il faudra mieux gérer cette exception
+            Logger.logger.error("Error while loading map {} : ", mapName, e);
             return null;
         }
     }
-    public static Map parseMapData(String contentMap, String name) {
+
+    /**
+     * transform a string representation of map in a instance of map.
+     * @param contentMap the String representation of map
+     * @param name the name of the
+     * @return the instance of the map
+     */
+    public static Map loadMatrix(String contentMap, String name) {
             String[] row = contentMap.split("\n");
             Map tileMatrix = new Map(row.length, row[0].length(), name + ".txt");
 
@@ -72,21 +78,5 @@ public class MapLoader {
      */
     public static String[] getListeNomsMaps() {
         return new String[] {"Camembert", "Emmental", "Gorgonzola", "Roquefort", "Feta", "Cendré de Lune" };
-    }
-
-    public static String[] getListeNomsLoads() {
-        File folder = new File(SaveConfig.SAVE_DIRECTORY);
-        if (!folder.exists() || !folder.isDirectory()) {
-            return new String[0];
-        }
-        File[] subFolders = folder.listFiles(File::isDirectory);
-        if (subFolders == null) {
-            return new String[0];
-        }
-        String[] saveNames = new String[subFolders.length];
-        for (int i = 0; i < subFolders.length; i++) {
-            saveNames[i] = subFolders[i].getName();
-        }
-        return saveNames;
     }
 }

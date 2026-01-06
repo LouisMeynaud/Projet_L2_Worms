@@ -10,8 +10,8 @@ import com.lllmtb.events.EventBus;
 
 public class GameScreen extends JLayeredPane {
 
-    private GameWorldPanel gameWorldPanel;
-    private GameUIPanel gameUIPanel;
+    private final GameWorldPanel gameWorldPanel;
+    private final GameUIPanel gameUIPanel;
 
 
     /**
