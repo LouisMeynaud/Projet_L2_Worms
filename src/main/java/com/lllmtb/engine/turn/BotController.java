@@ -59,7 +59,7 @@ public class BotController {
                 shotsLeft = Turn.FIRE_LIMIT_PER_TURN;
                 state = State.WAITING_START;
                 stateTimer = 1000;
-                Logger.logger.info("Bot logic started for team {}", currentTeam.name);
+                Logger.logger.debug("? Bot logic started for team {}", currentTeam.name);
             } else {
                 active = false;
                 state = State.IDLE;
@@ -77,7 +77,7 @@ public class BotController {
 
         bus.subscribe(ProcessInputsEvent.class, event -> {
              if (active && state == State.MOVING) {
-                 Logger.logger.info("? Bot processing move input: {}", moveDirection);
+                 Logger.logger.debug("? Bot processing move input: {}", moveDirection);
                  if (moveDirection != null) {
                      world.getBus().postQueued(new MoveInputEvent(moveDirection));
                  }
@@ -99,7 +99,7 @@ public class BotController {
 
         switch (state) {
             case WAITING_START:
-                Logger.logger.info("? Bot waiting for current worm");
+                Logger.logger.debug("? Bot waiting for current worm");
                  if (world.getPlayingTeam() != null && world.getPlayingTeam().getCurrentWorm() != null) {
                      currentWorm = world.getPlayingTeam().getCurrentWorm();
                      state = State.SELECT_WEAPON;
@@ -108,7 +108,7 @@ public class BotController {
                  break;
 
             case SELECT_WEAPON:
-                Logger.logger.info("? Bot selecting weapon");
+                Logger.logger.debug("? Bot selecting weapon");
                 world.getBus().postQueued(new WeaponSelectedEvent(WeaponId.GUN));
                 state = State.MOVING;
                 stateTimer = 0;
@@ -117,11 +117,11 @@ public class BotController {
                 break;
 
             case MOVING:
-                Logger.logger.info("? Bot entering MOVING state, current target: {}", targetWorm != null ? targetWorm.uuid : "NONE");
+                Logger.logger.debug("? Bot entering MOVING state, current target: {}", targetWorm != null ? targetWorm.uuid : "NONE");
 
                 if (targetWorm == null || !targetWorm.isAlive()) {
                     targetWorm = findNearestEnemy();
-                    Logger.logger.info("? Bot found new target worm {}", targetWorm != null ? targetWorm.uuid : "NONE");
+                    Logger.logger.debug("? Bot found new target worm {}", targetWorm != null ? targetWorm.uuid : "NONE");
                     if (targetWorm == null) {
                         state = State.ENDING;
                         return;
@@ -132,18 +132,18 @@ public class BotController {
                 double targetX = targetWorm.getBody().getPos().getX();
                 double dist = Math.abs(targetX - myX);
 
-                Logger.logger.info("? Bot distance to target: {} - Move timer: {}", dist, moveTimer);
+                Logger.logger.debug("? Bot distance to target: {} - Move timer: {}", dist, moveTimer);
                 if (dist > 10 && moveTimer > 0) {
                     moveTimer -= dt;
                     moveDirection = targetX < myX ? Direction.Left : Direction.Right;
-                    Logger.logger.info("? Bot decided to move {}", moveDirection);
+                    Logger.logger.debug("? Bot decided to move {}", moveDirection);
 
                     // Random jump
                      if (random.nextInt(100) < 2) {
                          world.getBus().postQueued(new MoveInputEvent(Direction.Up));
                      }
                 } else {
-                    Logger.logger.info("? Bot finished moving");
+                    Logger.logger.debug("? Bot finished moving");
                     moveDirection = null;
                     state = State.AIMING;
                     stateTimer = 1000;
@@ -151,26 +151,25 @@ public class BotController {
                 break;
 
             case AIMING:
-                Logger.logger.info("? Bot aiming at target worm {}", targetWorm != null ? targetWorm.uuid : "NONE");
+                Logger.logger.debug("? Bot aiming at target worm {}", targetWorm != null ? targetWorm.uuid : "NONE");
                  state = State.SHOOTING;
                  stateTimer = 500;
                  break;
 
             case SHOOTING:
-                Logger.logger.info("? Bot shooting at target worm {}", targetWorm != null ? targetWorm.uuid : "NONE");
                 if (targetWorm != null && targetWorm.isAlive()) {
+                    Logger.logger.debug("? Bot shooting at target worm {}", targetWorm != null ? targetWorm.uuid : "NONE");
                     Position predictedPos = calculateAimPosition(currentWorm, targetWorm);
                     world.getBus().postQueued(new UseInputEvent(predictedPos, 1));
-                    Logger.logger.info("? Bot shooting at {}", predictedPos);
                     shotsLeft--;
                 }
                 if (shotsLeft > 0) {
-                    Logger.logger.info("? Bot preparing for next shot, shots left: {}", shotsLeft);
+                    Logger.logger.debug("? Bot preparing for next shot, shots left: {}", shotsLeft);
                     state = State.MOVING;
                     stateTimer = 0;
                     moveTimer = 2000;
                 } else {
-                    Logger.logger.info("? No shots left, bot ending turn");
+                    Logger.logger.debug("? No shots left, bot ending turn");
                     state = State.ENDING;
                     stateTimer = 2000;
                 }
