@@ -70,7 +70,7 @@ public class Load {
         try (FileReader reader = new FileReader(stringpath)) {
             return gson.fromJson(reader, GameSave.class);
     } catch (IOException e) {
-            Logger.logger.error("Erreur Lors de la lecture du fichier {} : {}", stringpath, e.getMessage());
+            Logger.logger.error("Error with while reading the file {} : {}", stringpath, e.getMessage());
             throw new RuntimeException(e);
         }
     }
@@ -195,16 +195,18 @@ public class Load {
 
 
     /**
-     * Récupère un identifiant d'objet (ItemId) à partir de sa catégorie et de son nom.
+     * Retrieves an item identifier (ItemId) based on its category and name.
      * <p>
-     * Cette méthode permet de convertir les chaînes de caractères lues depuis le fichier
-     * de sauvegarde en constantes d'énumération réelles {@link WeaponId} ou {@link ToolId}.
+     * This method converts strings read from the save file into actual
+     * enumeration constants: {@link WeaponId} or {@link ToolId}.
      * </p>
      *
-     * @param category La catégorie de l'objet (doit être "WEAPONID" pour une arme, sinon traité comme outil).
-     * @param name     Le nom technique de l'objet (ex: "BAZOOKA").
-     * @return L'instance correspondante de {@link ItemId}.
-     * @throws IllegalArgumentException Si le nom ne correspond à aucune constante dans l'énumération cible.
+     * @param category The category of the item (must be "WEAPONID" for a weapon,
+     * otherwise it is treated as a tool).
+     * @param name     The technical name of the item (e.g., "BAZOOKA").
+     * @return The corresponding instance of {@link ItemId}.
+     * @throws IllegalArgumentException If the name does not match any constant
+     * in the target enumeration.
      */
     public static ItemId recoverItem(String category, String name) {
         if ("WEAPONID".equals(category)) {
@@ -215,14 +217,15 @@ public class Load {
     }
 
     /**
-     * Analyse le répertoire de sauvegarde pour lister les noms de toutes les parties disponibles.
+     * Scans the save directory to list the names of all available save games.
      * <p>
-     * La méthode vérifie l'existence du dossier racine défini dans {@link SaveConfig#SAVE_DIRECTORY}
-     * et filtre uniquement les sous-répertoires (chaque sous-répertoire représentant une sauvegarde).
+     * This method checks for the existence of the root directory defined in
+     * {@link SaveConfig#SAVE_DIRECTORY} and filters only subdirectories
+     * (each subdirectory representing a save).
      * </p>
      *
-     * @return Un tableau de chaînes de caractères contenant les noms des dossiers de sauvegarde.
-     * Retourne un tableau vide si le répertoire est invalide, inexistant ou vide.
+     * @return An array of strings containing the names of the save folders.
+     * Returns an empty array if the directory is invalid, non-existent, or empty.
      */
     public static String[] getListeNomsLoads() {
         File folder = new File(SaveConfig.SAVE_DIRECTORY);

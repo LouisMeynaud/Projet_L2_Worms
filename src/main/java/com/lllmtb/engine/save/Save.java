@@ -145,16 +145,16 @@ public class Save {
     }
 
     /**
-     * Convertit une instance de {@link Map} en une {@link BufferedImage} rendue.
+     * Converts a {@link Map} instance into a rendered {@link BufferedImage}.
      * <p>
-     * Cette méthode itère sur la matrice de tuiles de la carte, dessine un fond bleu ciel,
-     * puis superpose les textures de tuiles correspondantes récupérées via le {@link TextureManager}.
-     * Chaque tuile est rendue avec une taille fixe de 12 pixels.
+     * This method iterates through the map's tile matrix, draws a sky-blue background,
+     * and سپس overlays the corresponding tile textures retrieved via the {@link TextureManager}.
+     * Each tile is rendered with a fixed size of 12 pixels.
      * </p>
      *
-     * @param map La carte du jeu à convertir en image.
-     * @return Une {@link BufferedImage} représentant graphiquement la carte.
-     * @throws IOException Si une erreur survient lors de la manipulation des ressources graphiques.
+     * @param map The game map to be converted into an image.
+     * @return A {@link BufferedImage} graphically representing the map.
+     * @throws IOException If an error occurs during the handling of graphical resources.
      */
     public static BufferedImage maptoBuffered(Map map) throws IOException {
         int tileSize = 12;
@@ -189,15 +189,15 @@ public class Save {
     }
 
     /**
-     * Enregistre une {@link BufferedImage} sur le disque local au format PNG.
+     * Saves a {@link BufferedImage} to the local disk in PNG format.
      * <p>
-     * L'image est sauvegardée sous le nom fixe {@code image.png} dans le répertoire spécifié.
-     * Si l'image fournie est {@code null}, l'opération est annulée sans erreur.
+     * The image is saved under the fixed filename {@code image.png} in the specified directory.
+     * If the provided image is {@code null}, the operation is aborted without error.
      * </p>
      *
-     * @param image      L'image à sauvegarder sur le système de fichiers.
-     * @param stringPath Le chemin du répertoire de destination.
-     * @throws IOException Si une erreur critique d'entrée/sortie survient lors de l'écriture du fichier.
+     * @param image      The image to save to the file system.
+     * @param stringPath The destination directory path.
+     * @throws IOException If a critical I/O error occurs while writing the file.
      */
     public static void saveImage(BufferedImage image, String stringPath) throws IOException {
         if (image == null) {
