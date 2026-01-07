@@ -45,7 +45,7 @@
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-api</artifactId>
-            <version>2.25.2</version>
+            <version>2.25.3</version>
         </dependency>
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
@@ -55,7 +55,7 @@
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-slf4j2-impl</artifactId>
-            <version>2.25.2</version>
+            <version>2.25.3</version>
         </dependency>
         <dependency>
             <groupId>com.google.code.gson</groupId>
@@ -193,6 +193,7 @@
                         <exclude>com/lllmtb/engine/GameLoop.class</exclude>
                         <exclude>com/lllmtb/engine/save/*</exclude>
                         <exclude>com/lllmtb/engine/logger/*</exclude>
+                        <exclude>com/lllmtb/engine/turn/TurnManager.class</exclude>
                         <exclude>com/lllmtb/ui/console/*</exclude>
                         <exclude>com/lllmtb/ui/graphical/**/*</exclude>
                         <exclude>com/lllmtb/model/entity/projectile/*</exclude>

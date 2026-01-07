@@ -10,6 +10,8 @@ public enum Tile {
     ICE('I', '#', true, 4, 1, 0),
     SNOW('S', '_', true, 4, 1, 0),
     LAVA('L', 'L', false, 4, 0.90, 0.5),
+    TRAP('T', 'T', false, 3, 0.90, 0.5),
+    TRAPCAVERN('T', 'T', false, 3, 0.90, 0.5),
     MOONGRASS('M', '_', true, 4, 0.90, 0),
     MOONDIRT('N', '#', true, 4, 0.90, 0),
     MOONUNDERDIRT('X', '#', true, 1, 0.90, 0);
@@ -28,6 +30,7 @@ public enum Tile {
      * @param solid True if the tile is solid
      * @param nbTexture Number of textures
      * @param friction Friction of Tile. 1.0 = no friction, 0.0 = full friction
+     * @param damage the damage that the Tile causes upon contact with
      */
     Tile(char fileSymbol, char consoleSymbol, boolean solid, int nbTexture, double friction, double damage) {
         this.fileSymbol = fileSymbol;
@@ -78,6 +81,10 @@ public enum Tile {
         return this.friction;
     }
 
+    /**
+     * Gets the damage per tick of the tile.
+     * @return Damage value. (-1 if kill instantly)
+     */
     public double getDamage() {
         return this.damage;
     }

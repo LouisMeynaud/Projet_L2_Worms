@@ -14,7 +14,7 @@ public final class ShotGunProjectile extends Projectile {
     private static final double mass   = 0.030;
     private static final double height = 0.5;
     private static final double width  = 0.5;
-    private static final int damage = 50;
+    private static final int damage = 7;
 
     /**
      * Constructor for ShotGunProjectile.
@@ -31,7 +31,7 @@ public final class ShotGunProjectile extends Projectile {
 
     @Override
     public List<GameCommand> onImpact(Entity entity) {
-        List<GameCommand> list = new ArrayList<GameCommand>();
+        List<GameCommand> list = new ArrayList<>();
         handleHit(list, entity, damage);
         list.add(delete());
         return list;

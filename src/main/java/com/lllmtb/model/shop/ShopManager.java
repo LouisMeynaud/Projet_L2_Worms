@@ -17,6 +17,7 @@ public class ShopManager {
     private final EventBus eventBus;
     /**
      * Constructor initializes the shop manager and populates the shop with items.
+     * @param eventBus the eventbus of the game.
      */
     public ShopManager(EventBus eventBus) {
         this.items = new ArrayList<>();
@@ -28,24 +29,24 @@ public class ShopManager {
      * Initializes the shop with items, their prices, and ammo pack sizes.
      */
     private void initShop() {
-        //prix temporaires , a changer plus tard
+        //Weapons
+        items.add(new ShopElement(WeaponId.SHOTGUN, "shotgun", 250, 50, 3));
+        items.add(new ShopElement(WeaponId.BAZOOKA, "bazooka", 400, 80, 1));
+        items.add(new ShopElement(WeaponId.GASGUN, "gasgun", 450, 90, 1));
+        items.add(new ShopElement(WeaponId.ELECTRONCANON, "electroncanon", 600, 120, 1));
+        items.add(new ShopElement(WeaponId.HEALINGBAZOOKA, "healingbazooka", 230, 100, 1));
+        items.add(new ShopElement(WeaponId.BOW, "bow", 140, 30, 3));
 
-        items.add(new ShopElement(WeaponId.SHOTGUN, "shotgun", 120, 40, 5));
-        items.add(new ShopElement(WeaponId.BAZOOKA, "bazooka", 150, 50, 1));
-        items.add(new ShopElement(WeaponId.GASGUN, "gasgun", 150, 60, 2));
-        items.add(new ShopElement(WeaponId.ELECTRONCANON, "electroncanon", 250, 70, 1));
-        items.add(new ShopElement(WeaponId.HEALINGBAZOOKA, "healingbazooka", 100, 40, 1));
-        items.add(new ShopElement(WeaponId.BOW, "bow", 100, 40, 3));
         //Tools
-        items.add(new ShopElement(ToolId.GRENADE, "grenade", 100, 60, 1));
-
-        items.add(new ShopElement(ToolId.JETPACK, "jetpack", 150, 90, 1));
-        items.add(new ShopElement(ToolId.CALLSTRIKE, "callstrike", 150, 90, 1));
-        items.add(new ShopElement(ToolId.PARACHUTE, "parachute", 50, 20, 1));
-        items.add(new ShopElement(ToolId.CATCONCRETE, "catconcrete", 150, 90, 1));
+        items.add(new ShopElement(ToolId.GRENADE, "grenade", 150, 150, 1));
+        items.add(new ShopElement(ToolId.JETPACK, "jetpack", 150, 150, 1));
+        items.add(new ShopElement(ToolId.CALLSTRIKE, "callstrike", 400, 400, 1));
+        items.add(new ShopElement(ToolId.PARACHUTE, "parachute", 40, 40, 1));
+        items.add(new ShopElement(ToolId.CATCONCRETE, "catconcrete", 200, 200, 1));
         items.add(new ShopElement(ToolId.TOWER, "tower", 150, 150, 1));
-        items.add(new ShopElement(ToolId.MINE, "mine", 100, 100, 1));
-        items.add(new ShopElement(ToolId.MEDKIT, "medkit", 75, 75, 1));
+        items.add(new ShopElement(ToolId.MINE, "mine", 80, 80, 1));
+        items.add(new ShopElement(ToolId.MEDKIT, "medkit", 125, 125, 1));
+        items.add(new ShopElement(ToolId.TRAP, "trap", 150, 150, 1));
 
     }
 
@@ -58,11 +59,11 @@ public class ShopManager {
     }
 
     /**
-     * Buys an item for the given team if they have enough credits.
-     * @param id ItemId of the item to be purchased.
-     * @param team Team attempting to purchase the item.
+     * Buys (unlocks) a weapon for the given team if they have enough credits.
+     * @param id WeaponId of the weapon to be purchased (unlocked).
+     * @param team Team attempting to purchase the weapon.
      */
-    public void buyItem(ItemId id, Team team) {
+    public void buyWeapon(WeaponId id, Team team) {
         ShopElement itemBuy = null;
         for (ShopElement element : items) {
             if (element.id == id) {
@@ -70,14 +71,18 @@ public class ShopManager {
                 break;
             }
         }
+        if (itemBuy == null) {
+            Logger.logger.warn("Weapon not found in shop: {}", id);
+            return;
+        }
         if (team.getCredits() >= itemBuy.unlockPrice || team.getCredits() == -1) {
-                team.removeCredits(itemBuy.unlockPrice);
-                team.unlockWeapon((WeaponId) id);
-                String cleImage = "Hand" + id.toString();
-                eventBus.postQueued(new NotificationEvent("Achat réussi : " + itemBuy.name, cleImage));
-                Logger.logger.info("Achat arme reussie : " + itemBuy.name);
+            team.removeCredits(itemBuy.unlockPrice);
+            team.unlockWeapon(id);
+            String cleImage = "Hand" + id;
+            eventBus.postQueued(new NotificationEvent("Achat réussi : " + itemBuy.name, cleImage));
+            Logger.logger.info("Successful purchase of weapon {}", itemBuy.name);
         } else {
-            Logger.logger.info("Achat rater pas assez d'argent");
+            Logger.logger.info("Not enough credits to buy weapon {}", itemBuy.name);
         }
     }
 
@@ -94,9 +99,13 @@ public class ShopManager {
                 break;
             }
         }
+        if (itemBuy == null) {
+            Logger.logger.warn("Item not found in shop: {}", id);
+            return;
+        }
         if (id instanceof WeaponId) {
             if (!team.getInventory().isUnlocked((WeaponId) id)) {
-                Logger.logger.info("impossible arme non Unlock");
+                Logger.logger.info("Weapon {} not unlocked for ammo purchase", id);
                 return;
             }
         }
@@ -108,13 +117,13 @@ public class ShopManager {
             } else {
                 team.addAmmo((ToolId) id, itemBuy.ammoPackSize);
             }
-            String key = "Hand" + id.toString();
+            String key = "Hand" + id;
             eventBus.postQueued(new NotificationEvent("+ " + itemBuy.ammoPackSize + " ammo for " + itemBuy.name, key));
 
-            Logger.logger.info("Achat ammo reussie : " + itemBuy.name);
+            Logger.logger.info("Successful ammo purchase for {}", itemBuy.name);
 
         } else {
-            Logger.logger.info("Achat rater pas assez d'argent");
+            Logger.logger.info("Not enough credits to buy ammo for {}", itemBuy.name);
         }
     }
 }

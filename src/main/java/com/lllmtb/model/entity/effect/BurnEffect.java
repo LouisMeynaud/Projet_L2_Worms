@@ -1,11 +1,14 @@
 package com.lllmtb.model.entity.effect;
 
+/**
+ * Represents a burn status effect in the game.
+ */
 public class BurnEffect extends StatusEffect {
 
     /**
      * Constructor for a burn effect
      */
     public BurnEffect() {
-        super(2, 4, "Burn");
+        super(22, 2, "Burn");
     }
 }

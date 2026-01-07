@@ -12,10 +12,10 @@ import java.util.List;
 
 public final class BulletProjectile extends Projectile {
     private static final double force  = 100.0;
-    private static final double mass   = 0.003;
+    private static final double mass   = 0.006;
     private static final double height = 1;
     private static final double width  = 1;
-    private static final int damage = 20;
+    private static final int damage = 4;
 
     /**
      * Constructor for BulletProjectile.
@@ -32,7 +32,7 @@ public final class BulletProjectile extends Projectile {
 
     @Override
     public List<GameCommand> onImpact(Entity entity) {
-        List<GameCommand> list = new ArrayList<GameCommand>();
+        List<GameCommand> list = new ArrayList<>();
         handleHit(list, entity, damage);
         list.add(delete());
         return list;

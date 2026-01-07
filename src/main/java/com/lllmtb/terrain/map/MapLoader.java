@@ -1,6 +1,9 @@
 package com.lllmtb.terrain.map;
 
-import java.net.URL;
+import com.lllmtb.engine.logger.Logger;
+import com.lllmtb.engine.save.SaveConfig;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -9,19 +12,55 @@ public class MapLoader {
 
     /**
      * Load a map from a given map name.
-     * @param mapName
+     * @param directoryName the name of the directory where the map is stored.
      * @return the loaded Map object.
      */
-    public static Map loadMatrix(String mapName) {
+    public static Map loadMapLoad(String directoryName) {
         try {
-            URL resource = MapLoader.class.getResource("/map/" + mapName + "/map.txt");
-            if (resource == null) {
+            Path path = Paths.get(SaveConfig.SAVE_DIRECTORY + directoryName + "/map.txt");
+
+            if (!Files.exists(path)) {
+                System.err.println("Aucune sauvegarde trouvée à : " + path.toAbsolutePath());
                 return null;
             }
-            Path path = Paths.get(resource.toURI());
-            String contentMap = Files.readString(path);
+
+            // Lecture du fichier externe
+            String contentMap = Files.readString(path, StandardCharsets.UTF_8);
+            return loadMatrix(contentMap, directoryName);
+
+        } catch (Exception e) {
+            System.err.println("Erreur lors du chargement de la sauvegarde : " + e.getMessage());
+            return null;
+        }
+    }
+
+    /**
+     * Load a map from a given map name.
+     * @param mapName the name of the map to load.
+     * @return the loaded Map object.
+     */
+    public static Map loadMap(String mapName) {
+        try (InputStream is = MapLoader.class.getResourceAsStream("/map/" + mapName + "/map.txt")) {
+            if (is == null) {
+                throw new RuntimeException("Resource not found: /map/" + mapName + "/map.txt");
+            }
+            String contentMap = new String(is.readAllBytes(), StandardCharsets.UTF_8);
+            return loadMatrix(contentMap, mapName);
+        } catch (Exception e) {
+            Logger.logger.error("Error while loading map {} : ", mapName, e);
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * transform a string representation of map in a instance of map.
+     * @param contentMap the String representation of map
+     * @param name the name of the
+     * @return the instance of the map
+     */
+    public static Map loadMatrix(String contentMap, String name) {
             String[] row = contentMap.split("\n");
-            Map tileMatrix = new Map(row.length, row[0].length(), mapName + ".txt");
+            Map tileMatrix = new Map(row.length, row[0].length(), name + ".txt");
 
             for (int i = 0; i < row.length; i++) {
                 for (int j = 0; j < row[0].length(); j++) {
@@ -30,13 +69,7 @@ public class MapLoader {
                 }
             tileMatrix.initializeHeightWater();
             return tileMatrix;
-
-        } catch (Exception e) {
-            System.out.println(e); // NB. Il faudra mieux gérer cette exception
-            return null;
-        }
     }
-
     /**
      * Get a list of available map names.
      * @return Array of map names.

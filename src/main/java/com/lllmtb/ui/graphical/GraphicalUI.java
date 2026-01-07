@@ -1,27 +1,23 @@
 package com.lllmtb.ui.graphical;
 
-import java.awt.CardLayout;
-import java.awt.Dimension;
-
+import java.awt.*;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.UIManager;
 
-
 import com.lllmtb.engine.logger.Logger;
 import com.lllmtb.events.EventBus;
+import com.lllmtb.events.game.LoadEvent;
 import com.lllmtb.events.game.StartGameEvent;
-import com.lllmtb.events.ui.graphical.ScreenEndGameEvent;
-import com.lllmtb.events.ui.graphical.ScreenHomeEvent;
-import com.lllmtb.events.ui.graphical.ScreenLoadGame;
-import com.lllmtb.events.ui.graphical.ScreenMusicSettingsEvent;
-import com.lllmtb.events.ui.graphical.ScreenNewOrLoadEvent;
-import com.lllmtb.events.ui.graphical.ScreenSettingsGame;
+import com.lllmtb.events.ui.graphical.*;
 import com.lllmtb.ui.UI;
 import com.lllmtb.ui.graphical.GamePanel.GameScreen;
+import com.lllmtb.ui.graphical.OtherPanel.EndGameScreenPanel;
+import com.lllmtb.ui.graphical.OtherPanel.HomeScreenPanel;
 import com.lllmtb.ui.graphical.SettingsPanel.LoadGamePanel;
 import com.lllmtb.ui.graphical.SettingsPanel.NewOrLoadPanel;
-import com.lllmtb.ui.graphical.SettingsPanel.SettingsStartPanel;;
+import com.lllmtb.ui.graphical.SettingsPanel.SettingsStartPanel;
+import com.lllmtb.ui.graphical.Utilitaire.MusicSettingsScreenPanel;
 
 public class GraphicalUI implements UI {
 
@@ -29,16 +25,13 @@ public class GraphicalUI implements UI {
     public EventBus eventBus;
     public CardLayout cardLayout; // the container for all pages
     public JPanel mainPanel;
-
+    public JPanel loadGamePanel;
     private EndGameScreenPanel endGameScreen;
 
-
     /**
-     *
      * @param eventbus the event bus of the game
-     *
-     *                 This class represents the window; it's the container for all our other pages.
-     *                 We'll display the home screen, the game panel, the start setting screen, the settings, etc., inside it.
+     * This class represents the window; it's the container for all our other pages.
+     * We'll display the home screen, the game panel, the start setting screen, the settings, etc., inside it.
      */
     public GraphicalUI(EventBus eventbus) {
 
@@ -52,7 +45,7 @@ public class GraphicalUI implements UI {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            Logger.logger.error("Could not set Nimbus Look and Feel", e);
         }
 
         this.eventBus = eventbus;
@@ -71,13 +64,11 @@ public class GraphicalUI implements UI {
         HomeScreenPanel homeScreen = new HomeScreenPanel(this.eventBus);
         SettingsStartPanel startSettingScreen = new SettingsStartPanel(this.eventBus);
         MusicSettingsScreenPanel musicSettingsScreen = new MusicSettingsScreenPanel(this.eventBus);
-        GameScreen gamePanel = new GameScreen(eventbus);
         NewOrLoadPanel newOrLoadPanel = new NewOrLoadPanel(eventbus);
-        LoadGamePanel loadGamePanel = new LoadGamePanel(eventbus);
+        this.loadGamePanel = new LoadGamePanel(eventbus);
         endGameScreen = new EndGameScreenPanel(eventbus);
         mainPanel.add(homeScreen, "homeScreen"); // the principal page
         mainPanel.add(startSettingScreen, "startSettingScreen"); // the game launch settings page
-        mainPanel.add(gamePanel, "gamePanel"); // la page de jeu
         mainPanel.add(newOrLoadPanel, "newOrLoadPanel"); //The page allowing you to choose whether you want to load or create a game
         mainPanel.add(loadGamePanel, "loadGamePanel");
         mainPanel.add(musicSettingsScreen, "musicSettingsScreen"); // the page containing the music settings
@@ -104,6 +95,17 @@ public class GraphicalUI implements UI {
         });
 
         eventBus.subscribe(StartGameEvent.class, event -> {
+            // Remove old game panel to prevent memory leak
+            for (Component comp : mainPanel.getComponents()) {
+                if (comp instanceof GameScreen) mainPanel.remove(comp);
+            }
+            GameScreen gamePanel = new GameScreen(this.eventBus);
+            mainPanel.add(gamePanel, "gamePanel");
+            cardLayout.show(mainPanel, "gamePanel");
+            Logger.logger.debug("Show GameScreen");
+        });
+
+        eventBus.subscribe(LoadEvent.class, event -> {
             cardLayout.show(mainPanel, "gamePanel");
             GameScreen gamePanel = new GameScreen(this.eventBus);
             mainPanel.add(gamePanel, "gamePanel"); // la page de jeu
@@ -116,6 +118,8 @@ public class GraphicalUI implements UI {
         });
 
         eventBus.subscribe(ScreenLoadGame.class, event -> {
+            this.loadGamePanel =  new LoadGamePanel(this.eventBus);
+            mainPanel.add(loadGamePanel, "loadGamePanel");
             cardLayout.show(mainPanel, "loadGamePanel");
             Logger.logger.debug("Show loadGamePanel");
 

@@ -2,6 +2,7 @@ package com.lllmtb.model.entity;
 
 import com.lllmtb.engine.commands.AddPhysicsModifierCommand;
 import com.lllmtb.engine.commands.GameCommand;
+import com.lllmtb.engine.commands.RegisterEntityCommand;
 import com.lllmtb.engine.commands.RemoveEntityCommand;
 import com.lllmtb.engine.logger.Logger;
 import com.lllmtb.events.ui.graphical.NotificationEvent;
@@ -22,15 +23,19 @@ import java.util.List;
 import java.util.Random;
 
 public class Drop extends Entity {
-    private PhysicsBody body;
-    public final ItemId itemIdToUnlock;
+    private final PhysicsBody body;
+    public final transient ItemId itemIdToUnlock;
     private static final double DROP_MAX_FALL_SPEED = -9.0;
-    private CollisionType collisionType = CollisionType.TOUCH;
+    private final CollisionType collisionType = CollisionType.TOUCH;
     private boolean onGround = false;
+    private final String itemCategory; // "WEAPONID" ou "TOOLID"
+    private final String itemName;
 
     public Drop(Position position, ItemId itemId) {
         this.itemIdToUnlock = itemId;
         this.body = new PhysicsBody(this, position, new Vector(0, 0), 0.1, 2, 2);
+        this.itemName = ((Enum<?>) itemId).name();
+        this.itemCategory = (itemId instanceof WeaponId) ? "WEAPONID" : "TOOLID";
     }
 
     @Override
@@ -44,8 +49,8 @@ public class Drop extends Entity {
     }
 
     public List<GameCommand> addModifier() {
-        List<GameCommand> commands = new ArrayList<GameCommand>();
-        Drop drop = this;
+        List<GameCommand> commands = new ArrayList<>();
+        commands.add(new RegisterEntityCommand(this));
 
         Transform transform = (v) -> {
             double vy = v.getY();
@@ -53,8 +58,6 @@ public class Drop extends Entity {
             return new Vector(v.getX(), vy);
         };
         PhysicsModifier modifier = new PhysicsModifier(transform, null, Double.POSITIVE_INFINITY, true);
-
-        commands.add(world -> world.getPhysics().add(drop.getBody()));
         commands.add(new AddPhysicsModifierCommand(this, modifier));
 
         return commands;
@@ -90,13 +93,27 @@ public class Drop extends Entity {
         return commands;
     }
 
+    /**
+     * return if the drop is on the ground
+     * @return {@code true} if the drop is on the ground, {@code false} otherwise
+     */
     public boolean isOnGround() {
         return onGround;
     }
 
-    public GameCommand setOnGround() {
-        this.onGround = true;
-        return null;
+    /**
+     * set the onGround state of the drop
+     * @param onGround whether the drop is on the ground
+     */
+    public void setOnGround(boolean onGround) {
+        this.onGround = onGround;
+    }
+
+    public String getItemCategory() {
+        return itemCategory;
+    }
+    public String getItemName() {
+        return itemName;
     }
 }
 

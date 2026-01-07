@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public final class BowProjectile extends Projectile {
-    private static final double force  = 30;
+    private static final double force  = 60;
     private static final double mass   = 0.006;
     private static final double height = 2;
     private static final double width  = 2;
@@ -35,7 +35,7 @@ public final class BowProjectile extends Projectile {
 
     @Override
     public List<GameCommand> onImpact(Entity entity) {
-        List<GameCommand> list = new ArrayList<GameCommand>();
+        List<GameCommand> list = new ArrayList<>();
         handleHit(list, entity, damage);
         list.add(delete());
         return list;

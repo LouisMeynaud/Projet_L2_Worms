@@ -15,10 +15,11 @@ public final class CatConcreteProjectile extends Projectile implements Explosive
     private static final double height = 4;
     private static final double width  = 4;
     private static final double damage = 0;
+    private int hits = 12;
 
     private static final int RAYON_DEGAT_MAP = 3;
     private static final int RAYON_SOUFFLE = 3;
-    private static final int DEGATS = 0;
+    private static final int DEGATS = 1;
     private static final double FORCE_SOUFFLE = 0;
     private static final String TEXTURE_KEY = "MissileExplosion";
 
@@ -28,7 +29,7 @@ public final class CatConcreteProjectile extends Projectile implements Explosive
      */
     public CatConcreteProjectile(@NonNull UseParams params) {
         super(params, force * Math.min(params.duration / 100, 3) / 2, mass, height, width);
-        }
+    }
 
     @Override
     public CollisionType getCollisionType() {
@@ -45,6 +46,8 @@ public final class CatConcreteProjectile extends Projectile implements Explosive
         List<GameCommand> list = new ArrayList<>();
         handleHit(list, entity, damage);
         list.add((world -> world.getPhysics().createExplosion(this, RAYON_DEGAT_MAP, RAYON_SOUFFLE, DEGATS, FORCE_SOUFFLE, false)));
+        hits--;
+        if (hits <= 0) list.add(delete());
         return list;
     }
 
@@ -57,6 +60,7 @@ public final class CatConcreteProjectile extends Projectile implements Explosive
     public int getSuffleRadius() {
         return RAYON_SOUFFLE;
     }
+
     @Override
     public int getExplosionDamage() {
         return DEGATS;

@@ -2,17 +2,17 @@ package com.lllmtb.model.item;
 
 public interface ItemId {
     /**
-     * Returns whether this item uses a crosshair target instead of directional aiming.
-     * @return true if this item should display a crosshair
+     * @return the shoot mode of the weapon/tools
      */
-    default boolean usesCrosshair() {
-        return false;
-    }
+    ShootMode getShootMode();
+
     /**
-     *
-     * @return the maximun tile to charge the weapon/tools
+     * @return the info string of the item
      */
-    default int getMaxChargeTime() {
-        return 0;
-    }
+    String getInfo();
+
+    /**
+     * @return the maximum time to charge the weapon/tools
+     */
+    int getMaxChargeTime();
 }

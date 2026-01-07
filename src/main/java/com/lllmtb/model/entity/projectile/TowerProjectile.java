@@ -8,7 +8,7 @@ import org.eclipse.jdt.annotation.NonNull;
 
 import com.lllmtb.engine.GameWorld;
 import com.lllmtb.engine.commands.GameCommand;
-import com.lllmtb.engine.commands.RegisterProjectileCommand;
+import com.lllmtb.engine.commands.RegisterEntityCommand;
 import com.lllmtb.model.entity.CollisionType;
 import com.lllmtb.model.entity.Entity;
 import com.lllmtb.model.entity.team.Team;
@@ -27,7 +27,7 @@ public final class TowerProjectile extends Projectile {
     public static final int range = 25;
 
     private static final double FIRE_INTERVAL = 500;
-    private long cooldownTimer = 0;
+    private double cooldownTimer = 0;
     private int creationTurnIndex = -1;
 
     /**
@@ -124,7 +124,7 @@ public final class TowerProjectile extends Projectile {
     Position spawnPos = new Position(myPos.getX(),  myPos.getY() + (HEIGHT / 2.0));
     double angle = PhysicsEngine.calculateAngleToBody(spawnPos, target.getBody());
     UseParams bulletParams = new UseParams(angle, spawnPos, getOwner(), 0);
-    world.queueCommand(new RegisterProjectileCommand(new BabyTowerProjectile(bulletParams), getOwner()));
+    world.queueCommand(new RegisterEntityCommand(new BabyTowerProjectile(bulletParams), getOwner()));
 }
 
     @Override

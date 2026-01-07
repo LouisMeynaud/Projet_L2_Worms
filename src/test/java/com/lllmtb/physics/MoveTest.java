@@ -16,7 +16,7 @@ public class MoveTest {
     @BeforeEach
     void setUp() {
         // On remet le saut à 0 avant chaque test
-        Move.jump = 0;
+        Move.jump.set(0);
     }
 
     @Test
@@ -24,7 +24,7 @@ public class MoveTest {
         Move.setMaxjump(2);
         Move.jumpToMax();
 
-        assertEquals(2, Move.jump);
+        assertEquals(2, Move.jump.get());
     }
     @Test
     void testMoveLeft() throws NoSuchFieldException, IllegalAccessException {
@@ -67,7 +67,7 @@ public class MoveTest {
     @Test
     void testMoveUpWithoutJump() {
         Worm wormMock = Mockito.mock(Worm.class);
-        Move.jump = 0;
+        Move.jump.set(0);
         GameCommand gameCommand = Move.move(wormMock, Direction.Up);
         assertNull(gameCommand);
     }
@@ -97,6 +97,11 @@ public class MoveTest {
         Worm wormMock = Mockito.mock(Worm.class);
         GameCommand gameCommand =   Move.move(wormMock, Direction.Down);
         assertNull(gameCommand);
+    }
+    @Test
+    void testGetMaxJump() {
+        Move.setMaxjump(2);
+        assertEquals(2, Move.getMaxjump());
     }
 
 }

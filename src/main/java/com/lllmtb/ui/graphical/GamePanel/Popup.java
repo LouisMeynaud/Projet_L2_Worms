@@ -8,16 +8,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.lllmtb.events.ui.graphical.NotificationEvent;
-import com.lllmtb.ui.graphical.TextureManager;
+import com.lllmtb.ui.graphical.Utilitaire.TextureManager;
 
 public class Popup {
 
-    private static class PopupElement {
-        String message;
-        BufferedImage image;
-        long timeStart;
+    public static class PopupElement {
+        final String message;
+        final BufferedImage image;
+        final long timeStart;
 
-        public PopupElement(String message, BufferedImage image) {
+        private PopupElement(String message, BufferedImage image) {
             this.message = message;
             this.image = image;
             this.timeStart = System.currentTimeMillis();
@@ -30,12 +30,19 @@ public class Popup {
     private static final int xStart = 20;
     private static final int yStart = 150;
 
-
+    /**
+     *  Add a notification to the list of pop-ups to display.
+     * @param event the event that corresponds to the notification
+     */
     public static void add(NotificationEvent event) {
-        BufferedImage imgTrouvee = TextureManager.NOTIFICATIONS.get(event.getImageName());
-        actualPopups.add(new PopupElement(event.getMessage(), imgTrouvee));
+        BufferedImage imgTrouvee = TextureManager.NOTIFICATIONS.get(event.imageName());
+        actualPopups.add(new PopupElement(event.message(), imgTrouvee));
     }
 
+    /**
+     * draw the Popop on the ui.
+     * @param g the brushes
+     */
     public static void draw(Graphics2D g) {
         if (actualPopups.isEmpty()) return;
 

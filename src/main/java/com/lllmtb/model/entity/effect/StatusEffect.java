@@ -21,12 +21,13 @@ public abstract class StatusEffect {
     /**
      * The name of the effect
      */
-    protected String name;
+    protected final String name;
 
     /**
      * Constructor for a status effect
      * @param damagePerTurn the name of the effect
      * @param durationInTurns the duration of the effect in turns
+     * @param name the name of the effect
      */
     public StatusEffect(double damagePerTurn, int durationInTurns, String name) {
         this.damagePerTurn = damagePerTurn;
@@ -35,8 +36,8 @@ public abstract class StatusEffect {
     }
 
     /**
-     * Gets the name of the effect
-     * @return the name of the effect
+     * Gets the damage dealt per turn
+     * @return the damage per turn
      */
     public double getDamagePerTurn() {
         return this.damagePerTurn;

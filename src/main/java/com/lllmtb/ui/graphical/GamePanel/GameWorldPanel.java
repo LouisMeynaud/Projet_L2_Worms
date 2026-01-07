@@ -25,7 +25,6 @@ import com.lllmtb.events.input.ProcessInputsEvent;
 import com.lllmtb.events.input.UseInputEvent;
 import com.lllmtb.events.input.JetpackBoostInputEvent;
 import com.lllmtb.events.physics.ExplosionEvent;
-import com.lllmtb.events.ui.graphical.ShootMode;
 import com.lllmtb.events.ui.graphical.RequestFocus;
 import com.lllmtb.events.ui.graphical.ScreenEndGameEvent;
 import com.lllmtb.model.entity.worm.Worm;
@@ -33,11 +32,11 @@ import com.lllmtb.model.item.ItemId;
 import com.lllmtb.model.item.weapon.WeaponId;
 import com.lllmtb.physics.PhysicsBody;
 import com.lllmtb.physics.Position;
-import com.lllmtb.ui.graphical.SoundPlayer;
+import com.lllmtb.ui.graphical.Utilitaire.SoundPlayer;
 
 public class GameWorldPanel extends JPanel {
     //--core--//
-    private EventBus eventBus;
+    private final EventBus eventBus;
     protected GameWorld world;
     private WorldRenderer renderer;
     protected final int tileSize = 12;
@@ -48,7 +47,7 @@ public class GameWorldPanel extends JPanel {
     protected boolean initialFitDone = false;
 
     protected double currentZoom = 1.0;
-    protected double zoomSpeed = 0.2;
+    protected final double zoomSpeed = 0.2;
 
     protected double cameraOffsetX = 0;
     protected double cameraOffsetY = 0;
@@ -56,8 +55,6 @@ public class GameWorldPanel extends JPanel {
     private Position lastWormPos = new Position(0,  0);
 
     protected final Set<Integer> pressedKeys = new HashSet<>();
-    //--imput--//
-    protected boolean shootMode;
 
     private int lastMouseX = 0;
     private int lastMouseY = 0;
@@ -132,7 +129,7 @@ public class GameWorldPanel extends JPanel {
                     isCameraMode = true;
                     hasDraggedCamera = false;
                 }
-                if (e.getButton() == MouseEvent.BUTTON1 && shootMode) {
+                if (e.getButton() == MouseEvent.BUTTON1) {
                     ItemId item = world.getPlayingTeam().getHand();
                     if (item != null) {
                         chargeStartTime = System.currentTimeMillis();
@@ -150,7 +147,7 @@ public class GameWorldPanel extends JPanel {
                 }
                 chargeStartTime = 0;
 
-                if (type == MouseEvent.BUTTON1 && shootMode) {
+                if (type == MouseEvent.BUTTON1) {
                     Position worldPos = screenToWorld(e.getX(), e.getY());
                     ItemId item = world.getPlayingTeam().getHand();
 
@@ -161,8 +158,7 @@ public class GameWorldPanel extends JPanel {
                          }
                     }
 
-                    if ((item != null && item instanceof WeaponId)
-                    && world.getTurnManager().getTurn().getTeam().getInventory().weapons.getAmmo(((WeaponId) item)) != 0) {
+                    if (item instanceof WeaponId && world.getPlayingTeam().getInventory().weapons.getAmmo(((WeaponId) item)) != 0) {
                         String sound = world.getPlayingTeam().getHand().toString();
                         SoundPlayer.playSound(sound + "Shot");
                     }
@@ -170,12 +166,9 @@ public class GameWorldPanel extends JPanel {
                     repaint();
                 }
 
-                // if (type == MouseEvent.BUTTON3) {
-                //     isCameraMode = false;
-                //     if (!hasDraggedCamera) {
-                //
-                //     }
-                // }
+                if (type == MouseEvent.BUTTON3) {
+                    isCameraMode = false;
+                }
             }
 
             @Override
@@ -244,7 +237,7 @@ public class GameWorldPanel extends JPanel {
     public void subscribeToSystemEvents() {
 
         eventBus.subscribe(WorldCreatedEvent.class, event -> {
-            this.world = event.getWorld();
+            this.world = event.world();
 
             if (this.world != null) {
                 this.world.getBus().subscribe(ScreenEndGameEvent.class, e -> {
@@ -281,10 +274,6 @@ public class GameWorldPanel extends JPanel {
             repaint();
         });
 
-        world.getBus().subscribe(ShootMode.class, event -> {
-            this.shootMode = !this.shootMode;
-        });
-
         world.getBus().subscribe(RequestFocus.class, event -> {
             this.requestFocusInWindow();
         });
@@ -295,10 +284,10 @@ public class GameWorldPanel extends JPanel {
 
         world.getBus().subscribe(ExplosionEvent.class, event -> {
             if (renderer != null) {
-                renderer.addEffect(event.getAnimationKey(), event.getRadius(), event.getPosition());
+                renderer.addEffect(event.animationKey(), event.radius(), event.position());
             }
-            System.out.println(event.getAnimationKey());
-            SoundPlayer.playSound(event.getAnimationKey());
+            System.out.println(event.animationKey());
+            SoundPlayer.playSound(event.animationKey());
         });
     }
 
@@ -406,6 +395,7 @@ public class GameWorldPanel extends JPanel {
      */
     public void screenFollowCurrentWorms() {
         Worm activeWorm = world.getTurnManager().getTurn().getWormPlayable();
+        if (activeWorm == null) return;
         PhysicsBody body = activeWorm.getBody();
         boolean hasMoved = false;
         double diffX = Math.abs(body.getPos().getX() - lastWormPos.getX());
@@ -416,14 +406,30 @@ public class GameWorldPanel extends JPanel {
         lastWormPos = body.getPos();
 
         if (hasMoved && !isCameraMode) {
-            double targetX = body.getPos().getX() * tileSize;
-            double targetY = (world.getMap().getHeight() - body.getPos().getY()) * tileSize;
+            double wormWorldX = body.getPos().getX() * tileSize;
+            double wormWorldY = (world.getMap().getHeight() - body.getPos().getY()) * tileSize;
 
-            double screenCenterWidth = getWidth() / 2.0;
-            double screenCenterHeight = getHeight() / 2.0;
+            double wormScreenX = (wormWorldX * currentZoom) + cameraOffsetX;
+            double wormScreenY = (wormWorldY * currentZoom) + cameraOffsetY;
 
-            cameraOffsetX = screenCenterWidth - (targetX * currentZoom);
-            cameraOffsetY = screenCenterHeight - (targetY * currentZoom);
+            double screenWidth = getWidth();
+            double screenHeight = getHeight();
+
+            double marginX = screenWidth * 0.35;
+            double marginY = screenHeight * 0.35;
+
+            if (wormScreenX < marginX) {
+                cameraOffsetX += (marginX - wormScreenX);
+            } else if (wormScreenX > screenWidth - marginX) {
+                cameraOffsetX -= (wormScreenX - (screenWidth - marginX));
+            }
+
+            if (wormScreenY < marginY) {
+                cameraOffsetY += (marginY - wormScreenY);
+            } else if (wormScreenY > screenHeight - marginY) {
+                cameraOffsetY -= (wormScreenY - (screenHeight - marginY));
+            }
+
             checkCameraBounds();
         }
     }

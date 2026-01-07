@@ -24,7 +24,7 @@ public class SettingMapPanel extends JPanel {
      *
      * @param eventBus the event bus of the game
      * This page contains  2 panel and 2 button for choose the panel
-     *
+     * </p>
      * 1: panelListeMap for choose a map
      * 2: generateMapPanel for create a map
      *
@@ -40,29 +40,19 @@ public class SettingMapPanel extends JPanel {
         JButton loadButton = new JButton("Load Map");
         JButton generateButton = new JButton("Generate Map");
 
+        this.panelListeMap = new PanelListe(MapLoader.getListeNomsMaps(), "/map/", false);
         this.generateMapPanel = new GenerateMapPanel();
-        this.panelListeMap = new PanelListe(MapLoader.getListeNomsMaps());
-
 
         cardPanel.add(this.panelListeMap, "panelListeMap");
         cardPanel.add(this.generateMapPanel, "generateMapPanel");
 
-
-        eventBus.subscribe(ScreenGenerateMap.class, event -> {
-            cardLayout.show(cardPanel, "generateMapPanel");
-
-        });
-
-        eventBus.subscribe(ScreenLoadMap.class, event -> {
-            cardLayout.show(cardPanel, "panelListeMap");
-
-        });
+        eventBus.subscribe(ScreenLoadMap.class, event -> cardLayout.show(cardPanel, "panelListeMap"));
+        eventBus.subscribe(ScreenGenerateMap.class, event -> cardLayout.show(cardPanel, "generateMapPanel"));
 
         JPanel boutonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         boutonPanel.add(loadButton);
         boutonPanel.add(generateButton);
         this.add(boutonPanel, BorderLayout.NORTH);
-
 
         loadButton.addActionListener(e -> {
             eventBus.postQueued(new ScreenLoadMap());
@@ -73,8 +63,6 @@ public class SettingMapPanel extends JPanel {
             eventBus.postQueued(new ScreenGenerateMap());
             this.loadMap = false;
         });
-
-
     }
 
     /**

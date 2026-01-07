@@ -15,11 +15,11 @@ public final class RocketProjectile extends Projectile implements ExplosiveProje
     private static final double mass   = 0.0045;
     private static final double height = 1;
     private static final double width  = 1;
-    private static final int damage = 40;
+    private static final int damage = 3;
 
     private static final int RAYON_DEGAT_MAP = 10;
     private static final int RAYON_SOUFFLE = 15;
-    private static final int DEGATS = 30;
+    private static final int DEGATS = 40;
     private static final double FORCE_SOUFFLE = 100;
     private static final String TEXTURE_KEY = "BazookaExplosion";
 
@@ -38,11 +38,9 @@ public final class RocketProjectile extends Projectile implements ExplosiveProje
 
     @Override
     public List<GameCommand> onImpact(Entity entity) {
-        List<GameCommand> list = new ArrayList<GameCommand>();
+        List<GameCommand> list = new ArrayList<>();
         handleHit(list, entity, damage);
-        list.add((world -> {
-            world.getPhysics().createExplosion(this, RAYON_DEGAT_MAP, RAYON_SOUFFLE, DEGATS, FORCE_SOUFFLE, false);
-        }));
+        list.add((world -> world.getPhysics().createExplosion(this, RAYON_DEGAT_MAP, RAYON_SOUFFLE, DEGATS, FORCE_SOUFFLE, false)));
         list.add(delete());
         return list;
     }

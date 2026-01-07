@@ -15,11 +15,11 @@ public final class HealingProjectile extends Projectile implements ExplosiveProj
     private static final double mass   = 0.0045;
     private static final double height = 1;
     private static final double width  = 1;
-    private static final int damage = -20;
+    private static final int damage = 0;
 
     private static final int RAYON_DEGAT_MAP = 0;
     private static final int RAYON_SOUFFLE = 15;
-    private static final int DEGATS = -20;
+    private static final int DEGATS = -50;
     private static final double FORCE_SOUFFLE = 0;
     private static final String TEXTURE_KEY = "HealingBazookaExplosion";
 
@@ -38,11 +38,9 @@ public final class HealingProjectile extends Projectile implements ExplosiveProj
 
     @Override
     public List<GameCommand> onImpact(Entity entity) {
-        List<GameCommand> list = new ArrayList<GameCommand>();
+        List<GameCommand> list = new ArrayList<>();
         handleHit(list, entity, damage);
-        list.add((world -> {
-            world.getPhysics().createExplosion(this, RAYON_DEGAT_MAP, RAYON_SOUFFLE, DEGATS, FORCE_SOUFFLE, true);
-        }));
+        list.add((world -> world.getPhysics().createExplosion(this, RAYON_DEGAT_MAP, RAYON_SOUFFLE, DEGATS, FORCE_SOUFFLE, true)));
         list.add(delete());
         return list;
 

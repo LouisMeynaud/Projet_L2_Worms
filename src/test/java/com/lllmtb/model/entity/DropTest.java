@@ -5,14 +5,12 @@ import com.lllmtb.engine.GameWorld;
 import com.lllmtb.engine.commands.GameCommand;
 import com.lllmtb.engine.commands.RemoveEntityCommand;
 import com.lllmtb.events.EventBus;
-import com.lllmtb.events.physics.GroundCheckCollision;
 import com.lllmtb.model.entity.projectile.Projectile;
 import com.lllmtb.model.entity.team.Team;
 import com.lllmtb.model.item.ItemId;
 import com.lllmtb.model.item.tool.ToolId;
 import com.lllmtb.model.item.weapon.WeaponId;
 import com.lllmtb.physics.GameMode;
-import com.lllmtb.physics.PhysicsBody;
 import com.lllmtb.physics.Position;
 import com.lllmtb.physics.Vector;
 import com.lllmtb.terrain.generation.LandScape;
@@ -24,24 +22,17 @@ import org.mockito.Mockito;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertInstanceOf;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class DropTest {
     private Drop drop;
-    private EventBus eb;
     private GameWorld world;
 
     @BeforeEach
     public void setUp(){
         this.drop = new Drop(new Position(1,1), WeaponId.GUN);
         GameSettings settings = new GameSettings("blabla", 2, new String[]{"TeamTest1", "TeamTest2"}, 1, 100, 10, false, null, false, 370, LandScape.HILLY, 2,GameMode.NORMAL, true, false);
-        this.eb = new EventBus();
+        EventBus eb = new EventBus();
         this.world = new GameWorld(settings, eb);
     }
 
@@ -92,10 +83,10 @@ public class DropTest {
     @Test
     public void testDropCollisionEventTouchItem(){
         Team team = new Team("Test", 1, new Position[]{new Position(1,1)}, 0);
-        ItemId item = Mockito.mock(ItemId.class);
+        ItemId item = WeaponId.SHOTGUN;
         Drop drop = new Drop(new Position(1, 1), item);
         GameCommand cmd = drop.onImpact(team.getCurrentWorm());
-        assertNull(cmd);
+        assertNotNull(cmd);
     }
 
     @Test
@@ -121,8 +112,13 @@ public class DropTest {
             TimeUnit.MILLISECONDS.sleep(50);
         } catch(InterruptedException ignored){}
         assertTrue(drop.getBody().getVector().getY() <= 9.0);
+    }
 
-
+    @Test
+    public void getTest(){
+        world.start();
+        assertEquals(WeaponId.GUN.name(), drop.getItemName());
+        assertEquals("WEAPONID", drop.getItemCategory());
     }
 
 
@@ -136,9 +132,7 @@ public class DropTest {
     @Test
     void testSetOnGround() {
         Drop drop = new Drop(new Position(10, 10), WeaponId.BAZOOKA);
-        GameCommand result = drop.setOnGround();
+        drop.setOnGround(true);
         assertTrue(drop.isOnGround());
-        assertNull(result);
     }
 }
-

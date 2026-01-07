@@ -15,14 +15,13 @@ import java.util.*;
 
 public class InventoryTest {
     private Position testPosition;
-    private Team testTeam;
     private Worm testWorm;
     private Inventory inventory;
 
     @BeforeEach
     public void setUp() {
         testPosition = new Position(0, 0);
-        testTeam = new Team("TestTeam", 1, new Position[]{testPosition}, 0);
+        Team testTeam = new Team("TestTeam", 1, new Position[]{testPosition}, 0);
         testWorm = testTeam.getTeamWorms().get(0);
         inventory = new Inventory();
     }
@@ -174,7 +173,8 @@ public class InventoryTest {
     public void unlockedWeapons_initialization() {
         Set<WeaponId> unlocked = inventory.unlockedWeapons();
         assertTrue(unlocked.contains(WeaponId.GUN));
-        assertEquals(1, unlocked.size());
+        assertTrue(unlocked.contains(WeaponId.BASEBALLBAT));
+        assertEquals(2, unlocked.size());
     }
 
     @Test
@@ -182,18 +182,21 @@ public class InventoryTest {
         inventory.unlock(WeaponId.BAZOOKA);
         Set<WeaponId> unlocked = inventory.unlockedWeapons();
         assertTrue(unlocked.contains(WeaponId.GUN));
+        assertTrue(unlocked.contains(WeaponId.BASEBALLBAT));
         assertTrue(unlocked.contains(WeaponId.BAZOOKA));
-        assertEquals(2, unlocked.size());
+        assertEquals(3, unlocked.size());
     }
 
     @Test
     public void unlockedWeapons_afterUnlockingMultiple() {
-        inventory.unlock(WeaponId.GUN);
         inventory.unlock(WeaponId.BAZOOKA);
+        inventory.unlock(WeaponId.SHOTGUN);
         Set<WeaponId> unlocked = inventory.unlockedWeapons();
         assertTrue(unlocked.contains(WeaponId.GUN));
+        assertTrue(unlocked.contains(WeaponId.BASEBALLBAT));
         assertTrue(unlocked.contains(WeaponId.BAZOOKA));
-        assertEquals(2, unlocked.size());
+        assertTrue(unlocked.contains(WeaponId.SHOTGUN));
+        assertEquals(4, unlocked.size());
     }
 
     @Test

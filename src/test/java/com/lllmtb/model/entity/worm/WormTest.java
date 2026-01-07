@@ -149,8 +149,8 @@ public class WormTest {
 
         worm.applyStatusEffects();
 
-        assertEquals(initialHealth - 1, worm.getStats().getHp());
-        assertEquals(4, poison.getRemainingTurns());
+        assertEquals(initialHealth - 15, worm.getStats().getHp());
+        assertEquals(2, poison.getRemainingTurns());
     }
 
     @Test
@@ -161,7 +161,7 @@ public class WormTest {
         for (int i = 0; i < 5; i++) {
             worm.applyStatusEffects();
         }
-        assertEquals(initialHealth - 5, worm.getStats().getHp());
+        assertEquals(initialHealth - 45, worm.getStats().getHp());
         assertEquals(0, worm.getStatusEffects().size());
     }
 
@@ -187,8 +187,8 @@ public class WormTest {
             worm.applyStatusEffects();
         }
 
-        assertEquals(initialHealth - 9, worm.getStats().getHp());
-        assertEquals(2, worm.getStatusEffects().size());
+        assertEquals(initialHealth - 89, worm.getStats().getHp());
+        assertEquals(0, worm.getStatusEffects().size());
     }
 
     @Test

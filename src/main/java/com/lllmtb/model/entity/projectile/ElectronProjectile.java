@@ -20,7 +20,7 @@ public final class ElectronProjectile extends Projectile {
     private static final double mass   = 0;
     private static final double height = 2;
     private static final double width  = 2;
-    private static final int damage = 10;
+    private static final int damage = 18;
 
     private int bounces = 5;
 
@@ -47,7 +47,7 @@ public final class ElectronProjectile extends Projectile {
         if (entity == null) {
             return new ArrayList<>();
         }
-        List<GameCommand> list = new ArrayList<GameCommand>();
+        List<GameCommand> list = new ArrayList<>();
         handleHit(list, entity, damage);
         Worm hitWorm = null;
         if (entity instanceof Worm) {

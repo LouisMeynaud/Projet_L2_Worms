@@ -15,12 +15,11 @@ import com.lllmtb.physics.Position;
 public class BurnEffectTest {
 
     private Worm worm;
-    private Team team;
 
     @BeforeEach
     public void setUp() {
         Position pos = new Position(0, 0);
-        team = new Team("Team", 1, new Position[]{pos}, 0);
+        Team team = new Team("Team", 1, new Position[]{pos}, 0);
         worm = new Worm("TestWorm", team);
         Worm.setMaxHp(100);
     }
@@ -28,8 +27,8 @@ public class BurnEffectTest {
     @Test
     public void testBurnEffectCreation() {
         BurnEffect burn = new BurnEffect();
-        assertEquals(2, burn.getDamagePerTurn());
-        assertEquals(4, burn.getRemainingTurns());
+        assertEquals(22, burn.getDamagePerTurn());
+        assertEquals(2, burn.getRemainingTurns());
         assertTrue(burn.isActive());
     }
 
@@ -50,10 +49,10 @@ public class BurnEffectTest {
         worm.addStatusEffect(burn);
         worm.applyStatusEffects();
 
-        // Health should be reduced by 10
-        assertEquals(initialHealth - 2, worm.getStats().getHp());
+        // Health should be reduced by 22
+        assertEquals(initialHealth - 22, worm.getStats().getHp());
         // Poison duration should be decreased
-        assertEquals(3, burn.getRemainingTurns());
+        assertEquals(1, burn.getRemainingTurns());
     }
 
     @Test
@@ -68,8 +67,8 @@ public class BurnEffectTest {
             worm.applyStatusEffects();
         }
 
-        // Total damage should be 8 (2 * 4)
-        assertEquals(initialHealth - 8, worm.getStats().getHp());
+        // Total damage should be 44 (2 * 22)
+        assertEquals(initialHealth - 44, worm.getStats().getHp());
         // Burn should be removed from effects list
         assertEquals(0, worm.getStatusEffects().size());
     }
@@ -88,6 +87,6 @@ public class BurnEffectTest {
         // Apply both poisons
         worm.applyStatusEffects();
 
-        assertEquals(initialHealth - 2, worm.getStats().getHp());
+        assertEquals(initialHealth - 22, worm.getStats().getHp());
     }
 }

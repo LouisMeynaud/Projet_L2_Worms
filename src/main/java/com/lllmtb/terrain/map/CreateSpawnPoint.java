@@ -24,12 +24,21 @@ public class CreateSpawnPoint {
         int waterLevel = map.getHeightWater();
         int minDistance = 5;
         int attemptsForCurrentWorm = 0;
+        int totalGlobalAttempts = 0;
 
         while (i < nbSpawnPoint) {
             attemptsForCurrentWorm++;
+            totalGlobalAttempts++;
 
             if (attemptsForCurrentWorm % 10 == 0 && minDistance > 0) {
                 minDistance--;
+            }
+
+            if (totalGlobalAttempts > 1000) {
+                spawnPointPos[i] = new Position(random.nextInt(mapWidth), mapHeight - 10);
+                i++;
+                attemptsForCurrentWorm = 0;
+                continue;
             }
 
             int x = random.nextInt(mapWidth);
@@ -38,10 +47,11 @@ public class CreateSpawnPoint {
             for (int y = mapHeight - 1; y > waterLevel; y--) {
                 Position headPos = new Position(x, y);
 
-                boolean headIsFree = !map.isSolid(new Position(x, y));
-                boolean feetAreSolid = map.isSolid(new Position(x, y - 2));
+                boolean headIsgood = !map.isSolid(new Position(x, y)) && map.getTile(new Position(x, y)).getDamage() == 0;
+                boolean bodyIsGood = !map.isSolid(new Position(x, y - 1)) && map.getTile(new Position(x, y)).getDamage() == 0;
+                boolean feetIsGood = map.isSolid(new Position(x, y - 2)) && map.getTile(new Position(x, y)).getDamage() == 0;
 
-                if (headIsFree && feetAreSolid) {
+                if (headIsgood && bodyIsGood && feetIsGood) {
                     boolean occupied = false;
                     for (int j = 0; j < i; j++) {
                         Position existingWorm = spawnPointPos[j];
@@ -69,7 +79,6 @@ public class CreateSpawnPoint {
     private static Position[][] separateSpawnTeam(int nbTeams, int nbWorms, Position[] spawnPointPos) {
         Position[][] teamSpawnPointPositions = new Position[nbTeams][nbWorms];
         for (int i = 0; i < nbTeams; i++) {
-            System.out.println("");
             for (int j = 0; j < nbWorms; j++) {
                 teamSpawnPointPositions[i][j] = spawnPointPos[i * nbWorms + j];
             }

@@ -9,8 +9,10 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import com.lllmtb.engine.GameWorld;
+import com.lllmtb.engine.logger.Logger;
 import com.lllmtb.model.entity.Coin;
 import com.lllmtb.model.entity.Drop;
+import com.lllmtb.model.entity.effect.StatusEffect;
 import com.lllmtb.model.entity.projectile.CatConcreteProjectile;
 import com.lllmtb.model.entity.projectile.Projectile;
 import com.lllmtb.model.entity.team.TeamColor;
@@ -24,15 +26,15 @@ import com.lllmtb.physics.PhysicsBody;
 import com.lllmtb.physics.PhysicsModifier;
 import com.lllmtb.physics.Position;
 import com.lllmtb.terrain.map.Tile;
-import com.lllmtb.ui.graphical.TextureManager;
-import com.lllmtb.ui.graphical.Utilitaire;
-import com.lllmtb.ui.graphical.animation.Animation;
-import com.lllmtb.ui.graphical.animation.AnimationManager;
-import com.lllmtb.ui.graphical.animation.VisualEffect;
+import com.lllmtb.ui.graphical.Utilitaire.TextureManager;
+import com.lllmtb.ui.graphical.Utilitaire.Utilitaire;
+import com.lllmtb.ui.graphical.Utilitaire.animation.Animation;
+import com.lllmtb.ui.graphical.Utilitaire.animation.AnimationManager;
+import com.lllmtb.ui.graphical.Utilitaire.animation.VisualEffect;
 
 /**
  * Classe responsable du rendu graphique de la partit.
- *
+ * </p>
  * elle gere le dessin de la carte (terrain), des entité(worms/projectile)
  * et des effet visuel(animation , barre de vie, current worms etc)
  */
@@ -102,7 +104,11 @@ public class WorldRenderer {
         panel.checkCameraBounds();
     }
 
-
+    /**
+    * Redraws the map only in a specific region.
+    * @param center the circle within which to redraw.
+    * @param radius the radius within the circle within which to redraw.
+    */
     public void updateMapCacheRegion(Position center, int radius) {
         if (mapCache == null) {
             updateMapCache();
@@ -185,8 +191,7 @@ public class WorldRenderer {
         }
         for (PhysicsBody body : this.world.getPhysics().getBodies()) {
             Object entity = body.getEntity();
-            if (entity instanceof Worm) {
-                Worm worm = (Worm) entity;
+            if (entity instanceof Worm worm) {
                 getWormAnimation(worm);
                 worm.updateFacingDirection();
             }
@@ -260,6 +265,7 @@ public class WorldRenderer {
         paintEquipment(g2d, worm, xCenter, yCenter);
 
         paintHealthBar(g2d, (Worm) worm.getEntity(), xEcran, yEcran, largeurVerPx);
+       paintStatusEffects(g2d, (Worm) worm.getEntity(), xEcran, yEcran, largeurVerPx);
 
         g2d.drawImage(textureWorm, tx, null);
 
@@ -267,16 +273,32 @@ public class WorldRenderer {
             paintCurrentWormsArrow(g2d, xEcran, yEcran, largeurVerPx, wormEntity.getTeam().teamColor);
             paintItem(g2d, xCenter, yCenter);
             paintAim(g2d, xCenter, yCenter);
-            paintChargeBar(g2d, xEcran, yEcran, largeurVerPx); // AJOUT: Dessin de la barre
+            paintChargeBar(g2d, xEcran, yEcran, largeurVerPx);
+        }
+    }
+
+    private void paintStatusEffects(Graphics2D g2d, Worm worm, double xEcran, double yEcran, double wormWidth) {
+        List<StatusEffect> effects = worm.getStatusEffects();
+        if (effects == null || effects.isEmpty()) return;
+
+        int imgSize = 12;
+
+        double startX = xEcran + wormWidth + 8;
+        double startY = yEcran - 18;
+        for (int i = 0; i < effects.size(); i++) {
+            BufferedImage texture = TextureManager.EFFECT.get(effects.get(i).getName());
+            g2d.drawImage(texture, (int) startX + (i * 14), (int) startY, imgSize, imgSize, null);
         }
     }
 
     /**
      * Dessine la barre de charge (puissance).
+     * @param g2d paintbrushes
+     * @param x the position x for the bottom left corner ChargeBar
+     * @param y the position Y for the bottom left corner ChargeBar
+     * @param width the width of the worms.
      */
     private void paintChargeBar(Graphics2D g2d, double x, double y, double width) {
-        if (!panel.shootMode) return;
-
         ItemId item = world.getPlayingTeam().getHand();
         if (item == null || item.getMaxChargeTime() <= 0) return;
 
@@ -332,10 +354,17 @@ public class WorldRenderer {
         if (textureProjectile != null) {
             AffineTransform tx = new AffineTransform();
 
-            tx.translate(xEcran, yEcran);
+            double centerX = xEcran + largeurProjPx / 2.0;
+            double centerY = yEcran + hauteurProjPx / 2.0;
+            tx.translate(centerX, centerY);
+            if (!(projectile.getEntity() instanceof CatConcreteProjectile))
+                tx.rotate(-projectile.getVector().angle());
+
             double echelleX = largeurProjPx / textureProjectile.getWidth();
             double echelleY = hauteurProjPx / textureProjectile.getHeight();
             tx.scale(echelleX, echelleY);
+
+            tx.translate(-textureProjectile.getWidth() / 2.0, -textureProjectile.getHeight() / 2.0);
 
             g2d.drawImage(textureProjectile, tx, null);
         }
@@ -360,6 +389,12 @@ public class WorldRenderer {
         g2d.drawImage(texture, tx, null);
     }
 
+    /**
+     * draw a drop, two types of drop depending if it's on the ground or aerial.
+     * @param g2d
+     * @param body
+     * @param drop
+     */
     private void drawDrop(Graphics2D g2d, PhysicsBody body, Drop drop) {
         double[] bounds = panel.getScreenBounds(body); // Convertit position monde -> écran
         double xEcran = bounds[0];
@@ -367,10 +402,12 @@ public class WorldRenderer {
         double largeurPx = bounds[2];
         double hauteurPx = bounds[3];
 
-        BufferedImage texture = null;
+        BufferedImage texture;
         if (drop.isOnGround()) {
+            // drop on ground
             texture = TextureManager.UI.get("DropOnGround");
         } else {
+            // aerial drop, use different texture and adjust size/position
             texture = TextureManager.UI.get("DropAerials");
             hauteurPx = hauteurPx * 2;
             yEcran -= hauteurPx / 2;
@@ -419,21 +456,20 @@ public class WorldRenderer {
      */
     private void paintCurrentWormsArrow(Graphics2D g2d, double x, double y, double width, TeamColor color) {
 
-        double offsetAnimation = Math.sin(world.getGameLoop().getTicks() / 10) * 5; //fonction sinuosidale , (qui monte et descend)
+        double offsetAnimation = Math.sin(world.getGameLoop().getTicks() / 10f) * 5; //fonction sinuosidale , (qui monte et descend)
         int centerX = (int) (x + (width / 2.0));
         int bottomY = (int) (y - 35 + offsetAnimation);
         int size = 12;
 
         int[] xPoints = {centerX - size, centerX + size, centerX };
         int[] yPoints = {bottomY - size, bottomY - size, bottomY };
-        Color paintColor;
-        switch (color) {
-            case GREEN : paintColor = Color.GREEN; break;
-            case YELLOW : paintColor = Color.YELLOW; break;
-            case RED : paintColor = Color.RED; break;
-            case BLUE : paintColor = Color.BLUE; break;
-            default : paintColor = Color.BLACK; break;
-        }
+        Color paintColor = switch (color) {
+            case GREEN -> Color.GREEN;
+            case YELLOW -> Color.YELLOW;
+            case RED -> Color.RED;
+            case BLUE -> Color.BLUE;
+            default -> Color.BLACK;
+        };
         g2d.setColor(paintColor);
         g2d.fillPolygon(xPoints, yPoints, 3); //dessine le triange remplie
 
@@ -466,7 +502,7 @@ public class WorldRenderer {
         g2d.setColor(Color.RED);
         g2d.fillRect(barX, barY, barWidth, barHeight);
 
-        double ratio = (double) currentHp / maxHp;
+        double ratio = currentHp / maxHp;
         int greenBarWidth = (int) (barWidth * ratio);
 
         g2d.setColor(Color.GREEN);
@@ -487,18 +523,15 @@ public class WorldRenderer {
      */
     private void paintAim(Graphics2D g2d, double xCenter, double yCenter) {
         Worm currentWorm = world.getTurnManager().getTurn().getWormPlayable();
-        if (currentWorm != null && panel.shootMode) {
-            g2d.setColor(Color.RED);
+        if (currentWorm == null) return;
 
-            ItemId handItem = world.getPlayingTeam().getHand();
-            if (handItem != null && handItem.usesCrosshair()) {
-                int crosshairSize = 15;
-                int mouseX = (int) panel.mouseWorldX;
-                int mouseY = (int) panel.mouseWorldY;
-                g2d.setStroke(new BasicStroke(3)); // epaisseur du trait
-                g2d.drawLine(mouseX - crosshairSize, mouseY, mouseX + crosshairSize, mouseY);
-                g2d.drawLine(mouseX, mouseY - crosshairSize, mouseX, mouseY + crosshairSize);
-            } else {
+        ItemId handItem = world.getPlayingTeam().getHand();
+        if (handItem == null) return;
+
+        g2d.setColor(Color.RED);
+
+        switch (handItem.getShootMode()) {
+            case AIM -> {
                 double vecX = panel.mouseWorldX - xCenter;
                 double vecY = panel.mouseWorldY - yCenter;
                 double distance = Math.sqrt(vecX * vecX + vecY * vecY);
@@ -508,8 +541,19 @@ public class WorldRenderer {
                     vecX = vecX * ratio;
                     vecY = vecY * ratio;
                 }
-                g2d.setStroke(new BasicStroke(3)); // epaisseur du trait
+                g2d.setStroke(new BasicStroke(3));
                 g2d.drawLine((int) xCenter, (int) yCenter, (int) (xCenter + vecX), (int) (yCenter + vecY));
+            }
+            case CROSSHAIR -> {
+                int crosshairSize = 15;
+                int mouseX = (int) panel.mouseWorldX;
+                int mouseY = (int) panel.mouseWorldY;
+                g2d.setStroke(new BasicStroke(3));
+                g2d.drawLine(mouseX - crosshairSize, mouseY, mouseX + crosshairSize, mouseY);
+                g2d.drawLine(mouseX, mouseY - crosshairSize, mouseX, mouseY + crosshairSize);
+            }
+            default -> {
+                // no aim visualisation for other modes
             }
         }
     }
@@ -599,13 +643,16 @@ public class WorldRenderer {
      * @param g2d le pinceaux
      */
     public void render(Graphics2D g2d) {
-        panel.checkCameraBounds();
-        g2d.translate(panel.cameraOffsetX, panel.cameraOffsetY); //decalle le pinceau en fonction de la position camera (si negatif le dessin est deplacer vers la gauche)
-        g2d.scale(panel.currentZoom, panel.currentZoom);
+        try {
+            panel.checkCameraBounds();
+            g2d.translate(panel.cameraOffsetX, panel.cameraOffsetY); //decalle le pinceau en fonction de la position camera (si negatif le dessin est deplacer vers la gauche)
+            g2d.scale(panel.currentZoom, panel.currentZoom);
 
-        paintMap(g2d);
-        paintEntity(g2d);
-        drawEffects(g2d);
-
+            paintMap(g2d);
+            paintEntity(g2d);
+            drawEffects(g2d);
+        } catch (Exception e) {
+            Logger.logger.error("Error while rendering the world", e);
+        }
     }
 }

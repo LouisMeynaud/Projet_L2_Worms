@@ -6,9 +6,9 @@ import java.util.Map;
 import java.util.Set;
 
 public class InventorySave {
-    private Map<ToolId, Integer> toolAmmo;
-    private Map<WeaponId, Integer> weaponAmmo;
-    private Set<WeaponId> unlockedWeapons;
+    public Map<ToolId, Integer> toolAmmo;
+    public Map<WeaponId, Integer> weaponAmmo;
+    public Set<WeaponId> unlockedWeapons;
 
 
     public InventorySave(Inventory inventory) {

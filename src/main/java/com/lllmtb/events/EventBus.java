@@ -80,12 +80,11 @@ public class EventBus {
      * @param eventType the class of events the listener was registered for
      * @param listener  the listener to remove
      * @param <T>       event type
-     * @return {@code true} if the listener was found and removed, {@code false} otherwise
-     * @throws NullPointerException if {@code eventType} or {@code listener} is null
+     * @return {@code true} if null or if the listener was found and removed, {@code false} otherwise
+     * @throws NullPointerException if {@code eventType} is null
      */
-    public <T extends Event> boolean unsubscribe(@NonNull Class<T> eventType, @NonNull EventListener<T> listener) {
-        Objects.requireNonNull(eventType);
-        Objects.requireNonNull(listener);
+    public <T extends Event> boolean unsubscribe(@NonNull Class<T> eventType, EventListener<T> listener) {
+        if (listener == null) return true;
         CopyOnWriteArraySet<EventListener<? extends Event>> set = listeners.get(eventType);
         return set != null && set.remove(listener);
     }
@@ -149,8 +148,7 @@ public class EventBus {
                     try {
                         ((EventListener<T>) listener).handle(event); // safe to cast
                     } catch (Exception ex) {
-                        Logger.logger.error("Error while handling event {} with listener {} : ", event, listener);
-                        Logger.logger.debug("Error while handling event {} with listener {} : ", event, listener, ex);
+                        Logger.logger.error("Error while handling event {} with listener {} : ", event, listener, ex);
                     }
                 }
             }

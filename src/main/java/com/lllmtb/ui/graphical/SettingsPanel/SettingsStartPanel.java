@@ -18,11 +18,11 @@ import com.lllmtb.events.game.StartGameEvent;
 import com.lllmtb.events.ui.graphical.ScreenNewOrLoadEvent;
 import com.lllmtb.physics.GameMode;
 import com.lllmtb.terrain.generation.LandScape;
-import com.lllmtb.ui.graphical.TextureManager;
-import com.lllmtb.ui.graphical.Utilitaire;
+import com.lllmtb.ui.graphical.Utilitaire.TextureManager;
+import com.lllmtb.ui.graphical.Utilitaire.Utilitaire;
 
 public class SettingsStartPanel extends JPanel {
-    public EventBus eventBus;
+    public final EventBus eventBus;
     SettingMapPanel mapSettingPanel;
     SettingGamePanel gameSettingsPanel;
 
@@ -86,6 +86,13 @@ public class SettingsStartPanel extends JPanel {
         });
 
         startButton.addActionListener(e -> {
+            if (this.mapSettingPanel.loadMap) {
+                String selectedMap = this.mapSettingPanel.panelListeMap.getSelectedMapName();
+
+                if (selectedMap == null) {
+                    return;
+                }
+            }
             eventBus.postQueued(new StartGameEvent(setSettings(gameSettingsPanel)));
         });
     }
