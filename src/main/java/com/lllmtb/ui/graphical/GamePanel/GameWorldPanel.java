@@ -122,8 +122,6 @@ public class GameWorldPanel extends JPanel {
 
             @Override
             public void mousePressed(MouseEvent e) {
-                if (world.getPlayingTeam().isBot()) return;
-
                 lastMouseX = e.getX();
                 lastMouseY = e.getY();
 
@@ -142,8 +140,6 @@ public class GameWorldPanel extends JPanel {
 
             @Override
             public void mouseReleased(MouseEvent e) {
-                if (world.getPlayingTeam().isBot()) return;
-
                 int type = e.getButton();
                 long duration = 0;
                 if (chargeStartTime > 0) {
@@ -152,6 +148,7 @@ public class GameWorldPanel extends JPanel {
                 chargeStartTime = 0;
 
                 if (type == MouseEvent.BUTTON1) {
+                    if (world.getPlayingTeam().isBot()) return;
                     Position worldPos = screenToWorld(e.getX(), e.getY());
                     ItemId item = world.getPlayingTeam().getHand();
 
