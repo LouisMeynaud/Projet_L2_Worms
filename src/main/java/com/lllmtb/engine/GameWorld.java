@@ -273,11 +273,18 @@ public class GameWorld {
     public void nextTeamTurn() {
         if (teams.isEmpty()) {
             Logger.logger.warn("No teams available to take a turn.");
-            return;
+            throw new IllegalArgumentException("List teams empty");
         }
+        int attempts = 0;
+        int maxAttempts = teams.size() + 1;
         do {
             indexTeam = (indexTeam + 1) % teams.size();
-        } while (!teams.get(indexTeam).oneAlive());
+            attempts++;
+        } while (!teams.get(indexTeam).oneAlive() && attempts < maxAttempts);
+        if (attempts >= maxAttempts) {
+            Logger.logger.error("No team available with a worm alive to take a turn");
+            throw new IllegalStateException("No team alive found to take a turn");
+        }
         this.turnManager.startTurn(teams.get(indexTeam));
     }
 

@@ -22,8 +22,14 @@ public class Turn {
      */
     public Turn(Team team) {
         this.team = team;
-        while (!this.getWormPlayable().isAlive()) {
+        int attempts = 0;
+        int maxAttemps = team.getNumberOfWorms();
+        while (!this.getWormPlayable().isAlive() && attempts < maxAttemps) {
             this.team.nextWorm();
+            attempts++;
+        }
+        if (attempts >= maxAttemps) {
+            throw new IllegalStateException("All worms of the team are dead");
         }
     }
 

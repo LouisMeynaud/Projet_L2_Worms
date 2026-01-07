@@ -29,6 +29,8 @@ import com.lllmtb.model.item.weapon.WeaponId;
 import com.lllmtb.physics.Move;
 import com.lllmtb.physics.PhysicsBody;
 import com.lllmtb.physics.Position;
+import org.eclipse.jdt.annotation.NonNull;
+
 import static com.lllmtb.physics.Move.move;
 
 /**
@@ -134,10 +136,16 @@ public final class TurnManager {
      * This method reset timer, give credits to the Team, spawnCoins on the map.
      * @param team the selected team who will play.
      */
-    public void startTurn(Team team) {
+    public void startTurn(@NonNull Team team) {
+        Objects.requireNonNull(team);
         this.turnFinish = false;
         this.remainingTimeInMs = turnDurationInMs;
-        this.turn = new Turn(team);
+        try {
+            this.turn = new Turn(team);
+        } catch (Exception e) {
+            Logger.logger.error("Turn failed to be create, the reason is {}", e.getMessage());
+            throw new RuntimeException("Turn creation failed for the team " + team.name);
+        }
         this.nbTurn += 1;
 
         //economy passive income at the start of the turn
