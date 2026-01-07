@@ -13,8 +13,6 @@ import java.awt.image.BufferedImage;
 import com.lllmtb.events.EventBus;
 import com.lllmtb.events.ui.graphical.ScreenHomeEvent;
 import com.lllmtb.events.ui.graphical.ScreenLoadGame;
-import com.lllmtb.events.ui.graphical.ScreenMusicSettingsEvent;
-import com.lllmtb.events.ui.graphical.ScreenNewOrLoadEvent;
 import com.lllmtb.events.ui.graphical.ScreenSettingsGame;
 import com.lllmtb.ui.graphical.Utilitaire.TextureManager;
 import com.lllmtb.ui.graphical.Utilitaire.Utilitaire;
