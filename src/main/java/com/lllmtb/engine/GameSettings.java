@@ -42,7 +42,8 @@ public final class GameSettings {
      * @param coinCheat     If coin cheat is activated
      * @throws IllegalArgumentException if parameters are invalid
      */
-    public GameSettings(String gameName, int nbTeams, String[] teamNames, boolean[] isBot, int nbWorms, double maxHp, long turnDuration, boolean hasWind, String mapFileName, boolean floatingIsland, int widthMap, LandScape terrainType, int maxJump, GameMode gameMode, boolean friendlyFire, boolean coinCheat) {
+    public GameSettings(String gameName, int nbTeams, String[] teamNames, boolean[] isBot, int nbWorms, double maxHp, long turnDuration, boolean hasWind, String mapFileName,
+                        boolean floatingIsland, int widthMap, LandScape terrainType, int maxJump, GameMode gameMode, boolean friendlyFire, boolean coinCheat) {
 
         // Validate inputs
         if (gameName == null || gameName.isBlank()) {
