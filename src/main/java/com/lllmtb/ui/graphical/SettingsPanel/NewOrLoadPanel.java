@@ -5,11 +5,16 @@ import javax.swing.JPanel;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.image.BufferedImage;
 
 import com.lllmtb.events.EventBus;
 import com.lllmtb.events.ui.graphical.ScreenHomeEvent;
 import com.lllmtb.events.ui.graphical.ScreenLoadGame;
+import com.lllmtb.events.ui.graphical.ScreenMusicSettingsEvent;
+import com.lllmtb.events.ui.graphical.ScreenNewOrLoadEvent;
 import com.lllmtb.events.ui.graphical.ScreenSettingsGame;
 import com.lllmtb.ui.graphical.Utilitaire.TextureManager;
 import com.lllmtb.ui.graphical.Utilitaire.Utilitaire;
@@ -24,30 +29,27 @@ public class NewOrLoadPanel extends JPanel {
      */
     public NewOrLoadPanel(EventBus eventBus) {
         this.eventBus = new EventBus();
+        this.setLayout(new GridBagLayout());
+
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.insets = new Insets(15, 0, 15, 0);
 
 
+        JButton newGameButton = Utilitaire.createImageButton(TextureManager.UI, "Panel", 280, 140, 280, 140, "Nouvelle partie", "Arial", 23, Color.WHITE);
+        JButton loadGameButton = Utilitaire.createImageButton(TextureManager.UI, "Panel", 280, 140, 280, 140, "Charger une partie", "Arial", 23, Color.WHITE);
+        JButton backButton = Utilitaire.createImageButton(TextureManager.UI, "Panel", 280, 140, 280, 140, "Retour", "Arial", 23, Color.WHITE);
 
-        JButton newGameButton = Utilitaire.createImageButton(TextureManager.UI, "Panel", 150, 75, 150, 75, "New Game", "Arial", 16, Color.WHITE);
-        newGameButton.addActionListener(e -> {
+        newGameButton.addActionListener(e -> eventBus.postQueued(new ScreenSettingsGame()));
+        loadGameButton.addActionListener(e -> eventBus.postQueued(new ScreenLoadGame()));
+        backButton.addActionListener(e -> eventBus.postQueued(new ScreenHomeEvent()));
 
-            eventBus.postQueued(new ScreenSettingsGame());
-        });
-        this.add(newGameButton);
-
-        JButton loadGameButton = Utilitaire.createImageButton(TextureManager.UI, "Panel", 150, 75, 150, 75, "Load Game", "Arial", 16, Color.WHITE);
-        loadGameButton.addActionListener(e -> {
-            eventBus.postQueued(new ScreenLoadGame());
-        });
-        this.add(loadGameButton);
-
-
-
-        JButton backButton = Utilitaire.createImageButton(TextureManager.UI, "Panel", 150, 75, 150, 75, "Back", "Arial", 16, Color.WHITE);
-    backButton.addActionListener(e -> {
-
-            eventBus.postQueued(new ScreenHomeEvent());
-        });
-        this.add(backButton);
+        gbc.gridy = 0;
+        this.add(newGameButton, gbc);
+        gbc.gridy = 1;
+        this.add(loadGameButton, gbc);
+        gbc.gridy = 2;
+        this.add(backButton, gbc);
     }
 
     protected void paintComponent(Graphics g) {
