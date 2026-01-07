@@ -33,7 +33,6 @@ import static com.lllmtb.physics.Move.move;
 
 /**
  * Controls the turn system
- * <p>
  * This manager handles the full lifecycle of team turns, including:
  * <ul>
  *   <li>Turn start and end logic</li>
@@ -41,9 +40,7 @@ import static com.lllmtb.physics.Move.move;
  *   <li>Team passive income and coin spawning</li>
  *   <li>Checking turn clean before switching turns</li>
  * </ul>
- * <p>
  * A new turn only begins when the world is in a stable state (no active projectiles, all worms on ground).
- * <p>
  *
  */
 public final class TurnManager {
@@ -329,10 +326,8 @@ public final class TurnManager {
 
     /**
      * Registers and subscribes all game and input event listeners to the world event bus.
-     * <p>
      * This allows the turn manager to react to:
      * movement input, weapon/tool selection, coin pickup, worm landing, turn skip, and game stop.
-     * <p>
      * Listeners persist across turns because they use dynamic data from {@code TurnManager}.
      */
     private void setupEvents() {

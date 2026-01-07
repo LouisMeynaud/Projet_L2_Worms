@@ -135,8 +135,8 @@ public class Team {
     }
 
     /**
-     * Public constructor used to initialize a team using the private constructor.
-     * @param teamSave      the save of the team
+     * Public constructor used to initialize a team using the private constructor with a save.
+     * @param teamSave the save of the team
      */
     public Team(@NonNull TeamSave teamSave) {
         this.inventory = new Inventory();

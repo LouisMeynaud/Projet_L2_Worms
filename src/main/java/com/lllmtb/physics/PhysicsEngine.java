@@ -583,6 +583,11 @@ public class PhysicsEngine {
 
     }
 
+    /**
+     * Calculate fall damage and applies it to a worm if it falls too fast.
+     * @param worm which fall.
+     * @return the {@link GameCommand} for apply damage to worm
+     */
     public static GameCommand fallDamage(Worm worm) {
         int seuil = -50;
         GameCommand death = null;

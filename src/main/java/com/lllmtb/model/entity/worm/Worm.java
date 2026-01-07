@@ -41,7 +41,7 @@ public class Worm extends Entity {
     public final String name;
 
     /**
-     * The statistics of the worm (ex health, speed, strength).
+     * The statistics of the worm (health)
      */
     private final Statistics stats;
 
@@ -211,6 +211,10 @@ public class Worm extends Entity {
         return null;
     }
 
+    /**
+     * @param damage : the damage worm will take
+     * @return GameCommand to set worm's death or not
+     */
     public GameCommand damageWorm(double damage) {
         this.stats.damageTake(damage);
         return this.setDeath();
@@ -295,6 +299,10 @@ public class Worm extends Entity {
         return commands;
     }
 
+    /**
+     * Sets the maximum health points value for all worms in the game.
+     * @param maxHp : the maxHp all worms will have.
+     */
     public static void setMaxHp(double maxHp) {
         Statistics.setMaxHp(maxHp);
     }
