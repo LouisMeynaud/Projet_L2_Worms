@@ -144,6 +144,18 @@ public class Save {
         return info;
     }
 
+    /**
+     * Convertit une instance de {@link Map} en une {@link BufferedImage} rendue.
+     * <p>
+     * Cette méthode itère sur la matrice de tuiles de la carte, dessine un fond bleu ciel,
+     * puis superpose les textures de tuiles correspondantes récupérées via le {@link TextureManager}.
+     * Chaque tuile est rendue avec une taille fixe de 12 pixels.
+     * </p>
+     *
+     * @param map La carte du jeu à convertir en image.
+     * @return Une {@link BufferedImage} représentant graphiquement la carte.
+     * @throws IOException Si une erreur survient lors de la manipulation des ressources graphiques.
+     */
     public static BufferedImage maptoBuffered(Map map) throws IOException {
         int tileSize = 12;
         int width = map.getWidth() * tileSize;
@@ -176,6 +188,17 @@ public class Save {
         return mapCache;
     }
 
+    /**
+     * Enregistre une {@link BufferedImage} sur le disque local au format PNG.
+     * <p>
+     * L'image est sauvegardée sous le nom fixe {@code image.png} dans le répertoire spécifié.
+     * Si l'image fournie est {@code null}, l'opération est annulée sans erreur.
+     * </p>
+     *
+     * @param image      L'image à sauvegarder sur le système de fichiers.
+     * @param stringPath Le chemin du répertoire de destination.
+     * @throws IOException Si une erreur critique d'entrée/sortie survient lors de l'écriture du fichier.
+     */
     public static void saveImage(BufferedImage image, String stringPath) throws IOException {
         if (image == null) {
             return;
@@ -199,7 +222,7 @@ public class Save {
     public static void saveAll() {
         String stringPath = SaveConfig.SAVE_DIRECTORY + gameWorld.getGameName();
         if (gameWorld.getGameName().contains("Test")) {
-            stringPath = "src/test/resources/savesTest/" + gameWorld.getGameName() + "/save.json";
+            stringPath = "src/test/resources/savesTest/" + gameWorld.getGameName();
         }
         try {
             saveMap(gameWorld.getMap(), stringPath);

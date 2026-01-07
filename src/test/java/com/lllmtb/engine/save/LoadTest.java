@@ -3,10 +3,18 @@ package com.lllmtb.engine.save;
 import com.lllmtb.engine.GameSettings;
 import com.lllmtb.engine.GameWorld;
 import com.lllmtb.events.EventBus;
+import com.lllmtb.model.entity.Coin;
+import com.lllmtb.model.entity.Drop;
+import com.lllmtb.model.entity.projectile.BulletProjectile;
+import com.lllmtb.model.entity.projectile.Projectile;
+import com.lllmtb.model.entity.team.Team;
 import com.lllmtb.model.entity.worm.Worm;
+import com.lllmtb.model.item.ItemId;
+import com.lllmtb.model.item.UseParams;
 import com.lllmtb.model.item.weapon.WeaponId;
 import com.lllmtb.model.item.tool.ToolId;
 import com.lllmtb.physics.GameMode;
+import com.lllmtb.physics.Position;
 import com.lllmtb.terrain.generation.LandScape;
 import org.junit.jupiter.api.*;
 import java.io.IOException;
@@ -14,10 +22,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Comparator;
+
+import static com.lllmtb.engine.save.Load.reforgeGameSave;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class LoadTest {
-    private static final String TEST_PATH = "src/test/resources/savesTest/Test" ;
 
     @BeforeAll
     static void setUp() throws IOException {
@@ -32,9 +41,9 @@ public class LoadTest {
         Save.saveAll();
     }
 
-    @AfterAll
+  /*  @AfterAll
     static void tearDown() throws IOException {
-        Path path = Paths.get(TEST_PATH);
+       Path path = Paths.get("src/test/resources/savesTest/");
         if (Files.exists(path)) {
             Files.walk(path)
                     .sorted(Comparator.reverseOrder())
@@ -46,7 +55,7 @@ public class LoadTest {
             Files.deleteIfExists(path);
         }
         Save.setGameWorld(null);
-    }
+    }*/
 
     @Test
     void loadGameSaveTest() {
@@ -59,8 +68,25 @@ public class LoadTest {
 
     @Test
     void reforgeGameSaveTest() {
+        Position position = new Position(2,3);
+        Team team = new Team("test",1, new Position[]{position}, 150 );
+        Worm worm1 = new Worm("cc",team);
         GameSave gameSave = Load.loadGameSave("Test");
-        Load.reforgeGameSave(gameSave);
+
+        Coin coin = new Coin(position, 23);
+        PhysicsBodySave coinSave = new PhysicsBodySave(coin.getBody());
+
+        Drop drop  = new Drop(position, WeaponId.BAZOOKA);
+        PhysicsBodySave dropSave = new PhysicsBodySave(drop.getBody());
+
+        UseParams useParams = new UseParams(worm1);
+        Projectile projectile = new BulletProjectile(useParams);
+        PhysicsBodySave projectileSave = new PhysicsBodySave(projectile.getBody());
+
+        gameSave.entities.add(coinSave);
+        gameSave.entities.add(dropSave);
+        gameSave.entities.add(projectileSave);
+        reforgeGameSave(gameSave);
 
         for (PhysicsBodySave saveBody : gameSave.entities) {
             assertNotNull(saveBody.entity);

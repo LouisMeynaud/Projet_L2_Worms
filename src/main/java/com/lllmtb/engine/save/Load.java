@@ -70,7 +70,7 @@ public class Load {
         try (FileReader reader = new FileReader(stringpath)) {
             return gson.fromJson(reader, GameSave.class);
     } catch (IOException e) {
-            Logger.logger.error("Erreur Lors de la lecture du fichier {} : {}", stringpath,e.getMessage());
+            Logger.logger.error("Erreur Lors de la lecture du fichier {} : {}", stringpath, e.getMessage());
             throw new RuntimeException(e);
         }
     }
@@ -193,6 +193,19 @@ public class Load {
         return new GameWorld(gameSave, map);
     }
 
+
+    /**
+     * Récupère un identifiant d'objet (ItemId) à partir de sa catégorie et de son nom.
+     * <p>
+     * Cette méthode permet de convertir les chaînes de caractères lues depuis le fichier
+     * de sauvegarde en constantes d'énumération réelles {@link WeaponId} ou {@link ToolId}.
+     * </p>
+     *
+     * @param category La catégorie de l'objet (doit être "WEAPONID" pour une arme, sinon traité comme outil).
+     * @param name     Le nom technique de l'objet (ex: "BAZOOKA").
+     * @return L'instance correspondante de {@link ItemId}.
+     * @throws IllegalArgumentException Si le nom ne correspond à aucune constante dans l'énumération cible.
+     */
     public static ItemId recoverItem(String category, String name) {
         if ("WEAPONID".equals(category)) {
             return WeaponId.valueOf(name);
@@ -201,6 +214,16 @@ public class Load {
         }
     }
 
+    /**
+     * Analyse le répertoire de sauvegarde pour lister les noms de toutes les parties disponibles.
+     * <p>
+     * La méthode vérifie l'existence du dossier racine défini dans {@link SaveConfig#SAVE_DIRECTORY}
+     * et filtre uniquement les sous-répertoires (chaque sous-répertoire représentant une sauvegarde).
+     * </p>
+     *
+     * @return Un tableau de chaînes de caractères contenant les noms des dossiers de sauvegarde.
+     * Retourne un tableau vide si le répertoire est invalide, inexistant ou vide.
+     */
     public static String[] getListeNomsLoads() {
         File folder = new File(SaveConfig.SAVE_DIRECTORY);
         if (!folder.exists() || !folder.isDirectory()) {

@@ -34,7 +34,7 @@ public class SaveTest {
         Save.setGameWorld(gameWorld);
     }
 
-    @AfterAll
+  /*  @AfterAll
     static void tearDown() throws IOException {
         Path path = Paths.get(TEST_BASE_PATH);
         if (Files.exists(path)) {
@@ -48,7 +48,7 @@ public class SaveTest {
         }
 
         Save.setGameWorld(null);
-    }
+    }*/
 
         @Test
         void saveAllTest() {
