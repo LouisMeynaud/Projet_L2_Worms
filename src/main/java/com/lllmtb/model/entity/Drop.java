@@ -102,7 +102,7 @@ public class Drop extends Entity {
         if (hitEntity instanceof Worm worm) {
             Random random = new Random();
             Team team = worm.getTeam();
-            int ammoAmount = random.nextInt(1, 4 );
+            int ammoAmount = random.nextInt(1, 4);
             if (this.itemIdToUnlock instanceof ToolId toolID) {
                 team.addAmmo(toolID, ammoAmount);
                 commands = world -> {

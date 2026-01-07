@@ -199,7 +199,6 @@
                         <exclude>com/lllmtb/model/entity/projectile/*</exclude>
                         <exclude>com/lllmtb/model/item/tool/*</exclude>
                         <exclude>com/lllmtb/model/item/weapon/*</exclude>
-                        <exclude>com/lllmtb/engine/turn/TurnManager.class</exclude>
                     </excludes>
                 </configuration>
             </plugin>
