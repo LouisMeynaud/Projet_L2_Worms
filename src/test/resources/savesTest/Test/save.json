@@ -1,0 +1,463 @@
+{
+  "entities": [
+    {
+      "physicsBody": {
+        "position": {
+          "x": 3.0,
+          "y": 5.0
+        },
+        "vector": {
+          "x": 0.0,
+          "y": 0.0
+        },
+        "mass": 0.01,
+        "height": 2.0,
+        "width": 1.0
+      },
+      "uuid": 672,
+      "entity": {
+        "type": "worm",
+        "body": {
+          "position": {
+            "x": 3.0,
+            "y": 5.0
+          },
+          "vector": {
+            "x": 0.0,
+            "y": 0.0
+          },
+          "mass": 0.01,
+          "height": 2.0,
+          "width": 1.0
+        },
+        "name": "Team11",
+        "stats": {
+          "hp": 100.0,
+          "speed": 1,
+          "strength": 1
+        },
+        "alive": true,
+        "collisionType": "SLIDE",
+        "facingDirection": 1,
+        "isOnGround": false,
+        "statusEffects": [],
+        "uuid": 672
+      }
+    },
+    {
+      "physicsBody": {
+        "position": {
+          "x": 0.0,
+          "y": 5.0
+        },
+        "vector": {
+          "x": 0.0,
+          "y": 0.0
+        },
+        "mass": 0.01,
+        "height": 2.0,
+        "width": 1.0
+      },
+      "uuid": 673,
+      "entity": {
+        "type": "worm",
+        "body": {
+          "position": {
+            "x": 0.0,
+            "y": 5.0
+          },
+          "vector": {
+            "x": 0.0,
+            "y": 0.0
+          },
+          "mass": 0.01,
+          "height": 2.0,
+          "width": 1.0
+        },
+        "name": "Team12",
+        "stats": {
+          "hp": 100.0,
+          "speed": 1,
+          "strength": 1
+        },
+        "alive": true,
+        "collisionType": "SLIDE",
+        "facingDirection": 1,
+        "isOnGround": false,
+        "statusEffects": [],
+        "uuid": 673
+      }
+    },
+    {
+      "physicsBody": {
+        "position": {
+          "x": 4.0,
+          "y": 5.0
+        },
+        "vector": {
+          "x": 0.0,
+          "y": 0.0
+        },
+        "mass": 0.01,
+        "height": 2.0,
+        "width": 1.0
+      },
+      "uuid": 674,
+      "entity": {
+        "type": "worm",
+        "body": {
+          "position": {
+            "x": 4.0,
+            "y": 5.0
+          },
+          "vector": {
+            "x": 0.0,
+            "y": 0.0
+          },
+          "mass": 0.01,
+          "height": 2.0,
+          "width": 1.0
+        },
+        "name": "Team21",
+        "stats": {
+          "hp": 100.0,
+          "speed": 1,
+          "strength": 1
+        },
+        "alive": true,
+        "collisionType": "SLIDE",
+        "facingDirection": 1,
+        "isOnGround": false,
+        "statusEffects": [],
+        "uuid": 674
+      }
+    },
+    {
+      "physicsBody": {
+        "position": {
+          "x": 2.0,
+          "y": 5.0
+        },
+        "vector": {
+          "x": 0.0,
+          "y": 0.0
+        },
+        "mass": 0.01,
+        "height": 2.0,
+        "width": 1.0
+      },
+      "uuid": 675,
+      "entity": {
+        "type": "worm",
+        "body": {
+          "position": {
+            "x": 2.0,
+            "y": 5.0
+          },
+          "vector": {
+            "x": 0.0,
+            "y": 0.0
+          },
+          "mass": 0.01,
+          "height": 2.0,
+          "width": 1.0
+        },
+        "name": "Team22",
+        "stats": {
+          "hp": 100.0,
+          "speed": 1,
+          "strength": 1
+        },
+        "alive": true,
+        "collisionType": "SLIDE",
+        "facingDirection": 1,
+        "isOnGround": false,
+        "statusEffects": [],
+        "uuid": 675
+      }
+    }
+  ],
+  "indexTeam": 0,
+  "turnDuration": 10,
+  "teams": [
+    {
+      "team": {
+        "worms": [
+          {
+            "body": {
+              "position": {
+                "x": 3.0,
+                "y": 5.0
+              },
+              "vector": {
+                "x": 0.0,
+                "y": 0.0
+              },
+              "mass": 0.01,
+              "height": 2.0,
+              "width": 1.0
+            },
+            "name": "Team11",
+            "stats": {
+              "hp": 100.0,
+              "speed": 1,
+              "strength": 1
+            },
+            "alive": true,
+            "collisionType": "SLIDE",
+            "facingDirection": 1,
+            "isOnGround": false,
+            "statusEffects": [],
+            "uuid": 672
+          },
+          {
+            "body": {
+              "position": {
+                "x": 0.0,
+                "y": 5.0
+              },
+              "vector": {
+                "x": 0.0,
+                "y": 0.0
+              },
+              "mass": 0.01,
+              "height": 2.0,
+              "width": 1.0
+            },
+            "name": "Team12",
+            "stats": {
+              "hp": 100.0,
+              "speed": 1,
+              "strength": 1
+            },
+            "alive": true,
+            "collisionType": "SLIDE",
+            "facingDirection": 1,
+            "isOnGround": false,
+            "statusEffects": [],
+            "uuid": 673
+          }
+        ],
+        "name": "Team1",
+        "numberOfWorms": 2,
+        "id": 314,
+        "currentWorm": {
+          "body": {
+            "position": {
+              "x": 3.0,
+              "y": 5.0
+            },
+            "vector": {
+              "x": 0.0,
+              "y": 0.0
+            },
+            "mass": 0.01,
+            "height": 2.0,
+            "width": 1.0
+          },
+          "name": "Team11",
+          "stats": {
+            "hp": 100.0,
+            "speed": 1,
+            "strength": 1
+          },
+          "alive": true,
+          "collisionType": "SLIDE",
+          "facingDirection": 1,
+          "isOnGround": false,
+          "statusEffects": [],
+          "uuid": 672
+        },
+        "index": 0,
+        "teamColor": "YELLOW",
+        "shootCount": 0,
+        "maxChangeWormTeam": 1,
+        "credits": 0
+      },
+      "inventorySave": {
+        "toolAmmo": {
+          "PARACHUTE": 2,
+          "JETPACK": 0,
+          "CALLSTRIKE": 0,
+          "CATCONCRETE": 0,
+          "TOWER": 0,
+          "MINE": 0,
+          "GRENADE": 0,
+          "MEDKIT": 0,
+          "TRAP": 0
+        },
+        "weaponAmmo": {
+          "GUN": -1,
+          "BASEBALLBAT": -1,
+          "BAZOOKA": 0,
+          "HEALINGBAZOOKA": 0,
+          "SHOTGUN": 0,
+          "ELECTRONCANON": 0,
+          "GASGUN": 0,
+          "BOW": 0
+        },
+        "unlockedWeapons": [
+          "GUN",
+          "BASEBALLBAT"
+        ]
+      }
+    },
+    {
+      "team": {
+        "worms": [
+          {
+            "body": {
+              "position": {
+                "x": 4.0,
+                "y": 5.0
+              },
+              "vector": {
+                "x": 0.0,
+                "y": 0.0
+              },
+              "mass": 0.01,
+              "height": 2.0,
+              "width": 1.0
+            },
+            "name": "Team21",
+            "stats": {
+              "hp": 100.0,
+              "speed": 1,
+              "strength": 1
+            },
+            "alive": true,
+            "collisionType": "SLIDE",
+            "facingDirection": 1,
+            "isOnGround": false,
+            "statusEffects": [],
+            "uuid": 674
+          },
+          {
+            "body": {
+              "position": {
+                "x": 2.0,
+                "y": 5.0
+              },
+              "vector": {
+                "x": 0.0,
+                "y": 0.0
+              },
+              "mass": 0.01,
+              "height": 2.0,
+              "width": 1.0
+            },
+            "name": "Team22",
+            "stats": {
+              "hp": 100.0,
+              "speed": 1,
+              "strength": 1
+            },
+            "alive": true,
+            "collisionType": "SLIDE",
+            "facingDirection": 1,
+            "isOnGround": false,
+            "statusEffects": [],
+            "uuid": 675
+          }
+        ],
+        "name": "Team2",
+        "numberOfWorms": 2,
+        "id": 315,
+        "currentWorm": {
+          "body": {
+            "position": {
+              "x": 4.0,
+              "y": 5.0
+            },
+            "vector": {
+              "x": 0.0,
+              "y": 0.0
+            },
+            "mass": 0.01,
+            "height": 2.0,
+            "width": 1.0
+          },
+          "name": "Team21",
+          "stats": {
+            "hp": 100.0,
+            "speed": 1,
+            "strength": 1
+          },
+          "alive": true,
+          "collisionType": "SLIDE",
+          "facingDirection": 1,
+          "isOnGround": false,
+          "statusEffects": [],
+          "uuid": 674
+        },
+        "index": 0,
+        "teamColor": "BLUE",
+        "shootCount": 0,
+        "maxChangeWormTeam": 1,
+        "credits": 0
+      },
+      "inventorySave": {
+        "toolAmmo": {
+          "PARACHUTE": 2,
+          "JETPACK": 0,
+          "CALLSTRIKE": 0,
+          "CATCONCRETE": 0,
+          "TOWER": 0,
+          "MINE": 0,
+          "GRENADE": 0,
+          "MEDKIT": 0,
+          "TRAP": 0
+        },
+        "weaponAmmo": {
+          "GUN": -1,
+          "BASEBALLBAT": -1,
+          "BAZOOKA": 0,
+          "HEALINGBAZOOKA": 0,
+          "SHOTGUN": 0,
+          "ELECTRONCANON": 0,
+          "GASGUN": 0,
+          "BOW": 0
+        },
+        "unlockedWeapons": [
+          "GUN",
+          "BASEBALLBAT"
+        ]
+      }
+    }
+  ],
+  "hasWind": true,
+  "wind": {
+    "x": 0.0,
+    "y": 0.0
+  },
+  "gravity": {
+    "x": 0.0,
+    "y": -9810.0
+  },
+  "gameSettings": {
+    "nbTeams": 2,
+    "teamNames": [
+      "Team1",
+      "Team2"
+    ],
+    "nbWorms": 1,
+    "hasWind": true,
+    "mapFileName": "Test",
+    "floatingIsland": false,
+    "widthMap": 5,
+    "turnDuration": 10000,
+    "gameName": "Test",
+    "maxJump": 2,
+    "maxHp": 100.0,
+    "gameMode": "NORMAL",
+    "friendlyFire": true,
+    "coinCheat": false
+  },
+  "turnManager": {
+    "turnDurationInMs": 10000,
+    "remainingTimeInMs": 0,
+    "nbTurn": 0,
+    "turnFinish": false,
+    "restart": true
+  }
+}
