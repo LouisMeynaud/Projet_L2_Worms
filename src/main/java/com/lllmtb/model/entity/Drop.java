@@ -89,7 +89,7 @@ public class Drop extends Entity {
      * If a worm collects it, the team gets:
      * <ul>
      *   <li>A new weapon unlocked or tool ammo added</li>
-     *   <li>A random amount of ammo (0 to 3)</li>
+     *   <li>A random amount of ammo (1 to 3)</li>
      *   <li>The drop is removed from the world</li>
      *   <li>A notification is sent to the UI</li>
      * </ul>
@@ -102,7 +102,7 @@ public class Drop extends Entity {
         if (hitEntity instanceof Worm worm) {
             Random random = new Random();
             Team team = worm.getTeam();
-            int ammoAmount = random.nextInt(1, 6);
+            int ammoAmount = random.nextInt(1, 4 );
             if (this.itemIdToUnlock instanceof ToolId toolID) {
                 team.addAmmo(toolID, ammoAmount);
                 commands = world -> {

@@ -191,29 +191,31 @@ public final class TurnManager {
      */
     private void spawnDrops() {
         Random random = new Random();
-        int dropToSpawn = random.nextInt(2);
-        int mapWidth = world.getMap().getWidth();
-        int mapHeight = world.getMap().getHeight();
+        if (random.nextInt(100) > 33) {
+            int dropToSpawn = random.nextInt(2);
+            int mapWidth = world.getMap().getWidth();
+            int mapHeight = world.getMap().getHeight();
 
-        for (int i = 0; i < dropToSpawn; i++) {
-            int x = random.nextInt(mapWidth);
-            int y = mapHeight - 1;
+            for (int i = 0; i < dropToSpawn; i++) {
+                int x = random.nextInt(mapWidth);
+                int y = mapHeight - 1;
 
 
-            ItemId itemId;
-            if (random.nextInt(2) == 0) {
-                //Weapon Drop
-                WeaponId[] weaponIdValues = WeaponId.values();
-                itemId = weaponIdValues[random.nextInt(2, weaponIdValues.length - 1)]; // Between 2 and length-1 to remove Gun, BaseballBat and None in the choice
-            } else {
-                // Tool Drop
-                ToolId[] toolIdValues = ToolId.values();
-                itemId = toolIdValues[random.nextInt(toolIdValues.length - 1)];  // Between 0 and length-1 to remove None in the choice
+                ItemId itemId;
+                if (random.nextInt(2) == 0) {
+                    //Weapon Drop
+                    WeaponId[] weaponIdValues = WeaponId.values();
+                    itemId = weaponIdValues[random.nextInt(2, weaponIdValues.length - 1)]; // Between 2 and length-1 to remove Gun, BaseballBat and None in the choice
+                } else {
+                    // Tool Drop
+                    ToolId[] toolIdValues = ToolId.values();
+                    itemId = toolIdValues[random.nextInt(toolIdValues.length - 1)];  // Between 0 and length-1 to remove None in the choice
+                }
+
+                Logger.logger.debug(" Drop spawn with item : {}", itemId);
+                Drop drop = new Drop(new Position(x + 0.25, y), itemId);
+                world.queueCommands(drop.addModifier());
             }
-
-            Logger.logger.debug(" Drop spawn with item : {}", itemId);
-            Drop drop = new Drop(new Position(x + 0.25, y), itemId);
-            world.queueCommands(drop.addModifier());
         }
     }
 
