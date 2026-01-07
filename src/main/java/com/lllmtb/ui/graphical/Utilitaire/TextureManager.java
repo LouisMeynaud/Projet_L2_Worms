@@ -26,6 +26,11 @@ public class TextureManager {
     public static final Map<String, BufferedImage> EFFECT = new HashMap<>();
     public static final Map<String, BufferedImage> NOTIFICATIONS = new HashMap<>();
 
+    /**
+     * Loads an image from the given path.
+     * @param path the path to the image.
+     * @return the loaded image or the default image if loading fails.
+     */
      public static BufferedImage loadImage(String path) {
         try {
             URL url = TextureManager.class.getResource(path);

@@ -111,7 +111,7 @@ public class ConsoleUI implements UI {
             }
             terminal.writer().println("   Wind: " + (hasWind ? "ON" : "OFF"));
             terminal.writer().flush();
-            ConfigMap configMap = new ConfigMap(size, heightWater,thicknessMin, floatingIsland,heightStart,landscape, null);
+            ConfigMap configMap = new ConfigMap(size, heightWater, thicknessMin, floatingIsland, heightStart, landscape, null);
             return new GameSettings("blabla", nbTeams, teamNames, nbWorms, maxHealth, turnDuration, hasWind, mapFileName,
                     configMap, 2, GameMode.NORMAL, friendlyfire, cheat);
         } catch (Exception e) {

@@ -123,7 +123,7 @@ public class GameWorld {
         if (settings.mapFileName != null) {
             try {
                 tmap = MapLoader.loadMap(settings.mapFileName);
-                this.configMap = new ConfigMap(tmap.getWidth(), tmap.getHeightWater(),0, false,0, settings.terrainType, settings.gameMode);
+                this.configMap = new ConfigMap(tmap.getWidth(), tmap.getHeightWater(), 0, false, 0, settings.terrainType, settings.gameMode);
             } catch (Exception e) {
                 Logger.logger.error("Failed to load map '{}'", settings.mapFileName, e);
                 throw new RuntimeException(e);

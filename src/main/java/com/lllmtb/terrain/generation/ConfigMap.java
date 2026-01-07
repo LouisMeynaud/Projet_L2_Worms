@@ -43,7 +43,7 @@ public class ConfigMap {
                 this.maxLength = 10;
                 this.plateauChance = 100;
                 break;
-            
+
             case FLAT:
                 this.maxSlope = 1;
                 this.maxLength = 10;
@@ -157,6 +157,10 @@ public class ConfigMap {
         return this.gameMode;
     }
 
+    /**
+     *
+     * @param gameMode the gameMode to set
+     */
     public void setGameMode(GameMode gameMode) {
         this.gameMode = gameMode;
     }

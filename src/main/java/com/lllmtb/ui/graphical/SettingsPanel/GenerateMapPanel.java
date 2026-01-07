@@ -105,7 +105,7 @@ public class GenerateMapPanel extends JPanel {
 
         gbc.gridx = 1; // second columns
 
-        this.mapThiknessSlider = Utilitaire.createSlider(1, 25, 4 ,3);
+        this.mapThiknessSlider = Utilitaire.createSlider(1, 25, 4, 3);
         contentGrid.add(mapThiknessSlider, gbc);
 
         //MapHeightWater
@@ -117,7 +117,7 @@ public class GenerateMapPanel extends JPanel {
 
         gbc.gridx = 1; // second columns
 
-        this.mapHeightWaterSlider = Utilitaire.createSlider(0, 20, 5 ,5);
+        this.mapHeightWaterSlider = Utilitaire.createSlider(0, 20, 5, 5);
         contentGrid.add(mapHeightWaterSlider, gbc);
 
         //MapHeightStart
@@ -129,7 +129,7 @@ public class GenerateMapPanel extends JPanel {
 
         gbc.gridx = 1; // second columns
 
-        this.mapHeightStartSlider = Utilitaire.createSlider(0, 20, 17 ,5);
+        this.mapHeightStartSlider = Utilitaire.createSlider(0, 20, 17, 5);
         contentGrid.add(mapHeightStartSlider, gbc);
 
         gbc.gridy = row + 2;
@@ -143,7 +143,8 @@ public class GenerateMapPanel extends JPanel {
         gbc.gridwidth = 2; // take one column
         gbc.gridx = 0;
         gbc.gridy = row++;
-        JLabel info2 = new JLabel("<html>Si la hauteur de l'eau est supérieure à celle de la terre,<br>la hauteur de la terre est ajustée au niveau de l'eau pour respecter l'épaisseur minimale. </html>");
+        JLabel info2 = new JLabel("<html>Si la hauteur de l'eau est supérieure à celle de la terre,<br>"
+        + "la hauteur de la terre est ajustée au niveau de l'eau pour respecter l'épaisseur minimale. </html>");
         contentGrid.add(info2, gbc);
 
 
@@ -206,7 +207,7 @@ public class GenerateMapPanel extends JPanel {
      * Gets the starting height of the water from the slider.
      * @return the starting height of the water.
      */
-    public int getHeightStart(){
+    public int getHeightStart() {
         return this.mapHeightStartSlider.getValue();
     }
 
@@ -214,14 +215,14 @@ public class GenerateMapPanel extends JPanel {
      * Gets the thickness of the map from the slider.
      * @return the thickness of the map.
      */
-    public int getMapThikness(){
+    public int getMapThikness() {
         return this.mapThiknessSlider.getValue();
     }
     /**
      * Gets the height at which the land starts from the slider.
      * @return the starting height of the land.
      */
-    public int getHeightWater(){
+    public int getHeightWater() {
         return this.mapHeightWaterSlider.getValue();
     }
     /**
@@ -232,6 +233,10 @@ public class GenerateMapPanel extends JPanel {
         return this.flightIslandCheckBox.isSelected();
     }
 
+    /**
+     * Creates a ConfigMap object based on the current settings in the panel.
+     * @return a ConfigMap object with the selected settings.
+     */
     public ConfigMap getConfigMap() {
         return new ConfigMap(
                 this.getWidthMapSlider(),

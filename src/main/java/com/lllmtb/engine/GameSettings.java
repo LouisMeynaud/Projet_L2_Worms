@@ -29,7 +29,6 @@ public final class GameSettings {
      * @param turnDuration   Duration of each turn in seconds
      * @param hasWind        Is the wind turned on ?
      * @param mapFileName    Name of the map file to load (null to generate a new map)
-     * @param terrainType    Type of terrain to generate
      * @param maxJump        Maximum jump height for worms
      * @param gameName       Name of the game session
      * @param friendlyFire   Boolean if friendly fire is activated
@@ -73,7 +72,7 @@ public final class GameSettings {
         this.hasWind = hasWind;
         this.mapFileName = mapFileName;
         this.configMap = configMap;
-        this.terrainType = (configMap == null)? LandScape.HILLY : configMap.terrainType;
+        this.terrainType = (configMap == null) ? LandScape.HILLY : configMap.terrainType;
         this.turnDuration = turnDuration;
         this.gameName = gameName;
         this.maxJump = maxJump;
