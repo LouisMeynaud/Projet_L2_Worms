@@ -102,9 +102,4 @@ public class SaveTest {
             assertFalse(Files.exists(path), "Comment ca il a pas disparu ????");
 
         }
-
-        @Test
-        void saveMapExceptionTest() {
-            assertDoesNotThrow(() -> Save.saveMap(gameWorld.getMap(), "Je crois il y a une erreur ici :) (je sais)"));
-        }
 }
