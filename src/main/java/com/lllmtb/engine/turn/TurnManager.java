@@ -54,6 +54,7 @@ public final class TurnManager {
     private boolean turnFinish = false;
     private static volatile int remainingTimeAfterShootInMs = 5000;
     private boolean restart = true;
+    private boolean readyToStart = false;
 
     private static final int PASSIVE_INCOME = 150;
 
@@ -126,6 +127,7 @@ public final class TurnManager {
     /**
      * Set RemainingTimeAfterShoot to a value specified
      * @param value the value specified
+     * Just for the test
      */
     public static void setRemainingTimeAfterShootInMs(int value) {
         TurnManager.remainingTimeAfterShootInMs = value;
@@ -169,7 +171,7 @@ public final class TurnManager {
         }
         Save.setGameWorld(world);
         this.world.getBus().postSync(new SaveEvent());
-        this.world.pause(true);
+        this.readyToStart = true;
     }
 
     /**
@@ -234,26 +236,28 @@ public final class TurnManager {
      * @param elapsedTime the elapsed time since the last update
      */
     public void updateTurn(double elapsedTime) {
-        this.remainingTimeInMs -= (long) elapsedTime;
-        Team winningTeam = checkWiningTeam();
-        if (winningTeam != null) {
-            Logger.logger.info("The team {} wins !!", winningTeam);
-            Save.eraseSave(getWorld().getGameName());
-            world.getBus().postQueued(new ScreenEndGameEvent(winningTeam));
-        } else {
-            if (turnFinish) {
-                if (cleanTurn()) {
-                    this.passNextTurn();
-                    world.getGameLoop().setSpeedTurn(1);
-                } else {
-                    world.getGameLoop().setSpeedTurn(3);
-                }
+        if (readyToStart) {
+            this.remainingTimeInMs -= (long) elapsedTime;
+            Team winningTeam = checkWiningTeam();
+            if (winningTeam != null) {
+                Logger.logger.info("The team {} wins !!", winningTeam);
+                Save.eraseSave(getWorld().getGameName());
+                world.getBus().postQueued(new ScreenEndGameEvent(winningTeam));
             } else {
-                this.turn.wormPlayableAlive();
-                if (remainingTimeInMs <= 0 || this.turn.getIsEnd()) {
-                    endTurn();
-                } else if (this.turn.teamMaximumShoot()) {
-                    this.remainingTimeInMs = Math.min(this.remainingTimeInMs, remainingTimeAfterShootInMs);
+                if (turnFinish) {
+                    if (cleanTurn()) {
+                        this.passNextTurn();
+                        world.getGameLoop().setSpeedTurn(1);
+                    } else {
+                        world.getGameLoop().setSpeedTurn(3);
+                    }
+                } else {
+                    this.turn.wormPlayableAlive();
+                    if (remainingTimeInMs <= 0 || this.turn.getIsEnd()) {
+                        endTurn();
+                    } else if (this.turn.teamMaximumShoot()) {
+                        this.remainingTimeInMs = Math.min(this.remainingTimeInMs, remainingTimeAfterShootInMs);
+                    }
                 }
             }
         }
@@ -314,6 +318,7 @@ public final class TurnManager {
      */
     private void passNextTurn() {
         this.turn.end();
+        this.readyToStart = false;
         world.nextTeamTurn();
     }
 
