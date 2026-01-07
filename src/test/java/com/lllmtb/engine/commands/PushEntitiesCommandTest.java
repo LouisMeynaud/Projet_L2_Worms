@@ -8,12 +8,14 @@ import com.lllmtb.model.entity.worm.Worm;
 import com.lllmtb.physics.GameMode;
 import com.lllmtb.physics.Position;
 import com.lllmtb.physics.Vector;
+import com.lllmtb.terrain.generation.ConfigMap;
 import com.lllmtb.terrain.generation.LandScape;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
+
 
 public class PushEntitiesCommandTest {
     private GameWorld world;
@@ -25,6 +27,7 @@ public class PushEntitiesCommandTest {
 
     @BeforeEach
     void setUp() {
+        ConfigMap configMap = new ConfigMap(100, 0,0, false,0, LandScape.FLAT, GameMode.NORMAL);
         GameSettings settings = new GameSettings(
             "test",
             2,
@@ -34,9 +37,7 @@ public class PushEntitiesCommandTest {
             10,
             false,
             null,
-            false,
-            200,
-            LandScape.FLAT,
+            configMap,
             2,
             GameMode.NORMAL,
             true,

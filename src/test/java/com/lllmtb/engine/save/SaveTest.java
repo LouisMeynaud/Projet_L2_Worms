@@ -6,6 +6,7 @@ import com.lllmtb.engine.GameSettings;
 import com.lllmtb.engine.GameWorld;
 import com.lllmtb.events.EventBus;
 import com.lllmtb.physics.GameMode;
+import com.lllmtb.terrain.generation.ConfigMap;
 import com.lllmtb.terrain.generation.LandScape;
 
 public class SaveTest {
@@ -13,7 +14,8 @@ public class SaveTest {
     @BeforeAll
     static void setUp() {
         EventBus eventBus = new EventBus();
-        GameSettings settings = new GameSettings("blabla", 2, new String[]{"test", "test2"}, 2, 100, 10, true, "testGame", true, 200, LandScape.FLAT, 2, GameMode.NORMAL, true, false);
+        ConfigMap configMap = new ConfigMap(100, 0,0, false,0, LandScape.FLAT, null);
+        GameSettings settings = new GameSettings("blabla", 2, new String[]{"test", "test2"}, 2, 100, 10, true, "testGame", configMap, 2, GameMode.NORMAL, true, false);
         GameWorld gameWorld = new GameWorld(settings, eventBus);
     Save.setGameWorld(gameWorld);
     }

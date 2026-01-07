@@ -13,6 +13,7 @@ import com.lllmtb.model.entity.projectile.BulletProjectile;
 import com.lllmtb.model.entity.team.Team;
 import com.lllmtb.model.entity.worm.Worm;
 import com.lllmtb.model.item.UseParams;
+import com.lllmtb.terrain.generation.ConfigMap;
 import com.lllmtb.terrain.generation.LandScape;
 import com.lllmtb.terrain.map.Map;
 import com.lllmtb.terrain.map.MapLoader;
@@ -278,7 +279,8 @@ public class CollisionTest {
     void slide() {
         pBWorm1.setPos(new Position(7, 10));
         pBWorm1.setVector(new Vector(5, -2));
-        GameSettings settings = new GameSettings("blabla", 1, new String[]{"José"}, 1,100, 10, true, "mapTest", false,370, LandScape.HILLY,2,GameMode.NORMAL, true,false);
+        ConfigMap configMap = new ConfigMap(100, 0,0, true,0, LandScape.HILLY, GameMode.NORMAL);
+        GameSettings settings = new GameSettings("blabla", 1, new String[]{"José"}, 1,100, 10, true, "mapTest", configMap, 2,GameMode.NORMAL, true,false);
         EventBus eventBus = new EventBus();
         GameWorld gw = new GameWorld(settings, eventBus);
         Position posFinal = new Position(12, 8);
@@ -293,7 +295,8 @@ public class CollisionTest {
         pBWorm1.setPos(new Position(6, 10));
         pBWorm1.setVector(new Vector(5, -2));
 
-        GameSettings settings = new GameSettings("blabla", 1, new String[]{"José"}, 1,100, 10, true, "mapTest", false,370, LandScape.HILLY,2,GameMode.NORMAL, true,false);
+        ConfigMap configMap = new ConfigMap(100, 0,0, true,0, LandScape.HILLY, GameMode.NORMAL);
+        GameSettings settings = new GameSettings("blabla", 1, new String[]{"José"}, 1,100, 10, true, "mapTest", configMap, 2,GameMode.NORMAL, true,false);
         EventBus eventBus = new EventBus();
         GameWorld gw = new GameWorld(settings, eventBus);
         Collision.Impact impact = new Collision.Impact(0.0, new Vector(5,-2),pBWorm1, new Vector(1,0), null, false);
@@ -308,7 +311,8 @@ public class CollisionTest {
         pBWorm1.setPos(new Position(6, 10));
         pBWorm1.setVector(new Vector(0, 0));
 
-        GameSettings settings = new GameSettings("blabla", 1, new String[]{"José"}, 1,100, 10, true, "mapTest", false,370, LandScape.HILLY,2,GameMode.NORMAL, true,false);
+        ConfigMap configMap = new ConfigMap(100, 0,0, true,0, LandScape.HILLY, GameMode.NORMAL);
+        GameSettings settings = new GameSettings("blabla", 1, new String[]{"José"}, 1,100, 10, true, "mapTest", configMap, 2,GameMode.NORMAL, true,false);
         EventBus eventBus = new EventBus();
         GameWorld gw = new GameWorld(settings, eventBus);
         Collision.Impact impact = new Collision.Impact(0.0, new Vector(5,-2),pBWorm1, new Vector(0,-1), null, false);
@@ -321,7 +325,8 @@ public class CollisionTest {
     void slideImpactNormalIs0() {
         pBWorm1.setPos(new Position(7, 10));
         Collision.Impact impact = new Collision.Impact(pBWorm1.getPos());
-        GameSettings settings = new GameSettings("blabla", 1, new String[]{"José"}, 1,100, 10, true, "mapTest", false,370, LandScape.HILLY,2,GameMode.NORMAL, true,false);
+        ConfigMap configMap = new ConfigMap(100, 0,0, true,0, LandScape.HILLY, GameMode.NORMAL);
+        GameSettings settings = new GameSettings("blabla", 1, new String[]{"José"}, 1,100, 10, true, "mapTest", configMap, 2,GameMode.NORMAL, true,false);
         EventBus eventBus = new EventBus();
         GameWorld gw = new GameWorld(settings, eventBus);
         collision.slide(pBWorm1, impact, 1, gw);
@@ -333,7 +338,8 @@ public class CollisionTest {
     void slideImpactNormalIs0NotWorm() {
         pBBP1.setPos(new Position(7, 10));
         Collision.Impact impact = new Collision.Impact(pBBP1.getPos());
-        GameSettings settings = new GameSettings("blabla", 1, new String[]{"José"}, 1,100, 10, true, "mapTest", false,370, LandScape.HILLY,2,GameMode.NORMAL, true,false);
+        ConfigMap configMap = new ConfigMap(100, 0,0, true,0, LandScape.HILLY, GameMode.NORMAL);
+        GameSettings settings = new GameSettings("blabla", 1, new String[]{"José"}, 1,100, 10, true, "mapTest", configMap, 2,GameMode.NORMAL, true,false);
         EventBus eventBus = new EventBus();
         GameWorld gw = new GameWorld(settings, eventBus);
         collision.slide(pBBP1, impact, 1, gw);

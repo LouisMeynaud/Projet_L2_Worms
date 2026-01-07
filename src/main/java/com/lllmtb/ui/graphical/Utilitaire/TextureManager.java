@@ -75,9 +75,9 @@ public class TextureManager {
         UI.put("ChangeWormsHover", loadImage("/textures/button/changeWorms.png"));
 
         ///////Background/////////
-        BACKGROUND.put("Background", loadImage("/textures/Background.png"));
-        BACKGROUND.put("Background2", loadImage("/textures/Background2.png"));
-        BACKGROUND.put("Background3", loadImage("/textures/Background3.png"));
+        BACKGROUND.put("Background", loadImage("/textures/background/Background.png"));
+        BACKGROUND.put("Background2", loadImage("/textures/background/Background2.png"));
+        BACKGROUND.put("Background3", loadImage("/textures/background/Background3.png"));
 
         //////Entities//////////
         for (TeamColor color: TeamColor.values()) {

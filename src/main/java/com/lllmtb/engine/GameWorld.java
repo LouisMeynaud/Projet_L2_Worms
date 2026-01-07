@@ -38,6 +38,7 @@ public class GameWorld {
     private final PhysicsEngine physics;
     private final String gameName;
     private final GameMode gameMode;
+    private ConfigMap configMap;
     private final ShopManager shopManager;
     private final BlockingQueue<GameCommand> commandQueue;
     private final List<Team> teams;
@@ -86,7 +87,6 @@ public class GameWorld {
         //Init TurnManager
         this.turnManager = gameSave.turnManager;
 
-        // use reflexion
         try {
             Field worldField = TurnManager.class.getDeclaredField("world");
             worldField.setAccessible(true);
@@ -123,6 +123,7 @@ public class GameWorld {
         if (settings.mapFileName != null) {
             try {
                 tmap = MapLoader.loadMap(settings.mapFileName);
+                this.configMap = new ConfigMap(tmap.getWidth(), tmap.getHeightWater(),0, false,0, settings.terrainType, settings.gameMode);
             } catch (Exception e) {
                 Logger.logger.error("Failed to load map '{}'", settings.mapFileName, e);
                 throw new RuntimeException(e);
@@ -130,9 +131,9 @@ public class GameWorld {
         }
         if (tmap == null) {
             Logger.logger.info("Generating a new map...");
-            ConfigMap config = new ConfigMap(settings.widthMap, 4, 5, settings.floatingIsland, 17, settings.terrainType, settings.gameMode);
-
-            tmap = GenerateMap.createMap(config);
+            this.configMap = settings.configMap;
+            this.configMap.setGameMode(settings.gameMode);
+            tmap = GenerateMap.createMap(this.configMap);
         }
         this.map = tmap;
         this.map.setSpawnPoint(CreateSpawnPoint.createSpawnPoint(settings.nbTeams, settings.nbWorms, tmap));
@@ -226,6 +227,10 @@ public class GameWorld {
 
     public ShopManager getShopManager() {
         return this.shopManager;
+    }
+
+    public ConfigMap getConfigMap() {
+        return this.configMap;
     }
 
     public void start() {
