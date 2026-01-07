@@ -14,7 +14,6 @@ import com.lllmtb.events.turn.TurnStartEvent;
 import com.lllmtb.model.entity.team.Team;
 import com.lllmtb.model.entity.worm.Worm;
 import com.lllmtb.model.item.weapon.WeaponId;
-import com.lllmtb.physics.PhysicsEngine;
 import com.lllmtb.physics.Position;
 import com.lllmtb.ui.graphical.GamePanel.Direction;
 import com.lllmtb.engine.logger.Logger;
@@ -134,7 +133,7 @@ public class BotController {
                 double dist = Math.abs(targetX - myX);
 
                 Logger.logger.info("? Bot distance to target: {} - Move timer: {}", dist, moveTimer);
-                if (dist > 30 && moveTimer > 0) {
+                if (dist > 10 && moveTimer > 0) {
                     moveTimer -= dt;
                     moveDirection = targetX < myX ? Direction.Left : Direction.Right;
                     Logger.logger.info("? Bot decided to move {}", moveDirection);
@@ -160,15 +159,9 @@ public class BotController {
             case SHOOTING:
                 Logger.logger.info("? Bot shooting at target worm {}", targetWorm != null ? targetWorm.uuid : "NONE");
                 if (targetWorm != null && targetWorm.isAlive()) {
-                    Position targetPos = targetWorm.getBody().getPos();
-                    double errorX = (random.nextDouble() - 0.5) * 2;
-                    double errorY = 2.5 + (random.nextDouble() - 0.5);
-
-                    Position shootAt = new Position(targetPos.getX() + errorX, targetPos.getY() + errorY);
-                    double chargeTime = 0;//500 + random.nextInt(1500);
-
-                    world.getBus().postQueued(new UseInputEvent(shootAt, chargeTime));
-                    Logger.logger.info("Bot shooting at {}", shootAt);
+                    Position predictedPos = calculateAimPosition(currentWorm, targetWorm);
+                    world.getBus().postQueued(new UseInputEvent(predictedPos, 1));
+                    Logger.logger.info("? Bot shooting at {}", predictedPos);
                     shotsLeft--;
                 }
                 if (shotsLeft > 0) {
@@ -190,6 +183,27 @@ public class BotController {
 
     private Worm findNearestEnemy() {
         return world.getPhysics().findClosestEnemyFromPosition(currentWorm.getBody().getPos(), currentTeam, currentWorm);
+    }
+
+    private Position calculateAimPosition(Worm shooter, Worm target) {
+        Position start = shooter.getBody().getPos();
+        Position end = target.getBody().getPos();
+
+        double targetX = end.getX() + target.getBody().getWidth() / 2.0;
+        double targetY = end.getY() + target.getBody().getHeight() / 2.0;
+        double startX = start.getX() + shooter.getBody().getWidth() / 2.0;
+        double startY = start.getY() + shooter.getBody().getHeight() / 2.0;
+
+        double diffX = targetX - startX;
+        double diffY = targetY - startY;
+
+        double distance = Math.sqrt(diffX * diffX + diffY * diffY);
+        double heightCompensation = distance * 0.10;
+
+        double angle = Math.atan2(diffY + heightCompensation, diffX);
+
+        double aimDistance = 100;
+        return new Position(startX + Math.cos(angle) * aimDistance, startY + Math.sin(angle) * aimDistance);
     }
 }
 
