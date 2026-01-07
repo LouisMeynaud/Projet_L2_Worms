@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.typeadapters.RuntimeTypeAdapterFactory;
 import com.lllmtb.engine.GameWorld;
+import com.lllmtb.engine.logger.Logger;
 import com.lllmtb.model.entity.Coin;
 import com.lllmtb.model.entity.Drop;
 import com.lllmtb.model.entity.Entity;
@@ -19,9 +20,7 @@ import com.lllmtb.physics.PhysicsBody;
 import com.lllmtb.terrain.map.Map;
 import com.lllmtb.terrain.map.MapLoader;
 import org.eclipse.jdt.annotation.NonNull;
-
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -47,10 +46,9 @@ public class Load {
      *
      * @param name The name of the save folder to load from.
      * @return The raw deserialized {@link GameSave} object.
-     * @throws FileNotFoundException If the JSON file does not exist in the expected directory.
      * @throws RuntimeException If an I/O error occurs during reading.
      */
-    public static GameSave loadGameSave(String name) throws FileNotFoundException {
+    public static GameSave loadGameSave(String name) {
         String stringpath = SaveConfig.SAVE_DIRECTORY + name + "/save.json";
         if (name.contains("Test")) {
             stringpath = "src/test/resources/savesTest/" + name + "/save.json";
@@ -72,6 +70,7 @@ public class Load {
         try (FileReader reader = new FileReader(stringpath)) {
             return gson.fromJson(reader, GameSave.class);
     } catch (IOException e) {
+            Logger.logger.error("Erreur Lors de la lecture du fichier {} : {}", stringpath,e.getMessage());
             throw new RuntimeException(e);
         }
     }
@@ -103,8 +102,8 @@ public class Load {
                 }
             }
         }
+        try {
         for (PhysicsBodySave saveBody : gameSave.entities) {
-            try {
             if (saveBody.entity instanceof Worm worm) {
                 // use reflexion
                     Field bodyWormField = Worm.class.getDeclaredField("body");
@@ -149,33 +148,23 @@ public class Load {
                 itemIdField.setAccessible(true);
                 itemIdField.set(drop, Load.recoverItem(drop.getItemCategory(), drop.getItemName()));
             }
-
-
-            } catch (NoSuchFieldException | IllegalAccessException e) {
-                throw new RuntimeException(e);
-            }
         }
         for (PhysicsBodySave savePhysicsBody : gameSave.entities) {
-            try {
                 Field entityField = PhysicsBody.class.getDeclaredField("entity");
                 entityField.setAccessible(true);
                 entityField.set(savePhysicsBody.physicsBody, savePhysicsBody.entity);
-            } catch (NoSuchFieldException | IllegalAccessException e) {
-                throw new RuntimeException(e);
-            }
         }
         for (TeamSave teamSave: gameSave.teams) {
             for (Worm worm : teamSave.team.getTeamWorms()) {
                 if (worm.uuid == teamSave.team.getCurrentWorm().uuid) {
-                    try {
                         Field currentWormField = Team.class.getDeclaredField("currentWorm");
                         currentWormField.setAccessible(true);
                         currentWormField.set(teamSave.team, worm);
-                    } catch (NoSuchFieldException | IllegalAccessException e) {
-                        throw new RuntimeException(e);
-                    }
                 }
             }
+        }
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            Logger.logger.error("Problem while rewriting the gameSave: {}", e.getMessage());
         }
     }
 
@@ -198,14 +187,10 @@ public class Load {
      * @throws RuntimeException If the save file is not found or other loading errors occur.
      */
     public  static GameWorld loadAll(String name) {
-        try {
-            GameSave gameSave = loadGameSave(name);
-            reforgeGameSave(gameSave);
-            Map map = MapLoader.loadMapLoad(name);
-            return new GameWorld(gameSave, map);
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
-        }
+        GameSave gameSave = loadGameSave(name);
+        reforgeGameSave(gameSave);
+        Map map = MapLoader.loadMapLoad(name);
+        return new GameWorld(gameSave, map);
     }
 
     public static ItemId recoverItem(String category, String name) {

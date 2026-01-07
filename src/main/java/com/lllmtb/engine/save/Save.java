@@ -28,7 +28,6 @@ import java.time.format.DateTimeFormatter;
 import com.lllmtb.terrain.map.SaveMap;
 import com.lllmtb.terrain.map.Tile;
 import com.lllmtb.ui.graphical.Utilitaire.TextureManager;
-
 import javax.imageio.ImageIO;
 
 /**
@@ -86,9 +85,7 @@ public class Save {
             Path folderPath = path.resolve("save.json");
             Files.write(folderPath, json.getBytes());
         } catch (IOException e) {
-            e.printStackTrace();
-        } catch (Exception e) {
-            e.printStackTrace();
+            Logger.logger.error("Error with the gameSave serialization file: {}", e.getMessage());
         }
     }
 
@@ -98,19 +95,16 @@ public class Save {
      *
      * @param map        The {@link Map} object to save.
      * @param stringPath The destination directory path.
-     * @return {@code true} if the save was successful, {@code false} otherwise.
      * @throws IOException If a critical I/O error occurs.
      */
-    public static  boolean saveMap(Map map, String stringPath) throws IOException {
+    public static void saveMap(Map map, String stringPath) throws IOException {
         try {
             Path path = Paths.get(stringPath);
             Files.createDirectories(path);
             Path filePath = path.resolve("map.txt");
             Files.writeString(filePath, SaveMap.mapToString(map));
-            return true;
         } catch (IOException e) {
-            e.printStackTrace();
-            return false;
+            Logger.logger.error("Map saving problem: {}", e.getMessage());
         }
     }
 
@@ -128,8 +122,7 @@ public class Save {
             Path filePath = path.resolve("info.txt");
             Files.writeString(filePath, info(gameWorld));
         } catch (IOException e) {
-            e.printStackTrace();
-
+            Logger.logger.error("Problem saving information: {}", e.getMessage());
         }
     }
 
@@ -144,10 +137,10 @@ public class Save {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
         String dateFormatee = time.format(formatter);
         String info = "";
-        info +=  "Partie Sauvegardé le: " + dateFormatee + "; ";
-        info += "Tour actuel: "  + gameWorld.getTurnManager().getNbTurn() + "; ";
+        info +=  "Game save the : " + dateFormatee + "; ";
+        info += "Actual turn: "  + gameWorld.getTurnManager().getNbTurn() + "; ";
 
-        info +=  "L'équipe " + gameWorld.getPlayingTeam().name + " joue.";
+        info +=  "Team" + gameWorld.getPlayingTeam().name + " is playing.";
         return info;
     }
 
@@ -192,7 +185,7 @@ public class Save {
             File outputFile = new File(stringPath + "/image.png");
             ImageIO.write(image, "png", outputFile);
         } catch (IOException e) {
-            e.printStackTrace();
+            Logger.logger.error("Image saving problem: {}", e.getMessage());
         }
     }
 
@@ -205,15 +198,19 @@ public class Save {
      */
     public static void saveAll() {
         String stringPath = SaveConfig.SAVE_DIRECTORY + gameWorld.getGameName();
+        if (gameWorld.getGameName().contains("Test")) {
+            stringPath = "src/test/resources/savesTest/" + gameWorld.getGameName() + "/save.json";
+        }
         try {
             saveMap(gameWorld.getMap(), stringPath);
             saveGameWorld(gameWorld, stringPath);
             saveInfo(gameWorld, stringPath);
             BufferedImage image = maptoBuffered(gameWorld.getMap());
             saveImage(image, stringPath);
+            Logger.logger.debug("Save success.");
             gameWorld.pause(false);
         } catch (Exception e) {
-            Logger.logger.error("Error while saving game ", e);
+            Logger.logger.error("Error while saving game {}", e.getMessage());
         }
     }
 
