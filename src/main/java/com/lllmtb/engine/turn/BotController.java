@@ -14,6 +14,7 @@ import com.lllmtb.events.turn.TurnStartEvent;
 import com.lllmtb.model.entity.team.Team;
 import com.lllmtb.model.entity.worm.Worm;
 import com.lllmtb.model.item.weapon.WeaponId;
+import com.lllmtb.physics.PhysicsEngine;
 import com.lllmtb.physics.Position;
 import com.lllmtb.ui.graphical.GamePanel.Direction;
 import com.lllmtb.engine.logger.Logger;
@@ -53,10 +54,10 @@ public class BotController {
         EventBus bus = world.getBus();
 
         bus.subscribe(TurnStartEvent.class, event -> {
-            if (event.team.isBot()) {
+            if (event.team().isBot()) {
                 active = true;
-                currentTeam = event.team;
-                shotsLeft = Turn.limitshoot;
+                currentTeam = event.team();
+                shotsLeft = Turn.FIRE_LIMIT_PER_TURN;
                 state = State.WAITING_START;
                 stateTimer = 1000;
                 Logger.logger.info("Bot logic started for team {}", currentTeam.name);
@@ -160,9 +161,10 @@ public class BotController {
                 Logger.logger.info("? Bot shooting at target worm {}", targetWorm != null ? targetWorm.uuid : "NONE");
                 if (targetWorm != null && targetWorm.isAlive()) {
                     Position targetPos = targetWorm.getBody().getPos();
+                    double errorX = (random.nextDouble() - 0.5) * 2;
                     double errorY = 2.5 + (random.nextDouble() - 0.5);
 
-                    Position shootAt = new Position(targetPos.getX(), targetPos.getY() + errorY);
+                    Position shootAt = new Position(targetPos.getX() + errorX, targetPos.getY() + errorY);
                     double chargeTime = 0;//500 + random.nextInt(1500);
 
                     world.getBus().postQueued(new UseInputEvent(shootAt, chargeTime));
@@ -187,24 +189,7 @@ public class BotController {
     }
 
     private Worm findNearestEnemy() {
-        Worm nearest = null;
-        double minDst = Double.MAX_VALUE;
-        if (currentTeam == null || currentWorm == null) return null;
-
-        for (Team t : world.getTeams()) {
-            if (t == currentTeam) continue;
-            for (Worm w : t.getTeamWorms()) {
-                if (!w.isAlive()) continue;
-                double dx = w.getBody().getPos().getX() - currentWorm.getBody().getPos().getX();
-                double dy = w.getBody().getPos().getY() - currentWorm.getBody().getPos().getY();
-                double dst = Math.sqrt(dx * dx + dy * dy);
-                if (dst < minDst) {
-                    minDst = dst;
-                    nearest = w;
-                }
-            }
-        }
-        return nearest;
+        return world.getPhysics().findClosestEnemyFromPosition(currentWorm.getBody().getPos(), currentTeam, currentWorm);
     }
 }
 
