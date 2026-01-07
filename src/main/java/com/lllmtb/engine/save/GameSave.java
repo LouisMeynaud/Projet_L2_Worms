@@ -15,17 +15,17 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class GameSave {
-    public CopyOnWriteArrayList<PhysicsBodySave> entities;
-    public transient EventBus bus;
-    public int indexTeam;
-    public long turnDuration;
-    public List<TeamSave> teams;
-    public boolean hasWind;
-    public Vector wind;
-    public Vector gravity;
-    public transient ConcurrentHashMap<Integer, ArrayList<PhysicsModifier>> modifiers;
-    public GameSettings gameSettings;
-    public TurnManager turnManager;
+    public final CopyOnWriteArrayList<PhysicsBodySave> entities;
+    public final transient EventBus bus;
+    public final int indexTeam;
+    public final long turnDuration;
+    public final List<TeamSave> teams;
+    public final boolean hasWind;
+    public final Vector wind;
+    public final Vector gravity;
+    public final transient ConcurrentHashMap<Integer, ArrayList<PhysicsModifier>> modifiers;
+    public final GameSettings gameSettings;
+    public final TurnManager turnManager;
 
 
     public GameSave(GameWorld gameWorld) {
@@ -62,7 +62,7 @@ public class GameSave {
             gameWorld.getTeams().size(),
             teamNames,
             isBot,
-            -1,
+            1,
             Statistics.getMaxHp(),
             gameWorld.getTurnDuration(),
             gameWorld.getPhysics().hasWind(),
@@ -75,11 +75,6 @@ public class GameSave {
             Projectile.isFriendlyfire(),
             false
         );
-    }
-
-
-    public GameSave() {
-
     }
 
     @Override

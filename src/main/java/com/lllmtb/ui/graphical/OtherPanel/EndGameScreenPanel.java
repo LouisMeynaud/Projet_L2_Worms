@@ -1,4 +1,4 @@
-package com.lllmtb.ui.graphical;
+package com.lllmtb.ui.graphical.OtherPanel;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -16,9 +16,11 @@ import javax.swing.SwingUtilities;
 import com.lllmtb.engine.GameEngine;
 import com.lllmtb.events.EventBus;
 import com.lllmtb.model.entity.team.Team;
+import com.lllmtb.ui.graphical.Utilitaire.TextureManager;
+import com.lllmtb.ui.graphical.Utilitaire.Utilitaire;
 
 public class EndGameScreenPanel extends JPanel {
-    JLabel winnerLabel;
+    private final JLabel winnerLabel;
 
     /**
      * This page is used for the endgame.
@@ -36,13 +38,14 @@ public class EndGameScreenPanel extends JPanel {
         JButton closeButton = Utilitaire.createImageButton(TextureManager.UI, "Panel", 256, 128, 256, 128, "Close", "Arial", 23, Color.WHITE);
 
         restartButton.addActionListener(e -> {
-            GameEngine.main(null);
+            GameEngine.main(new String[]{});
             SwingUtilities.getWindowAncestor(this).dispose();
         });
 
         closeButton.addActionListener(e -> {
-            System.exit(0);
+            SwingUtilities.getWindowAncestor(this).dispose();
         });
+
         gbc.gridy = 0;
         this.add(winnerLabel, gbc);
         gbc.gridy = 1;
@@ -51,7 +54,10 @@ public class EndGameScreenPanel extends JPanel {
         this.add(closeButton, gbc);
 
     }
-
+    /**
+     * set the winning team.
+     * @param team the winning team
+     */
     public void setWinner(Team team) {
         winnerLabel.setText(" The Winner is : " + team.getTeamColor() + " Team " + team.getName());
         winnerLabel.setForeground(Color.WHITE);

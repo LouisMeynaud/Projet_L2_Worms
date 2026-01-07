@@ -20,6 +20,7 @@ import com.lllmtb.terrain.map.Map;
 import com.lllmtb.terrain.map.MapLoader;
 import org.eclipse.jdt.annotation.NonNull;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
@@ -69,8 +70,7 @@ public class Load {
                 .create();
 
         try (FileReader reader = new FileReader(stringpath)) {
-            GameSave save = gson.fromJson(reader, GameSave.class);
-            return save;
+            return gson.fromJson(reader, GameSave.class);
     } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -201,7 +201,7 @@ public class Load {
         try {
             GameSave gameSave = loadGameSave(name);
             reforgeGameSave(gameSave);
-            Map map = MapLoader.loadMatrixLoad(name);
+            Map map = MapLoader.loadMapLoad(name);
             return new GameWorld(gameSave, map);
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
@@ -214,5 +214,21 @@ public class Load {
         } else {
             return ToolId.valueOf(name);
         }
+    }
+
+    public static String[] getListeNomsLoads() {
+        File folder = new File(SaveConfig.SAVE_DIRECTORY);
+        if (!folder.exists() || !folder.isDirectory()) {
+            return new String[0];
+        }
+        File[] subFolders = folder.listFiles(File::isDirectory);
+        if (subFolders == null) {
+            return new String[0];
+        }
+        String[] saveNames = new String[subFolders.length];
+        for (int i = 0; i < subFolders.length; i++) {
+            saveNames[i] = subFolders[i].getName();
+        }
+        return saveNames;
     }
 }

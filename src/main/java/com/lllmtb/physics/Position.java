@@ -9,8 +9,8 @@ import java.util.Objects;
  * using Cartesian coordinates {@code (x, y)}.
  */
 public class Position {
-    private double x;
-    private double y;
+    private final double x;
+    private final double y;
 
     /**
      * Constructs a new {@code Position} with the specified coordinates.
@@ -47,10 +47,15 @@ public class Position {
         return "[" + x + ", " + y + "]";
     }
 
-    public boolean equals(Position other) {
-        if (other == null) {
-            return false;
-        }
-        return this.getX() == other.getX() && this.getY() == other.getY();
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (!(obj instanceof Position other)) return false;
+        return Double.compare(this.x, other.x) == 0 && Double.compare(this.y, other.y) == 0;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(x, y);
     }
 }

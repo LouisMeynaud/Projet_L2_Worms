@@ -17,6 +17,7 @@ public class ShopManager {
     private final EventBus eventBus;
     /**
      * Constructor initializes the shop manager and populates the shop with items.
+     * @param eventBus the eventbus of the game.
      */
     public ShopManager(EventBus eventBus) {
         this.items = new ArrayList<>();
@@ -58,11 +59,11 @@ public class ShopManager {
     }
 
     /**
-     * Buys an item for the given team if they have enough credits.
-     * @param id ItemId of the item to be purchased.
-     * @param team Team attempting to purchase the item.
+     * Buys (unlocks) a weapon for the given team if they have enough credits.
+     * @param id WeaponId of the weapon to be purchased (unlocked).
+     * @param team Team attempting to purchase the weapon.
      */
-    public void buyItem(ItemId id, Team team) {
+    public void buyWeapon(WeaponId id, Team team) {
         ShopElement itemBuy = null;
         for (ShopElement element : items) {
             if (element.id == id) {
@@ -70,14 +71,18 @@ public class ShopManager {
                 break;
             }
         }
+        if (itemBuy == null) {
+            Logger.logger.warn("Weapon not found in shop: {}", id);
+            return;
+        }
         if (team.getCredits() >= itemBuy.unlockPrice || team.getCredits() == -1) {
-                team.removeCredits(itemBuy.unlockPrice);
-                team.unlockWeapon((WeaponId) id);
-                String cleImage = "Hand" + id.toString();
-                eventBus.postQueued(new NotificationEvent("Achat réussi : " + itemBuy.name, cleImage));
-                Logger.logger.info("Achat arme reussie : " + itemBuy.name);
+            team.removeCredits(itemBuy.unlockPrice);
+            team.unlockWeapon(id);
+            String cleImage = "Hand" + id;
+            eventBus.postQueued(new NotificationEvent("Achat réussi : " + itemBuy.name, cleImage));
+            Logger.logger.info("Successful purchase of weapon {}", itemBuy.name);
         } else {
-            Logger.logger.info("Achat rater pas assez d'argent");
+            Logger.logger.info("Not enough credits to buy weapon {}", itemBuy.name);
         }
     }
 
@@ -94,9 +99,13 @@ public class ShopManager {
                 break;
             }
         }
+        if (itemBuy == null) {
+            Logger.logger.warn("Item not found in shop: {}", id);
+            return;
+        }
         if (id instanceof WeaponId) {
             if (!team.getInventory().isUnlocked((WeaponId) id)) {
-                Logger.logger.info("impossible arme non Unlock");
+                Logger.logger.info("Weapon {} not unlocked for ammo purchase", id);
                 return;
             }
         }
@@ -108,13 +117,13 @@ public class ShopManager {
             } else {
                 team.addAmmo((ToolId) id, itemBuy.ammoPackSize);
             }
-            String key = "Hand" + id.toString();
+            String key = "Hand" + id;
             eventBus.postQueued(new NotificationEvent("+ " + itemBuy.ammoPackSize + " ammo for " + itemBuy.name, key));
 
-            Logger.logger.info("Achat ammo reussie : " + itemBuy.name);
+            Logger.logger.info("Successful ammo purchase for {}", itemBuy.name);
 
         } else {
-            Logger.logger.info("Achat rater pas assez d'argent");
+            Logger.logger.info("Not enough credits to buy ammo for {}", itemBuy.name);
         }
     }
 }

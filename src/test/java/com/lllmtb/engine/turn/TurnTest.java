@@ -79,7 +79,7 @@ public class TurnTest {
         team1.addAmmo(WeaponId.GUN, 10);
         team1.selectWeapon(WeaponId.GUN);
         UseParams params = new UseParams(team1.getCurrentWorm());
-        for(int i = 0; i < Turn.limitshoot; i++){
+        for(int i = 0; i < Turn.FIRE_LIMIT_PER_TURN; i++){
             team1.use(params);
         }
 

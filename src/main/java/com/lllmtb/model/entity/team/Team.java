@@ -2,11 +2,7 @@ package com.lllmtb.model.entity.team;
 
 import java.lang.reflect.Field;
 import java.util.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
-import java.util.Random;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.eclipse.jdt.annotation.NonNull;
 
@@ -69,9 +65,9 @@ public class Team {
     public final int id;
 
     /**
-     * Static counter for assigning unique team IDs.
+     * Thread-safe counter for assigning unique team IDs.
      */
-    private static int ids;
+    private static final AtomicInteger idCounter = new AtomicInteger(0);
 
     /**
      * The currently active worm of the team.
@@ -84,7 +80,7 @@ public class Team {
     private int index = 0;
 
     /**
-     * The item currently selected by the player
+     * The item currently selected by the player.
      */
     private ItemId selectedItem;
 
@@ -94,7 +90,7 @@ public class Team {
     public final TeamColor teamColor;
 
     /**
-     * The count of shoot in a turn
+     * The number of shots fired in the current turn.
      */
     private int shootCount;
 
@@ -125,7 +121,7 @@ public class Team {
         this.inventory = Objects.requireNonNull(inventory);
         this.name = Objects.requireNonNull(name);
         this.numberOfWorms = numberOfWorms;
-        this.id = ++Team.ids;
+        this.id = idCounter.incrementAndGet();
         this.setUpWorms(numberOfWorms, spawn);
         this.currentWorm = this.worms.get(0);
         this.selectedItem = null;
@@ -137,7 +133,7 @@ public class Team {
      * @param teamName      the name of the team
      * @param numberOfWorms number of worms in the team
      * @param spawn         the spawn position where the worms will be placed
-     * @param credits       initial amount of credits for the team
+     * @param credits       initial amount of credits for the team (-1 for infinity)
      */
     public Team(@NonNull String teamName, int numberOfWorms, @NonNull Position[] spawn, int credits) {
         this(teamName, numberOfWorms, new Inventory(), spawn, credits);
@@ -164,29 +160,27 @@ public class Team {
         this.isBot = teamSave.team.isBot();
         this.id = teamSave.team.id;
         this.credits = teamSave.team.credits;
-        for (Worm worm: teamSave.team.getTeamWorms()) {
-            this.worms.add(worm);
-        }
+        this.worms.addAll(teamSave.team.getTeamWorms());
         this.selectedItem = null;
         this.teamColor = teamSave.team.teamColor;
         // use reflexion to recreate worm instance with correct PhysicsBody
         for (Worm worm : this.worms) {
-                try {
-                    Field teamField = Worm.class.getDeclaredField("team");
-                    teamField.setAccessible(true);
-                    teamField.set(worm, this);
-                } catch (NoSuchFieldException | IllegalAccessException e) {
-                    throw new RuntimeException(e);
-                }
+            try {
+                Field teamField = Worm.class.getDeclaredField("team");
+                teamField.setAccessible(true);
+                teamField.set(worm, this);
+            } catch (NoSuchFieldException | IllegalAccessException e) {
+                throw new RuntimeException(e);
             }
+        }
         this.index = teamSave.team.index;
         this.currentWorm = this.worms.get(this.index);
     }
 
     /**
-         * Returns the name associated with the team.
-         * @return the team's name
-         */
+     * Returns the name associated with the team.
+     * @return the team's name
+     */
     public String getName() {
         return this.name;
     }
@@ -247,25 +241,29 @@ public class Team {
     }
 
     /**
-     * Remove one usage of change worm of the team
+     * Remove one usage of change worm of the team.
      */
     public void oneChangeWorm() {
         this.maxChangeWormTeam--;
     }
 
+    /**
+     *
+     * @return the Chosen team color.
+     */
     public static ArrayList<TeamColor> getChosenTeamColors() {
         return chosenTeamColors;
     }
 
     /**
-     * Reset shoot count
+     * Reset shoot count.
      */
     public void resetShootCount() {
         this.shootCount = 0;
     }
 
     /**
-     * Reset worm change count
+     * Reset worm change count.
      */
     public void resetWormChangeCount() {
         this.maxChangeWormTeam = MAX_CHANGEWORMTEAM;
@@ -398,7 +396,7 @@ public class Team {
      */
     public List<GameCommand> use(@NonNull UseParams useParams) {
         Objects.requireNonNull(useParams);
-        if (this.selectedItem == null) return null;
+        if (this.selectedItem == null) return List.of();
         if (this.selectedItem instanceof WeaponId weaponId) {
             Logger.logger.info("[TEAM {}] Firing weapon {}", this.name, weaponId);
             this.shootCount++;
@@ -420,7 +418,7 @@ public class Team {
     }
 
     /**
-     * Sets the currently selected item to null
+     * Sets the currently selected item to null.
      */
     public void emptyHand() {
         this.selectedItem = null;
@@ -477,7 +475,7 @@ public class Team {
     }
 
     /**
-     * Set currentWorm of the team to null
+     * Set currentWorm of the team to null.
      */
     public void setCurrentWormNull() {
         this.currentWorm = null;
@@ -490,11 +488,18 @@ public class Team {
         return this.teamColor;
     }
 
-
+    /**
+     *
+     * @return the credits of the team.
+     */
     public int getCredits() {
         return credits;
     }
 
+    /**
+     * add credits to a team.
+     * @param amount the ammount of money to add.
+     */
     public void addCredits(int amount) {
         if (amount > 0 && credits != -1) {
             Logger.logger.info("[TEAM {}] Adding {} credits", this.name, amount);
@@ -502,6 +507,10 @@ public class Team {
         }
     }
 
+    /**
+     * remove credits to a team.
+     * @param amount the ammount of money to remove
+     */
     public void removeCredits(int amount) {
         if (credits == -1) return;
 

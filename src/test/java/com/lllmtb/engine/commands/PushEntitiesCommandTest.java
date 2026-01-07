@@ -6,7 +6,6 @@ import com.lllmtb.events.EventBus;
 import com.lllmtb.model.entity.team.Team;
 import com.lllmtb.model.entity.worm.Worm;
 import com.lllmtb.physics.GameMode;
-import com.lllmtb.physics.PhysicsBody;
 import com.lllmtb.physics.Position;
 import com.lllmtb.physics.Vector;
 import com.lllmtb.terrain.generation.LandScape;
@@ -18,7 +17,6 @@ import static org.mockito.Mockito.mock;
 
 public class PushEntitiesCommandTest {
     private GameWorld world;
-    private EventBus bus;
     private Team team1;
     private Team team2;
     private Worm ownerWorm;
@@ -45,7 +43,7 @@ public class PushEntitiesCommandTest {
             true,
             false
         );
-        bus = mock(EventBus.class);
+        EventBus bus = mock(EventBus.class);
         world = new GameWorld(settings, bus);
 
         // Get the teams created by GameWorld

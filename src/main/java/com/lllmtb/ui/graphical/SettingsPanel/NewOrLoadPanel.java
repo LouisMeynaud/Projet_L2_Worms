@@ -11,12 +11,12 @@ import com.lllmtb.events.EventBus;
 import com.lllmtb.events.ui.graphical.ScreenHomeEvent;
 import com.lllmtb.events.ui.graphical.ScreenLoadGame;
 import com.lllmtb.events.ui.graphical.ScreenSettingsGame;
-import com.lllmtb.ui.graphical.TextureManager;
-import com.lllmtb.ui.graphical.Utilitaire;
+import com.lllmtb.ui.graphical.Utilitaire.TextureManager;
+import com.lllmtb.ui.graphical.Utilitaire.Utilitaire;
 
 public class NewOrLoadPanel extends JPanel {
 
-    EventBus eventBus;
+    final EventBus eventBus;
 
     /**
      * Constructor of a panel that allows to choose between creating a new game or loading an existing one.

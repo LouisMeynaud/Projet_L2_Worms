@@ -2,7 +2,8 @@ package com.lllmtb.ui;
 
 import org.junit.jupiter.api.Test;
 
-import com.lllmtb.ui.graphical.TextureManager;
+import com.lllmtb.ui.graphical.Utilitaire.TextureManager;
+
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URL;
@@ -12,8 +13,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class TextureManagerTest {
 
     @Test
-    void testLoadTexture() throws IOException {
-
+    void testLoadTexture() {
         URL defaultUrl = TextureManager.class.getResource("/default.png");
         assertNotNull(defaultUrl);
 

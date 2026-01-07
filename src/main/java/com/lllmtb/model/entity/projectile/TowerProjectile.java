@@ -27,7 +27,7 @@ public final class TowerProjectile extends Projectile {
     public static final int range = 25;
 
     private static final double FIRE_INTERVAL = 500;
-    private long cooldownTimer = 0;
+    private double cooldownTimer = 0;
     private int creationTurnIndex = -1;
 
     /**

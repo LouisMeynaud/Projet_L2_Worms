@@ -38,8 +38,6 @@ public final class TrapProjectile extends Projectile {
     public List<GameCommand> onImpact(Entity entity) {
         if (entity == null && this.getBody().getVector().getY() == 0) {
             List<GameCommand> list = new ArrayList<>();
-            handleHit(list, entity, damage);
-
             Position p = new Position(this.getBody().getPos().getX(), this.getBody().getPos().getY() - 1);
             list.add((world -> {
                 if (world.getMap().getTile(p) == Tile.AIR) world.getMap().setTile(p, Tile.TRAP);
@@ -49,7 +47,7 @@ public final class TrapProjectile extends Projectile {
             list.add(delete());
             return list;
         }
-            return null;
+        return null;
     }
 
     @Override

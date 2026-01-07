@@ -1,4 +1,4 @@
-package com.lllmtb.ui.graphical;
+package com.lllmtb.ui.graphical.Utilitaire;
 
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.FloatControl;
@@ -8,9 +8,9 @@ import javax.sound.sampled.FloatControl;
  * * Class for playing sounds and music in the game.
  */
 public class SoundPlayer {
-    private static Clip currentMusic; // the current music clip being played
-    private static int musiqueVolume = 5; //the volume of the music
-    private static int soundEffectVolume = 75; // the volume of the sound effects
+    private static volatile Clip currentMusic; // the current music clip being played
+    private static volatile int musiqueVolume = 5; //the volume of the music
+    private static volatile int soundEffectVolume = 75; // the volume of the sound effects
 
     /**
      * Method to play a sound effect.
