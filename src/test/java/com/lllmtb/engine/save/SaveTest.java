@@ -1,15 +1,16 @@
 package com.lllmtb.engine.save;
 
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
+import com.lllmtb.engine.logger.Logger;
+import com.lllmtb.physics.PhysicsBody;
+import com.lllmtb.physics.PhysicsEngine;
+import org.junit.jupiter.api.*;
 
 import com.lllmtb.engine.GameSettings;
 import com.lllmtb.engine.GameWorld;
 import com.lllmtb.events.EventBus;
 import com.lllmtb.physics.GameMode;
 import com.lllmtb.terrain.generation.LandScape;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.mockito.MockedStatic;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -21,6 +22,9 @@ import java.util.Comparator;
 import static com.lllmtb.engine.save.Save.eraseSave;
 import static com.lllmtb.engine.save.Save.gameWorld;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.*;
 
 public class SaveTest {
 
@@ -34,21 +38,6 @@ public class SaveTest {
         Save.setGameWorld(gameWorld);
     }
 
-  /*  @AfterAll
-    static void tearDown() throws IOException {
-        Path path = Paths.get(TEST_BASE_PATH);
-        if (Files.exists(path)) {
-            Files.walk(path)
-                    .forEach(p -> {
-                        try {
-                            Files.delete(p);
-                        } catch (IOException ignored) {}
-                    });
-            Files.deleteIfExists(path);
-        }
-
-        Save.setGameWorld(null);
-    }*/
 
         @Test
         void saveAllTest() {
@@ -89,5 +78,19 @@ public class SaveTest {
             Save.saveImage(image, TEST_BASE_PATH);
             Path path = Paths.get(TEST_BASE_PATH, "image.png");
             assertTrue(Files.exists(path));
+        }
+        @Test
+        void eraseSaveTest() {
+            assertDoesNotThrow(()->eraseSave("Id1789876573928"));
+            EventBus eventBus = new EventBus();
+            GameSettings settings = new GameSettings("Id1789876573928" , 2, new String[]{"test", "test2"},new boolean[] {false, false}, 2, 100, 10, true, "test", true, 200, LandScape.FLAT, 2, GameMode.NORMAL, true, false);
+            GameWorld gameWorld = new GameWorld(settings, eventBus);
+            Save.setGameWorld(gameWorld);
+            Save.saveAll();
+            Path id1789876573928 = Paths.get(SaveConfig.SAVE_DIRECTORY, "Id1789876573928");
+            assertTrue(Files.exists(id1789876573928));
+            eraseSave("Id1789876573928");
+            assertFalse(Files.exists(id1789876573928));
+
         }
 }

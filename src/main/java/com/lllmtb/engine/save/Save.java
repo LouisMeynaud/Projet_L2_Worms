@@ -251,6 +251,7 @@ public class Save {
                                 Logger.logger.error("Error deleting save file: {}", path, e);
                             }
                         });
+                Files.deleteIfExists(pathToBeDeleted);
             } else {
                 Logger.logger.error("Save directory does not exist: {}", pathToBeDeleted);
             }
