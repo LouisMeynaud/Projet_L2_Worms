@@ -72,6 +72,7 @@ public class GameWorld {
 
         // Init PhysicsEngine
         this.physics = new PhysicsEngine(map, this, settings.hasWind, settings.gameMode);
+        physics.getBodies().clear();
         for (PhysicsBodySave physicsBodySave : gameSave.entities) {
             physics.add(physicsBodySave.physicsBody);
         }

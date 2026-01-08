@@ -244,7 +244,6 @@ public class Save {
         try {
             if (Files.exists(pathToBeDeleted)) {
                 Files.walk(pathToBeDeleted)
-                        .sorted(java.util.Comparator.reverseOrder())
                         .forEach(path -> {
                             try {
                                 Files.delete(path);
