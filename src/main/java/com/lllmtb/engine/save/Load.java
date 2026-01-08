@@ -92,6 +92,9 @@ public class Load {
      * @throws RuntimeException If a reflection error (NoSuchFieldException, IllegalAccessException) occurs.
      */
     public static void reforgeGameSave(@NonNull GameSave gameSave) {
+        if (gameSave.teams.get(gameSave.indexTeam).team.getCurrentWorm() == null) {
+            gameSave.teams.get(gameSave.indexTeam).team.nextWorm();
+        }
         for (PhysicsBodySave saveBody : gameSave.entities) {
             for (TeamSave teamSave : gameSave.teams) {
                 for (Worm worm : teamSave.team.getTeamWorms()) {
@@ -109,6 +112,13 @@ public class Load {
                     Field bodyWormField = Worm.class.getDeclaredField("body");
                     bodyWormField.setAccessible(true);
                     bodyWormField.set(worm, saveBody.physicsBody);
+
+                // use reflexion
+                Field entityWormField = PhysicsBody.class.getDeclaredField("entity");
+                entityWormField.setAccessible(true);
+                entityWormField.set(saveBody.physicsBody, worm);
+
+
             } else if (saveBody.entity instanceof Projectile projectile) {
                 // use reflexion
                 Field bodyProjectileField = Projectile.class.getDeclaredField("body");
