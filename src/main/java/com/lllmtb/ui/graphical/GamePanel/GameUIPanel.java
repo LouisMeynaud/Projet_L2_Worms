@@ -332,8 +332,8 @@ public class GameUIPanel extends JPanel {
         Color color = new Color(baseColor.getRed(), baseColor.getGreen(), baseColor.getBlue(), 100);
 
         this.timerContainer.setBackground(color);
-        this.timerLabel.setText("tour : " + world.getTurnManager().getNbTurn() + "| team : " + playingTeam.name + "| left shoot: "
-                + (Turn.FIRE_LIMIT_PER_TURN - playingTeam.getShootCount()) +  "| time : " + timeString);
+        this.timerLabel.setText("tour : " + world.getTurnManager().getNbTurn() + "| équipe : " + playingTeam.name + "| tirs restants : "
+                + (Turn.FIRE_LIMIT_PER_TURN - playingTeam.getShootCount()) +  "| temps : " + timeString);
         if (playingTeam.getCredits() == -1) {
             this.moneyLabel.setText("∞ $");
         } else {
@@ -375,7 +375,7 @@ public class GameUIPanel extends JPanel {
 
 
         JButton resumeButton = new JButton("Reprendre");
-        JButton saveButton = new JButton("Save");
+        JButton saveButton = new JButton("Sauvegarder");
         JButton quitButton = new JButton("Quitter");
 
         JLabel musiqueVolumeLabel = new JLabel("Volume de la musique");
@@ -460,8 +460,8 @@ public class GameUIPanel extends JPanel {
         this.toolGrid.setOpaque(false);
 
 
-        JPanel weaponContainer = createSectionPanel("Weapons", this.weaponGrid);
-        JPanel toolContainer = createSectionPanel("Tools", this.toolGrid);
+        JPanel weaponContainer = createSectionPanel("Armes", this.weaponGrid);
+        JPanel toolContainer = createSectionPanel("Outils", this.toolGrid);
 
 
         weaponContainer.setAlignmentY(Component.TOP_ALIGNMENT);
@@ -586,9 +586,9 @@ public class GameUIPanel extends JPanel {
         this.shopAmmoGrid.setOpaque(false);
         this.shopToolGrid.setOpaque(false);
 
-        JPanel weaponContainer = createSectionPanel("armes", this.shopWeaponGrid);
-        JPanel ammoContainer = createSectionPanel("munitions", this.shopAmmoGrid);
-        JPanel toolContainer = createSectionPanel("outils", this.shopToolGrid);
+        JPanel weaponContainer = createSectionPanel("Armes", this.shopWeaponGrid);
+        JPanel ammoContainer = createSectionPanel("Munitions", this.shopAmmoGrid);
+        JPanel toolContainer = createSectionPanel("Outils", this.shopToolGrid);
 
         weaponContainer.setAlignmentY(Component.TOP_ALIGNMENT);
         ammoContainer.setAlignmentY(Component.TOP_ALIGNMENT);
