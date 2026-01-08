@@ -14,7 +14,7 @@
         "height": 2.0,
         "width": 1.0
       },
-      "uuid": 672,
+      "uuid": 675,
       "entity": {
         "type": "worm",
         "body": {
@@ -41,7 +41,7 @@
         "facingDirection": 1,
         "isOnGround": false,
         "statusEffects": [],
-        "uuid": 672
+        "uuid": 675
       }
     },
     {
@@ -58,7 +58,7 @@
         "height": 2.0,
         "width": 1.0
       },
-      "uuid": 673,
+      "uuid": 676,
       "entity": {
         "type": "worm",
         "body": {
@@ -85,7 +85,7 @@
         "facingDirection": 1,
         "isOnGround": false,
         "statusEffects": [],
-        "uuid": 673
+        "uuid": 676
       }
     },
     {
@@ -102,7 +102,7 @@
         "height": 2.0,
         "width": 1.0
       },
-      "uuid": 674,
+      "uuid": 677,
       "entity": {
         "type": "worm",
         "body": {
@@ -129,13 +129,13 @@
         "facingDirection": 1,
         "isOnGround": false,
         "statusEffects": [],
-        "uuid": 674
+        "uuid": 677
       }
     },
     {
       "physicsBody": {
         "position": {
-          "x": 2.0,
+          "x": 1.0,
           "y": 5.0
         },
         "vector": {
@@ -146,12 +146,12 @@
         "height": 2.0,
         "width": 1.0
       },
-      "uuid": 675,
+      "uuid": 678,
       "entity": {
         "type": "worm",
         "body": {
           "position": {
-            "x": 2.0,
+            "x": 1.0,
             "y": 5.0
           },
           "vector": {
@@ -173,7 +173,7 @@
         "facingDirection": 1,
         "isOnGround": false,
         "statusEffects": [],
-        "uuid": 675
+        "uuid": 678
       }
     }
   ],
@@ -208,7 +208,7 @@
             "facingDirection": 1,
             "isOnGround": false,
             "statusEffects": [],
-            "uuid": 672
+            "uuid": 675
           },
           {
             "body": {
@@ -235,12 +235,13 @@
             "facingDirection": 1,
             "isOnGround": false,
             "statusEffects": [],
-            "uuid": 673
+            "uuid": 676
           }
         ],
         "name": "Team1",
+        "isBot": false,
         "numberOfWorms": 2,
-        "id": 314,
+        "id": 317,
         "currentWorm": {
           "body": {
             "position": {
@@ -266,7 +267,7 @@
           "facingDirection": 1,
           "isOnGround": false,
           "statusEffects": [],
-          "uuid": 672
+          "uuid": 675
         },
         "index": 0,
         "teamColor": "YELLOW",
@@ -330,12 +331,12 @@
             "facingDirection": 1,
             "isOnGround": false,
             "statusEffects": [],
-            "uuid": 674
+            "uuid": 677
           },
           {
             "body": {
               "position": {
-                "x": 2.0,
+                "x": 1.0,
                 "y": 5.0
               },
               "vector": {
@@ -357,12 +358,13 @@
             "facingDirection": 1,
             "isOnGround": false,
             "statusEffects": [],
-            "uuid": 675
+            "uuid": 678
           }
         ],
         "name": "Team2",
+        "isBot": true,
         "numberOfWorms": 2,
-        "id": 315,
+        "id": 318,
         "currentWorm": {
           "body": {
             "position": {
@@ -388,7 +390,7 @@
           "facingDirection": 1,
           "isOnGround": false,
           "statusEffects": [],
-          "uuid": 674
+          "uuid": 677
         },
         "index": 0,
         "teamColor": "BLUE",
@@ -440,6 +442,10 @@
       "Team1",
       "Team2"
     ],
+    "isBot": [
+      false,
+      true
+    ],
     "nbWorms": 1,
     "hasWind": true,
     "mapFileName": "Test",
@@ -458,6 +464,7 @@
     "remainingTimeInMs": 0,
     "nbTurn": 0,
     "turnFinish": false,
-    "restart": true
+    "restart": true,
+    "readyToStart": false
   }
 }

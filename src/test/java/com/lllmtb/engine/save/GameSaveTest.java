@@ -19,7 +19,7 @@ public class GameSaveTest {
     static void setUp() throws IOException {
         EventBus eventBus = new EventBus();
         GameSettings settings = new GameSettings(
-                "Test", 2, new String[]{"Team1", "Team2"}, 2, 100, 10,
+                "Test", 2, new String[]{"Team1", "Team2"}, new boolean[]{false,true}, 2, 100, 10,
                 true, "test", true, 200, LandScape.FLAT, 2,
                 GameMode.NORMAL, true, false
         );
