@@ -416,4 +416,22 @@ public class CollisionTest {
         pBWorm1.setPos(new Position(0.5, 5.5));
         assertNull(collision.inTrapOrLava(pBWorm1));
     }
+
+    @Test
+    void testGroundCheck_True1() {
+        pBWorm1.setPos(new Position(6, 10));
+        assertTrue(collision.groundCheck(pBWorm1));
+    }
+
+    @Test
+    void testOnGroundCheck_True2() {
+        pBWorm1.setPos(new Position(4.5, 10));
+        assertTrue(collision.groundCheck(pBWorm1));
+    }
+
+    @Test
+    void testOnGroundCheck_False() {
+        pBWorm1.setPos(new Position(3, 10));
+        assertFalse(collision.groundCheck(pBWorm1));
+    }
 }
