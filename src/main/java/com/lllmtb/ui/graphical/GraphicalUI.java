@@ -177,6 +177,7 @@ public class GraphicalUI implements UI {
         eventBus.postQueued(new CloseGame());
         windows.dispose();
         Logger.logger.info("game closed.");
+        System.exit(0);
     }
 
 }
