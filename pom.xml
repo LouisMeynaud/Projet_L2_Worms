@@ -191,15 +191,15 @@
                     <excludes>
                         <exclude>com/lllmtb/engine/GameEngine.class</exclude>
                         <exclude>com/lllmtb/engine/GameLoop.class</exclude>
+                        <exclude>com/lllmtb/engine/turn/TurnManager.class</exclude>
+                        <exclude>com/lllmtb/engine/turn/BotController.class</exclude>
                         <exclude>com/lllmtb/engine/save/*</exclude>
                         <exclude>com/lllmtb/engine/logger/*</exclude>
-                        <exclude>com/lllmtb/engine/turn/TurnManager.class</exclude>
                         <exclude>com/lllmtb/ui/console/*</exclude>
                         <exclude>com/lllmtb/ui/graphical/**/*</exclude>
                         <exclude>com/lllmtb/model/entity/projectile/*</exclude>
                         <exclude>com/lllmtb/model/item/tool/*</exclude>
                         <exclude>com/lllmtb/model/item/weapon/*</exclude>
-                        <exclude>com/lllmtb/engine/turn/TurnManager.class</exclude>
                     </excludes>
                 </configuration>
             </plugin>

@@ -222,13 +222,13 @@ public class GameUIPanel extends JPanel {
         pauseButton.addActionListener(e -> {
             if (world != null) pauseMenu(true); });
         inventoryButton.addActionListener(e -> {
-            if (world != null) openCloseInventory(); });
+            if (world != null && !world.getPlayingTeam().isBot()) openCloseInventory(); });
         shopButton.addActionListener(e -> {
-            if (world != null) openCloseShop(); });
+            if (world != null && !world.getPlayingTeam().isBot()) openCloseShop(); });
         skipTurnButton.addActionListener(e -> {
-            if (world != null) world.getBus().postQueued(new TurnSkipEvent()); });
+            if (world != null && !world.getPlayingTeam().isBot()) world.getBus().postQueued(new TurnSkipEvent()); });
         changeWormsButton.addActionListener(e -> {
-            if (world != null) world.getBus().postQueued(new ChangeWormsEvent()); });
+            if (world != null && !world.getPlayingTeam().isBot()) world.getBus().postQueued(new ChangeWormsEvent()); });
 
 
         JPanel buttonsPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
