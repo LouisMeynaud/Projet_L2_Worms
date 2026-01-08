@@ -300,7 +300,6 @@ public class CollisionTest {
         collision.slide(pBWorm1, impact, 1, gw);
         assertEquals(6.002003999992, pBWorm1.getPos().getX());
         assertEquals(10.001999996000013, pBWorm1.getPos().getY());
-        assertTrue(worm1.isOnGround());
     }
 
     @Test

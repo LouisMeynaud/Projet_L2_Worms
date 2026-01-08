@@ -433,11 +433,9 @@ public class PhysicsEngine {
             // apply friction / air resistance to worms
             if (body.getEntity() instanceof Worm worm) {
                 if (collision.groundCheck(body)) {
-                    System.out.println("ok");
                     worm.setOnGround(true);
                     world.getBus().postQueued(new GroundCheckCollision(worm));
                 } else {
-                    System.out.println("not ok");
                     worm.setOnGround(false);
                 }
 
