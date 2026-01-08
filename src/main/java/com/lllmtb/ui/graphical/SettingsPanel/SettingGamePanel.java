@@ -152,7 +152,7 @@ public class SettingGamePanel extends JPanel {
         gbc.gridwidth = 2;
         gbc.gridx = 0;
         gbc.gridy = row++;
-        JLabel titre2 = new JLabel("PARAMETRES PHYSIQUE");
+        JLabel titre2 = new JLabel("PARAMETRES PHYSIQUES");
         titre2.setFont(new Font("Arial", Font.BOLD, 16));
         contentGrid.add(titre2, gbc);
 
@@ -202,7 +202,7 @@ public class SettingGamePanel extends JPanel {
         gbc.gridwidth = 2;
         gbc.gridx = 0;
         gbc.gridy = row++;
-        JLabel titre3 = new JLabel("CHEATS");
+        JLabel titre3 = new JLabel("Mode de triche");
         titre3.setFont(new Font("Arial", Font.BOLD, 16));
         contentGrid.add(titre3, gbc);
 
