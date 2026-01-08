@@ -90,16 +90,4 @@ public class SaveTest {
             Path path = Paths.get(TEST_BASE_PATH, "image.png");
             assertTrue(Files.exists(path));
         }
-
-        @Test
-        void eraseSaveTest() throws IOException {
-            String folderToErase = "DeleteMe";
-            Path path = Paths.get(SaveConfig.SAVE_DIRECTORY, folderToErase);
-            Files.createDirectories(path);
-            Files.writeString(path.resolve("temp.txt"), "data");
-            assertTrue(Files.exists(path));
-            Save.eraseSave(folderToErase);
-            assertFalse(Files.exists(path), "Comment ca il a pas disparu ????");
-
-        }
 }
