@@ -100,8 +100,7 @@ public class GameSettingsTest
     @Test
     public void testNullTerrainTypeThrowsException() {
         String[] teamNames = {"Team1", "Team2"};
-        ConfigMap configMap = new ConfigMap(100, 0,0, true,0, null, null);
-        assertThrows(NullPointerException.class, () -> new GameSettings("TestGame", 2, teamNames, new boolean[2], 3, 100, 60, false, null, configMap, 100, GameMode.NORMAL, false, false));
+        assertThrows(NullPointerException.class, () -> new GameSettings("TestGame", 2, teamNames, new boolean[2], 3, 100, 60, false, null, null, 100, GameMode.NORMAL, false, false));
 
     }
 
