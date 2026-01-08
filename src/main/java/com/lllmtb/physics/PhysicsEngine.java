@@ -592,12 +592,17 @@ public class PhysicsEngine {
         return Math.sqrt(dx * dx + dy * dy);
     }
 
+    /**
+     * Calculate fall damage and applies it to a worm if it falls too fast.
+     * @param worm which fall.
+     * @return the {@link GameCommand} for apply damage to worm
+     */
     public static GameCommand fallDamage(Worm worm) {
-        int seuil = -50;
+        int limitSpeed = -50;
         GameCommand death = null;
         double speedy = worm.getBody().getVector().getY();
-        if (speedy < seuil) {
-            int damage = (int) Math.ceil((speedy - seuil) * -0.7);
+        if (speedy < limitSpeed) {
+            double damage = ((speedy - limitSpeed) * -0.7);
             death = worm.damageWorm(damage);
             Logger.logger.info("{} has fallen and lost {} health points!", worm.name, damage);
         }

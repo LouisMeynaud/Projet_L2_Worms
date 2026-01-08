@@ -208,4 +208,13 @@ public class GameWorldTest {
 
         assertNotNull(gw.getTurnManager());
     }
+
+    @Test
+    void nextTurnTestTeamEmpty(){
+        GameSettings settings = new GameSettings("blabla", 1, new String[]{"José"}, new boolean[]{false}, 1, 100, 100, false, null, false, 370, LandScape.HILLY, 2, GameMode.NORMAL, true, false);
+        EventBus eventBus = new EventBus();
+        GameWorld gw = new GameWorld(settings, eventBus);
+        gw.getTeams().get(0).getCurrentWorm().damageWorm(100);
+        assertThrows(IllegalStateException.class, gw::nextTeamTurn);
+    }
 }

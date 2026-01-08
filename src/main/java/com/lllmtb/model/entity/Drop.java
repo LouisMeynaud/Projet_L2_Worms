@@ -22,6 +22,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+
+/**
+ * Represents a drop loot.
+ * A {@code Drop} falls from the sky, can touch the ground, and can be collected by a worm.
+ * When collected, it can unlock a weapon or give tool ammo to the team.
+ */
 public class Drop extends Entity {
     private final PhysicsBody body;
     public final transient ItemId itemIdToUnlock;
@@ -31,6 +37,11 @@ public class Drop extends Entity {
     private final String itemCategory; // "WEAPONID" ou "TOOLID"
     private final String itemName;
 
+    /**
+     * Constructor of the Drop, it creates a new drop.
+     * @param position the start position of the drop on the map.
+     * @param itemId the item (weapon or tool) linked to this drop.
+     */
     public Drop(Position position, ItemId itemId) {
         this.itemIdToUnlock = itemId;
         this.body = new PhysicsBody(this, position, new Vector(0, 0), 0.1, 2, 2);
@@ -38,16 +49,26 @@ public class Drop extends Entity {
         this.itemCategory = (itemId instanceof WeaponId) ? "WEAPONID" : "TOOLID";
     }
 
+    /**
+     * @return the collision type of the drop
+     */
     @Override
     public CollisionType getCollisionType() {
         return this.collisionType;
     }
 
+    /**
+     * @return the {@link PhysicsBody} of this drop
+     */
     @Override
     public PhysicsBody getBody() {
         return this.body;
     }
 
+    /**
+     * Registers the drop in the game world and adds physics rules to make the drop fall down with a speed limit.
+     * @return a list of {@link GameCommand} to apply in the world.
+     */
     public List<GameCommand> addModifier() {
         List<GameCommand> commands = new ArrayList<>();
         commands.add(new RegisterEntityCommand(this));
@@ -63,12 +84,25 @@ public class Drop extends Entity {
         return commands;
     }
 
+    /**
+     * Called when the drop hits another entity.
+     * If a worm collects it, the team gets:
+     * <ul>
+     *   <li>A new weapon unlocked or tool ammo added</li>
+     *   <li>A random amount of ammo (1 to 3)</li>
+     *   <li>The drop is removed from the world</li>
+     *   <li>A notification is sent to the UI</li>
+     * </ul>
+     * If a projectile hits it, the drop is simply removed.
+     * @param hitEntity the entity that touched or hit the drop
+     * @return a {@link GameCommand} to run after impact
+     */
     public GameCommand onImpact(Entity hitEntity) {
         GameCommand commands = null;
         if (hitEntity instanceof Worm worm) {
             Random random = new Random();
             Team team = worm.getTeam();
-            int ammoAmount = random.nextInt(1, 6);
+            int ammoAmount = random.nextInt(1, 4);
             if (this.itemIdToUnlock instanceof ToolId toolID) {
                 team.addAmmo(toolID, ammoAmount);
                 commands = world -> {
@@ -76,7 +110,7 @@ public class Drop extends Entity {
                     world.getBus().postQueued(new NotificationEvent("+ " + ammoAmount + " munitions", toolID.toString()));
                 };
 
-                Logger.logger.debug("Drop ramasse, outil obtenu : {} , nombre d'utilisation : {} !", this.itemIdToUnlock, ammoAmount);
+                Logger.logger.debug("Drop pick up, tool obtained : {} , numbers of use : {} !", this.itemIdToUnlock, ammoAmount);
             } else if (this.itemIdToUnlock instanceof WeaponId weaponID) {
                 team.unlockWeapon(weaponID);
                 team.addAmmo(weaponID, ammoAmount);
@@ -85,7 +119,7 @@ public class Drop extends Entity {
                     world.getBus().postQueued(new NotificationEvent("Arme " + weaponID + " obtenue !", weaponID.toString()));
                     world.getBus().postQueued(new NotificationEvent("+ " + ammoAmount + " munitions pour " + weaponID, weaponID.toString()));
                 };
-                Logger.logger.debug("Drop ramasse, arme obtenu : {} , nombre d'utilisation : {} !", this.itemIdToUnlock, ammoAmount);
+                Logger.logger.debug("Drop pick up, weapon obtained : {} , ammo : {} !", this.itemIdToUnlock, ammoAmount);
             }
         } else if (hitEntity instanceof Projectile) {
             commands = new RemoveEntityCommand(this);
@@ -109,9 +143,15 @@ public class Drop extends Entity {
         this.onGround = onGround;
     }
 
+    /**
+     * @return "WeaponId" or "ToolId"
+     */
     public String getItemCategory() {
         return itemCategory;
     }
+    /**
+     * @return the item's name
+     */
     public String getItemName() {
         return itemName;
     }

@@ -34,6 +34,14 @@ public class TurnTest {
     }
 
     @Test
+    public void testContructorThrows(){
+        Team team2 = new Team("TestTeam", 1, new Position[]{new Position(0,0)},0);
+        Worm worm1 = team2.getCurrentWorm();
+        worm1.damageWorm(100);
+        assertThrows(IllegalStateException.class, () -> new Turn(team2));
+    }
+
+    @Test
     public void testGetCurrentWorm(){
         assertSame(this.turn.getWormPlayable(), team.getCurrentWorm());
     }
