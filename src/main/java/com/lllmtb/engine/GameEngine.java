@@ -18,6 +18,7 @@ import com.lllmtb.ui.graphical.Utilitaire.animation.AnimationManager;
 public class GameEngine {
     private static EventBus systemBus;
     private static GameWorld world;
+    private static Thread engineLoopThread;
 
     public static void main(String[] args) {
         // Pick UI mode based on command line arguments
@@ -28,7 +29,7 @@ public class GameEngine {
         //systemBus.subscribe(Event.class, e -> Logger.logger.debug("[EVENT/system]: {}", e.getClass().getSimpleName()));
 
         // Engine loop thread - processes engine-level events (start, pause, quit...)
-        new Thread(() -> {
+        engineLoopThread = new Thread(() -> {
             Thread current = Thread.currentThread();
             while (!current.isInterrupted()) {
                 systemBus.processQueued();
@@ -39,7 +40,8 @@ public class GameEngine {
                     break;
                 }
             }
-        }, "engine-loop").start();
+        }, "engine-loop");
+        engineLoopThread.start();
 
 
         // Start the chosen UI manager
@@ -58,6 +60,18 @@ public class GameEngine {
         systemBus.subscribe(StartGameEvent.class, GameEngine::startGame);
         systemBus.subscribe(LoadEvent.class, GameEngine::startGame);
         systemBus.subscribe(DeleteSaveEvent.class, event -> Save.eraseSave(event.getSaveName()));
+        systemBus.subscribe(CloseGame.class, event -> {
+            if (world != null) {
+                world.stop();
+                Logger.logger.info("Game world stopped.");
+                world = null;
+            }
+            if (engineLoopThread != null) {
+                engineLoopThread.interrupt();
+                Logger.logger.info("Engine loop thread interrupted.");
+                engineLoopThread = null;
+            }
+        });
         ui.start();
     }
 

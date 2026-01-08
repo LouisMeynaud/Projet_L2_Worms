@@ -1,14 +1,19 @@
 package com.lllmtb.ui.graphical;
 
 import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.UIManager;
 
 import com.lllmtb.engine.logger.Logger;
 import com.lllmtb.events.EventBus;
+import com.lllmtb.events.game.CloseGame;
 import com.lllmtb.events.game.LoadEvent;
+import com.lllmtb.events.game.SaveEvent;
 import com.lllmtb.events.game.StartGameEvent;
+import com.lllmtb.events.game.WorldCreatedEvent;
 import com.lllmtb.events.ui.graphical.*;
 import com.lllmtb.ui.UI;
 import com.lllmtb.ui.graphical.GamePanel.GameScreen;
@@ -18,6 +23,8 @@ import com.lllmtb.ui.graphical.SettingsPanel.LoadGamePanel;
 import com.lllmtb.ui.graphical.SettingsPanel.NewOrLoadPanel;
 import com.lllmtb.ui.graphical.SettingsPanel.SettingsStartPanel;
 import com.lllmtb.ui.graphical.Utilitaire.MusicSettingsScreenPanel;
+import com.lllmtb.ui.graphical.Utilitaire.SoundManager;
+import com.lllmtb.engine.GameWorld;
 
 public class GraphicalUI implements UI {
 
@@ -27,6 +34,7 @@ public class GraphicalUI implements UI {
     public JPanel mainPanel;
     public JPanel loadGamePanel;
     private EndGameScreenPanel endGameScreen;
+    private GameWorld currentWorld = null;
 
     /**
      * @param eventbus the event bus of the game
@@ -54,9 +62,15 @@ public class GraphicalUI implements UI {
         windows = new JFrame();
         windows.setTitle("Worms-MI4");
         windows.setExtendedState(JFrame.MAXIMIZED_BOTH); //sets the window to the maximum screen size
-        windows.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        windows.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         windows.setResizable(true);
         windows.setMinimumSize(new Dimension(800, 400));
+        windows.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                close();
+            }
+        });
 
         cardLayout = new CardLayout();
         mainPanel = new JPanel(cardLayout);
@@ -138,6 +152,9 @@ public class GraphicalUI implements UI {
 
         });
 
+        eventBus.subscribe(WorldCreatedEvent.class, event -> {
+            this.currentWorld = event.world();
+        });
     }
 
 
@@ -152,7 +169,14 @@ public class GraphicalUI implements UI {
 
     @Override
     public void close() {
-        System.exit(0);
+        if (currentWorld != null) {
+            currentWorld.getBus().postSync(new SaveEvent());
+            Logger.logger.info("Game saved before closing.");
+        }
+        SoundManager.close();
+        eventBus.postQueued(new CloseGame());
+        windows.dispose();
+        Logger.logger.info("game closed.");
     }
 
 }

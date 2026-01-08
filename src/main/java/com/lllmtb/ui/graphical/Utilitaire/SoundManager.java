@@ -51,4 +51,14 @@ public class SoundManager {
             return null;
         }
     }
+
+    public static void close() {
+        for (Clip clip : soundMap.values()) {
+            if (clip != null) {
+                clip.stop();
+                clip.close();
+            }
+        }
+        soundMap.clear();
+    }
 }
