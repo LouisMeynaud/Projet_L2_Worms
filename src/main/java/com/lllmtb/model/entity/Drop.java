@@ -107,7 +107,7 @@ public class Drop extends Entity {
                 team.addAmmo(toolID, ammoAmount);
                 commands = world -> {
                     new RemoveEntityCommand(this).execute(world);
-                    world.getBus().postQueued(new NotificationEvent("+ " + ammoAmount + " ammo", toolID.toString()));
+                    world.getBus().postQueued(new NotificationEvent("+ " + ammoAmount + " munitions", toolID.toString()));
                 };
 
                 Logger.logger.debug("Drop pick up, tool obtained : {} , numbers of use : {} !", this.itemIdToUnlock, ammoAmount);
@@ -116,8 +116,8 @@ public class Drop extends Entity {
                 team.addAmmo(weaponID, ammoAmount);
                 commands = world -> {
                     new RemoveEntityCommand(this).execute(world);
-                    world.getBus().postQueued(new NotificationEvent("Weapon " + weaponID + " obtained !", weaponID.toString()));
-                                        world.getBus().postQueued(new NotificationEvent("+ " + ammoAmount + " ammo for " + weaponID, weaponID.toString()));
+                    world.getBus().postQueued(new NotificationEvent("Arme " + weaponID + " obtenue !", weaponID.toString()));
+                    world.getBus().postQueued(new NotificationEvent("+ " + ammoAmount + " munitions pour " + weaponID, weaponID.toString()));
                 };
                 Logger.logger.debug("Drop pick up, weapon obtained : {} , ammo : {} !", this.itemIdToUnlock, ammoAmount);
             }

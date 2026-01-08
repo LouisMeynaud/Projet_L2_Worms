@@ -29,6 +29,7 @@ public class PushEntitiesCommandTest {
             "test",
             2,
             new String[]{"Team1", "Team2"},
+            new boolean[]{false, false},
             1,
             100,
             10,
