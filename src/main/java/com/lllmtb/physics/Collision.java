@@ -619,6 +619,11 @@ public class Collision {
         return null;
     }
 
+    /**
+     * Checks if a body is on the ground
+     * @param body the {@link PhysicsBody} we want to check
+     * @return {@code true} if it's on the ground, {@code false} otherwise
+     */
     public boolean groundCheck(PhysicsBody body) {
         Position pos = body.getPos();
         int minX = (int) Math.floor(pos.getX());

@@ -430,7 +430,7 @@ public class PhysicsEngine {
                 body.setPos(nextPos);
             }
 
-            // apply friction / air resistance to worms
+            // apply friction / air resistance to worms and reset the jump counter
             if (body.getEntity() instanceof Worm worm) {
                 if (collision.groundCheck(body)) {
                     worm.setOnGround(true);
