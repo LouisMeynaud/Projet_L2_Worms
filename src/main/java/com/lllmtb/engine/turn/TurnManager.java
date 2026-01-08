@@ -228,6 +228,9 @@ public final class TurnManager {
      * @param elapsedTime the elapsed time since the last update
      */
     public void updateTurn(double elapsedTime) {
+        if (this.turn == null) {
+            return;
+        }
         this.remainingTimeInMs -= (long) elapsedTime;
         Team winningTeam = checkWiningTeam();
         if (winningTeam != null) {
