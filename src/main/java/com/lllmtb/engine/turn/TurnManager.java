@@ -246,8 +246,8 @@ public final class TurnManager {
             } else {
                 if (turnFinish) {
                     if (cleanTurn()) {
-                        this.passNextTurn();
                         world.getGameLoop().setSpeedTurn(1);
+                        this.passNextTurn();
                     } else {
                         world.getGameLoop().setSpeedTurn(3);
                     }
