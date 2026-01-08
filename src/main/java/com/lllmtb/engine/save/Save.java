@@ -211,7 +211,6 @@ public class Save {
             saveInfo(gameWorld, stringPath);
             BufferedImage image = maptoBuffered(gameWorld.getMap());
             saveImage(image, stringPath);
-            gameWorld.pause(false);
         } catch (Exception e) {
             Logger.logger.error("Error while saving game ", e);
         }

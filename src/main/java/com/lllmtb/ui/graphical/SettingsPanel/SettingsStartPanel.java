@@ -47,7 +47,7 @@ public class SettingsStartPanel extends JPanel {
         this.setLayout(new BorderLayout(10, 10)); // North zone, South,...
 
         // Title (image later); Northern Zone
-        JLabel titre = new JLabel("START A NEW GAME");
+        JLabel titre = new JLabel("COMMENCER UNE NOUVELLE PARTIE");
         titre.setHorizontalAlignment(SwingConstants.CENTER);
         titre.setFont(new Font("Arial", Font.BOLD, 24));
         this.add(titre, BorderLayout.NORTH);
@@ -55,8 +55,8 @@ public class SettingsStartPanel extends JPanel {
         // Launch and return button: southern zone
 
         JPanel zoneSud = new JPanel(new FlowLayout(FlowLayout.RIGHT)); // met les bouton a droite (flowLayout afficheles un apres les autre);
-        JButton backButton = Utilitaire.createImageButton(TextureManager.UI, "Panel", 150, 75, 150, 75, "Back", "Arial", 16, Color.WHITE);
-        JButton startButton = Utilitaire.createImageButton(TextureManager.UI, "Panel", 150, 75, 150, 75, "Start", "Arial", 16, Color.WHITE);
+        JButton backButton = Utilitaire.createImageButton(TextureManager.UI, "Panel", 150, 75, 150, 75, "Retour", "Arial", 16, Color.WHITE);
+        JButton startButton = Utilitaire.createImageButton(TextureManager.UI, "Panel", 150, 75, 150, 75, "Jouer", "Arial", 16, Color.WHITE);
 
 
         zoneSud.add(backButton);
@@ -103,6 +103,7 @@ public class SettingsStartPanel extends JPanel {
         int nbEquipes = gameSettingsPanel.getNbEquipes();
         int nbVWorms = gameSettingsPanel.getNbWorms();
         String[] nomsEquipes = gameSettingsPanel.getNomsEquipes();
+        boolean[] isBot = gameSettingsPanel.getIsBot();
         boolean wind = gameSettingsPanel.getWind();
         boolean friendlyFire = gameSettingsPanel.getFriendlyFire();
         int turnDuration = gameSettingsPanel.getTurnDuration();
@@ -111,16 +112,18 @@ public class SettingsStartPanel extends JPanel {
         String gameName = gameSettingsPanel.getGameName();
         GameMode gameMode = gameSettingsPanel.getGameMode();
         boolean coinCheat = gameSettingsPanel.getCoinCheat();
+
         if (this.mapSettingPanel.loadMap) {
             String mapFileName = this.mapSettingPanel.panelListeMap.getSelectedMapName();
-            return new GameSettings(gameName, nbEquipes, nomsEquipes, nbVWorms, maxLife, turnDuration, wind, mapFileName,
+            return new GameSettings(gameName, nbEquipes, nomsEquipes, isBot, nbVWorms, maxLife, turnDuration, wind, mapFileName,
                     null, maxJump, gameMode, friendlyFire, coinCheat);
 
 
         } else {
             ConfigMap configMap = this.mapSettingPanel.generateMapPanel.getConfigMap();
-            return new GameSettings(gameName, nbEquipes, nomsEquipes, nbVWorms, maxLife, turnDuration, wind, null,
+            return new GameSettings(gameName, nbEquipes, nomsEquipes, isBot, nbVWorms, maxLife, turnDuration, wind, null,
                     configMap, maxJump, gameMode, friendlyFire, coinCheat);
+
 
 
         }

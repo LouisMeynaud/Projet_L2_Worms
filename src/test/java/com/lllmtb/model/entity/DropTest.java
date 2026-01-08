@@ -33,7 +33,7 @@ public class DropTest {
     public void setUp(){
         this.drop = new Drop(new Position(1,1), WeaponId.GUN);
         ConfigMap configMap = new ConfigMap(100, 0,0, false,0, LandScape.HILLY, null);
-        GameSettings settings = new GameSettings("blabla", 2, new String[]{"TeamTest1", "TeamTest2"}, 1, 100, 10, false, null,configMap, 2,GameMode.NORMAL, true, false);
+        GameSettings settings = new GameSettings("blabla", 2, new String[]{"TeamTest1", "TeamTest2"}, new boolean[2],1, 100, 10, false, null,configMap, 2,GameMode.NORMAL, true, false);
         EventBus eb = new EventBus();
         this.world = new GameWorld(settings, eb);
     }

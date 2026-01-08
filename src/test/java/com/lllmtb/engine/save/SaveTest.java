@@ -15,9 +15,10 @@ public class SaveTest {
     static void setUp() {
         EventBus eventBus = new EventBus();
         ConfigMap configMap = new ConfigMap(100, 0,0, false,0, LandScape.FLAT, null);
-        GameSettings settings = new GameSettings("blabla", 2, new String[]{"test", "test2"}, 2, 100, 10, true, "testGame", configMap, 2, GameMode.NORMAL, true, false);
+        GameSettings settings = new GameSettings("blabla", 2, new String[]{"test", "test2"}, new boolean[2], 2, 100, 10, true, "testGame", configMap, 2, GameMode.NORMAL, true, false);
+
         GameWorld gameWorld = new GameWorld(settings, eventBus);
-    Save.setGameWorld(gameWorld);
+        Save.setGameWorld(gameWorld);
     }
 /*
     @Test

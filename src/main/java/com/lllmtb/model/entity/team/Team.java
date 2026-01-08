@@ -50,6 +50,11 @@ public class Team {
     public final String name;
 
     /**
+     * Whether this team is controlled by a bot or not.
+     */
+    private boolean isBot = false;
+
+    /**
      * Number of worms in the team.
      */
     private int numberOfWorms;
@@ -85,7 +90,7 @@ public class Team {
     public final TeamColor teamColor;
 
     /**
-     * The count of shoot in a turn.
+     * The number of shots fired in the current turn.
      */
     private int shootCount;
 
@@ -128,15 +133,15 @@ public class Team {
      * @param teamName      the name of the team
      * @param numberOfWorms number of worms in the team
      * @param spawn         the spawn position where the worms will be placed
-     * @param credits       the money of the team at the start (-1 for infinity)
+     * @param credits       initial amount of credits for the team (-1 for infinity)
      */
     public Team(@NonNull String teamName, int numberOfWorms, @NonNull Position[] spawn, int credits) {
         this(teamName, numberOfWorms, new Inventory(), spawn, credits);
     }
 
     /**
-     * Public constructor used to initialize a team using the private constructor.
-     * @param teamSave      the save of the team
+     * Public constructor used to initialize a team using the private constructor with a save.
+     * @param teamSave the save of the team
      */
     public Team(@NonNull TeamSave teamSave) {
         this.inventory = new Inventory();
@@ -152,6 +157,7 @@ public class Team {
 
         this.name = teamSave.team.name;
         this.numberOfWorms =  teamSave.team.numberOfWorms;
+        this.isBot = teamSave.team.isBot();
         this.id = teamSave.team.id;
         this.credits = teamSave.team.credits;
         this.worms.addAll(teamSave.team.getTeamWorms());
@@ -512,5 +518,20 @@ public class Team {
             Logger.logger.info("[TEAM {}] Removing {} credits", this.name, amount);
             this.credits -= amount;
         }
+    }
+
+    /**
+     * @return true if the team is controlled by a bot, false otherwise
+     */
+    public boolean isBot() {
+        return isBot;
+    }
+
+    /**
+     * Sets whether the team is controlled by a bot.
+     * @param isBot true if the team is a bot, false otherwise
+     */
+    public void setBot(boolean isBot) {
+        this.isBot = isBot;
     }
 }

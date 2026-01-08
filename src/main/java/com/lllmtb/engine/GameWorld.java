@@ -11,10 +11,11 @@ import org.eclipse.jdt.annotation.NonNull;
 
 import com.lllmtb.engine.commands.GameCommand;
 import com.lllmtb.engine.logger.Logger;
-import com.lllmtb.engine.turn.TurnManager;
 import com.lllmtb.engine.save.GameSave;
 import com.lllmtb.engine.save.PhysicsBodySave;
 import com.lllmtb.engine.save.TeamSave;
+import com.lllmtb.engine.turn.TurnManager;
+import com.lllmtb.engine.turn.BotController;
 import com.lllmtb.engine.turn.Turn;
 import com.lllmtb.events.EventBus;
 import com.lllmtb.events.game.GameStateUpdatedEvent;
@@ -43,6 +44,7 @@ public class GameWorld {
     private final BlockingQueue<GameCommand> commandQueue;
     private final List<Team> teams;
     private final TurnManager turnManager;
+    private final BotController botController;
     private int indexTeam;
     private final GameLoop gameLoop;
     protected Thread loopThread;
@@ -82,7 +84,6 @@ public class GameWorld {
         }
         // Init GameLoop
         this.gameLoop = new GameLoop(this);
-        Logger.logger.debug("Game initialised");
 
         //Init TurnManager
         this.turnManager = gameSave.turnManager;
@@ -105,6 +106,9 @@ public class GameWorld {
         }
         this.turnManager.init();
 
+        //Init BotController
+        this.botController = new BotController(this);
+
         //Init FriendlyFire
         Projectile.setFriendlyFire(settings.friendlyFire);
 
@@ -113,6 +117,7 @@ public class GameWorld {
 
         //Init credit from current Team
         this.teams.get(indexTeam).removeCredits(150);
+
         Logger.logger.info("Game successfully loaded from save");
     }
 
@@ -131,6 +136,7 @@ public class GameWorld {
         }
         if (tmap == null) {
             Logger.logger.info("Generating a new map...");
+
             this.configMap = settings.configMap;
             this.configMap.setGameMode(settings.gameMode);
             tmap = GenerateMap.createMap(this.configMap);
@@ -152,14 +158,15 @@ public class GameWorld {
         // Init Teams
         this.teams = new ArrayList<>();
         Logger.logger.info("Creating the Teams...");
+        Worm.setMaxHp(settings.maxHp);
         for (int i = 0; i < settings.nbTeams; i++) {
             try {
-                Worm.setMaxHp(settings.maxHp);
                 int coin = settings.coinCheat ? -1 : 0;
                 Team team = new Team(settings.teamNames[i], settings.nbWorms, tmap.getSpawnPoint()[i], coin);
+                if (settings.isBot[i]) team.setBot(true);
                 teams.add(team);
                 team.getTeamWorms().forEach(this::registerEntity);
-                Logger.logger.info("{} | {} - {} - {}\n", i, team.name, team.id, team.teamColor);
+                Logger.logger.info("{} | {} - {} - {} [Bot: {}]\n", i, team.name, team.id, team.teamColor, team.isBot());
             } catch (ArrayIndexOutOfBoundsException e) {
                 break;
             }
@@ -174,8 +181,12 @@ public class GameWorld {
         //Init TurnManager
         this.turnManager = new TurnManager(this, settings.turnDuration);
 
+        //Init BotController
+        this.botController = new BotController(this);
+
         //Init ShopManager
         this.shopManager = new ShopManager(this.bus);
+
         Logger.logger.info("Game successfully initialised");
     }
 
@@ -278,11 +289,18 @@ public class GameWorld {
     public void nextTeamTurn() {
         if (teams.isEmpty()) {
             Logger.logger.warn("No teams available to take a turn.");
-            return;
+            throw new IllegalArgumentException("List teams empty");
         }
+        int attempts = 0;
+        int maxAttempts = teams.size() + 1;
         do {
             indexTeam = (indexTeam + 1) % teams.size();
-        } while (!teams.get(indexTeam).oneAlive());
+            attempts++;
+        } while (!teams.get(indexTeam).oneAlive() && attempts < maxAttempts);
+        if (attempts >= maxAttempts) {
+            Logger.logger.error("No team available with a worm alive to take a turn");
+            throw new IllegalStateException("No team alive found to take a turn");
+        }
         this.turnManager.startTurn(teams.get(indexTeam));
     }
 
