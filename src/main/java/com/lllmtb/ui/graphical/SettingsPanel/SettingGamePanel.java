@@ -20,6 +20,7 @@ import com.lllmtb.ui.graphical.Utilitaire.Utilitaire;
 
 public class SettingGamePanel extends JPanel {
     public JTextField[] champsNomsEquipes;
+    public JCheckBox[] botCheckBoxes;
     public static final int MAX_EQUIPES = 4;
     public static final int MAX_WORM = 6;
     public static final int MAX_TIME = 40;
@@ -99,7 +100,9 @@ public class SettingGamePanel extends JPanel {
 
         //teams names
         champsNomsEquipes = new JTextField[MAX_EQUIPES];
+        botCheckBoxes = new JCheckBox[MAX_EQUIPES];
         for (int i = 0; i < MAX_EQUIPES; i++) {
+            gbc.gridwidth = 1;
             gbc.gridx = 0;
             gbc.gridy = row;
 
@@ -109,6 +112,10 @@ public class SettingGamePanel extends JPanel {
             gbc.gridx = 1;
             champsNomsEquipes[i] = new JTextField("" + (i + 1), 15);
             contentGrid.add(champsNomsEquipes[i], gbc);
+
+            gbc.gridx = 2;
+            botCheckBoxes[i] = new JCheckBox("Bot");
+            contentGrid.add(botCheckBoxes[i], gbc);
             row++;
         }
 
@@ -152,7 +159,7 @@ public class SettingGamePanel extends JPanel {
         gbc.gridwidth = 2;
         gbc.gridx = 0;
         gbc.gridy = row++;
-        JLabel titre2 = new JLabel("PARAMETRES PHYSIQUE");
+        JLabel titre2 = new JLabel("PARAMETRES PHYSIQUES");
         titre2.setFont(new Font("Arial", Font.BOLD, 16));
         contentGrid.add(titre2, gbc);
 
@@ -202,7 +209,7 @@ public class SettingGamePanel extends JPanel {
         gbc.gridwidth = 2;
         gbc.gridx = 0;
         gbc.gridy = row++;
-        JLabel titre3 = new JLabel("CHEATS");
+        JLabel titre3 = new JLabel("Mode de triche");
         titre3.setFont(new Font("Arial", Font.BOLD, 16));
         contentGrid.add(titre3, gbc);
 
@@ -308,5 +315,18 @@ public class SettingGamePanel extends JPanel {
      */
     public boolean getCoinCheat() {
         return this.coinCheatBox.isSelected();
+    }
+
+    /**
+     * Gets bots status for each team
+     * @return an array of booleans indicating if a team is a bot
+     */
+    public boolean[] getIsBot() {
+        int nbEquipes = getNbEquipes();
+        boolean[] isBot = new boolean[nbEquipes];
+        for (int i = 0; i < nbEquipes; i++) {
+            isBot[i] = botCheckBoxes[i].isSelected();
+        }
+        return isBot;
     }
 }

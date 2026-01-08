@@ -31,7 +31,7 @@ public class DropTest {
     @BeforeEach
     public void setUp(){
         this.drop = new Drop(new Position(1,1), WeaponId.GUN);
-        GameSettings settings = new GameSettings("blabla", 2, new String[]{"TeamTest1", "TeamTest2"}, 1, 100, 10, false, null, false, 370, LandScape.HILLY, 2,GameMode.NORMAL, true, false);
+        GameSettings settings = new GameSettings("blabla", 2, new String[]{"TeamTest1", "TeamTest2"}, new boolean[2], 1, 100, 10, false, null, false, 370, LandScape.HILLY, 2,GameMode.NORMAL, true, false);
         EventBus eb = new EventBus();
         this.world = new GameWorld(settings, eb);
     }

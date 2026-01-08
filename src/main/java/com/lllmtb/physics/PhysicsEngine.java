@@ -575,20 +575,34 @@ public class PhysicsEngine {
         .filter(w -> w != wormToExclude)
         .min(Comparator.comparingDouble(targetWorm -> {
             Position p = targetWorm.getBody().getPos();
-            double dx = searchPos.getX() - p.getX();
-            double dy = searchPos.getY() - p.getY();
-            return (dx * dx) + (dy * dy);
+            return distanceBetweenPositions(searchPos, p);
         }))
         .orElse(null);
 
     }
 
+    /** Calculates the Euclidean distance between two positions.
+     * @param pos1 the first {@link Position}.
+     * @param pos2 the second {@link Position}.
+     * @return the distance between {@code pos1} and {@code pos2}.
+     */
+    public static double distanceBetweenPositions(Position pos1, Position pos2) {
+        double dx = pos1.getX() - pos2.getX();
+        double dy = pos1.getY() - pos2.getY();
+        return Math.sqrt(dx * dx + dy * dy);
+    }
+
+    /**
+     * Calculate fall damage and applies it to a worm if it falls too fast.
+     * @param worm which fall.
+     * @return the {@link GameCommand} for apply damage to worm
+     */
     public static GameCommand fallDamage(Worm worm) {
-        int seuil = -50;
+        int limitSpeed = -50;
         GameCommand death = null;
         double speedy = worm.getBody().getVector().getY();
-        if (speedy < seuil) {
-            int damage = (int) Math.ceil((speedy - seuil) * -0.7);
+        if (speedy < limitSpeed) {
+            double damage = ((speedy - limitSpeed) * -0.7);
             death = worm.damageWorm(damage);
             Logger.logger.info("{} has fallen and lost {} health points!", worm.name, damage);
         }

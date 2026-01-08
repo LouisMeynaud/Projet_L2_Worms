@@ -34,8 +34,8 @@ public class EndGameScreenPanel extends JPanel {
         gbc.insets = new Insets(15, 0, 15, 0);
 
         this.winnerLabel = new JLabel("");
-        JButton restartButton = Utilitaire.createImageButton(TextureManager.UI, "Panel", 256, 128, 256, 128, "Restart", "Arial", 23, Color.WHITE);
-        JButton closeButton = Utilitaire.createImageButton(TextureManager.UI, "Panel", 256, 128, 256, 128, "Close", "Arial", 23, Color.WHITE);
+        JButton restartButton = Utilitaire.createImageButton(TextureManager.UI, "Panel", 256, 128, 256, 128, "Rejouer", "Arial", 23, Color.WHITE);
+        JButton closeButton = Utilitaire.createImageButton(TextureManager.UI, "Panel", 256, 128, 256, 128, "Fermer", "Arial", 23, Color.WHITE);
 
         restartButton.addActionListener(e -> {
             GameEngine.main(new String[]{});
@@ -59,7 +59,11 @@ public class EndGameScreenPanel extends JPanel {
      * @param team the winning team
      */
     public void setWinner(Team team) {
-        winnerLabel.setText(" The Winner is : " + team.getTeamColor() + " Team " + team.getName());
+        if (team.name.equals("Water")) {
+            winnerLabel.setText(" Tous les worms sont morts, l'eau a gagné ! ");
+        } else {
+            winnerLabel.setText(" Le gagnant est : " + team.getTeamColor() + " Equipe " + team.getName());
+        }
         winnerLabel.setForeground(Color.WHITE);
         winnerLabel.setFont(new Font("Arial", Font.BOLD, 32));
     }

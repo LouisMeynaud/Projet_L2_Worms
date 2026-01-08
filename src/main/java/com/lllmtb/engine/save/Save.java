@@ -28,6 +28,7 @@ import java.time.format.DateTimeFormatter;
 import com.lllmtb.terrain.map.SaveMap;
 import com.lllmtb.terrain.map.Tile;
 import com.lllmtb.ui.graphical.Utilitaire.TextureManager;
+
 import javax.imageio.ImageIO;
 
 /**
@@ -137,10 +138,10 @@ public class Save {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
         String dateFormatee = time.format(formatter);
         String info = "";
-        info +=  "Game save the : " + dateFormatee + "; ";
-        info += "Actual turn: "  + gameWorld.getTurnManager().getNbTurn() + "; ";
+        info +=  "Partie Sauvegardé le: " + dateFormatee + "; ";
+        info += "Tour actuel: "  + gameWorld.getTurnManager().getNbTurn() + "; ";
 
-        info +=  "Team" + gameWorld.getPlayingTeam().name + " is playing.";
+        info +=  "L'équipe " + gameWorld.getPlayingTeam().name + " joue.";
         return info;
     }
 
