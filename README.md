@@ -42,7 +42,7 @@ déplaçant son ver actif dessus, ils rapportent 50 coins.
 
 ### Colis :
 
-A chaque tour, il y a une faible probabilité qu'un coli apparaisse aléatoirement sur 
+A chaque tour, il y a une faible probabilité qu'un colis apparaisse aléatoirement sur 
 la carte. Ils contiennent une arme ou un outil aléatoire parmi ceux disponibles dans 
 le magasin, ainsi que des munitions pour cette arme. Le joueur peut ramasser le colis 
 en déplaçant son ver actif dessus.
@@ -52,7 +52,7 @@ en déplaçant son ver actif dessus.
 Chaque joueur joue à tour de rôle. Lorsqu'un joueur commence son tour, il peut
 déplacer son ver actif et utiliser des armes ou outils de son inventaire. Le joueur
 dispose d'un temps limité pour jouer son tour, une fois le temps écoulé, le
-tour passe au joueur suivant. Il dispose également de trois tire maximum, une fois
+tour passe au joueur suivant. Il dispose également de trois tirs maximum, une fois
 ceux-ci réalisés, le temps est réduit à cinq secondes pour finir son tour. Si le ver 
 actif du joueur meurt avant la fin de son tour, le tour se termine immédiatement.
 
@@ -92,7 +92,7 @@ touche pas, elle suit automatiquement le ver actif.
 
 - Mode multijoueur sur une machine uniquement et un mode solo contre des bots. Les
 bots se déplacent vers le ver ennemi le plus proche jusqu'à une certaine distance 
-minimale et tirent uniquemant avec le gun et avec une faible probabilité de toucher.
+minimale et tirent uniquement avec le gun et avec une faible probabilité de toucher.
 
 
 - Armes disponibles dans le jeu :
@@ -107,7 +107,7 @@ charge, plus on maintient le clic gauche, plus la roquette ira loin. Le Bazooka 
 disponible dans le magasin pour 400 coins et ses munitions pour 80 coins l'unité, ou 
 gratuitement dans les colis.
   - HealingBazooka : Le HealingBazooka tire une roquette qui soigne les vers alliés à 
-l'impact, elle annule égallement les altérations de statut. Le healingbazooka 
+l'impact, elle annule également les altérations de statut. Le healingbazooka 
 fonctionne avec un système de charge, plus on maintient le clic gauche, plus la 
 roquette ira loin. Le HealingBazooka est disponible dans le magasin pour 230 coins et 
 ses munitions pour 100 coins l'unité, ou gratuitement dans les colis.
