@@ -109,6 +109,9 @@ brûlure.
 statut.
 
 
+- Présence sur certaines maps de lianes permettant de monter en sautant et redescendre en toute sécurité.
+
+
 - Sauvegarde automatique à chaque début de tour.
 
 
