@@ -3,6 +3,7 @@ package com.lllmtb.terrain.map;
 public enum Tile {
     DIRT('D', '#', true, 4, 0.90, 0),
     WATER('W', 'o', false, 2, 1.0, -1),
+    HOLYWATER('H', 'O', false, 2, 1.0, 69),
     AIR('A', ' ', false, 1, 1.0, 0),
     CAVERN('C', '~', false, 1, 1.0, 0),
     GRASS('G', '_', true, 2, 0.90, 0),

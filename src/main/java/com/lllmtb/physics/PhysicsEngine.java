@@ -459,12 +459,15 @@ public class PhysicsEngine {
                 body.setVector(new Vector(newVelX, currentVector.getY()));
             }
 
-            // check if the body is in lava or trap
+            // check if the body is in a "special" tile
             if (body.getEntity() instanceof Worm worm) {
-                Tile tile = collision.inTrapOrLava(body);
+                Tile tile = collision.inSpecialTile(body);
                 if (tile == Tile.LAVA) {
                     world.queueCommand(worm.damageWorm(Tile.LAVA.getDamage()));
                     world.queueCommand(worm.addStatusEffect(new BurnEffect()));
+                }
+                if (tile == Tile.HOLYWATER) {
+                    world.queueCommand(worm.removeAllStatusEffects());
                 }
                 if (tile == Tile.TRAP) {
                     world.queueCommand(worm.damageWorm(Tile.TRAP.getDamage()));
