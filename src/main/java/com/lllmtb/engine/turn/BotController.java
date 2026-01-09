@@ -204,5 +204,13 @@ public class BotController {
         double aimDistance = 100;
         return new Position(startX + Math.cos(angle) * aimDistance, startY + Math.sin(angle) * aimDistance);
     }
+
+    /**
+     * Returns the current target worm.
+     * @return the target worm
+     */
+    public Worm getTarget() {
+        return targetWorm;
+    }
 }
 
