@@ -1,31 +1,28 @@
 package com.lllmtb.physics;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
+import org.eclipse.jdt.annotation.NonNull;
 
+import com.lllmtb.engine.GameWorld;
 import com.lllmtb.engine.commands.GameCommand;
+import com.lllmtb.engine.commands.AddPhysicsModifierCommand;
 import com.lllmtb.engine.logger.Logger;
+import com.lllmtb.events.game.MapUpdateEvent;
 import com.lllmtb.events.game.CoinCollisionEvent;
 import com.lllmtb.events.physics.ExplosionEvent;
 import com.lllmtb.events.physics.PhysicsModifierAddedEvent;
 import com.lllmtb.events.physics.PhysicsModifierRemovedEvent;
+import com.lllmtb.model.entity.Entity;
 import com.lllmtb.model.entity.Coin;
 import com.lllmtb.model.entity.Drop;
+import com.lllmtb.model.entity.team.Team;
+import com.lllmtb.model.entity.worm.Worm;
 import com.lllmtb.model.entity.effect.BurnEffect;
 import com.lllmtb.model.entity.effect.PoisonEffect;
-
-import org.eclipse.jdt.annotation.NonNull;
-
-import com.lllmtb.engine.GameWorld;
-import com.lllmtb.events.game.MapUpdateEvent;
-import com.lllmtb.model.entity.Entity;
 import com.lllmtb.model.entity.projectile.ExplosiveProjectile;
 import com.lllmtb.model.entity.projectile.Projectile;
-import com.lllmtb.model.entity.worm.Worm;
 import com.lllmtb.model.item.ItemId;
 import com.lllmtb.terrain.map.Map;
 import com.lllmtb.terrain.map.Tile;
@@ -472,6 +469,23 @@ public class PhysicsEngine {
                 if (tile == Tile.TRAP) {
                     world.queueCommand(worm.damageWorm(Tile.TRAP.getDamage()));
                     world.queueCommand(worm.addStatusEffect(new PoisonEffect()));
+                }
+                if (tile == Tile.AIRVINES || tile == Tile.DIRTVINES || tile == Tile.GRASSVINES || tile == Tile.CAVERNVINES) {
+                    Transform t = (v) -> {
+                        double vx = v.getX();
+                        vx *= 0.6;
+                        double vy = v.getY();
+                        if (vy < 0) vy = Math.max(vy, -5.0);
+                        return new Vector(vx, vy);
+                    };
+                    PhysicsModifier m = new PhysicsModifier(t, null);
+                    world.queueCommand(new AddPhysicsModifierCommand(worm, m));
+
+                    Team pteam = world.getPlayingTeam();
+                    if (pteam == null) return;
+                    Worm pworm = pteam.getCurrentWorm();
+                    if (pworm == null) return;
+                    if (worm.uuid == pworm.uuid) Move.jumpToMax();
                 }
             }
         }

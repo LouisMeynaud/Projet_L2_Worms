@@ -619,7 +619,7 @@ public class Collision {
      * @param body the {@link PhysicsBody} to check
      * @return the {@link Tile} if the body is in damaging terrain, {@code null} otherwise
      */
-    public Tile inTrapOrLava(PhysicsBody body) {
+    public Tile inSpecialTile(PhysicsBody body) {
         Position pos = body.getPos();
 
         // Calculate the bounding box of the body
