@@ -8,6 +8,7 @@ import com.lllmtb.events.game.CoinCollisionEvent;
 import com.lllmtb.model.entity.Coin;
 import com.lllmtb.model.entity.CollisionType;
 import com.lllmtb.model.entity.projectile.CatConcreteProjectile;
+import com.lllmtb.model.entity.projectile.TowerProjectile;
 import com.lllmtb.model.entity.worm.Worm;
 import com.lllmtb.terrain.map.Map;
 import com.lllmtb.terrain.map.Tile;
@@ -136,7 +137,7 @@ public class Collision {
             }
             // test with other bodies on the map without other worms
             for (PhysicsBody other : this.bodies) {
-                if ((body != other) && !(other.getEntity() instanceof Worm)) {
+                if ((body != other) && !(other.getEntity() instanceof Worm) && !(other.getEntity() instanceof TowerProjectile)) {
 
                     // Special case for coins
                     if (other.getEntity() instanceof Coin) {
@@ -628,7 +629,9 @@ public class Collision {
         Position pos = body.getPos();
         int minX = (int) Math.floor(pos.getX());
         int maxX = (int) Math.floor(pos.getX() + body.getWidth());
-        int groundY = (int) Math.floor(pos.getY()) - 1;
+        int groundY = (int) Math.floor(pos.getY());
+        if (body.getPos().getY() - groundY > this.EPSILON) return false;
+        groundY--;
         return map.isSolid(new Position(minX, groundY)) || map.isSolid(new Position(maxX, groundY));
     }
 }
