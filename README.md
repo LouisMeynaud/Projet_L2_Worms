@@ -101,6 +101,14 @@ touche pas, elle suit automatiquement le ver actif.
 - Physique réaliste.
 
 
+- Présence sur certaines maps de la lave qui fait des dégâts aux vers dedans et leur applique un effet de
+brûlure.
+
+
+- Présence sur certaines maps d'eau bénite qui soigne les vers qui nagent dedans de leurs altérations de
+statut.
+
+
 - Sauvegarde automatique à chaque début de tour.
 
 
@@ -172,9 +180,24 @@ ou gratuitement dans les colis.
 marche dessus tant qu'il reste dessus, le trap ne disparait jamais. Le trap est 
 disponible dans le magasin pour 150 coins l'unité ou gratuitement dans les colis.
 
+## Comment lancer une partie depuis l'interface graphique ?
+
+Pour lancer une partie, cliquez sur "Jouer" puis sur "Nouvelle partie". Ensuite, choisissez la map ou le
+type de génération souhaité. Enfin, choisissez les paramètres de votre partie avant de cliquer à nouveau
+"Jouer".  
+Pour charger une partie, cliquez sur "Jouer", puis sur "Charger une partie" et choisissez la save de votre
+choix et cliquez sur "Commencer".
+
 ## Comment contribuer ?
 
 Pour contribuer à ce projet, se référer à [ce fichier](/CONTRIBUTING.md).
+
+## Où sont stockées les saves ?
+
+Les saves sont stockées dans :
+```bash
+répertoire_personnel/Worms/saves/
+```
 
 ## Licence
 
