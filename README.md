@@ -7,8 +7,15 @@ Version actuelle du jeu :
 [jar](http://moule.informatique.univ-paris-diderot.fr/3lmtb/worms-mi4/-/jobs/artifacts/main/browse/target?job=package)
 
 Ligne de code pour lancer le jeu avec java 17 :
+
+- en mode graphique :
 ```bash
 java -jar worms-2.0-fat.jar
+```
+
+- en mode console :
+```bash
+java -jar worms-2.0-fat.jar console
 ```
 
 ## Description :
