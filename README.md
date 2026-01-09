@@ -18,7 +18,7 @@ java -jar worms-x.x-fat.jar
 Worms MI4, inpiré de Worms WMD de Team17, est un jeu de stratégie au tour par tour 
 consistant en une simulation de guerre entre plusieurs équipes composées de vers. 
 Les vers sont disposés aléatoirement sur la carte. L'objectif est d'être le dernier
-survivant. 
+survivant.
 
 ### Inventaire :
 
@@ -84,10 +84,13 @@ touche pas, elle suit automatiquement le ver actif.
 - Possiblité de changer de ver pour le suivant dans son équipe.
 
 
-- Terrain destructible
+- Terrain destructible.
 
 
-- Physique réaliste
+- Physique réaliste.
+
+
+- Sauvegarde automatique à chaque début de tour.
 
 
 - Mode multijoueur sur une machine uniquement et un mode solo contre des bots. Les
