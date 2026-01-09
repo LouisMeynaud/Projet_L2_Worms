@@ -2,7 +2,7 @@ package com.lllmtb.model.item.weapon;
 
 import com.lllmtb.engine.commands.GameCommand;
 import com.lllmtb.engine.commands.RegisterEntityCommand;
-import com.lllmtb.model.entity.projectile.BowProjectile;
+import com.lllmtb.model.entity.projectile.ArrowProjectile;
 import com.lllmtb.model.item.UseParams;
 import org.eclipse.jdt.annotation.NonNull;
 
@@ -18,7 +18,7 @@ public final class BowWeapon extends Weapon {
 
     @Override
     public List<GameCommand> fire(@NonNull UseParams params) {
-        GameCommand cmd = new RegisterEntityCommand(new BowProjectile(Objects.requireNonNull(params)), params.owner);
+        GameCommand cmd = new RegisterEntityCommand(new ArrowProjectile(Objects.requireNonNull(params)), params.owner);
         return List.of(cmd);
     }
 }
