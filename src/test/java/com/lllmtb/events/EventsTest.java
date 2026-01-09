@@ -167,6 +167,7 @@ public class EventsTest {
         new TurnEndEvent();
         new TurnStopEvent();
         new FinalSaveEvent();
+        new CloseGame();
     }
 
     @Test

@@ -13,7 +13,8 @@ public class ConfigMap {
     private final boolean flyingIsland;   // true if you want a flying island
     private final int plateauChance;      // the chance of having flat ground (which avoids terrain composed solely of "peaks")
     public static final double RATIOWIDTHHEIGHT = 0.5625; // for a rectangular world (0.5625 is the ratio between the width and heigth of a commun screen)
-    private final GameMode gameMode;      //the gameMode of the game.
+    public final LandScape terrainType; //the type of the terrain (FLAT, HILLY...)
+    private GameMode gameMode;      //the gameMode of the game.
 
     /**
      * Creates a new ConfigMap object.
@@ -34,8 +35,15 @@ public class ConfigMap {
         this.flyingIsland = flyingIsland;
         this.heightStart = heightStart;
         this.gameMode = gameMode;
+        this.terrainType = terrainType;
 
         switch (terrainType) {
+            case SUPERFLAT:
+                this.maxSlope = 1;
+                this.maxLength = 10;
+                this.plateauChance = 100;
+                break;
+
             case FLAT:
                 this.maxSlope = 1;
                 this.maxLength = 10;
@@ -147,5 +155,13 @@ public class ConfigMap {
      */
     public GameMode getGameMode() {
         return this.gameMode;
+    }
+
+    /**
+     *
+     * @param gameMode the gameMode to set
+     */
+    public void setGameMode(GameMode gameMode) {
+        this.gameMode = gameMode;
     }
 }

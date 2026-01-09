@@ -17,7 +17,7 @@ import com.lllmtb.events.EventBus;
 import com.lllmtb.events.game.StartGameEvent;
 import com.lllmtb.events.ui.graphical.ScreenNewOrLoadEvent;
 import com.lllmtb.physics.GameMode;
-import com.lllmtb.terrain.generation.LandScape;
+import com.lllmtb.terrain.generation.ConfigMap;
 import com.lllmtb.ui.graphical.Utilitaire.TextureManager;
 import com.lllmtb.ui.graphical.Utilitaire.Utilitaire;
 
@@ -47,7 +47,7 @@ public class SettingsStartPanel extends JPanel {
         this.setLayout(new BorderLayout(10, 10)); // North zone, South,...
 
         // Title (image later); Northern Zone
-        JLabel titre = new JLabel("START A NEW GAME");
+        JLabel titre = new JLabel("COMMENCER UNE NOUVELLE PARTIE");
         titre.setHorizontalAlignment(SwingConstants.CENTER);
         titre.setFont(new Font("Arial", Font.BOLD, 24));
         this.add(titre, BorderLayout.NORTH);
@@ -55,8 +55,8 @@ public class SettingsStartPanel extends JPanel {
         // Launch and return button: southern zone
 
         JPanel zoneSud = new JPanel(new FlowLayout(FlowLayout.RIGHT)); // met les bouton a droite (flowLayout afficheles un apres les autre);
-        JButton backButton = Utilitaire.createImageButton(TextureManager.UI, "Panel", 150, 75, 150, 75, "Back", "Arial", 16, Color.WHITE);
-        JButton startButton = Utilitaire.createImageButton(TextureManager.UI, "Panel", 150, 75, 150, 75, "Start", "Arial", 16, Color.WHITE);
+        JButton backButton = Utilitaire.createImageButton(TextureManager.UI, "Panel", 150, 75, 150, 75, "Retour", "Arial", 16, Color.WHITE);
+        JButton startButton = Utilitaire.createImageButton(TextureManager.UI, "Panel", 150, 75, 150, 75, "Jouer", "Arial", 16, Color.WHITE);
 
 
         zoneSud.add(backButton);
@@ -69,14 +69,11 @@ public class SettingsStartPanel extends JPanel {
         this.mapSettingPanel = new SettingMapPanel(eventBus);
         this.gameSettingsPanel = new SettingGamePanel();
 
-        JScrollPane mapScrollPanel = new JScrollPane(this.mapSettingPanel);
-        mapScrollPanel.setBorder(null);
-        mapScrollPanel.getVerticalScrollBar().setUnitIncrement(16);
         JScrollPane gameScrollPanel = new JScrollPane(this.gameSettingsPanel);
         gameScrollPanel.setBorder(null);
         gameScrollPanel.getVerticalScrollBar().setUnitIncrement(16);
 
-        panelCentre.add(mapScrollPanel);
+        panelCentre.add(mapSettingPanel);
         panelCentre.add(gameScrollPanel);
         this.add(panelCentre, BorderLayout.CENTER);
 
@@ -106,6 +103,7 @@ public class SettingsStartPanel extends JPanel {
         int nbEquipes = gameSettingsPanel.getNbEquipes();
         int nbVWorms = gameSettingsPanel.getNbWorms();
         String[] nomsEquipes = gameSettingsPanel.getNomsEquipes();
+        boolean[] isBot = gameSettingsPanel.getIsBot();
         boolean wind = gameSettingsPanel.getWind();
         boolean friendlyFire = gameSettingsPanel.getFriendlyFire();
         int turnDuration = gameSettingsPanel.getTurnDuration();
@@ -114,18 +112,18 @@ public class SettingsStartPanel extends JPanel {
         String gameName = gameSettingsPanel.getGameName();
         GameMode gameMode = gameSettingsPanel.getGameMode();
         boolean coinCheat = gameSettingsPanel.getCoinCheat();
+
         if (this.mapSettingPanel.loadMap) {
             String mapFileName = this.mapSettingPanel.panelListeMap.getSelectedMapName();
-            return new GameSettings(gameName, nbEquipes, nomsEquipes, nbVWorms, maxLife, turnDuration, wind, mapFileName,
-                    false, 0, null, maxJump, gameMode, friendlyFire, coinCheat);
+            return new GameSettings(gameName, nbEquipes, nomsEquipes, isBot, nbVWorms, maxLife, turnDuration, wind, mapFileName,
+                    null, maxJump, gameMode, friendlyFire, coinCheat);
 
 
         } else {
-            LandScape terrainType = this.mapSettingPanel.generateMapPanel.getReliefType();
-            int widthMap = this.mapSettingPanel.generateMapPanel.getWidthMapSlider();
-            boolean flightIsland = this.mapSettingPanel.generateMapPanel.getflightIsland();
-            return new GameSettings(gameName, nbEquipes, nomsEquipes, nbVWorms, maxLife, turnDuration, wind, null,
-                    flightIsland, widthMap, terrainType, maxJump, gameMode, friendlyFire, coinCheat);
+            ConfigMap configMap = this.mapSettingPanel.generateMapPanel.getConfigMap();
+            return new GameSettings(gameName, nbEquipes, nomsEquipes, isBot, nbVWorms, maxLife, turnDuration, wind, null,
+                    configMap, maxJump, gameMode, friendlyFire, coinCheat);
+
 
 
         }

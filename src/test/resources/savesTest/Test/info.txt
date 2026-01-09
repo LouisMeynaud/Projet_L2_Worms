@@ -1,3 +1,1 @@
-Nom de la partie: Test
- Les équipes: 1; 2; 
- Equipe à jouer: 1
+Partie Sauvegardé le: 09/01/2026 15:10:16; Tour actuel: 0; L'équipe Team1 joue.

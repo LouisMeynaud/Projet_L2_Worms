@@ -34,7 +34,6 @@ import com.lllmtb.ui.graphical.Utilitaire.animation.VisualEffect;
 
 /**
  * Classe responsable du rendu graphique de la partit.
- * </p>
  * elle gere le dessin de la carte (terrain), des entité(worms/projectile)
  * et des effet visuel(animation , barre de vie, current worms etc)
  */
@@ -522,6 +521,8 @@ public class WorldRenderer {
      * @param yCenter le centre du vers a l'ecran
      */
     private void paintAim(Graphics2D g2d, double xCenter, double yCenter) {
+        if (world.getPlayingTeam().isBot()) return;
+
         Worm currentWorm = world.getTurnManager().getTurn().getWormPlayable();
         if (currentWorm == null) return;
 
@@ -579,7 +580,17 @@ public class WorldRenderer {
         AffineTransform tx = new AffineTransform();
         tx.translate(xCenter, yCenter);
 
-        double angle = Math.atan2(panel.mouseWorldY - yCenter, panel.mouseWorldX - xCenter); // permet a partir d'une distance y et x entre worm et point de trouver un angle.
+        double mouseX = panel.mouseWorldX;
+        double mouseY = panel.mouseWorldY;
+        if (world.getPlayingTeam().isBot()) {
+            Worm target = world.getBotController().getTarget();
+            if (target != null) {
+                mouseX = target.getBody().getPos().getX();
+                mouseY = target.getBody().getPos().getY();
+            }
+        }
+
+        double angle = Math.atan2(mouseY - yCenter, mouseX - xCenter); // permet a partir d'une distance y et x entre worm et point de trouver un angle.
         tx.rotate(angle);
 
         if (Math.abs(angle) > Math.PI / 2) { // pour retourner l'image quand on regarde de l'autre coter.

@@ -1,0 +1,216 @@
+package com.lllmtb.engine.turn;
+
+import java.util.Random;
+
+import com.lllmtb.engine.GameWorld;
+import com.lllmtb.events.EventBus;
+import com.lllmtb.events.game.GameStateUpdatedEvent;
+import com.lllmtb.events.game.WeaponSelectedEvent;
+import com.lllmtb.events.input.MoveInputEvent;
+import com.lllmtb.events.input.ProcessInputsEvent;
+import com.lllmtb.events.input.UseInputEvent;
+import com.lllmtb.events.turn.TurnEndEvent;
+import com.lllmtb.events.turn.TurnStartEvent;
+import com.lllmtb.model.entity.team.Team;
+import com.lllmtb.model.entity.worm.Worm;
+import com.lllmtb.model.item.weapon.WeaponId;
+import com.lllmtb.physics.Position;
+import com.lllmtb.ui.graphical.GamePanel.Direction;
+import com.lllmtb.engine.logger.Logger;
+
+public class BotController {
+    private final GameWorld world;
+    private final Random random = new Random();
+
+    private enum State {
+        IDLE,
+        WAITING_START,
+        SELECT_WEAPON,
+        MOVING,
+        AIMING,
+        SHOOTING,
+        ENDING
+    }
+
+    private boolean active = false;
+
+    private Team currentTeam;
+    private Worm currentWorm;
+    private State state = State.IDLE;
+    private long stateTimer = 0;
+    private long moveTimer = 0;
+    private int shotsLeft;
+
+    private Worm targetWorm;
+    private Direction moveDirection;
+
+    public BotController(GameWorld world) {
+        this.world = world;
+        subscribeEvents();
+    }
+
+    private void subscribeEvents() {
+        EventBus bus = world.getBus();
+
+        bus.subscribe(TurnStartEvent.class, event -> {
+            if (event.team().isBot()) {
+                active = true;
+                currentTeam = event.team();
+                shotsLeft = Turn.FIRE_LIMIT_PER_TURN;
+                state = State.WAITING_START;
+                stateTimer = 1000;
+                Logger.logger.debug("? Bot logic started for team {}", currentTeam.name);
+            } else {
+                active = false;
+                state = State.IDLE;
+            }
+        });
+
+        bus.subscribe(TurnEndEvent.class, event -> {
+            active = false;
+            state = State.IDLE;
+        });
+
+        bus.subscribe(GameStateUpdatedEvent.class, event -> {
+            if (active) update();
+        });
+
+        bus.subscribe(ProcessInputsEvent.class, event -> {
+             if (active && state == State.MOVING) {
+                 Logger.logger.debug("? Bot processing move input: {}", moveDirection);
+                 if (moveDirection != null) {
+                     world.getBus().postQueued(new MoveInputEvent(moveDirection));
+                 }
+             }
+        });
+    }
+
+    private long lastUpdate = System.currentTimeMillis();
+
+    private void update() {
+        long now = System.currentTimeMillis();
+        long dt = now - lastUpdate;
+        lastUpdate = now;
+
+        if (stateTimer > 0) {
+            stateTimer -= dt;
+            return;
+        }
+
+        switch (state) {
+            case WAITING_START:
+                Logger.logger.debug("? Bot waiting for current worm");
+                 if (world.getPlayingTeam() != null && world.getPlayingTeam().getCurrentWorm() != null) {
+                     currentWorm = world.getPlayingTeam().getCurrentWorm();
+                     state = State.SELECT_WEAPON;
+                     stateTimer = 500;
+                 }
+                 break;
+
+            case SELECT_WEAPON:
+                Logger.logger.debug("? Bot selecting weapon");
+                world.getBus().postQueued(new WeaponSelectedEvent(WeaponId.GUN));
+                state = State.MOVING;
+                stateTimer = 0;
+                moveTimer = 2000;
+                targetWorm = findNearestEnemy();
+                break;
+
+            case MOVING:
+                Logger.logger.debug("? Bot entering MOVING state, current target: {}", targetWorm != null ? targetWorm.uuid : "NONE");
+
+                if (targetWorm == null || !targetWorm.isAlive()) {
+                    targetWorm = findNearestEnemy();
+                    Logger.logger.debug("? Bot found new target worm {}", targetWorm != null ? targetWorm.uuid : "NONE");
+                    if (targetWorm == null) {
+                        state = State.ENDING;
+                        return;
+                    }
+                }
+
+                double myX = currentWorm.getBody().getPos().getX();
+                double targetX = targetWorm.getBody().getPos().getX();
+                double dist = Math.abs(targetX - myX);
+
+                Logger.logger.debug("? Bot distance to target: {} - Move timer: {}", dist, moveTimer);
+                if (dist > 10 && moveTimer > 0) {
+                    moveTimer -= dt;
+                    moveDirection = targetX < myX ? Direction.Left : Direction.Right;
+                    Logger.logger.debug("? Bot decided to move {}", moveDirection);
+
+                    // Random jump
+                     if (random.nextInt(100) < 2) {
+                         world.getBus().postQueued(new MoveInputEvent(Direction.Up));
+                     }
+                } else {
+                    Logger.logger.debug("? Bot finished moving");
+                    moveDirection = null;
+                    state = State.AIMING;
+                    stateTimer = 1000;
+                }
+                break;
+
+            case AIMING:
+                Logger.logger.debug("? Bot aiming at target worm {}", targetWorm != null ? targetWorm.uuid : "NONE");
+                 state = State.SHOOTING;
+                 stateTimer = 500;
+                 break;
+
+            case SHOOTING:
+                if (targetWorm != null && targetWorm.isAlive()) {
+                    Logger.logger.debug("? Bot shooting at target worm {}", targetWorm != null ? targetWorm.uuid : "NONE");
+                    Position predictedPos = calculateAimPosition(currentWorm, targetWorm);
+                    world.getBus().postQueued(new UseInputEvent(predictedPos, 1));
+                    shotsLeft--;
+                }
+                if (shotsLeft > 0) {
+                    Logger.logger.debug("? Bot preparing for next shot, shots left: {}", shotsLeft);
+                    state = State.MOVING;
+                    stateTimer = 0;
+                    moveTimer = 2000;
+                } else {
+                    Logger.logger.debug("? No shots left, bot ending turn");
+                    state = State.ENDING;
+                    stateTimer = 2000;
+                }
+                break;
+
+            default:
+                break;
+        }
+    }
+
+    private Worm findNearestEnemy() {
+        return world.getPhysics().findClosestEnemyFromPosition(currentWorm.getBody().getPos(), currentTeam, currentWorm);
+    }
+
+    private Position calculateAimPosition(Worm shooter, Worm target) {
+        Position start = shooter.getBody().getPos();
+        Position end = target.getBody().getPos();
+
+        double targetX = end.getX() + target.getBody().getWidth() / 2.0;
+        double targetY = end.getY() + target.getBody().getHeight() / 2.0;
+        double startX = start.getX() + shooter.getBody().getWidth() / 2.0;
+        double startY = start.getY() + shooter.getBody().getHeight() / 2.0;
+
+        double diffX = targetX - startX;
+        double diffY = targetY - startY;
+
+        double distance = Math.sqrt(diffX * diffX + diffY * diffY);
+        double heightCompensation = distance * 0.10;
+
+        double angle = Math.atan2(diffY + heightCompensation, diffX);
+
+        double aimDistance = 100;
+        return new Position(startX + Math.cos(angle) * aimDistance, startY + Math.sin(angle) * aimDistance);
+    }
+
+    /**
+     * Returns the current target worm.
+     * @return the target worm
+     */
+    public Worm getTarget() {
+        return targetWorm;
+    }
+}
+

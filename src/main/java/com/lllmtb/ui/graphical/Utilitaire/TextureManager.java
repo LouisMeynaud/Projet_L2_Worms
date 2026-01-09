@@ -26,6 +26,11 @@ public class TextureManager {
     public static final Map<String, BufferedImage> EFFECT = new HashMap<>();
     public static final Map<String, BufferedImage> NOTIFICATIONS = new HashMap<>();
 
+    /**
+     * Loads an image from the given path.
+     * @param path the path to the image.
+     * @return the loaded image or the default image if loading fails.
+     */
      public static BufferedImage loadImage(String path) {
         try {
             URL url = TextureManager.class.getResource(path);
@@ -75,9 +80,9 @@ public class TextureManager {
         UI.put("ChangeWormsHover", loadImage("/textures/button/changeWorms.png"));
 
         ///////Background/////////
-        BACKGROUND.put("Background", loadImage("/textures/Background.png"));
-        BACKGROUND.put("Background2", loadImage("/textures/Background2.png"));
-        BACKGROUND.put("Background3", loadImage("/textures/Background3.png"));
+        BACKGROUND.put("Background", loadImage("/textures/background/Background.png"));
+        BACKGROUND.put("Background2", loadImage("/textures/background/Background2.png"));
+        BACKGROUND.put("Background3", loadImage("/textures/background/Background3.png"));
 
         //////Entities//////////
         for (TeamColor color: TeamColor.values()) {

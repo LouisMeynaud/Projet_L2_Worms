@@ -12,6 +12,7 @@ import com.lllmtb.engine.logger.Logger;
 import com.lllmtb.events.game.MapUpdateEvent;
 import com.lllmtb.events.game.CoinCollisionEvent;
 import com.lllmtb.events.physics.ExplosionEvent;
+import com.lllmtb.events.physics.GroundCheckCollision;
 import com.lllmtb.events.physics.PhysicsModifierAddedEvent;
 import com.lllmtb.events.physics.PhysicsModifierRemovedEvent;
 import com.lllmtb.model.entity.Entity;
@@ -424,14 +425,17 @@ public class PhysicsEngine {
             // if no collision, update position normally
             } else {
                 body.setPos(nextPos);
-                // If the body is a worm, mark it as not on ground when it's in the air
-                if (body.getEntity() instanceof Worm) {
-                    ((Worm) body.getEntity()).setOnGround(false);
-                }
             }
 
-            // apply friction / air resistance to worms
+            // apply friction / air resistance to worms and reset the jump counter
             if (body.getEntity() instanceof Worm worm) {
+                if (collision.groundCheck(body)) {
+                    worm.setOnGround(true);
+                    world.getBus().postQueued(new GroundCheckCollision(worm));
+                } else {
+                    worm.setOnGround(false);
+                }
+
                 Vector currentVector = body.getVector();
                 double newVelX = currentVector.getX();
 
@@ -592,20 +596,34 @@ public class PhysicsEngine {
         .filter(w -> w != wormToExclude)
         .min(Comparator.comparingDouble(targetWorm -> {
             Position p = targetWorm.getBody().getPos();
-            double dx = searchPos.getX() - p.getX();
-            double dy = searchPos.getY() - p.getY();
-            return (dx * dx) + (dy * dy);
+            return distanceBetweenPositions(searchPos, p);
         }))
         .orElse(null);
 
     }
 
+    /** Calculates the Euclidean distance between two positions.
+     * @param pos1 the first {@link Position}.
+     * @param pos2 the second {@link Position}.
+     * @return the distance between {@code pos1} and {@code pos2}.
+     */
+    public static double distanceBetweenPositions(Position pos1, Position pos2) {
+        double dx = pos1.getX() - pos2.getX();
+        double dy = pos1.getY() - pos2.getY();
+        return Math.sqrt(dx * dx + dy * dy);
+    }
+
+    /**
+     * Calculate fall damage and applies it to a worm if it falls too fast.
+     * @param worm which fall.
+     * @return the {@link GameCommand} for apply damage to worm
+     */
     public static GameCommand fallDamage(Worm worm) {
-        int seuil = -50;
+        int limitSpeed = -50;
         GameCommand death = null;
         double speedy = worm.getBody().getVector().getY();
-        if (speedy < seuil) {
-            int damage = (int) Math.ceil((speedy - seuil) * -0.7);
+        if (speedy < limitSpeed) {
+            double damage = ((speedy - limitSpeed) * -0.7);
             death = worm.damageWorm(damage);
             Logger.logger.info("{} has fallen and lost {} health points!", worm.name, damage);
         }
