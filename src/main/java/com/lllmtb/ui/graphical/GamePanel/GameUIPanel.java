@@ -34,6 +34,7 @@ import com.lllmtb.engine.GameWorld;
 import com.lllmtb.engine.turn.Turn;
 import com.lllmtb.events.EventBus;
 import com.lllmtb.events.turn.ChangeWormsEvent;
+import com.lllmtb.events.turn.TurnEndEvent;
 import com.lllmtb.events.game.GamePauseEvent;
 import com.lllmtb.events.game.GameStateUpdatedEvent;
 import com.lllmtb.events.game.SaveEvent;
@@ -288,6 +289,7 @@ public class GameUIPanel extends JPanel {
             this.world = event.world();
             this.shopManager = world.getShopManager();
             this.world.getBus().subscribe(NotificationEvent.class, Popup::add);
+            this.world.getBus().subscribe(TurnEndEvent.class, e -> cardLayout.show(centerContainer, "EMPTY"));
             updateTimerDisplay();
         });
 
@@ -321,6 +323,9 @@ public class GameUIPanel extends JPanel {
         }
 
         String timeString = String.format("%02d:%02d", timeLeft / 60, timeLeft % 60);
+        if (world.getTurnManager().getTurn().getWormPlayable() == null) {
+            timeString = "--:--";
+        }
 
         Color baseColor = switch (playingTeam.getTeamColor()) {
             case RED -> Color.RED;
