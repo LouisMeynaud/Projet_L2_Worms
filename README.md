@@ -8,7 +8,7 @@ Version actuelle du jeu :
 
 Ligne de code pour lancer le jeu avec java 17 :
 ```bash
-java -jar worms-x.x-fat.jar
+java -jar worms-2.0-fat.jar
 ```
 
 ## Description :
@@ -81,7 +81,7 @@ souris pour bouger la caméra ou utiliser la molette pour zoomer/dézoomer.
 touche pas, elle suit automatiquement le ver actif.
 
 
-- Possiblité de changer de ver pour le suivant dans son équipe.
+- Possiblité de changer de ver pour le suivant dans son équipe une fois par tour.
 
 
 - Terrain destructible.
