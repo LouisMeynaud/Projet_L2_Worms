@@ -323,6 +323,9 @@ public class GameUIPanel extends JPanel {
         }
 
         String timeString = String.format("%02d:%02d", timeLeft / 60, timeLeft % 60);
+        if (world.getTurnManager().getTurn().getWormPlayable() == null) {
+            timeString = "--:--";
+        }
 
         Color baseColor = switch (playingTeam.getTeamColor()) {
             case RED -> Color.RED;
