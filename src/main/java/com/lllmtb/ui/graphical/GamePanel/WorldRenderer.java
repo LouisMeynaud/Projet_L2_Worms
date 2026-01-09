@@ -580,7 +580,17 @@ public class WorldRenderer {
         AffineTransform tx = new AffineTransform();
         tx.translate(xCenter, yCenter);
 
-        double angle = Math.atan2(panel.mouseWorldY - yCenter, panel.mouseWorldX - xCenter); // permet a partir d'une distance y et x entre worm et point de trouver un angle.
+        double mouseX = panel.mouseWorldX;
+        double mouseY = panel.mouseWorldY;
+        if (world.getPlayingTeam().isBot()) {
+            Worm target = world.getBotController().getTarget();
+            if (target != null) {
+                mouseX = target.getBody().getPos().getX();
+                mouseY = target.getBody().getPos().getY();
+            }
+        }
+
+        double angle = Math.atan2(mouseY - yCenter, mouseX - xCenter); // permet a partir d'une distance y et x entre worm et point de trouver un angle.
         tx.rotate(angle);
 
         if (Math.abs(angle) > Math.PI / 2) { // pour retourner l'image quand on regarde de l'autre coter.

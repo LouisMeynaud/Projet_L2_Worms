@@ -347,4 +347,12 @@ public class GameWorld {
             }
         }
     }
+
+    /**
+     * Get the BotController for managing bot-controlled teams.
+     * @return the BotController instance
+     */
+    public BotController getBotController() {
+        return botController;
+    }
 }
