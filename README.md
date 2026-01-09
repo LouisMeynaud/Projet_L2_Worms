@@ -55,6 +55,10 @@ dispose d'un temps limité pour jouer son tour, une fois le temps écoulé, le
 tour passe au joueur suivant. Il dispose également de trois tirs maximum, une fois
 ceux-ci réalisés, le temps est réduit à cinq secondes pour finir son tour. Si le ver 
 actif du joueur meurt avant la fin de son tour, le tour se termine immédiatement.
+Un tour ne peut se terminer que sous la condition que tous les worms soient au sol et 
+que tous les projectiles aient disparu (à l'exception des pièges, mines, tourelles). 
+À la fin du timer, les inputs du joueur courant sont désactivés, ses outils équipés sont 
+retirés, et on accélère le temps pour finir le tour.
 
 ### Fin de partie :
 
