@@ -323,7 +323,7 @@ public class GameUIPanel extends JPanel {
         }
 
         String timeString = String.format("%02d:%02d", timeLeft / 60, timeLeft % 60);
-        if (world.getTurnManager().getTurn().getWormPlayable() == null) {
+        if (world.getTurnManager().getTurn() == null || world.getTurnManager().getTurn().getWormPlayable() == null) {
             timeString = "--:--";
         }
 
