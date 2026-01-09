@@ -17,6 +17,7 @@ import com.lllmtb.ui.graphical.Utilitaire.animation.AnimationManager;
 
 public class GameEngine {
     private static EventBus systemBus;
+    private static UI ui;
     private static GameWorld world;
     private static Thread engineLoopThread;
 
@@ -45,7 +46,6 @@ public class GameEngine {
 
 
         // Start the chosen UI manager
-        UI ui;
         if (graphical) {
             Logger.logger.info("Using graphical interface");
             TextureManager.load(); // load textures
@@ -61,6 +61,11 @@ public class GameEngine {
         systemBus.subscribe(LoadEvent.class, GameEngine::startGame);
         systemBus.subscribe(DeleteSaveEvent.class, event -> Save.eraseSave(event.getSaveName()));
         systemBus.subscribe(CloseGame.class, event -> {
+            if (ui != null) {
+                ui.close();
+                Logger.logger.info("UI stopped.");
+                ui = null;
+            }
             if (world != null) {
                 world.stop();
                 Logger.logger.info("Game world stopped.");
