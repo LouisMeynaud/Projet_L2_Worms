@@ -22,8 +22,10 @@ public class Explosion {
             for (int j = -rayon; j <= rayon; j++) {
                 if ((i * i + j * j) <= (rayon * rayon)) {
                     Position tilePos = new Position(position.getX() + i, position.getY() + j);
-                    if (map.inMap(tilePos) && (!map.isTileAt(tilePos, Tile.WATER))) {
-                        map.setTile(tilePos, Tile.AIR);
+                    if (map.inMap(tilePos)) {
+                        if (!map.isTileAt(tilePos, Tile.AIR) && !map.isTileAt(tilePos, Tile.CAVERN) && !map.isTileAt(tilePos, Tile.WATER)) {
+                            map.setTile(tilePos, Tile.CAVERN);
+                        }
                     }
                 }
             }
