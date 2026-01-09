@@ -24,6 +24,7 @@ import com.lllmtb.engine.logger.Logger;
 import com.lllmtb.events.EventBus;
 import com.lllmtb.events.game.StartGameEvent;
 import com.lllmtb.physics.GameMode;
+import com.lllmtb.terrain.generation.ConfigMap;
 import com.lllmtb.terrain.generation.LandScape;
 import com.lllmtb.terrain.map.MapLoader;
 
@@ -75,6 +76,9 @@ public class ConsoleUI implements UI {
             boolean loadMap = promptLoadMap();
             String mapFileName = null;
             int size = 0;
+            int heightWater = 0;
+            int heightStart = 0;
+            int thicknessMin = 0;
             LandScape landscape = LandScape.UNKNOWN;
             boolean floatingIsland = false;
 
@@ -82,6 +86,9 @@ public class ConsoleUI implements UI {
                 mapFileName = promptMapName();
             } else {
                 size = promptMapSize();
+                heightWater = promptHeightWater();
+                heightStart = promptHeightStart();
+                thicknessMin = promptThicknessMin();
                 landscape = promptLandscape();
                 floatingIsland = promptFloatingIsland();
             }
@@ -104,8 +111,10 @@ public class ConsoleUI implements UI {
             }
             terminal.writer().println("   Wind: " + (hasWind ? "ON" : "OFF"));
             terminal.writer().flush();
+            ConfigMap configMap = new ConfigMap(size, heightWater, thicknessMin, floatingIsland, heightStart, landscape, null);
             return new GameSettings("blabla", nbTeams, teamNames, new boolean[nbTeams], nbWorms, maxHealth, turnDuration, hasWind, mapFileName,
-                    floatingIsland, size, landscape, 2, GameMode.NORMAL, friendlyfire, cheat);
+                    configMap, 2, GameMode.NORMAL, friendlyfire, cheat);
+
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -233,12 +242,59 @@ public class ConsoleUI implements UI {
         return Integer.parseInt(result.get("size").getResult());
     }
 
+    private int promptHeightWater() throws IOException {
+        ConsolePrompt prompt = new ConsolePrompt(terminal);
+        PromptBuilder builder = prompt.getPromptBuilder();
+        builder.createListPrompt()
+                .name("heightWater")
+                .message("  The height of the water in the map")
+                .newItem("0").text("0").add()
+                .newItem("5").text("5").add()
+                .newItem("10").text("10").add()
+                .newItem("15").text("15").add()
+                .newItem("20").text("20").add()
+                .addPrompt();
+        Map<String, PromptResultItemIF> result = prompt.prompt(builder.build());
+        return Integer.parseInt(result.get("heightWater").getResult());
+    }
+
+    private int promptHeightStart() throws IOException {
+        ConsolePrompt prompt = new ConsolePrompt(terminal);
+        PromptBuilder builder = prompt.getPromptBuilder();
+        builder.createListPrompt()
+                .name("heightStart")
+                .message("  The height at the start of the map")
+                .newItem("10").text("10").add()
+                .newItem("15").text("15").add()
+                .newItem("20").text("20").add()
+                .newItem("25").text("25").add()
+                .addPrompt();
+        Map<String, PromptResultItemIF> result = prompt.prompt(builder.build());
+        return Integer.parseInt(result.get("heightStart").getResult());
+    }
+
+    private int promptThicknessMin() throws IOException {
+        ConsolePrompt prompt = new ConsolePrompt(terminal);
+        PromptBuilder builder = prompt.getPromptBuilder();
+        builder.createListPrompt()
+                .name("thicknessMin")
+                .message("  The minimum thickness of the map")
+                .newItem("10").text("10").add()
+                .newItem("15").text("15").add()
+                .newItem("20").text("20").add()
+                .newItem("25").text("25").add()
+                .addPrompt();
+        Map<String, PromptResultItemIF> result = prompt.prompt(builder.build());
+        return Integer.parseInt(result.get("thicknessMin").getResult());
+    }
+
     private LandScape promptLandscape() throws IOException {
         ConsolePrompt prompt = new ConsolePrompt(terminal);
         PromptBuilder builder = prompt.getPromptBuilder();
         builder.createListPrompt()
                 .name("size")
                 .message("  The type of landscape to use")
+                .newItem("SUPERFLAT").text("Superflat").add()
                 .newItem("FLAT").text("Flat").add()
                 .newItem("HILLY").text("Hilly").add()
                 .newItem("JAGGED").text("Jagged").add()

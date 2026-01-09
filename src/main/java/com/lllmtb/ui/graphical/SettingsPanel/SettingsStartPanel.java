@@ -17,7 +17,7 @@ import com.lllmtb.events.EventBus;
 import com.lllmtb.events.game.StartGameEvent;
 import com.lllmtb.events.ui.graphical.ScreenNewOrLoadEvent;
 import com.lllmtb.physics.GameMode;
-import com.lllmtb.terrain.generation.LandScape;
+import com.lllmtb.terrain.generation.ConfigMap;
 import com.lllmtb.ui.graphical.Utilitaire.TextureManager;
 import com.lllmtb.ui.graphical.Utilitaire.Utilitaire;
 
@@ -69,14 +69,11 @@ public class SettingsStartPanel extends JPanel {
         this.mapSettingPanel = new SettingMapPanel(eventBus);
         this.gameSettingsPanel = new SettingGamePanel();
 
-        JScrollPane mapScrollPanel = new JScrollPane(this.mapSettingPanel);
-        mapScrollPanel.setBorder(null);
-        mapScrollPanel.getVerticalScrollBar().setUnitIncrement(16);
         JScrollPane gameScrollPanel = new JScrollPane(this.gameSettingsPanel);
         gameScrollPanel.setBorder(null);
         gameScrollPanel.getVerticalScrollBar().setUnitIncrement(16);
 
-        panelCentre.add(mapScrollPanel);
+        panelCentre.add(mapSettingPanel);
         panelCentre.add(gameScrollPanel);
         this.add(panelCentre, BorderLayout.CENTER);
 
@@ -119,13 +116,14 @@ public class SettingsStartPanel extends JPanel {
         if (this.mapSettingPanel.loadMap) {
             String mapFileName = this.mapSettingPanel.panelListeMap.getSelectedMapName();
             return new GameSettings(gameName, nbEquipes, nomsEquipes, isBot, nbVWorms, maxLife, turnDuration, wind, mapFileName,
-                    false, 0, null, maxJump, gameMode, friendlyFire, coinCheat);
+                    null, maxJump, gameMode, friendlyFire, coinCheat);
+
+
         } else {
-            LandScape terrainType = this.mapSettingPanel.generateMapPanel.getReliefType();
-            int widthMap = this.mapSettingPanel.generateMapPanel.getWidthMapSlider();
-            boolean flightIsland = this.mapSettingPanel.generateMapPanel.getflightIsland();
+            ConfigMap configMap = this.mapSettingPanel.generateMapPanel.getConfigMap();
             return new GameSettings(gameName, nbEquipes, nomsEquipes, isBot, nbVWorms, maxLife, turnDuration, wind, null,
-                    flightIsland, widthMap, terrainType, maxJump, gameMode, friendlyFire, coinCheat);
+                    configMap, maxJump, gameMode, friendlyFire, coinCheat);
+
 
 
         }

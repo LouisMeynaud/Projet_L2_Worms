@@ -1,6 +1,7 @@
 package com.lllmtb.engine;
 
 import com.lllmtb.physics.GameMode;
+import com.lllmtb.terrain.generation.ConfigMap;
 import com.lllmtb.terrain.generation.LandScape;
 
 import java.util.Objects;
@@ -12,8 +13,6 @@ public final class GameSettings {
     public final int nbWorms;
     public final boolean hasWind;
     public final String mapFileName;
-    public final boolean floatingIsland;
-    public final int widthMap;
     public final LandScape terrainType;
     public final long turnDuration;
     public final String gameName;
@@ -22,6 +21,7 @@ public final class GameSettings {
     public GameMode gameMode;
     public final boolean friendlyFire;
     public final boolean coinCheat;
+    public final ConfigMap configMap;
 
     /**
      * @param nbTeams        Number of teams
@@ -31,19 +31,18 @@ public final class GameSettings {
      * @param turnDuration   Duration of each turn in seconds
      * @param hasWind        Is the wind turned on ?
      * @param mapFileName    Name of the map file to load (null to generate a new map)
-     * @param floatingIsland Is the map generation on Island mode ?
-     * @param widthMap       Width of the map to generate (ignored if mapFileName is not null)
-     * @param terrainType    Type of terrain to generate
      * @param maxJump        Maximum jump height for worms
      * @param gameName       Name of the game session
      * @param friendlyFire   Boolean if friendly fire is activated
      * @param maxHp         Maximum health points for worms
      * @param gameMode      Game mode selected
      * @param coinCheat     If coin cheat is activated
+     * @param configMap      Configuration of the map (null if loading a map)
      * @throws IllegalArgumentException if parameters are invalid
      */
     public GameSettings(String gameName, int nbTeams, String[] teamNames, boolean[] isBot, int nbWorms, double maxHp, long turnDuration, boolean hasWind, String mapFileName,
-                        boolean floatingIsland, int widthMap, LandScape terrainType, int maxJump, GameMode gameMode, boolean friendlyFire, boolean coinCheat) {
+                         ConfigMap configMap, int maxJump, GameMode gameMode, boolean friendlyFire, boolean coinCheat) {
+
 
         // Validate inputs
         if (gameName == null || gameName.isBlank()) {
@@ -68,8 +67,7 @@ public final class GameSettings {
             throw new IllegalArgumentException("Turn duration must be positive, got: " + turnDuration);
         }
         if (mapFileName == null) { // generating a new map
-            if (widthMap < 50) throw new IllegalArgumentException("Map width must be at least 50 when generating a map, got: " + widthMap);
-            Objects.requireNonNull(terrainType, "Terrain type cannot be null when generating a map");
+            Objects.requireNonNull(configMap, "ConfigMap cannot be null when generating a map");
         }
 
         Objects.requireNonNull(gameMode, "Game mode cannot be null");
@@ -80,9 +78,8 @@ public final class GameSettings {
         this.nbWorms = nbWorms;
         this.hasWind = hasWind;
         this.mapFileName = mapFileName;
-        this.floatingIsland = floatingIsland;
-        this.widthMap = widthMap;
-        this.terrainType = terrainType;
+        this.configMap = configMap;
+        this.terrainType = (configMap == null) ? LandScape.HILLY : configMap.terrainType;
         this.turnDuration = turnDuration;
         this.gameName = gameName;
         this.maxJump = maxJump;

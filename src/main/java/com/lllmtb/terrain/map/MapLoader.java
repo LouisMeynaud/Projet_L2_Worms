@@ -68,9 +68,15 @@ public class MapLoader {
 
             for (int i = 0; i < row.length; i++) {
                 for (int j = 0; j < row[0].length(); j++) {
-                        tileMatrix.getMapMatrix()[i][j] = Tile.getByFileSymbol(row[i].charAt(j));
-                    }
+                        try {
+                            tileMatrix.getMapMatrix()[i][j] = Tile.getByFileSymbol(row[i].charAt(j));
+
+                        } catch (IllegalArgumentException e) {
+                            Logger.logger.error("Invalid tile symbol at the position x" + j + " y" + i + " : " + row[i].charAt(j));
+                            throw new IllegalArgumentException("Invalid tile symbol at position (" + j + ", " + i + "): " + row[i].charAt(j), e);
+                        }
                 }
+            }
             tileMatrix.initializeHeightWater();
             return tileMatrix;
     }

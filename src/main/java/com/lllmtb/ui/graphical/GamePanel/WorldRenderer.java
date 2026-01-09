@@ -34,7 +34,6 @@ import com.lllmtb.ui.graphical.Utilitaire.animation.VisualEffect;
 
 /**
  * Classe responsable du rendu graphique de la partit.
- * </p>
  * elle gere le dessin de la carte (terrain), des entité(worms/projectile)
  * et des effet visuel(animation , barre de vie, current worms etc)
  */

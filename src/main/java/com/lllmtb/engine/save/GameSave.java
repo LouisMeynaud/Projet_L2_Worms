@@ -58,23 +58,20 @@ public class GameSave {
         }
 
         this.gameSettings = new GameSettings(
-            gameWorld.getGameName(),
-            gameWorld.getTeams().size(),
-            teamNames,
-            isBot,
-            1,
-            Statistics.getMaxHp(),
-            gameWorld.getTurnDuration(),
-            gameWorld.getPhysics().hasWind(),
-            gameWorld.getGameName(),
-            false,
-            gameWorld.getMap().getWidth(),
-            null,
-            Move.getMaxjump(),
-            gameWorld.getGameMode(),
-            Projectile.isFriendlyfire(),
-            false
-        );
+                gameWorld.getGameName(),
+                gameWorld.getTeams().size(),
+                teamNames,
+                isBot,
+                1,
+                Statistics.getMaxHp(),
+                gameWorld.getTurnDuration(),
+                gameWorld.getPhysics().hasWind(),
+                gameWorld.getGameName(),
+                gameWorld.getConfigMap(),
+                Move.getMaxjump(),
+                gameWorld.getGameMode(),
+                Projectile.isFriendlyfire(),
+            false);
     }
 
     @Override

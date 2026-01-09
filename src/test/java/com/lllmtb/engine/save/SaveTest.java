@@ -9,6 +9,7 @@ import com.lllmtb.engine.GameSettings;
 import com.lllmtb.engine.GameWorld;
 import com.lllmtb.events.EventBus;
 import com.lllmtb.physics.GameMode;
+import com.lllmtb.terrain.generation.ConfigMap;
 import com.lllmtb.terrain.generation.LandScape;
 import org.mockito.MockedStatic;
 
@@ -33,7 +34,9 @@ public class SaveTest {
     @BeforeAll
     static void setUp() {
         EventBus eventBus = new EventBus();
-        GameSettings settings = new GameSettings("Test" , 2, new String[]{"test", "test2"},new boolean[] {false, false}, 2, 100, 10, true, "test", true, 200, LandScape.FLAT, 2, GameMode.NORMAL, true, false);
+
+        ConfigMap configMap = new ConfigMap(100, 0, 0, false, 0, LandScape.FLAT, null);
+        GameSettings settings = new GameSettings("Test", 2, new String[]{"test", "test2"}, new boolean[]{false, false}, 2, 100, 10, true, "test", configMap, 2, GameMode.NORMAL, true, false);
         GameWorld gameWorld = new GameWorld(settings, eventBus);
         Save.setGameWorld(gameWorld);
     }
@@ -83,7 +86,8 @@ public class SaveTest {
         void eraseSaveTest() {
             assertDoesNotThrow(()->eraseSave("Id1789876573928"));
             EventBus eventBus = new EventBus();
-            GameSettings settings = new GameSettings("Id1789876573928" , 2, new String[]{"test", "test2"},new boolean[] {false, false}, 2, 100, 10, true, "test", true, 200, LandScape.FLAT, 2, GameMode.NORMAL, true, false);
+            ConfigMap configMap = new ConfigMap(100, 0, 0, false, 0, LandScape.FLAT, null);
+            GameSettings settings = new GameSettings("Id1789876573928", 2, new String[]{"test", "test2"}, new boolean[]{false, false}, 2, 100, 10, true, "test", configMap, 2, GameMode.NORMAL, true, false);
             GameWorld gameWorld = new GameWorld(settings, eventBus);
             Save.setGameWorld(gameWorld);
             Save.saveAll();
