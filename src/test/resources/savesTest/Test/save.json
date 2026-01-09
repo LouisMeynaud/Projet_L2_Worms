@@ -14,7 +14,7 @@
         "height": 2.0,
         "width": 1.0
       },
-      "uuid": 678,
+      "uuid": 672,
       "entity": {
         "type": "worm",
         "body": {
@@ -41,13 +41,13 @@
         "facingDirection": 1,
         "statusEffects": [],
         "isOnGround": false,
-        "uuid": 678
+        "uuid": 672
       }
     },
     {
       "physicsBody": {
         "position": {
-          "x": 1.0,
+          "x": 0.0,
           "y": 5.0
         },
         "vector": {
@@ -58,12 +58,12 @@
         "height": 2.0,
         "width": 1.0
       },
-      "uuid": 679,
+      "uuid": 673,
       "entity": {
         "type": "worm",
         "body": {
           "position": {
-            "x": 1.0,
+            "x": 0.0,
             "y": 5.0
           },
           "vector": {
@@ -85,7 +85,7 @@
         "facingDirection": 1,
         "statusEffects": [],
         "isOnGround": false,
-        "uuid": 679
+        "uuid": 673
       }
     },
     {
@@ -102,7 +102,7 @@
         "height": 2.0,
         "width": 1.0
       },
-      "uuid": 680,
+      "uuid": 674,
       "entity": {
         "type": "worm",
         "body": {
@@ -129,13 +129,13 @@
         "facingDirection": 1,
         "statusEffects": [],
         "isOnGround": false,
-        "uuid": 680
+        "uuid": 674
       }
     },
     {
       "physicsBody": {
         "position": {
-          "x": 0.0,
+          "x": 1.0,
           "y": 5.0
         },
         "vector": {
@@ -146,12 +146,12 @@
         "height": 2.0,
         "width": 1.0
       },
-      "uuid": 681,
+      "uuid": 675,
       "entity": {
         "type": "worm",
         "body": {
           "position": {
-            "x": 0.0,
+            "x": 1.0,
             "y": 5.0
           },
           "vector": {
@@ -173,7 +173,7 @@
         "facingDirection": 1,
         "statusEffects": [],
         "isOnGround": false,
-        "uuid": 681
+        "uuid": 675
       }
     }
   ],
@@ -208,12 +208,12 @@
             "facingDirection": 1,
             "statusEffects": [],
             "isOnGround": false,
-            "uuid": 678
+            "uuid": 672
           },
           {
             "body": {
               "position": {
-                "x": 1.0,
+                "x": 0.0,
                 "y": 5.0
               },
               "vector": {
@@ -235,13 +235,13 @@
             "facingDirection": 1,
             "statusEffects": [],
             "isOnGround": false,
-            "uuid": 679
+            "uuid": 673
           }
         ],
         "name": "Team1",
         "isBot": false,
         "numberOfWorms": 2,
-        "id": 318,
+        "id": 305,
         "currentWorm": {
           "body": {
             "position": {
@@ -267,10 +267,10 @@
           "facingDirection": 1,
           "statusEffects": [],
           "isOnGround": false,
-          "uuid": 678
+          "uuid": 672
         },
         "index": 0,
-        "teamColor": "GREEN",
+        "teamColor": "RED",
         "shootCount": 0,
         "maxChangeWormTeam": 1,
         "credits": 0
@@ -331,12 +331,12 @@
             "facingDirection": 1,
             "statusEffects": [],
             "isOnGround": false,
-            "uuid": 680
+            "uuid": 674
           },
           {
             "body": {
               "position": {
-                "x": 0.0,
+                "x": 1.0,
                 "y": 5.0
               },
               "vector": {
@@ -358,13 +358,13 @@
             "facingDirection": 1,
             "statusEffects": [],
             "isOnGround": false,
-            "uuid": 681
+            "uuid": 675
           }
         ],
         "name": "Team2",
         "isBot": true,
         "numberOfWorms": 2,
-        "id": 319,
+        "id": 306,
         "currentWorm": {
           "body": {
             "position": {
@@ -390,10 +390,10 @@
           "facingDirection": 1,
           "statusEffects": [],
           "isOnGround": false,
-          "uuid": 680
+          "uuid": 674
         },
         "index": 0,
-        "teamColor": "RED",
+        "teamColor": "BLUE",
         "shootCount": 0,
         "maxChangeWormTeam": 1,
         "credits": 0
