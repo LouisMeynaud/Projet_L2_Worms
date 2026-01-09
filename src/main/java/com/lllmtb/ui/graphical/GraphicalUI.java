@@ -106,9 +106,9 @@ public class GraphicalUI implements UI {
         });
 
         eventBus.subscribe(LoadEvent.class, event -> {
-            cardLayout.show(mainPanel, "gamePanel");
             GameScreen gamePanel = new GameScreen(this.eventBus);
             mainPanel.add(gamePanel, "gamePanel"); // la page de jeu
+            cardLayout.show(mainPanel, "gamePanel");
             Logger.logger.debug("Show GameScreen");
         });
 

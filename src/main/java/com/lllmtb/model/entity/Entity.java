@@ -13,12 +13,14 @@ public abstract class Entity {
     // Thread-safe counter for generating unique entity IDs.
     private static final AtomicInteger uuidCounter = new AtomicInteger(0);
 
+    /**
+     * Indicates if the worm is currently in contact with the ground.
+     */
+    protected boolean isOnGround = false;
     public final int uuid;
-
     public Entity() {
         this.uuid = uuidCounter.incrementAndGet();
     }
-
     public abstract PhysicsBody getBody();
 
 

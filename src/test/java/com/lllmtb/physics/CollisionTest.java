@@ -304,7 +304,6 @@ public class CollisionTest {
         collision.slide(pBWorm1, impact, 1, gw);
         assertEquals(6.002003999992, pBWorm1.getPos().getX());
         assertEquals(10.001999996000013, pBWorm1.getPos().getY());
-        assertTrue(worm1.isOnGround());
     }
 
     @Test
@@ -424,5 +423,23 @@ public class CollisionTest {
     void testInTrapOrLava_WhenNull2() {
         pBWorm1.setPos(new Position(0.5, 5.5));
         assertNull(collision.inTrapOrLava(pBWorm1));
+    }
+
+    @Test
+    void testGroundCheck_True1() {
+        pBWorm1.setPos(new Position(6, 10));
+        assertTrue(collision.groundCheck(pBWorm1));
+    }
+
+    @Test
+    void testOnGroundCheck_True2() {
+        pBWorm1.setPos(new Position(4.5, 10));
+        assertTrue(collision.groundCheck(pBWorm1));
+    }
+
+    @Test
+    void testOnGroundCheck_False() {
+        pBWorm1.setPos(new Position(3, 10));
+        assertFalse(collision.groundCheck(pBWorm1));
     }
 }

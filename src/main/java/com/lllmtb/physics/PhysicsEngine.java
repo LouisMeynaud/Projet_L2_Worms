@@ -11,6 +11,7 @@ import com.lllmtb.engine.commands.GameCommand;
 import com.lllmtb.engine.logger.Logger;
 import com.lllmtb.events.game.CoinCollisionEvent;
 import com.lllmtb.events.physics.ExplosionEvent;
+import com.lllmtb.events.physics.GroundCheckCollision;
 import com.lllmtb.events.physics.PhysicsModifierAddedEvent;
 import com.lllmtb.events.physics.PhysicsModifierRemovedEvent;
 import com.lllmtb.model.entity.Coin;
@@ -427,14 +428,17 @@ public class PhysicsEngine {
             // if no collision, update position normally
             } else {
                 body.setPos(nextPos);
-                // If the body is a worm, mark it as not on ground when it's in the air
-                if (body.getEntity() instanceof Worm) {
-                    ((Worm) body.getEntity()).setOnGround(false);
-                }
             }
 
-            // apply friction / air resistance to worms
+            // apply friction / air resistance to worms and reset the jump counter
             if (body.getEntity() instanceof Worm worm) {
+                if (collision.groundCheck(body)) {
+                    worm.setOnGround(true);
+                    world.getBus().postQueued(new GroundCheckCollision(worm));
+                } else {
+                    worm.setOnGround(false);
+                }
+
                 Vector currentVector = body.getVector();
                 double newVelX = currentVector.getX();
 
