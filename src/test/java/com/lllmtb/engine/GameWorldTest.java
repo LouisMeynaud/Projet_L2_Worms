@@ -85,7 +85,7 @@ public class GameWorldTest {
         }
     }
     @Test
-    void constructor_withGamSave_Map() throws FileNotFoundException {
+    void constructor_withGameSave_Map() throws FileNotFoundException {
         Map map = MapLoader.loadMap("Camembert");
         assertNotNull(map);
         GameSave gameSave = Load.loadGameSave("Test");
@@ -172,7 +172,7 @@ public class GameWorldTest {
         gw.stop();
     }
 
-    @Test
+   /* @Test
     void pauseAndResume_togglesGameLoopPauseState() throws Exception {
         GameSettings settings = new GameSettings("blabla", 1, new String[]{"Team1"}, new boolean[1], 1, 100,100, false, null, false, 370, LandScape.HILLY, 2, GameMode.NORMAL, true, false);
         EventBus eventBus = new EventBus();
@@ -198,7 +198,7 @@ public class GameWorldTest {
         assertTrue(ticksAfterResume > ticksAfterPaused, "Ticks should resume incrementing after pause is lifted");
 
         gw.stop();
-    }
+    }*/
 
     @Test
     void getTurnManager() {

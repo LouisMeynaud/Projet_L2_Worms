@@ -17,7 +17,11 @@ public class MapLoader {
      */
     public static Map loadMapLoad(String directoryName) {
         try {
-            Path path = Paths.get(SaveConfig.SAVE_DIRECTORY + directoryName + "/map.txt");
+            String stringPath = SaveConfig.SAVE_DIRECTORY + directoryName;
+            if (directoryName.contains("Test")) {
+                stringPath = "src/test/resources/savesTest/" + directoryName;
+            }
+            Path path = Paths.get(stringPath + "/map.txt");
 
             if (!Files.exists(path)) {
                 System.err.println("Aucune sauvegarde trouvée à : " + path.toAbsolutePath());

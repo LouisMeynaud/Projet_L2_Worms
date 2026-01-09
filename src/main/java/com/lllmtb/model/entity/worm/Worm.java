@@ -61,11 +61,6 @@ public class Worm extends Entity {
     private int facingDirection = 1;
 
     /**
-     * Indicates if the worm is currently in contact with the ground.
-     */
-    private boolean isOnGround = false;
-
-    /**
      * List of active status effects on the worm.
      */
     private final List<StatusEffect> statusEffects = new ArrayList<>();
