@@ -1,4 +1,4 @@
-# CHANGELOG - Sprint n°3
+# CHANGELOG - Sprint n°1
 ---
 
 **Ajout:**
