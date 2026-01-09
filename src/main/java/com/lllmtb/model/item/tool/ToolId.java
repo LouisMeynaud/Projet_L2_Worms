@@ -4,15 +4,15 @@ import com.lllmtb.model.item.ItemId;
 import com.lllmtb.model.item.ShootMode;
 
 public enum ToolId implements ItemId {
-    PARACHUTE(ShootMode.NONE, "Deploys a canopy for a safe, wind-affected descent."),
-    JETPACK(ShootMode.NONE, "Fly freely around the map. Mind the fuel gauge!"),
-    CALLSTRIKE(ShootMode.CROSSHAIR, "Call in a devastating airstrike of missiles on a targeted area.", 0),
-    CATCONCRETE(ShootMode.CROSSHAIR, "Summons a villainous stone cat to smash through all terrain beneath it.", 0),
-    TOWER("Deploys a defensive turret to intercept enemies approaching you in future turns.", 3000),
-    MINE("A volatile trap that detonates instantly if anyone dares to step on it.", 3000),
-    GRENADE("A timed bomb that bounces off terrain before exploding.", 4000),
-    MEDKIT(ShootMode.NONE, "Restores a portion of the active worm's health."),
-    TRAP("A throwable trap that inflicts poison", 3000),
+    PARACHUTE(ShootMode.NONE, "Déploie un parachute pour une descente sûre, même en cas de vent."),
+    JETPACK(ShootMode.NONE, "Volez librement sur la carte. Surveillez la jauge de carburant !"),
+    CALLSTRIKE(ShootMode.CROSSHAIR, "Lancer une frappe aérienne dévastatrice à l'aide de missiles sur une zone ciblée.", 0),
+    CATCONCRETE(ShootMode.CROSSHAIR, "Invoque un chat de pierre maléfique qui détruit tout ce qui se trouve sous ses pattes.", 0),
+    TOWER("Déploie une tourelle défensive pour intercepter les ennemis qui s'approchent de vous lors des prochains tours.", 3000),
+    MINE("Un piège explosif qui détonne instantanément si quelqu'un ose marcher dessus.", 3000),
+    GRENADE("Une bombe à retardement qui rebondit sur le terrain avant d'exploser.", 4000),
+    MEDKIT(ShootMode.NONE, "Restaure une partie de la santé du ver actif."),
+    TRAP("Un piège jetable qui inflige du poison.", 3000),
     NONE;
 
     private final ShootMode shootMode;

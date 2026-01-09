@@ -105,6 +105,7 @@ public class GameWorldPanel extends JPanel {
         addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
+                if (world.getPlayingTeam().isBot()) return;
                 pressedKeys.add(e.getKeyCode());
                 if (pressedKeys.contains(KeyEvent.VK_UP)) {
                     world.getBus().postQueued(new MoveInputEvent(Direction.Up));
@@ -118,7 +119,6 @@ public class GameWorldPanel extends JPanel {
         });
 
         MouseAdapter mouseHandler = new MouseAdapter() {
-
 
             @Override
             public void mousePressed(MouseEvent e) {
@@ -148,6 +148,7 @@ public class GameWorldPanel extends JPanel {
                 chargeStartTime = 0;
 
                 if (type == MouseEvent.BUTTON1) {
+                    if (world.getPlayingTeam().isBot()) return;
                     Position worldPos = screenToWorld(e.getX(), e.getY());
                     ItemId item = world.getPlayingTeam().getHand();
 

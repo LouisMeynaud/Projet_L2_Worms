@@ -4,8 +4,8 @@ import com.lllmtb.terrain.map.Tile;
 
 public enum GameMode {
     NORMAL(Tile.DIRT, Tile.GRASS, Tile.UNDERDIRT, new Vector(0, -9810)),
-    MOON(Tile.MOONDIRT, Tile.MOONGRASS, Tile.MOONDIRT, new Vector(0, -1620)),
-    ICEAGE(Tile.ICE, Tile.SNOW, Tile.ICE, new Vector(0, -9810));
+    MOON(Tile.MOONDIRT, Tile.MOONGRASS, Tile.MOONUNDERDIRT, new Vector(0, -1620)),
+    ICEAGE(Tile.ICE, Tile.SNOW, Tile.ICEUNDERDIRT, new Vector(0, -9810));
 
     private final Tile grass;
     private final Tile dirt;

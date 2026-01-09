@@ -35,7 +35,7 @@ public class LoadGamePanel extends JPanel {
         this.setBackground(Color.DARK_GRAY);
 
 
-        JLabel titre = new JLabel("LOAD A GAME");
+        JLabel titre = new JLabel("CHARGER UNE PARTIE");
         titre.setHorizontalAlignment(SwingConstants.CENTER);
         titre.setFont(new Font("Arial", Font.BOLD, 30));
         titre.setForeground(Color.WHITE);
@@ -50,9 +50,9 @@ public class LoadGamePanel extends JPanel {
 
         JPanel zoneSud = new JPanel(new FlowLayout(FlowLayout.RIGHT, 20, 20));
         zoneSud.setOpaque(false);
-        JButton backButton = Utilitaire.createImageButton(TextureManager.UI, "Panel", 150, 75, 150, 75, "Back", "Arial", 16, Color.WHITE);
-        JButton deleteButton = Utilitaire.createImageButton(TextureManager.UI, "Panel", 150, 75, 150, 75, "Delete", "Arial", 16, Color.WHITE);
-        JButton starButton = Utilitaire.createImageButton(TextureManager.UI, "Panel", 150, 75, 150, 75, "Start", "Arial", 16, Color.WHITE);
+        JButton backButton = Utilitaire.createImageButton(TextureManager.UI, "Panel", 150, 75, 150, 75, "Retour", "Arial", 16, Color.WHITE);
+        JButton deleteButton = Utilitaire.createImageButton(TextureManager.UI, "Panel", 150, 75, 150, 75, "Supprimer", "Arial", 16, Color.WHITE);
+        JButton starButton = Utilitaire.createImageButton(TextureManager.UI, "Panel", 150, 75, 150, 75, "Commencer", "Arial", 16, Color.WHITE);
 
 
 

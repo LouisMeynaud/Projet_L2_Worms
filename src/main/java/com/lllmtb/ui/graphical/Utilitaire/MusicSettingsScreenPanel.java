@@ -27,7 +27,7 @@ public class MusicSettingsScreenPanel extends JPanel {
 
         GridBagConstraints gbc = new GridBagConstraints();
 
-        JButton backButton = Utilitaire.createImageButton(TextureManager.UI, "Panel", 256, 128, 256, 128, "Back", "Arial", 23, Color.WHITE);
+        JButton backButton = Utilitaire.createImageButton(TextureManager.UI, "Panel", 256, 128, 256, 128, "Retour", "Arial", 23, Color.WHITE);
 
         JLabel musiqueVolumeLabel = new JLabel("Volume de la musique");
         JLabel sonorEffectVolumeLabel = new JLabel("Volume des effets sonores");

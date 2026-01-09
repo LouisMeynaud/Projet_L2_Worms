@@ -9,6 +9,7 @@ public enum Tile {
     UNDERDIRT('U', '#', true, 1, 0.90, 0),
     ICE('I', '#', true, 4, 1, 0),
     SNOW('S', '_', true, 4, 1, 0),
+    ICEUNDERDIRT('Y', '#', true, 4, 1, 0),
     LAVA('L', 'L', false, 4, 0.90, 0.5),
     TRAP('T', 'T', false, 3, 0.90, 0.5),
     TRAPCAVERN('T', 'T', false, 3, 0.90, 0.5),

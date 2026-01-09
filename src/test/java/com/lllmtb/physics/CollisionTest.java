@@ -278,7 +278,7 @@ public class CollisionTest {
     void slide() {
         pBWorm1.setPos(new Position(7, 10));
         pBWorm1.setVector(new Vector(5, -2));
-        GameSettings settings = new GameSettings("blabla", 1, new String[]{"José"}, 1,100, 10, true, "mapTest", false,370, LandScape.HILLY,2,GameMode.NORMAL, true,false);
+        GameSettings settings = new GameSettings("blabla", 1, new String[]{"A"}, new boolean[1], 1,100, 10, true, "mapTest", false,370, LandScape.HILLY,2,GameMode.NORMAL, true,false);
         EventBus eventBus = new EventBus();
         GameWorld gw = new GameWorld(settings, eventBus);
         Position posFinal = new Position(12, 8);
@@ -293,14 +293,13 @@ public class CollisionTest {
         pBWorm1.setPos(new Position(6, 10));
         pBWorm1.setVector(new Vector(5, -2));
 
-        GameSettings settings = new GameSettings("blabla", 1, new String[]{"José"}, 1,100, 10, true, "mapTest", false,370, LandScape.HILLY,2,GameMode.NORMAL, true,false);
+        GameSettings settings = new GameSettings("blabla", 1, new String[]{"A"}, new boolean[1], 1,100, 10, true, "mapTest", false,370, LandScape.HILLY,2,GameMode.NORMAL, true,false);
         EventBus eventBus = new EventBus();
         GameWorld gw = new GameWorld(settings, eventBus);
         Collision.Impact impact = new Collision.Impact(0.0, new Vector(5,-2),pBWorm1, new Vector(1,0), null, false);
         collision.slide(pBWorm1, impact, 1, gw);
         assertEquals(6.002003999992, pBWorm1.getPos().getX());
         assertEquals(10.001999996000013, pBWorm1.getPos().getY());
-        assertTrue(worm1.isOnGround());
     }
 
     @Test
@@ -308,7 +307,7 @@ public class CollisionTest {
         pBWorm1.setPos(new Position(6, 10));
         pBWorm1.setVector(new Vector(0, 0));
 
-        GameSettings settings = new GameSettings("blabla", 1, new String[]{"José"}, 1,100, 10, true, "mapTest", false,370, LandScape.HILLY,2,GameMode.NORMAL, true,false);
+        GameSettings settings = new GameSettings("blabla", 1, new String[]{"A"}, new boolean[1], 1,100, 10, true, "mapTest", false,370, LandScape.HILLY,2,GameMode.NORMAL, true,false);
         EventBus eventBus = new EventBus();
         GameWorld gw = new GameWorld(settings, eventBus);
         Collision.Impact impact = new Collision.Impact(0.0, new Vector(5,-2),pBWorm1, new Vector(0,-1), null, false);
@@ -321,7 +320,7 @@ public class CollisionTest {
     void slideImpactNormalIs0() {
         pBWorm1.setPos(new Position(7, 10));
         Collision.Impact impact = new Collision.Impact(pBWorm1.getPos());
-        GameSettings settings = new GameSettings("blabla", 1, new String[]{"José"}, 1,100, 10, true, "mapTest", false,370, LandScape.HILLY,2,GameMode.NORMAL, true,false);
+        GameSettings settings = new GameSettings("blabla", 1, new String[]{"A"}, new boolean[1], 1,100, 10, true, "mapTest", false,370, LandScape.HILLY,2,GameMode.NORMAL, true,false);
         EventBus eventBus = new EventBus();
         GameWorld gw = new GameWorld(settings, eventBus);
         collision.slide(pBWorm1, impact, 1, gw);
@@ -333,7 +332,7 @@ public class CollisionTest {
     void slideImpactNormalIs0NotWorm() {
         pBBP1.setPos(new Position(7, 10));
         Collision.Impact impact = new Collision.Impact(pBBP1.getPos());
-        GameSettings settings = new GameSettings("blabla", 1, new String[]{"José"}, 1,100, 10, true, "mapTest", false,370, LandScape.HILLY,2,GameMode.NORMAL, true,false);
+        GameSettings settings = new GameSettings("blabla", 1, new String[]{"A"}, new boolean[1], 1,100, 10, true, "mapTest", false,370, LandScape.HILLY,2,GameMode.NORMAL, true,false);
         EventBus eventBus = new EventBus();
         GameWorld gw = new GameWorld(settings, eventBus);
         collision.slide(pBBP1, impact, 1, gw);
@@ -416,5 +415,23 @@ public class CollisionTest {
     void testInTrapOrLava_WhenNull2() {
         pBWorm1.setPos(new Position(0.5, 5.5));
         assertNull(collision.inTrapOrLava(pBWorm1));
+    }
+
+    @Test
+    void testGroundCheck_True1() {
+        pBWorm1.setPos(new Position(6, 10));
+        assertTrue(collision.groundCheck(pBWorm1));
+    }
+
+    @Test
+    void testOnGroundCheck_True2() {
+        pBWorm1.setPos(new Position(4.5, 10));
+        assertTrue(collision.groundCheck(pBWorm1));
+    }
+
+    @Test
+    void testOnGroundCheck_False() {
+        pBWorm1.setPos(new Position(3, 10));
+        assertFalse(collision.groundCheck(pBWorm1));
     }
 }

@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.typeadapters.RuntimeTypeAdapterFactory;
 import com.lllmtb.engine.GameWorld;
+import com.lllmtb.engine.logger.Logger;
 import com.lllmtb.model.entity.Coin;
 import com.lllmtb.model.entity.Drop;
 import com.lllmtb.model.entity.Entity;
@@ -19,9 +20,7 @@ import com.lllmtb.physics.PhysicsBody;
 import com.lllmtb.terrain.map.Map;
 import com.lllmtb.terrain.map.MapLoader;
 import org.eclipse.jdt.annotation.NonNull;
-
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -47,10 +46,9 @@ public class Load {
      *
      * @param name The name of the save folder to load from.
      * @return The raw deserialized {@link GameSave} object.
-     * @throws FileNotFoundException If the JSON file does not exist in the expected directory.
      * @throws RuntimeException If an I/O error occurs during reading.
      */
-    public static GameSave loadGameSave(String name) throws FileNotFoundException {
+    public static GameSave loadGameSave(String name) {
         String stringpath = SaveConfig.SAVE_DIRECTORY + name + "/save.json";
         if (name.contains("Test")) {
             stringpath = "src/test/resources/savesTest/" + name + "/save.json";
@@ -72,6 +70,7 @@ public class Load {
         try (FileReader reader = new FileReader(stringpath)) {
             return gson.fromJson(reader, GameSave.class);
     } catch (IOException e) {
+            Logger.logger.error("Error with while reading the file {} : {}", stringpath, e.getMessage());
             throw new RuntimeException(e);
         }
     }
@@ -93,6 +92,9 @@ public class Load {
      * @throws RuntimeException If a reflection error (NoSuchFieldException, IllegalAccessException) occurs.
      */
     public static void reforgeGameSave(@NonNull GameSave gameSave) {
+        if (gameSave.teams.get(gameSave.indexTeam).team.getCurrentWorm() == null) {
+            gameSave.teams.get(gameSave.indexTeam).team.nextWorm();
+        }
         for (PhysicsBodySave saveBody : gameSave.entities) {
             for (TeamSave teamSave : gameSave.teams) {
                 for (Worm worm : teamSave.team.getTeamWorms()) {
@@ -103,13 +105,20 @@ public class Load {
                 }
             }
         }
+        try {
         for (PhysicsBodySave saveBody : gameSave.entities) {
-            try {
             if (saveBody.entity instanceof Worm worm) {
                 // use reflexion
                     Field bodyWormField = Worm.class.getDeclaredField("body");
                     bodyWormField.setAccessible(true);
                     bodyWormField.set(worm, saveBody.physicsBody);
+
+                // use reflexion
+                Field entityWormField = PhysicsBody.class.getDeclaredField("entity");
+                entityWormField.setAccessible(true);
+                entityWormField.set(saveBody.physicsBody, worm);
+
+
             } else if (saveBody.entity instanceof Projectile projectile) {
                 // use reflexion
                 Field bodyProjectileField = Projectile.class.getDeclaredField("body");
@@ -149,33 +158,23 @@ public class Load {
                 itemIdField.setAccessible(true);
                 itemIdField.set(drop, Load.recoverItem(drop.getItemCategory(), drop.getItemName()));
             }
-
-
-            } catch (NoSuchFieldException | IllegalAccessException e) {
-                throw new RuntimeException(e);
-            }
         }
         for (PhysicsBodySave savePhysicsBody : gameSave.entities) {
-            try {
                 Field entityField = PhysicsBody.class.getDeclaredField("entity");
                 entityField.setAccessible(true);
                 entityField.set(savePhysicsBody.physicsBody, savePhysicsBody.entity);
-            } catch (NoSuchFieldException | IllegalAccessException e) {
-                throw new RuntimeException(e);
-            }
         }
         for (TeamSave teamSave: gameSave.teams) {
             for (Worm worm : teamSave.team.getTeamWorms()) {
                 if (worm.uuid == teamSave.team.getCurrentWorm().uuid) {
-                    try {
                         Field currentWormField = Team.class.getDeclaredField("currentWorm");
                         currentWormField.setAccessible(true);
                         currentWormField.set(teamSave.team, worm);
-                    } catch (NoSuchFieldException | IllegalAccessException e) {
-                        throw new RuntimeException(e);
-                    }
                 }
             }
+        }
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            Logger.logger.error("Problem while rewriting the gameSave: {}", e.getMessage());
         }
     }
 
@@ -198,16 +197,27 @@ public class Load {
      * @throws RuntimeException If the save file is not found or other loading errors occur.
      */
     public  static GameWorld loadAll(String name) {
-        try {
-            GameSave gameSave = loadGameSave(name);
-            reforgeGameSave(gameSave);
-            Map map = MapLoader.loadMapLoad(name);
-            return new GameWorld(gameSave, map);
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
-        }
+        GameSave gameSave = loadGameSave(name);
+        reforgeGameSave(gameSave);
+        Map map = MapLoader.loadMapLoad(name);
+        return new GameWorld(gameSave, map);
     }
 
+
+    /**
+     * Retrieves an item identifier (ItemId) based on its category and name.
+     * <p>
+     * This method converts strings read from the save file into actual
+     * enumeration constants: {@link WeaponId} or {@link ToolId}.
+     * </p>
+     *
+     * @param category The category of the item (must be "WEAPONID" for a weapon,
+     * otherwise it is treated as a tool).
+     * @param name     The technical name of the item (e.g., "BAZOOKA").
+     * @return The corresponding instance of {@link ItemId}.
+     * @throws IllegalArgumentException If the name does not match any constant
+     * in the target enumeration.
+     */
     public static ItemId recoverItem(String category, String name) {
         if ("WEAPONID".equals(category)) {
             return WeaponId.valueOf(name);
@@ -216,6 +226,17 @@ public class Load {
         }
     }
 
+    /**
+     * Scans the save directory to list the names of all available save games.
+     * <p>
+     * This method checks for the existence of the root directory defined in
+     * {@link SaveConfig#SAVE_DIRECTORY} and filters only subdirectories
+     * (each subdirectory representing a save).
+     * </p>
+     *
+     * @return An array of strings containing the names of the save folders.
+     * Returns an empty array if the directory is invalid, non-existent, or empty.
+     */
     public static String[] getListeNomsLoads() {
         File folder = new File(SaveConfig.SAVE_DIRECTORY);
         if (!folder.exists() || !folder.isDirectory()) {
