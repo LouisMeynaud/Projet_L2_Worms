@@ -12,7 +12,6 @@ import com.lllmtb.engine.logger.Logger;
 import com.lllmtb.events.game.MapUpdateEvent;
 import com.lllmtb.events.game.CoinCollisionEvent;
 import com.lllmtb.events.physics.ExplosionEvent;
-import com.lllmtb.events.physics.GroundCheckCollision;
 import com.lllmtb.events.physics.PhysicsModifierAddedEvent;
 import com.lllmtb.events.physics.PhysicsModifierRemovedEvent;
 import com.lllmtb.model.entity.Entity;
