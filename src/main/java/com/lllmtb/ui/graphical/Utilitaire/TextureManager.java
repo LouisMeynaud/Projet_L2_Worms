@@ -38,15 +38,11 @@ public class TextureManager {
             return ImageIO.read(url);
         } catch (Exception e) {
             Logger.logger.warn("Error while loading textures : ", e);
-            try {
-                URL defaultUrl = TextureManager.class.getResource("/default.png");
-
-                if (defaultUrl == null) throw new Exception("Default texture missing at /default.png");
-                return ImageIO.read(defaultUrl);
-            } catch (Exception error) {
-                Logger.logger.error("Error while loading default textures : ", e);
-                throw new RuntimeException("critical error: Texture " + path + " is missing and /default.png could not be loaded. Program halted.", error);
+            BufferedImage defaultImage = Utilitaire.loadDefaultImage();
+            if (defaultImage == null) {
+                throw new RuntimeException("critical error: Texture " + path + " is missing and /default.png could not be loaded.", e);
             }
+            return defaultImage;
         }
     }
 
