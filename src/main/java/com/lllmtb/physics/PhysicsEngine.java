@@ -12,6 +12,7 @@ import com.lllmtb.engine.logger.Logger;
 import com.lllmtb.events.game.MapUpdateEvent;
 import com.lllmtb.events.game.CoinCollisionEvent;
 import com.lllmtb.events.physics.ExplosionEvent;
+import com.lllmtb.events.physics.GroundCheckCollision;
 import com.lllmtb.events.physics.PhysicsModifierAddedEvent;
 import com.lllmtb.events.physics.PhysicsModifierRemovedEvent;
 import com.lllmtb.model.entity.Entity;
@@ -424,9 +425,21 @@ public class PhysicsEngine {
             // if no collision, update position normally
             } else {
                 body.setPos(nextPos);
-                // If the body is a worm, mark it as not on ground when it's in the air
-                if (body.getEntity() instanceof Worm) {
-                    ((Worm) body.getEntity()).setOnGround(false);
+                // if the body is a worm, mark it as not on ground when it's in the air
+                if (body.getEntity() instanceof Worm worm) {
+                    Position checkPos = new Position(body.getPos().getX(), body.getPos().getY() - 0.1);
+                    Collision.Impact checkImpact = collision.move(body, checkPos);
+
+                    if (checkImpact.collided && checkImpact.normal.getY() > 0.5) {
+                        worm.setOnGround(true);
+                        world.getBus().postQueued(new GroundCheckCollision(worm));
+                        // stabilise y velocity
+                        if (body.getVector().getY() < 0 && body.getVector().getY() > -1.0) {
+                            body.setVector(new Vector(body.getVector().getX(), 0));
+                        }
+                    } else {
+                        worm.setOnGround(false);
+                    }
                 }
             }
 
