@@ -337,8 +337,8 @@ public class GameUIPanel extends JPanel {
         Color color = new Color(baseColor.getRed(), baseColor.getGreen(), baseColor.getBlue(), 100);
 
         this.timerContainer.setBackground(color);
-        this.timerLabel.setText("tour : " + world.getTurnManager().getNbTurn() + "| équipe : " + playingTeam.name + "| tirs restants : "
-                + (Turn.FIRE_LIMIT_PER_TURN - playingTeam.getShootCount()) +  "| temps : " + timeString);
+        this.timerLabel.setText("Tour : " + world.getTurnManager().getNbTurn() + "| Équipe : " + playingTeam.name + "| Tirs restants : "
+                + (Turn.FIRE_LIMIT_PER_TURN - playingTeam.getShootCount()) +  "| Temps : " + timeString);
         if (playingTeam.getCredits() == -1) {
             this.moneyLabel.setText("∞ $");
         } else {
