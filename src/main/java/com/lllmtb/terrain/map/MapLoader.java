@@ -85,6 +85,6 @@ public class MapLoader {
      * @return Array of map names.
      */
     public static String[] getListeNomsMaps() {
-        return new String[] {"Pandora", "Camembert", "Emmental", "Gorgonzola", "Roquefort", "Feta", "Cendré de Lune" };
+        return new String[] {"Cathedrale", "Pandora", "Camembert", "Emmental", "Gorgonzola", "Roquefort", "Feta", "Cendré de Lune" };
     }
 }
