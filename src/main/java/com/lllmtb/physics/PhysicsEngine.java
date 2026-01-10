@@ -479,7 +479,7 @@ public class PhysicsEngine {
                 if (tile == Tile.HOLYWATER) {
                     world.queueCommand(worm.removeAllStatusEffects());
                 }
-                if (tile == Tile.TRAP) {
+                if (tile == Tile.TRAP || tile == Tile.TRAPCAVERN) {
                     world.queueCommand(worm.damageWorm(Tile.TRAP.getDamage()));
                     world.queueCommand(worm.addStatusEffect(new PoisonEffect()));
                 }
