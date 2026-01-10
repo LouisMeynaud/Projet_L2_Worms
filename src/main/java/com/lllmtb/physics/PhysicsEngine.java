@@ -495,10 +495,12 @@ public class PhysicsEngine {
                     world.queueCommand(new AddPhysicsModifierCommand(worm, m));
 
                     Team pteam = world.getPlayingTeam();
-                    if (pteam == null) return;
-                    Worm pworm = pteam.getCurrentWorm();
-                    if (pworm == null) return;
-                    if (worm.uuid == pworm.uuid) Move.jumpToMax();
+                    if (pteam != null) {
+                        Worm pworm = pteam.getCurrentWorm();
+                        if (pworm != null && worm.uuid == pworm.uuid) {
+                            Move.jumpToMax();
+                        }
+                    }
                 }
             }
         }

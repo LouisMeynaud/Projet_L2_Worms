@@ -502,7 +502,7 @@ public class Collision {
         body.setPos(safePos);
 
         // if the collision is with a wall
-        if (impact.normal.getY() == 0) {
+        if (Math.abs(impact.normal.getY()) < 0.5) {
             body.setVector(new Vector(0, body.getVector().getY()));
             // Mark worm is not on ground when hitting a wall
             if (body.getEntity() instanceof Worm) {
@@ -514,12 +514,12 @@ public class Collision {
             }
             body.setVector(new Vector(body.getVector().getX(), 0));
             // if the worm touch the ground, it can jump again
-            if (impact.normal.getY() == 1) {
+            if (impact.normal.getY() > 0.5) {
                 if (body.getEntity() instanceof Worm) {
                     ((Worm) body.getEntity()).setOnGround(true);
                 }
                 world.getBus().postQueued(new GroundCheckCollision(body.getEntity()));
-            } else if (impact.normal.getY() == -1) {
+            } else if (impact.normal.getY() < -0.5) {
                 // Hit ceiling - mark as not on ground
                 if (body.getEntity() instanceof Worm) {
                     ((Worm) body.getEntity()).setOnGround(false);
