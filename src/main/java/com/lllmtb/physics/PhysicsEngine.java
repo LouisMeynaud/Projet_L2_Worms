@@ -3,6 +3,8 @@ package com.lllmtb.physics;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
+
+import com.lllmtb.model.item.tool.ToolId;
 import org.eclipse.jdt.annotation.NonNull;
 
 import com.lllmtb.engine.GameWorld;
@@ -317,12 +319,19 @@ public class PhysicsEngine {
             Vector deltaV = this.gravity;
             deltaV = deltaV.add(body.getVector().scale(-0.5));
 
-            if (body.getEntity() instanceof Projectile) deltaV = deltaV.add(this.wind);
+            // if entity is a projectile, drop, or has a parachute modifier, apply wind
+            if (hasWind()) {
+                if (body.getEntity() instanceof Projectile || body.getEntity() instanceof Drop
+                 || this.modifiers.containsKey(body) && this.modifiers.get(body).stream().anyMatch(m -> m != null && m.source == ToolId.PARACHUTE)) {
+                    deltaV = deltaV.add(this.wind);
+                }
+            }
+
             deltaV = deltaV.scale(dt * body.getMass());
 
             Vector newVector = body.getVector().add(deltaV);
 
-            // apply modifiers for this tick only - we don't want to stack them every tick
+            // apply active modifiers
             newVector = applyModifiers(body, newVector, dt);
 
             if (Math.abs(newVector.getX()) < 0.1) {
@@ -384,7 +393,7 @@ public class PhysicsEngine {
 
                     // if the collision is with another entity
                     } else {
-                        // if the body is a projectile, call its onImpact with the hit entity
+                        // if the entity is a projectile, call its onImpact with the hit entity
                         if (body.getEntity() instanceof Projectile proj) {
                             world.queueCommands(proj.onImpact(impact.hitBody.getEntity()));
                             // if the hit entity is a drop, call its onImpact with the projectile to destroy it
@@ -397,7 +406,7 @@ public class PhysicsEngine {
                             world.queueCommands(proj.onImpact(body.getEntity()));
                         }
 
-                        // if the body is a drop, call its onImpact with the hit entity
+                        // if the entity is a drop, call its onImpact with the hit entity
                         if (body.getEntity() instanceof Drop drop) {
                             if (impact.hitBody.getEntity() instanceof Drop) {
                                 drop.setOnGround(true);
@@ -405,7 +414,7 @@ public class PhysicsEngine {
                             world.queueCommand(drop.onImpact(impact.hitBody.getEntity()));
                         }
 
-                        // if the body is a coin and the hit entity is a worm, post a CoinCollisionEvent and remove the coin to give it to the worm
+                        // if the entity is a coin and the hit entity is a worm, post a CoinCollisionEvent and remove the coin to give it to the worm
                         if (body.getEntity() instanceof Coin coin) {
                             if (impact.hitBody.getEntity() instanceof Worm worm) {
                                 world.getBus().postQueued(new CoinCollisionEvent(coin, worm.getTeam()));
@@ -648,11 +657,11 @@ public class PhysicsEngine {
      * @return the angle in radians from {@code fromPos} to the center of {@code targetBody}.
      */
     public static double calculateAngleToBody(Position fromPos, PhysicsBody targetBody) {
-    Position targetPos = targetBody.getPos();
-    double targetCenterX = targetPos.getX() + (targetBody.getWidth() / 2.0);
-    double targetCenterY = targetPos.getY() + (targetBody.getHeight() / 2.0);
-    double dx = targetCenterX - fromPos.getX();
-    double dy = targetCenterY - fromPos.getY();
-    return Math.atan2(dy, dx);
-}
+        Position targetPos = targetBody.getPos();
+        double targetCenterX = targetPos.getX() + (targetBody.getWidth() / 2.0);
+        double targetCenterY = targetPos.getY() + (targetBody.getHeight() / 2.0);
+        double dx = targetCenterX - fromPos.getX();
+        double dy = targetCenterY - fromPos.getY();
+        return Math.atan2(dy, dx);
+    }
 }
