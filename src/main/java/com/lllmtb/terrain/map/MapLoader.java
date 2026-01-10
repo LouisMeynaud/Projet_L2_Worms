@@ -63,22 +63,23 @@ public class MapLoader {
      * @return the instance of the map
      */
     public static Map loadMatrix(String contentMap, String name) {
-            String[] row = contentMap.split("\n");
-            Map tileMatrix = new Map(row.length, row[0].length(), name + ".txt");
+        // use \R instead of \n for cross-platform compatibility
+        String[] row = contentMap.split("\\R");
+        Map tileMatrix = new Map(row.length, row[0].length(), name + ".txt");
 
-            for (int i = 0; i < row.length; i++) {
-                for (int j = 0; j < row[0].length(); j++) {
-                        try {
-                            tileMatrix.getMapMatrix()[i][j] = Tile.getByFileSymbol(row[i].charAt(j));
+        for (int i = 0; i < row.length; i++) {
+            for (int j = 0; j < row[0].length(); j++) {
+                try {
+                    tileMatrix.getMapMatrix()[i][j] = Tile.getByFileSymbol(row[i].charAt(j));
 
-                        } catch (IllegalArgumentException e) {
-                            Logger.logger.error("Invalid tile symbol at the position x" + j + " y" + i + " : " + row[i].charAt(j));
-                            throw new IllegalArgumentException("Invalid tile symbol at position (" + j + ", " + i + "): " + row[i].charAt(j), e);
-                        }
+                } catch (IllegalArgumentException e) {
+                    Logger.logger.error("Invalid tile symbol at the position x" + j + " y" + i + " : " + row[i].charAt(j));
+                    throw new IllegalArgumentException("Invalid tile symbol at position (" + j + ", " + i + "): " + row[i].charAt(j), e);
                 }
             }
-            tileMatrix.initializeHeightWater();
-            return tileMatrix;
+        }
+        tileMatrix.initializeHeightWater();
+        return tileMatrix;
     }
     /**
      * Get a list of available map names.
