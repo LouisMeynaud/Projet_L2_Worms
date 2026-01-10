@@ -85,6 +85,6 @@ public class MapLoader {
      * @return Array of map names.
      */
     public static String[] getListeNomsMaps() {
-        return new String[] {"Chaussée aux moines", "Chabichou du Poitou", "Camembert", "Emmental", "Gorgonzola", "Roquefort", "Feta", "Cendré de Lune" };
+        return new String[] { "Chabichou du Poitou", "Chaussée aux moines", "Gorgonzola", "Roquefort", "Feta", "Cendré de Lune" };
     }
 }
