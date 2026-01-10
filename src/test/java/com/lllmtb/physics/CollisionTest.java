@@ -3,6 +3,7 @@ package com.lllmtb.physics;
 
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import com.lllmtb.model.entity.projectile.GasProjectile;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -423,5 +424,15 @@ public class CollisionTest {
     void testinSpecialTile_WhenNull2() {
         pBWorm1.setPos(new Position(0.5, 5.5));
         assertNull(collision.inSpecialTile(pBWorm1));
+    }
+
+    @Test
+    void testTypeCross() {
+        GasProjectile gas = new GasProjectile(fP1);
+        Position pos = new Position(2, 4);
+        PhysicsBody pBGas = new PhysicsBody(gas, pos, new Vector(-4, 0), 1, 1, 1);
+        Collision.Impact impact = collision.move(pBGas, new Position(-2, 4));
+        assertNull(impact.hitBody);
+        assertTrue(impact.die);
     }
 }
