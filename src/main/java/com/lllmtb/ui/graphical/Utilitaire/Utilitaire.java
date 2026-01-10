@@ -19,6 +19,7 @@ import javax.swing.SwingConstants;
 import javax.swing.border.BevelBorder;
 
 import com.lllmtb.engine.logger.Logger;
+import com.lllmtb.model.entity.team.TeamColor;
 import com.lllmtb.model.item.tool.ToolId;
 import com.lllmtb.model.item.weapon.WeaponId;
 
@@ -266,5 +267,15 @@ public class Utilitaire {
         button.setVerticalTextPosition(SwingConstants.BOTTOM);
         button.setHorizontalTextPosition(SwingConstants.CENTER);
         return button;
+    }
+
+    public static Color getColorFromTeamColor(TeamColor teamColor) {
+        return switch (teamColor) {
+            case RED -> Color.RED;
+            case BLUE -> Color.BLUE;
+            case GREEN -> Color.GREEN;
+            case YELLOW -> Color.YELLOW;
+            default -> Color.BLACK;
+        };
     }
 }

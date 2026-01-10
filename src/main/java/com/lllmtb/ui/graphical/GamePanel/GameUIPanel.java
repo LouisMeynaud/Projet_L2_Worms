@@ -327,13 +327,7 @@ public class GameUIPanel extends JPanel {
             timeString = "--:--";
         }
 
-        Color baseColor = switch (playingTeam.getTeamColor()) {
-            case RED -> Color.RED;
-            case BLUE -> Color.BLUE;
-            case GREEN -> Color.GREEN;
-            case YELLOW -> Color.YELLOW;
-            default -> Color.BLACK;
-        };
+        Color baseColor = Utilitaire.getColorFromTeamColor(playingTeam.getTeamColor());
         Color color = new Color(baseColor.getRed(), baseColor.getGreen(), baseColor.getBlue(), 100);
 
         this.timerContainer.setBackground(color);

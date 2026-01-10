@@ -1,15 +1,12 @@
 package com.lllmtb.ui.graphical;
 
 import java.awt.*;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.UIManager;
 
 import com.lllmtb.engine.logger.Logger;
 import com.lllmtb.events.EventBus;
-import com.lllmtb.events.game.CloseGame;
 import com.lllmtb.events.game.LoadEvent;
 import com.lllmtb.events.game.SaveEvent;
 import com.lllmtb.events.game.StartGameEvent;
@@ -65,12 +62,6 @@ public class GraphicalUI implements UI {
         windows.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         windows.setResizable(true);
         windows.setMinimumSize(new Dimension(800, 400));
-        windows.addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent e) {
-                close();
-            }
-        });
 
         cardLayout = new CardLayout();
         mainPanel = new JPanel(cardLayout);
@@ -157,8 +148,6 @@ public class GraphicalUI implements UI {
         });
     }
 
-
-
     /**
      * makes the page visible.
      */
@@ -174,10 +163,8 @@ public class GraphicalUI implements UI {
             Logger.logger.info("Game saved before closing.");
         }
         SoundManager.close();
-        eventBus.postQueued(new CloseGame());
         windows.dispose();
         Logger.logger.info("game closed.");
         System.exit(0);
     }
-
 }

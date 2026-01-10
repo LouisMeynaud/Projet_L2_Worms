@@ -462,13 +462,7 @@ public class WorldRenderer {
 
         int[] xPoints = {centerX - size, centerX + size, centerX };
         int[] yPoints = {bottomY - size, bottomY - size, bottomY };
-        Color paintColor = switch (color) {
-            case GREEN -> Color.GREEN;
-            case YELLOW -> Color.YELLOW;
-            case RED -> Color.RED;
-            case BLUE -> Color.BLUE;
-            default -> Color.BLACK;
-        };
+        Color paintColor = Utilitaire.getColorFromTeamColor(color);
         g2d.setColor(paintColor);
         g2d.fillPolygon(xPoints, yPoints, 3); //dessine le triange remplie
 

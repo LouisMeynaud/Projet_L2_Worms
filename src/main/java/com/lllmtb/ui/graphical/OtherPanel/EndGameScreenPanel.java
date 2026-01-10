@@ -11,10 +11,10 @@ import java.awt.image.BufferedImage;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
 
 import com.lllmtb.engine.GameEngine;
 import com.lllmtb.events.EventBus;
+import com.lllmtb.events.game.CloseGameEvent;
 import com.lllmtb.model.entity.team.Team;
 import com.lllmtb.ui.graphical.Utilitaire.TextureManager;
 import com.lllmtb.ui.graphical.Utilitaire.Utilitaire;
@@ -39,11 +39,11 @@ public class EndGameScreenPanel extends JPanel {
 
         restartButton.addActionListener(e -> {
             GameEngine.main(new String[]{});
-            SwingUtilities.getWindowAncestor(this).dispose();
+            eventBus.postQueued(new CloseGameEvent());
         });
 
         closeButton.addActionListener(e -> {
-            SwingUtilities.getWindowAncestor(this).dispose();
+            eventBus.postQueued(new CloseGameEvent());
         });
 
         gbc.gridy = 0;

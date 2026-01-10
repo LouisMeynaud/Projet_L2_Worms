@@ -10,6 +10,7 @@ import java.util.List;
 import com.lllmtb.events.ui.graphical.NotificationEvent;
 import com.lllmtb.model.entity.team.Team;
 import com.lllmtb.ui.graphical.Utilitaire.TextureManager;
+import com.lllmtb.ui.graphical.Utilitaire.Utilitaire;
 
 public class Popup {
 
@@ -70,13 +71,7 @@ public class Popup {
             g.fillRect(xStart, y, largeurBox, 50);
 
             if (popupElement.team != null) {
-                Color teamColor = switch (popupElement.team.getTeamColor()) {
-                    case RED -> Color.RED;
-                    case BLUE -> Color.BLUE;
-                    case GREEN -> Color.GREEN;
-                    case YELLOW -> Color.YELLOW;
-                    default -> Color.BLACK;
-                };
+                Color teamColor = Utilitaire.getColorFromTeamColor(popupElement.team.getTeamColor());
                 g.setColor(teamColor);
             } else {
                 g.setColor(new Color(100, 100, 100, 100));

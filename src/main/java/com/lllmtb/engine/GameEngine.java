@@ -60,7 +60,7 @@ public class GameEngine {
         systemBus.subscribe(StartGameEvent.class, GameEngine::startGame);
         systemBus.subscribe(LoadEvent.class, GameEngine::startGame);
         systemBus.subscribe(DeleteSaveEvent.class, event -> Save.eraseSave(event.getSaveName()));
-        systemBus.subscribe(CloseGame.class, event -> {
+        systemBus.subscribe(CloseGameEvent.class, event -> {
             if (ui != null) {
                 ui.close();
                 Logger.logger.info("UI stopped.");
