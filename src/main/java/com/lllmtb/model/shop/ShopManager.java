@@ -79,7 +79,7 @@ public class ShopManager {
             team.removeCredits(itemBuy.unlockPrice);
             team.unlockWeapon(id);
             String cleImage = "Hand" + id;
-            eventBus.postQueued(new NotificationEvent("Achat réussi : " + itemBuy.name, cleImage));
+            eventBus.postQueued(new NotificationEvent("Achat réussi : " + itemBuy.name, cleImage, team));
             Logger.logger.info("Successful purchase of weapon {}", itemBuy.name);
         } else {
             Logger.logger.info("Not enough credits to buy weapon {}", itemBuy.name);
@@ -118,7 +118,7 @@ public class ShopManager {
                 team.addAmmo((ToolId) id, itemBuy.ammoPackSize);
             }
             String key = "Hand" + id;
-            eventBus.postQueued(new NotificationEvent("+ " + itemBuy.ammoPackSize + " munitions pour " + itemBuy.name, key));
+            eventBus.postQueued(new NotificationEvent("+ " + itemBuy.ammoPackSize + " munitions pour " + itemBuy.name, key, team));
 
             Logger.logger.info("Successful ammo purchase for {}", itemBuy.name);
 
