@@ -61,10 +61,11 @@ public class EndGameScreenPanel extends JPanel {
     public void setWinner(Team team) {
         if (team.name.equals("Water")) {
             winnerLabel.setText(" Tous les worms sont morts, l'eau a gagné ! ");
+            winnerLabel.setForeground(Color.WHITE);
         } else {
-            winnerLabel.setText(" Le gagnant est : " + team.getTeamColor() + " Equipe " + team.getName());
+            winnerLabel.setText(" Le gagnant est : " + team.getName());
+            winnerLabel.setForeground(Utilitaire.getColorFromTeamColor(team.getTeamColor()));
         }
-        winnerLabel.setForeground(Color.WHITE);
         winnerLabel.setFont(new Font("Arial", Font.BOLD, 32));
     }
 
