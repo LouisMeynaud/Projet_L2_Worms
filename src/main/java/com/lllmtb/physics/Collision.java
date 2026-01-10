@@ -117,7 +117,24 @@ public class Collision {
         // if the body has to cross everything to make it disappear if it goes out of map
         if (body.getEntity().getCollisionType() == CollisionType.CROSS) {
             Impact i = this.testSweptCircleTile(body, body.getPos(), body.getWidth() / 2, endPos, vector);
-            if (i.die) return i;
+            if (i.die) {
+                finalImpact = i;
+            }
+            for (PhysicsBody other : this.bodies) {
+                if (body != other && other.getEntity() instanceof Worm) {
+                    double radiusOther = other.getWidth() / 2;
+                    Position otherPos = new Position(other.getPos().getX() + 0.5, other.getPos().getY() + 0.5);
+                    Position otherHead = new Position(other.getPos().getX() + 0.5, other.getPos().getY() + 1.5);
+                    Impact bodyImpact = this.testSweptCircleCircle(body, body.getPos(), body.getWidth() / 2, other, otherPos, radiusOther, endPos, vector);
+                    Impact headImpact = this.testSweptCircleCircle(body, body.getPos(), body.getWidth() / 2, other, otherHead, radiusOther, endPos, vector);
+                    if (bodyImpact.ti < finalImpact.ti) {
+                        finalImpact = bodyImpact;
+                    }
+                    if (headImpact.ti < finalImpact.ti) {
+                        finalImpact = headImpact;
+                    }
+                }
+            }
             return finalImpact;
         }
 
