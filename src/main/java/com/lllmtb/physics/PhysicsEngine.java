@@ -77,6 +77,8 @@ public class PhysicsEngine {
     private static final double GROUND_FRICTION = 0.90;
     private static final double AIR_RESISTANCE_X = 0.98;
 
+    private static final double MAX_WIND_SPEED = 3.0;
+
     /**
      * Constructs a new {@code PhysicsEngine} instance.
      * <p>
@@ -172,19 +174,18 @@ public class PhysicsEngine {
 
     /**
      * Randomly changes the wind vector to simulate natural fluctuations in wind force and direction.
-     * <p>
-     * The change is small and based on random perturbations in both the x and y directions.
-     * This method should typically be called less frequently than {@link #next(double)}, for example
-     * once every few seconds of simulated time, to avoid erratic motion.
-     * </p>
-     * <p>
-     * The resulting wind vector is added to each body’s acceleration during the next update.
-     * </p>
      */
     protected void changeWind() {
         if (this.hasWind) {
-            Vector random = new Vector(Math.random() / 2 - 1f / 4f, Math.random() / 2 - 1f / 4f);
-            this.wind = random.scale(10000);
+            Random random = new Random();
+            double windX = this.wind.getX() + (random.nextDouble() * 2 - 1);
+            double windY = this.wind.getY() + (random.nextDouble() * 2 - 1) / 10.0;
+
+            // clamp wind values to max speed
+            windX = Math.max(-MAX_WIND_SPEED, Math.min(MAX_WIND_SPEED, windX));
+            windY = Math.max(-MAX_WIND_SPEED / 10.0, Math.min(MAX_WIND_SPEED / 10.0, windY));
+
+            this.wind = new Vector(windX, windY);
         }
     }
 
@@ -318,15 +319,6 @@ public class PhysicsEngine {
         for (PhysicsBody body : bodies) {
             Vector deltaV = this.gravity;
             deltaV = deltaV.add(body.getVector().scale(-0.5));
-
-            // if entity is a projectile, drop, or has a parachute modifier, apply wind
-            if (hasWind()) {
-                if (body.getEntity() instanceof Projectile || body.getEntity() instanceof Drop
-                 || this.modifiers.containsKey(body) && this.modifiers.get(body).stream().anyMatch(m -> m != null && m.source == ToolId.PARACHUTE)) {
-                    deltaV = deltaV.add(this.wind);
-                }
-            }
-
             deltaV = deltaV.scale(dt * body.getMass());
 
             Vector newVector = body.getVector().add(deltaV);
@@ -347,6 +339,27 @@ public class PhysicsEngine {
             }
 
             body.setVector(newVector);
+
+            // Apply wind to projectiles, drops, and worms with a parachute
+            if (this.hasWind) {
+                boolean shouldApplyWind = false;
+
+                if (body.getEntity() instanceof Projectile || body.getEntity() instanceof Drop) {
+                    shouldApplyWind = true;
+                } else if (body.getEntity() instanceof Worm) {
+                    List<PhysicsModifier> wormModifiers = modifiers.get(body);
+                    if (wormModifiers != null) {
+                        for (PhysicsModifier modifier : wormModifiers) {
+                            if (modifier.source == ToolId.PARACHUTE && modifier.enabled) {
+                                shouldApplyWind = true;
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                if (shouldApplyWind) newVector = newVector.add(this.wind);
+            }
 
             Position nextPos = newVector.newPos(body.getPos(), dt);
 
