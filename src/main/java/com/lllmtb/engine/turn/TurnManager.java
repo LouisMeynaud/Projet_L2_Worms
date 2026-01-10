@@ -317,8 +317,8 @@ public final class TurnManager {
      * Tells the current {@link Turn} to close and requests the next team to play.
      */
     private void passNextTurn() {
-        this.turn.end();
         this.readyToStart = false;
+        this.turn.end();
         world.nextTeamTurn();
     }
 
