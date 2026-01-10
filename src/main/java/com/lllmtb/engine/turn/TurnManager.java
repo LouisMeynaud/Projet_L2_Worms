@@ -210,7 +210,6 @@ public final class TurnManager {
                 int x = random.nextInt(mapWidth);
                 int y = mapHeight - 1;
 
-
                 ItemId itemId;
                 if (random.nextInt(2) == 0) {
                     //Weapon Drop
@@ -236,6 +235,7 @@ public final class TurnManager {
      * @param elapsedTime the elapsed time since the last update
      */
     public void updateTurn(double elapsedTime) {
+        if (this.turn == null) return;
         if (readyToStart) {
             this.remainingTimeInMs -= (long) elapsedTime;
             Team winningTeam = checkWiningTeam();
@@ -408,6 +408,7 @@ public final class TurnManager {
             if (turn == null || turn.getWormPlayable() == null || turn.getTeam() == null) return;
             PhysicsBody wormBody = turn.getWormPlayable().getBody();
             if (turn.getTeam().getHand() == null) return;
+            if (turn.teamMaximumShoot()) return;
 
             double mouseX = event.pos().getX();
             double mouseY = event.pos().getY();

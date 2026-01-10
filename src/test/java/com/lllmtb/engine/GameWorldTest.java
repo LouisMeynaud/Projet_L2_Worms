@@ -91,7 +91,7 @@ public class GameWorldTest {
     }
     @Test
     void constructor_withGameSave_Map() throws FileNotFoundException {
-        Map map = MapLoader.loadMap("Camembert");
+        Map map = MapLoader.loadMap("Roquefort");
         assertNotNull(map);
         GameSave gameSave = Load.loadGameSave("Test");
         GameWorld gameWorld = new GameWorld(gameSave, map);

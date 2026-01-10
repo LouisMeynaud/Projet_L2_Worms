@@ -19,7 +19,7 @@ public abstract class Projectile extends Entity {
     private static volatile boolean friendlyfire = true;
     public enum PROJECTILE {
     BabyTowerProjectile,
-    BowProjectile,
+    ArrowProjectile,
     BulletProjectile,
     CatConcreteProjectile,
     ElectronProjectile,

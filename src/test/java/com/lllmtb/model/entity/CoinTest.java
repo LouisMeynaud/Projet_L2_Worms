@@ -26,8 +26,8 @@ public class CoinTest {
 
         PhysicsBody body = coin.getBody();
 
-        assertEquals(2, body.getWidth());
-        assertEquals(2, body.getHeight());
+        assertEquals(1.3, body.getWidth());
+        assertEquals(1.3, body.getHeight());
         assertEquals(coin, body.getEntity());
     }
 

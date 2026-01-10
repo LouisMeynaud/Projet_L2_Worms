@@ -1,32 +1,31 @@
 package com.lllmtb.physics;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import com.lllmtb.model.item.tool.ToolId;
+import org.eclipse.jdt.annotation.NonNull;
+
+import com.lllmtb.engine.GameWorld;
 import com.lllmtb.engine.commands.GameCommand;
+import com.lllmtb.engine.commands.AddPhysicsModifierCommand;
 import com.lllmtb.engine.logger.Logger;
+import com.lllmtb.events.game.MapUpdateEvent;
 import com.lllmtb.events.game.CoinCollisionEvent;
 import com.lllmtb.events.physics.ExplosionEvent;
 import com.lllmtb.events.physics.GroundCheckCollision;
 import com.lllmtb.events.physics.PhysicsModifierAddedEvent;
 import com.lllmtb.events.physics.PhysicsModifierRemovedEvent;
+import com.lllmtb.model.entity.Entity;
 import com.lllmtb.model.entity.Coin;
 import com.lllmtb.model.entity.Drop;
+import com.lllmtb.model.entity.team.Team;
+import com.lllmtb.model.entity.worm.Worm;
 import com.lllmtb.model.entity.effect.BurnEffect;
 import com.lllmtb.model.entity.effect.PoisonEffect;
-
-import org.eclipse.jdt.annotation.NonNull;
-
-import com.lllmtb.engine.GameWorld;
-import com.lllmtb.events.game.MapUpdateEvent;
-import com.lllmtb.model.entity.Entity;
 import com.lllmtb.model.entity.projectile.ExplosiveProjectile;
 import com.lllmtb.model.entity.projectile.Projectile;
-import com.lllmtb.model.entity.worm.Worm;
 import com.lllmtb.model.item.ItemId;
 import com.lllmtb.terrain.map.Map;
 import com.lllmtb.terrain.map.Tile;
@@ -77,6 +76,8 @@ public class PhysicsEngine {
     private static final double MAX_WORM_SPEED = 8.0;
     private static final double GROUND_FRICTION = 0.90;
     private static final double AIR_RESISTANCE_X = 0.98;
+
+    private static final double MAX_WIND_SPEED = 3.0;
 
     /**
      * Constructs a new {@code PhysicsEngine} instance.
@@ -173,19 +174,18 @@ public class PhysicsEngine {
 
     /**
      * Randomly changes the wind vector to simulate natural fluctuations in wind force and direction.
-     * <p>
-     * The change is small and based on random perturbations in both the x and y directions.
-     * This method should typically be called less frequently than {@link #next(double)}, for example
-     * once every few seconds of simulated time, to avoid erratic motion.
-     * </p>
-     * <p>
-     * The resulting wind vector is added to each body’s acceleration during the next update.
-     * </p>
      */
     protected void changeWind() {
         if (this.hasWind) {
-            Vector random = new Vector(Math.random() / 2 - 1f / 4f, Math.random() / 2 - 1f / 4f);
-            this.wind = random.scale(10000);
+            Random random = new Random();
+            double windX = this.wind.getX() + (random.nextDouble() * 2 - 1);
+            double windY = this.wind.getY() + (random.nextDouble() * 2 - 1) / 10.0;
+
+            // clamp wind values to max speed
+            windX = Math.max(-MAX_WIND_SPEED, Math.min(MAX_WIND_SPEED, windX));
+            windY = Math.max(-MAX_WIND_SPEED / 10.0, Math.min(MAX_WIND_SPEED / 10.0, windY));
+
+            this.wind = new Vector(windX, windY);
         }
     }
 
@@ -319,13 +319,11 @@ public class PhysicsEngine {
         for (PhysicsBody body : bodies) {
             Vector deltaV = this.gravity;
             deltaV = deltaV.add(body.getVector().scale(-0.5));
-
-            if (body.getEntity() instanceof Projectile) deltaV = deltaV.add(this.wind);
             deltaV = deltaV.scale(dt * body.getMass());
 
             Vector newVector = body.getVector().add(deltaV);
 
-            // apply modifiers for this tick only - we don't want to stack them every tick
+            // apply active modifiers
             newVector = applyModifiers(body, newVector, dt);
 
             if (Math.abs(newVector.getX()) < 0.1) {
@@ -341,6 +339,27 @@ public class PhysicsEngine {
             }
 
             body.setVector(newVector);
+
+            // Apply wind to projectiles, drops, and worms with a parachute
+            if (this.hasWind) {
+                boolean shouldApplyWind = false;
+
+                if (body.getEntity() instanceof Projectile || body.getEntity() instanceof Drop) {
+                    shouldApplyWind = true;
+                } else if (body.getEntity() instanceof Worm) {
+                    List<PhysicsModifier> wormModifiers = modifiers.get(body);
+                    if (wormModifiers != null) {
+                        for (PhysicsModifier modifier : wormModifiers) {
+                            if (modifier.source == ToolId.PARACHUTE && modifier.enabled) {
+                                shouldApplyWind = true;
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                if (shouldApplyWind) newVector = newVector.add(this.wind);
+            }
 
             Position nextPos = newVector.newPos(body.getPos(), dt);
 
@@ -387,7 +406,7 @@ public class PhysicsEngine {
 
                     // if the collision is with another entity
                     } else {
-                        // if the body is a projectile, call its onImpact with the hit entity
+                        // if the entity is a projectile, call its onImpact with the hit entity
                         if (body.getEntity() instanceof Projectile proj) {
                             world.queueCommands(proj.onImpact(impact.hitBody.getEntity()));
                             // if the hit entity is a drop, call its onImpact with the projectile to destroy it
@@ -400,7 +419,7 @@ public class PhysicsEngine {
                             world.queueCommands(proj.onImpact(body.getEntity()));
                         }
 
-                        // if the body is a drop, call its onImpact with the hit entity
+                        // if the entity is a drop, call its onImpact with the hit entity
                         if (body.getEntity() instanceof Drop drop) {
                             if (impact.hitBody.getEntity() instanceof Drop) {
                                 drop.setOnGround(true);
@@ -408,7 +427,7 @@ public class PhysicsEngine {
                             world.queueCommand(drop.onImpact(impact.hitBody.getEntity()));
                         }
 
-                        // if the body is a coin and the hit entity is a worm, post a CoinCollisionEvent and remove the coin to give it to the worm
+                        // if the entity is a coin and the hit entity is a worm, post a CoinCollisionEvent and remove the coin to give it to the worm
                         if (body.getEntity() instanceof Coin coin) {
                             if (impact.hitBody.getEntity() instanceof Worm worm) {
                                 world.getBus().postQueued(new CoinCollisionEvent(coin, worm.getTeam()));
@@ -428,17 +447,26 @@ public class PhysicsEngine {
             // if no collision, update position normally
             } else {
                 body.setPos(nextPos);
+                // if the body is a worm, mark it as not on ground when it's in the air
+                if (body.getEntity() instanceof Worm worm) {
+                    Position checkPos = new Position(body.getPos().getX(), body.getPos().getY() - 0.1);
+                    Collision.Impact checkImpact = collision.move(body, checkPos);
+
+                    if (checkImpact.collided && checkImpact.normal.getY() > 0.5) {
+                        worm.setOnGround(true);
+                        world.getBus().postQueued(new GroundCheckCollision(worm));
+                        // stabilise y velocity
+                        if (body.getVector().getY() < 0 && body.getVector().getY() > -1.0) {
+                            body.setVector(new Vector(body.getVector().getX(), 0));
+                        }
+                    } else {
+                        worm.setOnGround(false);
+                    }
+                }
             }
 
-            // apply friction / air resistance to worms and reset the jump counter
+            // apply friction / air resistance to worms
             if (body.getEntity() instanceof Worm worm) {
-                if (collision.groundCheck(body)) {
-                    worm.setOnGround(true);
-                    world.getBus().postQueued(new GroundCheckCollision(worm));
-                } else {
-                    worm.setOnGround(false);
-                }
-
                 Vector currentVector = body.getVector();
                 double newVelX = currentVector.getX();
 
@@ -463,16 +491,38 @@ public class PhysicsEngine {
                 body.setVector(new Vector(newVelX, currentVector.getY()));
             }
 
-            // check if the body is in lava or trap
+            // check if the body is in a "special" tile
             if (body.getEntity() instanceof Worm worm) {
-                Tile tile = collision.inTrapOrLava(body);
+                Tile tile = collision.inSpecialTile(body);
                 if (tile == Tile.LAVA) {
                     world.queueCommand(worm.damageWorm(Tile.LAVA.getDamage()));
                     world.queueCommand(worm.addStatusEffect(new BurnEffect()));
                 }
-                if (tile == Tile.TRAP) {
+                if (tile == Tile.HOLYWATER) {
+                    world.queueCommand(worm.removeAllStatusEffects());
+                }
+                if (tile == Tile.TRAP || tile == Tile.TRAPCAVERN) {
                     world.queueCommand(worm.damageWorm(Tile.TRAP.getDamage()));
                     world.queueCommand(worm.addStatusEffect(new PoisonEffect()));
+                }
+                if (tile == Tile.AIRVINES || tile == Tile.DIRTVINES || tile == Tile.GRASSVINES || tile == Tile.CAVERNVINES) {
+                    Transform t = (v) -> {
+                        double vx = v.getX();
+                        vx *= 0.6;
+                        double vy = v.getY();
+                        if (vy < 0) vy = Math.max(vy, -5.0);
+                        return new Vector(vx, vy);
+                    };
+                    PhysicsModifier m = new PhysicsModifier(t, null);
+                    world.queueCommand(new AddPhysicsModifierCommand(worm, m));
+
+                    Team pteam = world.getPlayingTeam();
+                    if (pteam != null) {
+                        Worm pworm = pteam.getCurrentWorm();
+                        if (pworm != null && worm.uuid == pworm.uuid) {
+                            Move.jumpToMax();
+                        }
+                    }
                 }
             }
         }
@@ -620,11 +670,11 @@ public class PhysicsEngine {
      * @return the angle in radians from {@code fromPos} to the center of {@code targetBody}.
      */
     public static double calculateAngleToBody(Position fromPos, PhysicsBody targetBody) {
-    Position targetPos = targetBody.getPos();
-    double targetCenterX = targetPos.getX() + (targetBody.getWidth() / 2.0);
-    double targetCenterY = targetPos.getY() + (targetBody.getHeight() / 2.0);
-    double dx = targetCenterX - fromPos.getX();
-    double dy = targetCenterY - fromPos.getY();
-    return Math.atan2(dy, dx);
-}
+        Position targetPos = targetBody.getPos();
+        double targetCenterX = targetPos.getX() + (targetBody.getWidth() / 2.0);
+        double targetCenterY = targetPos.getY() + (targetBody.getHeight() / 2.0);
+        double dx = targetCenterX - fromPos.getX();
+        double dy = targetCenterY - fromPos.getY();
+        return Math.atan2(dy, dx);
+    }
 }
