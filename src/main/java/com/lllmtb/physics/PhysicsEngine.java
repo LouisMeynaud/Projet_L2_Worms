@@ -425,17 +425,14 @@ public class PhysicsEngine {
             // if no collision, update position normally
             } else {
                 body.setPos(nextPos);
+                // If the body is a worm, mark it as not on ground when it's in the air
+                if (body.getEntity() instanceof Worm) {
+                    ((Worm) body.getEntity()).setOnGround(false);
+                }
             }
 
-            // apply friction / air resistance to worms and reset the jump counter
+            // apply friction / air resistance to worms
             if (body.getEntity() instanceof Worm worm) {
-                if (collision.groundCheck(body)) {
-                    worm.setOnGround(true);
-                    world.getBus().postQueued(new GroundCheckCollision(worm));
-                } else {
-                    worm.setOnGround(false);
-                }
-
                 Vector currentVector = body.getVector();
                 double newVelX = currentVector.getX();
 
