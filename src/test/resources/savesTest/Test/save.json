@@ -3,7 +3,7 @@
     {
       "physicsBody": {
         "position": {
-          "x": 4.0,
+          "x": 0.0,
           "y": 5.0
         },
         "vector": {
@@ -14,12 +14,12 @@
         "height": 2.0,
         "width": 1.0
       },
-      "uuid": 672,
+      "uuid": 654,
       "entity": {
         "type": "worm",
         "body": {
           "position": {
-            "x": 4.0,
+            "x": 0.0,
             "y": 5.0
           },
           "vector": {
@@ -41,13 +41,13 @@
         "facingDirection": 1,
         "statusEffects": [],
         "isOnGround": false,
-        "uuid": 672
+        "uuid": 654
       }
     },
     {
       "physicsBody": {
         "position": {
-          "x": 0.0,
+          "x": 4.0,
           "y": 5.0
         },
         "vector": {
@@ -58,12 +58,12 @@
         "height": 2.0,
         "width": 1.0
       },
-      "uuid": 673,
+      "uuid": 655,
       "entity": {
         "type": "worm",
         "body": {
           "position": {
-            "x": 0.0,
+            "x": 4.0,
             "y": 5.0
           },
           "vector": {
@@ -85,7 +85,7 @@
         "facingDirection": 1,
         "statusEffects": [],
         "isOnGround": false,
-        "uuid": 673
+        "uuid": 655
       }
     },
     {
@@ -102,7 +102,7 @@
         "height": 2.0,
         "width": 1.0
       },
-      "uuid": 674,
+      "uuid": 656,
       "entity": {
         "type": "worm",
         "body": {
@@ -129,13 +129,13 @@
         "facingDirection": 1,
         "statusEffects": [],
         "isOnGround": false,
-        "uuid": 674
+        "uuid": 656
       }
     },
     {
       "physicsBody": {
         "position": {
-          "x": 1.0,
+          "x": 3.0,
           "y": 5.0
         },
         "vector": {
@@ -146,12 +146,12 @@
         "height": 2.0,
         "width": 1.0
       },
-      "uuid": 675,
+      "uuid": 657,
       "entity": {
         "type": "worm",
         "body": {
           "position": {
-            "x": 1.0,
+            "x": 3.0,
             "y": 5.0
           },
           "vector": {
@@ -173,7 +173,7 @@
         "facingDirection": 1,
         "statusEffects": [],
         "isOnGround": false,
-        "uuid": 675
+        "uuid": 657
       }
     }
   ],
@@ -186,7 +186,7 @@
           {
             "body": {
               "position": {
-                "x": 4.0,
+                "x": 0.0,
                 "y": 5.0
               },
               "vector": {
@@ -208,12 +208,12 @@
             "facingDirection": 1,
             "statusEffects": [],
             "isOnGround": false,
-            "uuid": 672
+            "uuid": 654
           },
           {
             "body": {
               "position": {
-                "x": 0.0,
+                "x": 4.0,
                 "y": 5.0
               },
               "vector": {
@@ -235,17 +235,17 @@
             "facingDirection": 1,
             "statusEffects": [],
             "isOnGround": false,
-            "uuid": 673
+            "uuid": 655
           }
         ],
         "name": "Team1",
         "isBot": false,
         "numberOfWorms": 2,
-        "id": 305,
+        "id": 302,
         "currentWorm": {
           "body": {
             "position": {
-              "x": 4.0,
+              "x": 0.0,
               "y": 5.0
             },
             "vector": {
@@ -267,7 +267,7 @@
           "facingDirection": 1,
           "statusEffects": [],
           "isOnGround": false,
-          "uuid": 672
+          "uuid": 654
         },
         "index": 0,
         "teamColor": "RED",
@@ -331,12 +331,12 @@
             "facingDirection": 1,
             "statusEffects": [],
             "isOnGround": false,
-            "uuid": 674
+            "uuid": 656
           },
           {
             "body": {
               "position": {
-                "x": 1.0,
+                "x": 3.0,
                 "y": 5.0
               },
               "vector": {
@@ -358,13 +358,13 @@
             "facingDirection": 1,
             "statusEffects": [],
             "isOnGround": false,
-            "uuid": 675
+            "uuid": 657
           }
         ],
         "name": "Team2",
         "isBot": true,
         "numberOfWorms": 2,
-        "id": 306,
+        "id": 303,
         "currentWorm": {
           "body": {
             "position": {
@@ -390,7 +390,7 @@
           "facingDirection": 1,
           "statusEffects": [],
           "isOnGround": false,
-          "uuid": 674
+          "uuid": 656
         },
         "index": 0,
         "teamColor": "BLUE",
@@ -449,15 +449,27 @@
     "nbWorms": 1,
     "hasWind": true,
     "mapFileName": "Test",
-    "floatingIsland": false,
-    "widthMap": 5,
+    "terrainType": "FLAT",
     "turnDuration": 10000,
     "gameName": "Test",
     "maxJump": 2,
     "maxHp": 100.0,
     "gameMode": "NORMAL",
     "friendlyFire": true,
-    "coinCheat": false
+    "coinCheat": false,
+    "configMap": {
+      "width": 5,
+      "height": 2,
+      "maxSlope": 1,
+      "maxLength": 10,
+      "waterHeight": 2,
+      "heightStart": 0,
+      "thicknessMin": 0,
+      "flyingIsland": false,
+      "plateauChance": 80,
+      "terrainType": "FLAT",
+      "gameMode": "NORMAL"
+    }
   },
   "turnManager": {
     "turnDurationInMs": 10000,

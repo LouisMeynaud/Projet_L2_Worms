@@ -270,7 +270,7 @@ public class Worm extends Entity {
     public List<GameCommand> applyStatusEffects() {
         List<GameCommand> commands = new ArrayList<>();
         List<StatusEffect> expiredEffects = new ArrayList<>();
-        for (StatusEffect effect : this.statusEffects) {
+        for (StatusEffect effect : new ArrayList<>(this.statusEffects)) {
             if (effect.isActive()) {
                 effect.applyEffect(this);
                 commands.add(world -> world.getBus().postQueued(new NotificationEvent("Effet de statut appliqué: " + effect.getName(), effect.getName())));

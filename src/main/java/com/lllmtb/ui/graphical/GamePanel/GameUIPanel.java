@@ -145,7 +145,7 @@ public class GameUIPanel extends JPanel {
             g2d.setColor(Color.WHITE);
             g2d.setFont(new Font("Arial", Font.BOLD, 12));
 
-            int vitesse = (int) (force / 1000);
+            int vitesse = (int) Math.round(force);
             String windText = vitesse + " m/s";
 
             g2d.drawString(windText, 20, height - 15);
@@ -323,7 +323,7 @@ public class GameUIPanel extends JPanel {
         }
 
         String timeString = String.format("%02d:%02d", timeLeft / 60, timeLeft % 60);
-        if (world.getTurnManager().getTurn().getWormPlayable() == null) {
+        if (world.getTurnManager().getTurn() == null || world.getTurnManager().getTurn().getWormPlayable() == null) {
             timeString = "--:--";
         }
 

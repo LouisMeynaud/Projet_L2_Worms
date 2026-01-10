@@ -379,67 +379,49 @@ public class CollisionTest {
     }
 
     @Test
-    void testInTrapOrLava_WhenNull() {
-        assertNull(collision.inTrapOrLava(pBWorm1));
+    void testinSpecialTile_WhenNull() {
+        assertNull(collision.inSpecialTile(pBWorm1));
     }
 
     @Test
-    void testInTrapOrLava_WhenInLava1() {
+    void testinSpecialTile_WhenInLava1() {
         pBWorm1.setPos(new Position(27, 6));
-        assertEquals("LAVA", collision.inTrapOrLava(pBWorm1).name());
+        assertEquals("LAVA", collision.inSpecialTile(pBWorm1).name());
     }
 
     @Test
-    void testInTrapOrLava_WhenInLava2() {
+    void testinSpecialTile_WhenInLava2() {
         pBWorm1.setPos(new Position(27, 7));
-        assertEquals("LAVA", collision.inTrapOrLava(pBWorm1).name());
+        assertEquals("LAVA", collision.inSpecialTile(pBWorm1).name());
     }
 
     @Test
-    void testInTrapOrLava_WhenInLava3() {
+    void testinSpecialTile_WhenInLava3() {
         pBWorm1.setPos(new Position(26.5, 6));
-        assertEquals("LAVA", collision.inTrapOrLava(pBWorm1).name());
+        assertEquals("LAVA", collision.inSpecialTile(pBWorm1).name());
     }
 
     @Test
-    void testInTrapOrLava_WhenInLava4() {
+    void testinSpecialTile_WhenInLava4() {
         pBWorm1.setPos(new Position(26.5, 7));
-        assertEquals("LAVA", collision.inTrapOrLava(pBWorm1).name());
+        assertEquals("LAVA", collision.inSpecialTile(pBWorm1).name());
     }
 
     @Test
-    void testInTrapOrLava_WhenInLava5() {
+    void testinSpecialTile_WhenInLava5() {
         pBWorm1.setPos(new Position(27, 5.5));
-        assertEquals("LAVA", collision.inTrapOrLava(pBWorm1).name());
+        assertEquals("LAVA", collision.inSpecialTile(pBWorm1).name());
     }
 
     @Test
-    void testInTrapOrLava_WhenInLava6() {
+    void testinSpecialTile_WhenInLava6() {
         pBWorm1.setPos(new Position(26.5, 5.5));
-        assertEquals("LAVA", collision.inTrapOrLava(pBWorm1).name());
+        assertEquals("LAVA", collision.inSpecialTile(pBWorm1).name());
     }
 
     @Test
-    void testInTrapOrLava_WhenNull2() {
+    void testinSpecialTile_WhenNull2() {
         pBWorm1.setPos(new Position(0.5, 5.5));
-        assertNull(collision.inTrapOrLava(pBWorm1));
-    }
-
-    @Test
-    void testGroundCheck_True1() {
-        pBWorm1.setPos(new Position(6, 10));
-        assertTrue(collision.groundCheck(pBWorm1));
-    }
-
-    @Test
-    void testOnGroundCheck_True2() {
-        pBWorm1.setPos(new Position(4.5, 10));
-        assertTrue(collision.groundCheck(pBWorm1));
-    }
-
-    @Test
-    void testOnGroundCheck_False() {
-        pBWorm1.setPos(new Position(3, 10));
-        assertFalse(collision.groundCheck(pBWorm1));
+        assertNull(collision.inSpecialTile(pBWorm1));
     }
 }

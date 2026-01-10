@@ -613,8 +613,8 @@ public class WorldRenderer {
         List<PhysicsModifier> modifiers = world.getPhysics().getModifiers().get(worm);
         if (modifiers == null) return;
 
-        Set<ToolId> activeTools = modifiers.stream()
-                .filter(modifier -> modifier.source instanceof ToolId)
+        Set<ToolId> activeTools = new ArrayList<>(modifiers).stream()
+                .filter(modifier -> modifier != null && modifier.source instanceof ToolId)
                 .map(modifier -> (ToolId) modifier.source)
                 .collect(Collectors.toSet());
 
