@@ -375,9 +375,8 @@ public class GameUIPanel extends JPanel {
 
         JPanel menuPanel = new JPanel();
         menuPanel.setLayout(new BoxLayout(menuPanel, BoxLayout.Y_AXIS)); //Y_AXIS bouton les un sous les autre
-        menuPanel.setBackground(Color.DARK_GRAY);
-        menuPanel.setBorder(new EmptyBorder(20, 20, 20, 20));
-
+        menuPanel.setBackground(new Color(128, 97, 75, 246));
+        menuPanel.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(new Color(98, 52, 25), 2), new EmptyBorder(20, 20, 20, 20)));
 
         JButton resumeButton = new JButton("Reprendre");
         JButton saveButton = new JButton("Sauvegarder");
