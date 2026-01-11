@@ -3,10 +3,10 @@
 ## Statut du projet
 ![Pipeline status](https://moule.informatique.univ-paris-diderot.fr/3LMTB/Worms-mi4/badges/main/pipeline.svg)
 
-Version actuelle du jeu :
-[jar](http://moule.informatique.univ-paris-diderot.fr/3lmtb/worms-mi4/-/jobs/artifacts/main/browse/target?job=package)
+## Lancer le jeu :
 
-Ligne de code pour lancer le jeu avec java 17 :
+Téléchargez le jar dans la dernière [release](https://moule.informatique.univ-paris-diderot.fr/3lmtb/worms-mi4/-/releases)
+et utilisez la ligne de code suivante avec java 17 ou une version ultérieure :
 
 - en mode graphique :
 ```bash
