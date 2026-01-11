@@ -4,4 +4,4 @@ DENQUIN Léo <leo.denquin-mathelot@etu.u-paris.fr>
 MEYNAUD Louis <louis.meynaud@etu.u-paris.fr> : inventaire, collisions, ajout d'une map, altérations de statut
 MONA Matthys <matthys.mona@etu.u-paris.fr> : gestion des tours, implémentation des entités et des Worms, dégâts entre entités, logger
 MOSCARDI Lorenzo <lorenzo.moscardi@etu.u-paris.fr> : physique, graphismes, ajout d'objets
-BRUNO Thomas <thomas.bruno@etu.u-paris.fr> : save, load, input
+BRUNO Thomas <thomas.bruno@etu.u-paris.fr> : sauvegarde, chargement d'une partie,  gestion des inputs
