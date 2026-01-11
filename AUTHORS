@@ -1,7 +1,7 @@
              WORMS - Groupe MI4
-LORIOT Baptiste <baptiste.loriot@etu.u-paris.fr>
-DENQUIN Léo <leo.denquin-mathelot@etu.u-paris.fr>
-MEYNAUD Louis <louis.meynaud@etu.u-paris.fr> : inventaire, collisions, ajout d'une map, altérations de statut
-MONA Matthys <matthys.mona@etu.u-paris.fr> : gestion des tours, implémentation des entités et des Worms, dégâts entre entités, logger
-MOSCARDI Lorenzo <lorenzo.moscardi@etu.u-paris.fr> : physique, graphismes, ajout d'objets
+LORIOT Baptiste <baptiste.loriot@etu.u-paris.fr> : engine, event, maven, git lab CI/CD, gameCommand, modifiers, bots, notifications, lianes, consoleUI, tool
+DENQUIN Léo <leo.denquin-mathelot@etu.u-paris.fr> : package terrain et ui graphique, inputs, armes, son, effets, calcule de l'angle de tire à partir de la souris, explosions, notifications, shop/monnaie
+MEYNAUD Louis <louis.meynaud@etu.u-paris.fr> : inventaire, collisions, ajout d'une map, altérations de statut, README, CONTRIBUTING, drop
+MONA Matthys <matthys.mona@etu.u-paris.fr> : gestion des tours, implémentation des entités et des Worms, dégâts entre entités, logger, lint, drop
+MOSCARDI Lorenzo <lorenzo.moscardi@etu.u-paris.fr> : physique, graphismes, ajout d'objets, maps, son
 BRUNO Thomas <thomas.bruno@etu.u-paris.fr> : sauvegarde, chargement d'une partie,  gestion des inputs
