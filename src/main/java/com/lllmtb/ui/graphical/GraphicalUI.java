@@ -1,6 +1,9 @@
 package com.lllmtb.ui.graphical;
 
 import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.UIManager;
@@ -21,6 +24,7 @@ import com.lllmtb.ui.graphical.SettingsPanel.NewOrLoadPanel;
 import com.lllmtb.ui.graphical.SettingsPanel.SettingsStartPanel;
 import com.lllmtb.ui.graphical.Utilitaire.MusicSettingsScreenPanel;
 import com.lllmtb.ui.graphical.Utilitaire.SoundManager;
+import com.lllmtb.events.game.CloseGameEvent;
 import com.lllmtb.engine.GameWorld;
 
 public class GraphicalUI implements UI {
@@ -62,6 +66,14 @@ public class GraphicalUI implements UI {
         windows.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         windows.setResizable(true);
         windows.setMinimumSize(new Dimension(800, 400));
+        windows.addWindowListener(new WindowAdapter() {
+        @Override
+        public void windowClosing(WindowEvent e) {
+            eventBus.postSync(new CloseGameEvent());
+        }
+        });
+
+
 
         cardLayout = new CardLayout();
         mainPanel = new JPanel(cardLayout);
