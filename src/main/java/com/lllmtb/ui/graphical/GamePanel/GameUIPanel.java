@@ -745,5 +745,31 @@ public class GameUIPanel extends JPanel {
             return;
         }
         Popup.draw((Graphics2D) g);
+        drawAmmoDisplay(g);
+    }
+
+    private void drawAmmoDisplay(Graphics g) {
+        try {
+            WeaponId weaponInHand = (WeaponId) world.getTurnManager().getTurn().getWormPlayable().getTeam().getHand();
+            if (weaponInHand == null || weaponInHand == WeaponId.NONE) return;
+
+            BufferedImage ammoIcon = TextureManager.WEAPONS.get("Ammo" + weaponInHand.toString());
+
+            int ammoCount = world.getTurnManager().getTurn().getWormPlayable().getTeam().getInventory().weapons.getAmmo(weaponInHand);
+
+            int x = getWidth() - 180;
+            int y = getHeight() - 85;
+
+            Graphics2D g2d = (Graphics2D) g;
+            g2d.setColor(new Color(0, 0, 0, 150));
+            g2d.fillRoundRect(x - 5, y - 5, 80, 50, 10, 10);
+
+            g2d.drawImage(ammoIcon, x, y, 40, 40, null);
+            g2d.setColor(Color.WHITE);
+            g2d.setFont(new Font("Arial", Font.BOLD, 24));
+            String ammoText = (ammoCount <= -1) ? "∞" : String.valueOf(ammoCount);
+            g2d.drawString(ammoText, x + 45, y + 30);
+        } catch (Exception e) {
+        }
     }
 }
