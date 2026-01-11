@@ -198,7 +198,7 @@ public class Worm extends Entity {
             Logger.logger.debug("Worm {} from the team {} is dead", this.name, this.team.name);
             GameCommand gameCommand = (world -> {
                 new RemoveEntityCommand(this).execute(world);
-                world.getBus().postQueued(new NotificationEvent("Le ver " + this.team.teamColor + " est mort", "Skull"));
+                world.getBus().postQueued(new NotificationEvent("Un ver de " + this.team.name + " est mort", "Skull", this.team));
             });
             statusEffects.clear();
             return gameCommand;
@@ -273,7 +273,7 @@ public class Worm extends Entity {
         for (StatusEffect effect : new ArrayList<>(this.statusEffects)) {
             if (effect.isActive()) {
                 effect.applyEffect(this);
-                commands.add(world -> world.getBus().postQueued(new NotificationEvent("Effet de statut appliqué: " + effect.getName(), effect.getName())));
+                commands.add(world -> world.getBus().postQueued(new NotificationEvent("Effet de statut appliqué: " + effect.getName(), effect.getName(), this.team)));
                 // Check again after application if the effect has expired
                 if (!effect.isActive()) {
                     expiredEffects.add(effect);

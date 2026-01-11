@@ -388,7 +388,7 @@ public final class TurnManager {
                 Logger.logger.info("Coin collected! + {}$", event.coin().value);
                 event.team().addCredits(event.coin().value);
                world.getPhysics().remove(event.coin().getBody());
-               world.getBus().postQueued(new NotificationEvent("+ " + event.coin().value + "$ pour : " + event.team().teamColor, "Coin"));
+               world.getBus().postQueued(new NotificationEvent("+ " + event.coin().value + "$ pour : " + event.team().name, "Coin", event.team()));
             });
         };
 

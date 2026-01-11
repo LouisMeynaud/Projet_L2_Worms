@@ -8,18 +8,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.lllmtb.events.ui.graphical.NotificationEvent;
+import com.lllmtb.model.entity.team.Team;
 import com.lllmtb.ui.graphical.Utilitaire.TextureManager;
+import com.lllmtb.ui.graphical.Utilitaire.Utilitaire;
 
 public class Popup {
 
     public static class PopupElement {
         final String message;
         final BufferedImage image;
+        final Team team;
         final long timeStart;
 
-        private PopupElement(String message, BufferedImage image) {
+        private PopupElement(String message, BufferedImage image, Team team) {
             this.message = message;
             this.image = image;
+            this.team = team;
             this.timeStart = System.currentTimeMillis();
         }
     }
@@ -36,7 +40,7 @@ public class Popup {
      */
     public static void add(NotificationEvent event) {
         BufferedImage imgTrouvee = TextureManager.NOTIFICATIONS.get(event.imageName());
-        actualPopups.add(new PopupElement(event.message(), imgTrouvee));
+        actualPopups.add(new PopupElement(event.message(), imgTrouvee, event.team()));
     }
 
     /**
@@ -66,9 +70,17 @@ public class Popup {
             g.setColor(new Color(0, 0, 0, 180));
             g.fillRect(xStart, y, largeurBox, 50);
 
+            if (popupElement.team != null) {
+                Color teamColor = Utilitaire.getColorFromTeamColor(popupElement.team.getTeamColor());
+                g.setColor(teamColor);
+            } else {
+                g.setColor(new Color(100, 100, 100, 100));
+            }
+            g.fillRect(xStart, y, 10, 50);
+
 
             if (popupElement.image != null) {
-                g.drawImage(popupElement.image, xStart + 10, y + 5, 40, 40, null);
+                g.drawImage(popupElement.image, xStart + 20, y + 5, 40, 40, null);
             }
 
             g.setColor(Color.WHITE);

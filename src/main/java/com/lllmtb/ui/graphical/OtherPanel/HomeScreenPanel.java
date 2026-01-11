@@ -10,6 +10,7 @@ import java.awt.image.BufferedImage;
 import javax.swing.*;
 
 import com.lllmtb.events.EventBus;
+import com.lllmtb.events.game.CloseGameEvent;
 import com.lllmtb.events.ui.graphical.ScreenMusicSettingsEvent;
 import com.lllmtb.events.ui.graphical.ScreenNewOrLoadEvent;
 import com.lllmtb.ui.graphical.Utilitaire.SoundPlayer;
@@ -35,7 +36,7 @@ public class HomeScreenPanel extends JPanel {
 
         playButton.addActionListener(e -> eventBus.postQueued(new ScreenNewOrLoadEvent()));
         settingButton.addActionListener(e -> eventBus.postQueued(new ScreenMusicSettingsEvent()));
-        closeButton.addActionListener(e -> SwingUtilities.getWindowAncestor(this).dispose());
+        closeButton.addActionListener(e -> eventBus.postQueued(new CloseGameEvent()));
 
         gbc.gridy = 0;
         this.add(playButton, gbc);
