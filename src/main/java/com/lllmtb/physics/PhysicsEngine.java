@@ -492,35 +492,49 @@ public class PhysicsEngine {
             }
 
             // check if the body is in a "special" tile
-            if (body.getEntity() instanceof Worm worm) {
+            if (body.getEntity() instanceof Worm || body.getEntity() instanceof Drop || body.getEntity() instanceof Coin) {
                 Tile tile = collision.inSpecialTile(body);
                 if (tile == Tile.LAVA) {
-                    world.queueCommand(worm.damageWorm(Tile.LAVA.getDamage()));
-                    world.queueCommand(worm.addStatusEffect(new BurnEffect()));
+                    if (body.getEntity() instanceof Worm worm) {
+                        world.queueCommand(worm.damageWorm(Tile.LAVA.getDamage()));
+                        world.queueCommand(worm.addStatusEffect(new BurnEffect()));
+                    } else {
+                        remove(body);
+                        continue;
+                    }
                 }
                 if (tile == Tile.HOLYWATER) {
-                    world.queueCommand(worm.removeAllStatusEffects());
+                    if (body.getEntity() instanceof Worm worm) {
+                        world.queueCommand(worm.removeAllStatusEffects());
+                    }
                 }
                 if (tile == Tile.TRAP || tile == Tile.TRAPCAVERN) {
-                    world.queueCommand(worm.damageWorm(Tile.TRAP.getDamage()));
-                    world.queueCommand(worm.addStatusEffect(new PoisonEffect()));
+                    if (body.getEntity() instanceof Worm worm) {
+                        world.queueCommand(worm.damageWorm(Tile.TRAP.getDamage()));
+                        world.queueCommand(worm.addStatusEffect(new PoisonEffect()));
+                    } else {
+                        remove(body);
+                        continue;
+                    }
                 }
                 if (tile == Tile.AIRVINES || tile == Tile.DIRTVINES || tile == Tile.GRASSVINES || tile == Tile.CAVERNVINES) {
-                    Transform t = (v) -> {
-                        double vx = v.getX();
-                        vx *= 0.6;
-                        double vy = v.getY();
-                        if (vy < 0) vy = Math.max(vy, -5.0);
-                        return new Vector(vx, vy);
-                    };
-                    PhysicsModifier m = new PhysicsModifier(t, null);
-                    world.queueCommand(new AddPhysicsModifierCommand(worm, m));
+                    if (body.getEntity() instanceof Worm worm) {
+                        Transform t = (v) -> {
+                            double vx = v.getX();
+                            vx *= 0.6;
+                            double vy = v.getY();
+                            if (vy < 0) vy = Math.max(vy, -5.0);
+                            return new Vector(vx, vy);
+                        };
+                        PhysicsModifier m = new PhysicsModifier(t, null);
+                        world.queueCommand(new AddPhysicsModifierCommand(worm, m));
 
-                    Team pteam = world.getPlayingTeam();
-                    if (pteam != null) {
-                        Worm pworm = pteam.getCurrentWorm();
-                        if (pworm != null && worm.uuid == pworm.uuid) {
-                            Move.jumpToMax();
+                        Team pteam = world.getPlayingTeam();
+                        if (pteam != null) {
+                            Worm pworm = pteam.getCurrentWorm();
+                            if (pworm != null && worm.uuid == pworm.uuid) {
+                                Move.jumpToMax();
+                            }
                         }
                     }
                 }
