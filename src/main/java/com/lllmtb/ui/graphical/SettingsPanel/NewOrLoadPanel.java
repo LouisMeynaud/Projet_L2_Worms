@@ -19,14 +19,14 @@ import com.lllmtb.ui.graphical.Utilitaire.Utilitaire;
 
 public class NewOrLoadPanel extends JPanel {
 
-    final EventBus eventBus;
+    final EventBus systemBus;
 
     /**
      * Constructor of a panel that allows to choose between creating a new game or loading an existing one.
-     * @param eventBus
+     * @param systemBus the system bus of the game
      */
-    public NewOrLoadPanel(EventBus eventBus) {
-        this.eventBus = new EventBus();
+    public NewOrLoadPanel(EventBus systemBus) {
+        this.systemBus = systemBus;
         this.setLayout(new GridBagLayout());
 
         GridBagConstraints gbc = new GridBagConstraints();
@@ -38,9 +38,9 @@ public class NewOrLoadPanel extends JPanel {
         JButton loadGameButton = Utilitaire.createImageButton(TextureManager.UI, "Panel", 280, 140, 280, 140, "Charger une partie", "Arial", 23, Color.WHITE);
         JButton backButton = Utilitaire.createImageButton(TextureManager.UI, "Panel", 280, 140, 280, 140, "Retour", "Arial", 23, Color.WHITE);
 
-        newGameButton.addActionListener(e -> eventBus.postQueued(new ScreenSettingsGame()));
-        loadGameButton.addActionListener(e -> eventBus.postQueued(new ScreenLoadGame()));
-        backButton.addActionListener(e -> eventBus.postQueued(new ScreenHomeEvent()));
+        newGameButton.addActionListener(e -> systemBus.postQueued(new ScreenSettingsGame()));
+        loadGameButton.addActionListener(e -> systemBus.postQueued(new ScreenLoadGame()));
+        backButton.addActionListener(e -> systemBus.postQueued(new ScreenHomeEvent()));
 
         gbc.gridy = 0;
         this.add(newGameButton, gbc);

@@ -22,17 +22,17 @@ import com.lllmtb.ui.graphical.Utilitaire.TextureManager;
 import com.lllmtb.ui.graphical.Utilitaire.Utilitaire;
 
 public class SettingsStartPanel extends JPanel {
-    public final EventBus eventBus;
+    public final EventBus systemBus;
     SettingMapPanel mapSettingPanel;
     SettingGamePanel gameSettingsPanel;
 
     /**
      * This panel contains both the map settings and game settings panels,
      * along with buttons to start the game or go back.
-     * @param eventBus the event bus of the game
+     * @param systemBus the system bus of the game
      */
-    public SettingsStartPanel(EventBus eventBus) {
-        this.eventBus = eventBus;
+    public SettingsStartPanel(EventBus systemBus) {
+        this.systemBus = systemBus;
         panelSetting();
 
 
@@ -66,7 +66,7 @@ public class SettingsStartPanel extends JPanel {
 
         //center zone (two part (setting game/map))
         JPanel panelCentre = new JPanel(new GridLayout(1, 2, 10, 0)); // 1 line, 2 columns, 10 horizontal margin
-        this.mapSettingPanel = new SettingMapPanel(eventBus);
+        this.mapSettingPanel = new SettingMapPanel(systemBus);
         this.gameSettingsPanel = new SettingGamePanel();
 
         JScrollPane gameScrollPanel = new JScrollPane(this.gameSettingsPanel);
@@ -79,7 +79,7 @@ public class SettingsStartPanel extends JPanel {
 
 
         backButton.addActionListener(e -> {
-            eventBus.postQueued(new ScreenNewOrLoadEvent());
+            systemBus.postQueued(new ScreenNewOrLoadEvent());
         });
 
         startButton.addActionListener(e -> {
@@ -90,7 +90,7 @@ public class SettingsStartPanel extends JPanel {
                     return;
                 }
             }
-            eventBus.postQueued(new StartGameEvent(setSettings(gameSettingsPanel)));
+            systemBus.postQueued(new StartGameEvent(setSettings(gameSettingsPanel)));
         });
     }
 

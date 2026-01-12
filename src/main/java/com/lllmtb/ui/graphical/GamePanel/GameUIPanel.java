@@ -65,7 +65,7 @@ import com.lllmtb.ui.graphical.Utilitaire.Utilitaire;
  */
 public class GameUIPanel extends JPanel {
 
-    private final EventBus eventBus; // le system bus
+    private final EventBus systemBus; // le system bus
     private JPanel pauseMenucontainer; //le contner pour le menu pause
     private JPanel inventoryContainer; // le contner pour le menu inventaire
     private GameWorld world; // le monde
@@ -145,7 +145,7 @@ public class GameUIPanel extends JPanel {
             g2d.setColor(Color.WHITE);
             g2d.setFont(new Font("Arial", Font.BOLD, 12));
 
-            int vitesse = (int) Math.round(force);
+            double vitesse = Math.round(force * 100.0) / 100.0;
             String windText = vitesse + " m/s";
 
             g2d.drawString(windText, 20, height - 15);
@@ -154,10 +154,10 @@ public class GameUIPanel extends JPanel {
 
     /**
      * constructeur : initialise la disposition , les conteneurs , le HUD et les listenneur.
-     * @param eventBus le system bus
+     * @param systemBus le system bus
      */
-    public GameUIPanel(EventBus eventBus) {
-        this.eventBus = eventBus;
+    public GameUIPanel(EventBus systemBus) {
+        this.systemBus = systemBus;
         ToolTipManager.sharedInstance().setInitialDelay(0);
         ToolTipManager.sharedInstance().setReshowDelay(0);
         setOpaque(false);
@@ -285,7 +285,7 @@ public class GameUIPanel extends JPanel {
      */
     private void subscribeToSystemEvents() {
 
-        eventBus.subscribe(WorldCreatedEvent.class, event -> {
+        systemBus.subscribe(WorldCreatedEvent.class, event -> {
             this.world = event.world();
             this.shopManager = world.getShopManager();
             this.world.getBus().subscribe(NotificationEvent.class, Popup::add);
@@ -293,7 +293,7 @@ public class GameUIPanel extends JPanel {
             updateTimerDisplay();
         });
 
-        eventBus.subscribe(GameStateUpdatedEvent.class, event -> {
+        systemBus.subscribe(GameStateUpdatedEvent.class, event -> {
             updateTimerDisplay();
             if (this.shopContainer != null && this.shopContainer.isVisible()) {
                 refreshShopGrid();
@@ -396,10 +396,10 @@ public class GameUIPanel extends JPanel {
 
 
         resumeButton.addActionListener(e -> pauseMenu(false));
-        saveButton.addActionListener(e -> eventBus.postQueued(new SaveEvent()));
+        saveButton.addActionListener(e -> systemBus.postQueued(new SaveEvent()));
         quitButton.addActionListener(e -> {
-            eventBus.postQueued(new SaveEvent());
-            eventBus.postQueued(new ScreenHomeEvent());
+            systemBus.postQueued(new SaveEvent());
+            systemBus.postQueued(new ScreenHomeEvent());
             this.world.stop();
             SoundPlayer.stopMusic();
          });
@@ -435,7 +435,7 @@ public class GameUIPanel extends JPanel {
         }
         this.revalidate();
         this.repaint();
-        this.eventBus.postQueued(new GamePauseEvent(show));
+        this.systemBus.postQueued(new GamePauseEvent(show));
         if (!show) {
             this.world.getBus().postQueued(new RequestFocus());
         }
@@ -638,7 +638,7 @@ public class GameUIPanel extends JPanel {
                     buttonShop.addActionListener(e -> {
                         if (canBuy) {
                         shopManager.buyWeapon(weaponId, world.getPlayingTeam());
-                        eventBus.postQueued(new GameStateUpdatedEvent());
+                        systemBus.postQueued(new GameStateUpdatedEvent());
                     }
                     });
 
@@ -655,7 +655,7 @@ public class GameUIPanel extends JPanel {
                     buttonShop.addActionListener(e -> {
                         if (canBuy) {
                         shopManager.buyAmmo(weaponId, world.getPlayingTeam());
-                        eventBus.postQueued(new GameStateUpdatedEvent());
+                        systemBus.postQueued(new GameStateUpdatedEvent());
                         }
                     });
 
@@ -672,7 +672,7 @@ public class GameUIPanel extends JPanel {
 
                 btn.addActionListener(e -> {
                     shopManager.buyAmmo(tid, world.getPlayingTeam());
-                    eventBus.postQueued(new GameStateUpdatedEvent());
+                    systemBus.postQueued(new GameStateUpdatedEvent());
                 });
 
                 this.shopToolGrid.add(btn);
@@ -745,5 +745,31 @@ public class GameUIPanel extends JPanel {
             return;
         }
         Popup.draw((Graphics2D) g);
+        drawAmmoDisplay(g);
+    }
+
+    private void drawAmmoDisplay(Graphics g) {
+        try {
+            WeaponId weaponInHand = (WeaponId) world.getTurnManager().getTurn().getWormPlayable().getTeam().getHand();
+            if (weaponInHand == null || weaponInHand == WeaponId.NONE) return;
+
+            BufferedImage ammoIcon = TextureManager.WEAPONS.get("Ammo" + weaponInHand.toString());
+
+            int ammoCount = world.getTurnManager().getTurn().getWormPlayable().getTeam().getInventory().weapons.getAmmo(weaponInHand);
+
+            int x = getWidth() - 180;
+            int y = getHeight() - 85;
+
+            Graphics2D g2d = (Graphics2D) g;
+            g2d.setColor(new Color(0, 0, 0, 150));
+            g2d.fillRoundRect(x - 5, y - 5, 80, 50, 10, 10);
+
+            g2d.drawImage(ammoIcon, x, y, 40, 40, null);
+            g2d.setColor(Color.WHITE);
+            g2d.setFont(new Font("Arial", Font.BOLD, 24));
+            String ammoText = (ammoCount <= -1) ? "∞" : String.valueOf(ammoCount);
+            g2d.drawString(ammoText, x + 45, y + 30);
+        } catch (Exception e) {
+        }
     }
 }

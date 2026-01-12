@@ -19,11 +19,11 @@ public class GameScreen extends JLayeredPane {
      * The game world layer is at the bottom and contains the game world rendering
      * The UI layer is at the top and contains the UI elements (buttons, timer, etc)
      *
-     * @param eventBus the eventbus.
+     * @param systemBus the systemBus.
      */
-    public GameScreen(EventBus eventBus) {
-        gameWorldPanel = new GameWorldPanel(eventBus);
-        gameUIPanel = new GameUIPanel(eventBus);
+    public GameScreen(EventBus systemBus) {
+        gameWorldPanel = new GameWorldPanel(systemBus);
+        gameUIPanel = new GameUIPanel(systemBus);
         this.add(gameWorldPanel, JLayeredPane.DEFAULT_LAYER); //default_layer : la couche du dessous
         this.add(gameUIPanel, JLayeredPane.PALETTE_LAYER); //pallette_layer = la couche du dessus
         Rectangle bounds = getBounds();

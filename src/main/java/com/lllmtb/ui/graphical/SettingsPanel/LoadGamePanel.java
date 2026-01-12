@@ -23,14 +23,14 @@ import com.lllmtb.ui.graphical.Utilitaire.Utilitaire;
 public class LoadGamePanel extends JPanel {
 
     private PanelListe panelListe;
-    private final EventBus eventBus;
+    private final EventBus systemBus;
 
     /**
      * Constructor for LoadGamePanel.
-     * @param eventBus The EventBus for posting events.
+     * @param systemBus The SystemBus for posting events.
      */
-    public LoadGamePanel(EventBus eventBus) {
-        this.eventBus = eventBus;
+    public LoadGamePanel(EventBus systemBus) {
+        this.systemBus = systemBus;
         this.setLayout(new BorderLayout(10, 10));
         this.setBackground(Color.DARK_GRAY);
 
@@ -57,13 +57,13 @@ public class LoadGamePanel extends JPanel {
 
 
         backButton.addActionListener(e -> {
-            this.eventBus.postQueued(new ScreenNewOrLoadEvent());
+            this.systemBus.postQueued(new ScreenNewOrLoadEvent());
         });
 
         deleteButton.addActionListener(e -> {
             String dossierSelectionne = panelListe.getSelectedMapName();
             if (dossierSelectionne != null) {
-                eventBus.postQueued(new DeleteSaveEvent(dossierSelectionne));
+                systemBus.postQueued(new DeleteSaveEvent(dossierSelectionne));
                 this.remove(this.panelListe);
                 this.panelListe = new PanelListe(Load.getListeNomsLoads(), SaveConfig.SAVE_DIRECTORY, true);
                 this.add(this.panelListe, BorderLayout.CENTER);
@@ -77,7 +77,7 @@ public class LoadGamePanel extends JPanel {
             String dossierSelectionne = panelListe.getSelectedMapName();
             if (dossierSelectionne != null) {
                 Logger.logger.debug("Loading folder : {}", dossierSelectionne);
-                eventBus.postQueued(new LoadEvent(dossierSelectionne));
+                systemBus.postQueued(new LoadEvent(dossierSelectionne));
 
             } else {
                 Logger.logger.debug("No save folder selected to load.");
