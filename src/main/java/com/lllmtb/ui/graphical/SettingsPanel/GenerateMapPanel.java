@@ -105,7 +105,7 @@ public class GenerateMapPanel extends JPanel {
 
         gbc.gridx = 1; // second columns
 
-        this.mapThiknessSlider = Utilitaire.createSlider(1, 25, 4, 3);
+        this.mapThiknessSlider = Utilitaire.createSlider(1, 25, 10, 3);
         contentGrid.add(mapThiknessSlider, gbc);
 
         //MapHeightWater
@@ -157,7 +157,7 @@ public class GenerateMapPanel extends JPanel {
      */
     private JSlider createReliefSlider() {
 
-        JSlider slider = new JSlider(JSlider.HORIZONTAL, 0, 4, 1);
+        JSlider slider = new JSlider(JSlider.HORIZONTAL, 0, 4, 2);
 
         slider.setMajorTickSpacing(1);
         slider.setSnapToTicks(true);
