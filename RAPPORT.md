@@ -15,7 +15,78 @@
 Ce rapport détaille la conception et l'implémentation de notre projet de POO-Conduite de Projet : un clone du jeu "Worms".
 Le projet a été mené en suivant la méthodologie Agile Scrum, avec des releases régulières, une intégration continue (CI/CD) stricte et une couverture de tests significative.
 
-## 2. Architecture et Conception
+## 2. Fonctionnalités Implémentées
+
+Le cahier des charges a été entièrement respecté et enrichi de nombreuses extensions.
+
+### 2.1 Cœur du Jeu
+*   **Terrain Destructible** : Génération procédurale avec différents biomes, ou chargement depuis un fichier.
+*   **Physique** : Gravité, Vent, Friction, Rebond, Dégâts de chute.
+*   **Tour par Tour** : Gestion précise du temps, changement de ver, inventaire d'équipe partagé.
+    à compléter avec la v1 du rapport
+
+### 2.2 Arsenal (Armes et Outils)
+Chaque Team (joueur) est dotée d'un inventaire d'armes et d'outils.
+Au début de la partie, chaque joueur reçoit les deux armes de base : le pistolet avec des munitions en nombre infini, et la batte.
+Il pourra par la suite acquérir différentes armes et objets moyennant un achat via la boutique.
+
+Certaines armes et certains objets confèrent également des **effets aux joueurs**. Par exemple l'effet de poison ou de brûlure
+infligent des dégâts à chaque tour pendant un nombre prédéfini.  
+Quant aux projectiles de certaines armes, ils peuvent être **explosifs** engendrant des dégâts de zone et une destruction
+du terrain ambiant.
+
+Voici une liste exhaustive des différentes armes et outils :
+
+**Armes :**
+
+| Image                                                              | Nom et ID                                      | Description                                                                                                   |
+|--------------------------------------------------------------------|------------------------------------------------|---------------------------------------------------------------------------------------------------------------|
+| ![](/src/main/resources/textures/weapon/weapon/GUN.png)            | **Pistolet** *(GUN)*                           | Arme de poing.                                                                                                |
+| ![](/src/main/resources/textures/weapon/weapon/BASEBALLBAT.png)    | **Batte** *(BASEBALLBAT)*                      | Arme de corps à corps.                                                                                        |
+| ![](/src/main/resources/textures/weapon/weapon/BAZOOKA.png)        | **Lance-roquette** *(BAZOOKA)*                 | Arme tirant un projectile explosif.                                                                           |
+| ![](/src/main/resources/textures/weapon/weapon/BOW.png)            | **Arc** *(BOW)*                                | Tire des flèches plus ou moins fortement et inflige plus ou moins de dégâts en fonction du temps de clic.     |
+| ![](/src/main/resources/textures/weapon/weapon/SHOTGUN.png)        | **Fusil à pompe** *(SHOTGUN)*                  | A la spécificité de tirer plusieurs projectiles à la fois, très utile à courte portée.                        |
+| ![](/src/main/resources/textures/weapon/weapon/GASGUN.png)         | **Canon à gaz** *(GASGUN)*                     | Tire un projectile imposant qui aura pour effet d’infliger un effet de poison à tous les vers le rencontrant. |
+| ![](/src/main/resources/textures/weapon/weapon/HEALINGBAZOOKA.png) | **Lance-roquette soignant** *(HEALINGBAZOOKA)* | Version du lance-roquette originel redonnant de la vie et annulant les effets en cours.                       |
+| ![](/src/main/resources/textures/weapon/weapon/ELECTRONCANON.png)  | **Canon à électrons** *(ELECTRONCANON)*        | Arme « de ricochet » au sens où son projectile rebondit d’ennemi en ennemi.                                   |
+
+
+**Outils :**
+
+| Image                                                       | Nom et ID                          | Description                                                                                                                                                                |
+|-------------------------------------------------------------|------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| ![](/src/main/resources/textures/tool/tool/MEDKIT.png)      | **Kit de soin** *(MEDKIT)*         | Outil de soin, qui a pour effet de redonner de la vie au ver qui l’utilise et d’annuler les effets malus en cours.                                                         |
+| ![](/src/main/resources/textures/tool/tool/GRENADE.png)     | **Grenade** *(GRENADE)*            | Projectile à retardement, explosif et rebondissant.                                                                                                                        |
+| ![](/src/main/resources/textures/tool/tool/MINE.png)        | **Mine** *(MINE)*                  | Piège qui explose quand une entité entre en contact.                                                                                                                       |
+| ![](/src/main/resources/textures/tool/tool/TOWER.png)       | **Tourelle** *(TOWER)*             | Outil défensif visant automatiquement l’ennemi dont le tour est en cours dans un rayon restreint. Elle reste active durant un tour entier.                                 |
+| ![](/src/main/resources/textures/tool/tool/PARACHUTE.png)   | **Parachute** *(PARACHUTE)*        | Outil de mobilité permettant de ralentir la chute.                                                                                                                         |
+| ![](/src/main/resources/textures/tool/tool/JETPACK.png)     | **Jetpack** *(JETPACK)*            | Outil de mobilité permettant de voler à sa guise avec un carburant limité.                                                                                                 |
+| ![](/src/main/resources/textures/tool/tool/TRAP.png)        | **Piège** *(TRAP)*                 | Outil posable au sol qui à son contact inflige des dégâts et un effet de poison.                                                                                           |
+| ![](/src/main/resources/textures/tool/tool/CATCONCRETE.png) | **Chat de béton** *(CATCONCRETE)*  | Fait office d’outil de terrain. A l’image de l’âne de béton dans le jeu originel, le chat de ciment permet de creuser un trou vertical facilitant la création de galeries. |
+| ![](/src/main/resources/textures/tool/tool/CALLSTRIKE.png)  | **Frappe aérienne** *(CALLSTRIKE)* | Outil permettant de tirer un projectile explosif puissant quelque soit notre position sur la carte.                                                                        |
+
+
+### 2.3 Paramètres de partie :
+* La durée du tour.
+* Les points de vie.
+* Le nombre d’équipes et le nombre de worms dans chaque équipe.
+* Le tir allié.
+* Le nombre de sauts autorisés.
+* Plusieurs modes jouables pour diversifier les parties.
+* L’activation du vent est implémentée. L’intensité du vent et sa direction sont quant à elles visibles grâce à la boussole en bas à droite de l’écran en jeu.
+* l’option « bot » offrant la possibilité de jouer contre une ou plusieurs équipe(s) contrôlée(s) par ordinateur. Le bot prend des décisions cohérentes avec la situation. Il se déplace et tire en direction de ses ennemis.
+* Une option « Mode de triche » permet l’obtention de pièces illimités facilitant le test du jeu et des fonctionnalités qu’il offre.
+* Concernant la carte, on retrouve deux fonctionnalités, sélectionnables dans les paramètres, soit décider de jouer sur une carte pré faite, dans le panel de choix qui s’offre à l’utilisateur. Soit décider de générer une nouvelle carte avec plusieurs paramètres personnalisables comme la largeur de la carte, le type de relief, la possibilité de jouer sur une île volante ou encore d’autres fonctionnalités avancées.
+
+### 2.4 Fonctionnalités Avancées
+*   **Modes de Jeu** : Normal, Moon (gravité faible), Ice Age (terrain glissant).
+*   **Économie** : Système de *Coins* (pièces) récoltables sur la carte ou gagnés par tour.
+*   **Boutique (Shop)** : Achat d'armes, de munitions et d'outils via une interface dédiée.
+*   **Colis (Drops)** : Largage aléatoire de caisses contenant des bonus.
+*   **Montée des eaux** : *Sudden Death*, l'eau monte progressivement en fin de partie.
+*   **Sauvegarde Complète** : Sérialisation JSON (`GSON`) complète de l'état du jeu (entités, map, tours) permettant une reprise exacte.
+
+## 3. Architecture et Conception
 
 Notre architecture a été pensée dès le départ pour maximiser la **modularité** et la **généricité**. Nous avons opté pour une séparation stricte des responsabilités.
 
@@ -85,13 +156,13 @@ Le projet suit rigoureusement le pattern MVC :
                                                                  └─────────────────┘
 ```
 
-### 2.1 Système d'Événements
+### 3.1 Système d'Événements
 
 Pour découpler les composants (notamment la Vue du Modèle), nous avons implémenté un système de bus d'événements (`EventBus`).
 *   **Double Bus** : Nous utilisons deux bus distincts.
     *   `systemBus` : Pour les événements globaux (Pause, Arrêt du jeu, UI).
     *   `worldBus`  : Pour les événements de gameplay de la partie en cours.
-    Cette séparation permet de geler l'état du jeu (en pause) tout en continuant de traiter les entrées système (menus...).
+        Cette séparation permet de geler l'état du jeu (en pause) tout en continuant de traiter les entrées système (menus...).
 
 ```
 ┌──────────────────────────────────────────────────────────────────────────┐
@@ -113,7 +184,7 @@ Pour découpler les composants (notamment la Vue du Modèle), nous avons implém
             └─────────────────┘            └─────────────────┘
 ```
 
-### 2.2 Pattern Command et Généricité
+### 3.2 Pattern Command et Généricité
 
 L'un des points forts de notre architecture est l'utilisation du pattern **Command** (`GameCommand`) combiné à un système d'items générique et modulaire.
 
@@ -151,7 +222,7 @@ L'utilité de définir des commandes préfaites comme `RegisterEntityCommand` es
 
 * Les `Projectiles` utilisent un système similaire, puisqu'ils génèrent aussi des commandes lors d'un impact (dégâts, explosions...).
 
-### 2.3 Physique et Collisions
+### 3.3 Physique et Collisions
 
 La physique est gérée dans un package `physics` dédié, par un moteur physique `PhysicsEngine` réalisé par nos soins.
 
@@ -164,7 +235,7 @@ Ce moteur est capable de gérer :
 *   Cela élimine le problème de *tunneling* (projectiles traversant les murs), et permet une meilleure estimation de la position exacte de la collision.
 *   Chaque entité choisit un type de collision : elles peuvent rebondir, glisser, s'arrêter...
 
-### 2.4 Gestion des Tours
+### 3.4 Gestion des Tours
 Le système de tour par tour est géré par la classe `TurnManager`. Elle orchestre le déroulement des tours :
 *   Gestion du temps par tour.
 *   Changement de ver actif à la fin du temps ou sur action utilisateur (skip).
@@ -172,13 +243,15 @@ Le système de tour par tour est géré par la classe `TurnManager`. Elle orches
 *   Conditions de victoire.
 *   Distribution des pièces et gestion des drops.
 
-### 2.5 Interface Utilisateur (UI)
+### 3.5 Interface Utilisateur (UI)
 
 #### Vue Graphique (`GraphicalUI`)
 *   Utilisation de **Java Swing/AWT** pour l'affichage.
 *   Pour l’ambiance visuelle, nous avons réalisé des **textures** (`TextureManager`) et des **animations** (`AnimationManager`).
 *   D'une part une animation *continue* pour le ver.
 *   D'autre part des animations jouées *une seule fois* (`VisualEffect`), réservées aux explosions (mais code générique étendable à d’autres ajouts, comme les particules).
+*   Un système de **notifications** a été ajouté à chaque action notable dans la partie.
+*   La caméra *suit par défaut le joueur* dont le tour est en cours, ce dernier peut également la déplacer et zommer à l'aide de la souris.
 *   Un menu **audio** a également été implémenté, que l'on peut retrouver dans le menu principal ainsi que dans le menu pause. Il permet de gérer le choix de la musique en cours, son volume et le volume des effets sonores. À chaque arme est associé un effet sonore.
 *   Les visuels et effets sonores/musiques ont été implémentés de telle sorte qu’il soit facile d’en ajouter ou d’en supprimer dans un but de modulabilité.
 
@@ -189,66 +262,13 @@ Le système de tour par tour est géré par la classe `TurnManager`. Elle orches
 *   Interaction via le clavier (touches fléchées, lettres) pour se déplacer, sélectionner un item, l'utiliser...
 *   Affichage des informations de jeu (stats des worms, inventaire, tour en cours) dans des panneaux dédiés.
 
-### 2.6 Persistance et Sauvegarde
+### 3.6 Persistance et Sauvegarde
 La gestion de la sauvegarde est gérée par la classe statique `Save` à partir d'une classe conteneur `GameSave`:
 *   Utilisation de la **Gson** pour la sérialisation de l'instance de `GameSave` à sauvegarder.
 *   Commence par transformer une instance de `GameWorld` en `GameSave`
 *   Sérialise l'instance de `GameSave` pour le transformer en un String.
 *   Sauvegarde ce String dans un fichier json à part.
 *   La map est, quant à elle, sauvegardé dans un fichier textuel à part.
-
-## 3. Fonctionnalités Implémentées
-
-Le cahier des charges a été entièrement respecté et enrichi de nombreuses extensions.
-
-### 3.1 Cœur du Jeu
-*   **Terrain Destructible** : Génération procédurale avec différents biomes, ou chargement depuis un fichier.
-*   **Physique** : Gravité, Vent, Friction, Rebond.
-*   **Tour par Tour** : Gestion précise du temps, changement de ver, inventaire d'équipe partagé.
-à compléter avec la v1 du rapport
-
-### 3.2 Arsenal (Armes et Outils)
-Chaque Team (joueur) est dotée d'un inventaire d'armes et d'outils.
-Au début de la partie, chaque joueur reçoit les deux armes de base : le pistolet avec des munitions en nombre infini, et la batte.
-Il pourra par la suite acquérir différentes armes et objets moyennant un achat via la boutique. En voici une liste exhaustive :
-
-**Armes :**
-
-| Image                                                              | Nom et ID                                      | Description                                                                                                   |
-|--------------------------------------------------------------------|------------------------------------------------|---------------------------------------------------------------------------------------------------------------|
-| ![](/src/main/resources/textures/weapon/weapon/GUN.png)            | **Pistolet** *(GUN)*                           | Arme de poing.                                                                                                |
-| ![](/src/main/resources/textures/weapon/weapon/BASEBALLBAT.png)    | **Batte** *(BASEBALLBAT)*                      | Arme de corps à corps.                                                                                        |
-| ![](/src/main/resources/textures/weapon/weapon/BAZOOKA.png)        | **Lance-roquette** *(BAZOOKA)*                 | Arme tirant un projectile explosif.                                                                           |
-| ![](/src/main/resources/textures/weapon/weapon/BOW.png)            | **Arc** *(BOW)*                                | Tire des flèches plus ou moins fortement et inflige plus ou moins de dégâts en fonction du temps de clic.     |
-| ![](/src/main/resources/textures/weapon/weapon/SHOTGUN.png)        | **Fusil à pompe** *(SHOTGUN)*                  | A la spécificité de tirer plusieurs projectiles à la fois, très utile à courte portée.                        |
-| ![](/src/main/resources/textures/weapon/weapon/GASGUN.png)         | **Canon à gaz** *(GASGUN)*                     | Tire un projectile imposant qui aura pour effet d’infliger un effet de poison à tous les vers le rencontrant. |
-| ![](/src/main/resources/textures/weapon/weapon/HEALINGBAZOOKA.png) | **Lance-roquette soignant** *(HEALINGBAZOOKA)* | Version du lance-roquette originel redonnant de la vie et annulant les effets en cours.                       |
-| ![](/src/main/resources/textures/weapon/weapon/ELECTRONCANON.png)  | **Canon à électrons** *(ELECTRONCANON)*        | Arme « de ricochet » au sens où son projectile rebondit d’ennemi en ennemi.                                   |
-
-
-**Outils :**
-
-| Image                                                       | Nom et ID                          | Description                                                                                                                                                                |
-|-------------------------------------------------------------|------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| ![](/src/main/resources/textures/tool/tool/MEDKIT.png)      | **Kit de soin** *(MEDKIT)*         | Outil de soin, qui a pour effet de redonner de la vie au ver qui l’utilise et d’annuler les effets malus en cours.                                                         |
-| ![](/src/main/resources/textures/tool/tool/GRENADE.png)     | **Grenade** *(GRENADE)*            | Projectile à retardement, explosif et rebondissant.                                                                                                                        |
-| ![](/src/main/resources/textures/tool/tool/MINE.png)        | **Mine** *(MINE)*                  | Piège qui explose quand une entité entre en contact.                                                                                                                       |
-| ![](/src/main/resources/textures/tool/tool/TOWER.png)       | **Tourelle** *(TOWER)*             | Outil défensif visant automatiquement l’ennemi dont le tour est en cours dans un rayon restreint. Elle reste active durant un tour entier.                                 |
-| ![](/src/main/resources/textures/tool/tool/PARACHUTE.png)   | **Parachute** *(PARACHUTE)*        | Outil de mobilité permettant de ralentir la chute.                                                                                                                         |
-| ![](/src/main/resources/textures/tool/tool/JETPACK.png)     | **Jetpack** *(JETPACK)*            | Outil de mobilité permettant de voler à sa guise avec un carburant limité.                                                                                                 |
-| ![](/src/main/resources/textures/tool/tool/TRAP.png)        | **Piège** *(TRAP)*                 | Outil posable au sol qui à son contact inflige des dégâts et un effet de poison.                                                                                           |
-| ![](/src/main/resources/textures/tool/tool/CATCONCRETE.png) | **Chat de béton** *(CATCONCRETE)*  | Fait office d’outil de terrain. A l’image de l’âne de béton dans le jeu originel, le chat de ciment permet de creuser un trou vertical facilitant la création de galeries. |
-| ![](/src/main/resources/textures/tool/tool/CALLSTRIKE.png)  | **Frappe aérienne** *(CALLSTRIKE)* | Outil permettant de tirer un projectile explosif puissant quelque soit notre position sur la carte.                                                                        |
-
-
-
-### 3.3 Fonctionnalités Avancées
-*   **Modes de Jeu** : Normal, Moon (gravité faible), Ice Age (terrain glissant).
-*   **Économie** : Système de *Coins* (pièces) récoltables sur la carte ou gagnés par tour.
-*   **Boutique (Shop)** : Achat d'armes, de munitions et d'outils via une interface dédiée.
-*   **Colis (Drops)** : Largage aléatoire de caisses contenant des bonus.
-*   **Montée des eaux** : *Sudden Death*, l'eau monte progressivement en fin de partie.
-*   **Sauvegarde Complète** : Sérialisation JSON (`GSON`) complète de l'état du jeu (entités, map, tours) permettant une reprise exacte.
 
 ## 4. Méthodologie, Qualité et Tests
 
@@ -311,7 +331,7 @@ En cette période de fêtes, Ginette, le runner GitLab de l’université, peina
 1.  Durant le Sprint n°1, nous avons été confrontés à des **problèmes de dépendance** les uns aux autres.
     *   Ce problème n’a pas refait surface durant la suite du projet dû à notre avancée, qui nous a permis de travailler plus indépendamment.
 2.  Durant le Sprint n°2, l’ajout du menu pause nous a mis face à un problème : la gestion des évènements se faisait à un seul niveau. Ainsi lors de la mise en pause du jeu, il nous était impossible de reprendre la partie ou de faire quelconque action du fait que les événements postés n’étaient pas interprétés (bus mis en pause).
-    *   *Solution* : Introduction d’une gestion des évènements à double-niveau (système/jeu). Avec cette solution, les évènements du jeu ne sont pas interprétés lors de la mise en pause du jeu, mais les événements du système si. 
+    *   *Solution* : Introduction d’une gestion des évènements à double-niveau (système/jeu). Avec cette solution, les évènements du jeu ne sont pas interprétés lors de la mise en pause du jeu, mais les événements du système si.
 3. **Tunneling (Physique)** : Les projectiles rapides traversaient parfois les murs, et lors des collisions, les worms étaient téléportés.
     *   *Solution* : Implémentation des collisions par balayage (**Swept Collision**) calculant le temps exact d'impact ($t_i$) intra-frame.
     *   Pour trouver la source du problème, nous avons utilisé la technique du Printf Debugging en plaçant des flags, pour vérifier si une fonction est bien exécutée, des « dumps », pour vérifier le contenu de certaines variables, ou encore des traces pour suivre l’évolution d’une variable au fil du temps. Une fois la coquille identifiée, sa résolution s’est révélée plus simple que prévu.
