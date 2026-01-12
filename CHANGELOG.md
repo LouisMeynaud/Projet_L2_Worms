@@ -1,43 +1,76 @@
-# CHANGELOG - Sprint n°3
+# CHANGELOG - Sprint N°4
+
+
 ---
 
-**Ajout:**
+**Ajouts :**
 
-- Ajout du logger
-- Ajout des collisions avec l'eau (cas spécial)
-- Ajout des collisions avec les bords de map (cas spécial)
-- Ajout des events prévenant des collisions
-- Ajout du multi-saut
-- Ajout de boutons et de textures pour ces derniers
-- Ajout d'animations pour le Worm
-- Ajout de textures pour les armes (gun / bazooka) et pour les munitions
-- Ajout de texture pour le parachute
-- Ajout des textures dans l'inventaire
-- Ajout d'une image de fond dans le menu
-- Ajout de la gestion à double-niveau des évènements (système/jeu)
-- Ajout de la save
-- Ajout de la barre de vie du Worm
-- Ajout d'un curseur pour indiquer le Worm qui joue
-- Ajout des paramètres max jump, île volante et max HP
-- Ajout d'un timer in game
-- Ajout graphique de l'inventaire
-- Ajout de la possibilité de passer son tour (SkipTurn)
-- Ajout du viseur - Shootmode
-- Ajout du panel LoadGame
-- Ajout de la possibilité de choisir une arme, de tirer avec et de générer des projectiles dans l'ui
-- Ajout des textures aléatoires pour la map
-- Ajout des dégâts sur Worm avec une collision en bordure de map ou avec un projectile
-- Ajout d'une nouvelle map (Gorgonzola)
+- Ajout des drops ( un item aléatoire + munitions )
+- Ajout des altérations de statuts ( poison / brûlure )
+- Ajout du changement de worm au sein d’une team
+- Ajout du tir allié
+- Ajout des dégâts de chute
+- Ajout d’une map de base en mode lune et une en mode glace
+- Ajout d’un écran spécial à la fin de partie 
+- Ajout de musiques
+- Ajout d’un load de partie
+- Ajout d’une save automatique
+- Ajout de 2 modes de jeux : lune et glace
+- Ajout d’un système de notifications
+- Ajout d’une monnaie dans le jeu
+- Ajout d’un magasin pour acheter des nouvelles armes et des munitions
+- Ajout d’un système de montée des eaux
+- Ajout des explosions
+- Ajout d’une méthode déterminant le worm le plus proche d’une position donnée
+- Ajout d’animations notamment pour les explosions
+- Ajout d’un visuel pour le vent
+- Ajout d’un système de bot
+- Ajout du suivi des worms par la caméra
+- Ajout d’une description sur les armes dans l’inventaire
+- Ajout d’un menu audio
+- Ajout de nouvelles textures
+- ajout de la tiles liane permettant de grimper
+- ajout de la tiles eau bénite permettant d'annuler les effets de brûlure et poison
+- Ajout de deux maps implémentant les mécaniques de piège, liane et eau bénite
+- Ajout d'un visuel de munitions lors de l'équipement d'une arme
 
+## Armes / Outils ajoutés :
 
-**Amélioration:**
+- HealingBazooka
+- ShotGun
+- GasGun
+- Electrocanon
+- Bow
+- Grenade
+- CatConcrete
+- Tower
+- Parachute
+- Jetpack
+- CallStrike
+- Mine
+- BaseballBatt
+- Medkit
+- Trap
 
-- Amélioration des listeners dans le TurnManager
-- Amélioration des events (en terme d'héritage)
-- Amélioration de l'enum Tile
-- Suppresion de la HeightLine
+**Améliorations :**
 
-**Fix:**
+- Limitation du nombre de shoot par tour à 3
+- Attente en fin de tour pour que les projectiles disparaissent et que les worms atterrissent
+- À la fin d’un tour le worm en jetpack obtient un parachute pour retomber
+- Utilisation des games Commandes pour les projectiles
+- Adaptation de la save aux nouveautés 
+- Suppression des altérations de statut avec les items de soin
+- Ajout d’effets actifs pour certains projectiles
+- Ajout des dégâts par les blocs
+- Mise à jour de la consoleUI
+- Nouveau mode de visée pour certains items ( cible )
+- Suppression du bouton “Shoot mode”
+- Fluidité des déplacements de la caméra
+- Modification de l’inventaire pour qu’il contienne le Gun débloqué et avec des munitions infinies et deux parachutes
 
-- Fix CI - Checkstyle
-- Fix Collisions - Mouvements plus fluides, fin de la glisse (à l'infini), fin de l'accrochage au mur
+**Fix :**
+
+- Fix Vent - direction, intensité
+- Fix Collision - eau, tunneling
+- Fix Worm - mort
+- Fix SpawnPoint
