@@ -5,6 +5,7 @@ stages:
   - build
   - test
   - package
+  - release
 
 variables:
   MAVEN_CLI_OPTS: "-B -ntp -e -Dmaven.repo.local=.m2/repository" # non-interactive, no progress bars, show errors
@@ -75,3 +76,41 @@ package:
   only:
     - main
     - dev
+
+# Upload the build artifact to the GitLab Package Registry on new tag
+upload_package:
+  stage: release
+  rules:
+    - if: $CI_COMMIT_TAG
+  script:
+    - VERSION="${CI_COMMIT_TAG#v}"
+    - JAR_NAME="worms-${VERSION}-fat.jar"
+
+    - mvn -DskipTests clean package
+    - mv target/*-fat.jar "target/${JAR_NAME}"
+
+    - PACKAGE_URL="$CI_API_V4_URL/projects/$CI_PROJECT_ID/packages/generic/worms/${VERSION}/${JAR_NAME}"
+
+    - |
+      curl --fail --header "JOB-TOKEN: $CI_JOB_TOKEN" \
+           --upload-file "target/${JAR_NAME}" \
+           "$PACKAGE_URL"
+
+# Release - create GitLab release on new tag, attach built jar
+release:
+  stage: release
+  image: registry.gitlab.com/gitlab-org/release-cli:latest
+  needs: [ "upload_package" ]
+  rules:
+    - if: $CI_COMMIT_TAG
+  script:
+    - VERSION="${CI_COMMIT_TAG#v}"
+    - JAR_NAME="worms-${VERSION}-fat.jar"
+    - PACKAGE_URL="$CI_API_V4_URL/projects/$CI_PROJECT_ID/packages/generic/worms/${VERSION}/${JAR_NAME}"
+    - |
+      release-cli create \
+        --name "Release v${VERSION}" \
+        --tag-name "$CI_COMMIT_TAG" \
+        --description "$(cat CHANGELOG.md)" \
+        --assets-link \
+          "{\"name\":\"Build Artifacts (fatjar)\",\"url\":\"${PACKAGE_URL}\"}"
