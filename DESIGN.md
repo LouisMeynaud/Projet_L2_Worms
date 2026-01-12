@@ -35,9 +35,9 @@ Pour la persistance des données, nous avons opté pour une architecture basée 
 L'implémentation permet de transformer un classe complexe en un conteneur passif facilement sérialisable:
 * **`GameWorld` (classe complexe)** : C'est l'objet complexe qui contient  tout ce dont le jeu a besoin pour correctement fonctionner.
 
-* **`GameSave` (Conteneur Passif)** : C'est une classe conteneur simple, sans logique, qui ne contient que les données primitives nécessaires à la reconstruction de la partie (durée d'un tour, tour actuel, liste des entités, des équipes...). Les données trop complexes sont aussi aussi **mappées** dans des classes conteneurs (l'inventaire, le registre des armes, les équipes).
+* **`GameSave` (Conteneur Passif)** : C'est une classe conteneur simple, sans logique, qui ne contient que les données primitives nécessaires à la reconstruction de la partie (durée d'un tour, tour actuel, liste des entités, des équipes...). Les données trop complexes sont aussi aussi **mappées** dans des classes conteneurs (l'inventaire, le registre des armes, les équipes...).
 
-Le processus de sauvegarde consiste à créer une instance de `GameSave` à partir d'une instance de `GameWorld`, le `GameSave` est ensuite transformée en chaîne de caractères par la **bibliothèque GSON** pour l'écriture dans un fichier json.
+Le processus de sauvegarde consiste à créer une instance de `GameSave` à partir d'une instance de `GameWorld`, le `GameSave` est ensuite transformée en chaîne de caractères par la **bibliothèque GSON**(https://github.com/google/gson) pour l'écriture dans un fichier json.
 
 ### B) Justification du choix :
 1.  **Découplage Données complexes/Données primaires** Le DTO  permet de ne garder que les données essentielles, réduisant  ainsi la taille des fichiers de sauvegarde.
