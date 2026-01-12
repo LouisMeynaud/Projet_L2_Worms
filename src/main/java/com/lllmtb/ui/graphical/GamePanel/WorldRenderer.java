@@ -5,7 +5,11 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.lllmtb.engine.GameWorld;
@@ -21,7 +25,6 @@ import com.lllmtb.model.entity.worm.Worm;
 import com.lllmtb.model.item.ItemId;
 import com.lllmtb.model.item.tool.ToolId;
 import com.lllmtb.model.item.weapon.WeaponId;
-import com.lllmtb.physics.GameMode;
 import com.lllmtb.physics.PhysicsBody;
 import com.lllmtb.physics.PhysicsModifier;
 import com.lllmtb.physics.Position;
@@ -121,12 +124,11 @@ public class WorldRenderer {
         int endX = Math.min(world.getMap().getWidth(), (int) center.getX() + radius + 2);
         int endY = Math.min(world.getMap().getHeight(), (int) center.getY() + radius + 2);
 
-        Color skyColor;
-        if (world.getGameMode() == GameMode.MOON) {
-            skyColor = new Color(25, 10, 40); // Violet sombre
-        } else {
-            skyColor = new Color(135, 206, 235); // Bleu clair
-        }
+        Color skyColor = switch (world.getGameMode()) {
+            case MOON -> new Color(25, 10, 40);    // Violet sombre
+            case ICEAGE -> new Color(209, 255, 252); // Bleu tres claire
+            default -> new Color(135, 206, 235);  // Bleu clair
+        };
         g2d.setColor(skyColor);
 
         int pxX = startX * panel.tileSize;
