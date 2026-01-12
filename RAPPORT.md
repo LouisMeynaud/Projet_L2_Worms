@@ -101,7 +101,9 @@ Le projet suit rigoureusement le pattern MVC :
 
 #### Architecture Globale des packages
 
-[ajouter image ici]
+![ArchitectureMVC.png](documentation/ArchitectureProjet/ArchitectureMVC.png)
+
+Vous pouvez retrouver des diagrammes plus détaillés dans le dossier [documentation/ArchitectureProjet](documentation/ArchitectureProjet) du dépôt.
     
 ### 3.1 Système d'Événements
 
