@@ -25,7 +25,7 @@ Pour ajouter un outil fonctionnel (utilitaire, attaque spéciale, soin), suivez 
 2.  **Logique d'utilisation :** Implémentez la méthode `use`. Celle-ci doit retourner une liste de `GameCommand` définissant l'action de l'outil (soin, invocation, déplacement, etc.).
 3.  **Textures :** Ajoutez les fichiers images correspondants dans les dossiers de textures d'outils.
 4.  **Définition (ToolId) :** Ajoutez l'outil dans l'énumération `ToolId`. Vous devrez y configurer :
-    * Le mode de visée (`ShootMode`) : `NONE` (aucun viseur), `CROSSHAIR` (frappe aérienne), ou `AIM` (lancé/visé).
+    * Le mode de visée (`ShootMode`) : `NONE` (aucun viseur), `CROSSHAIR` (cible), ou `AIM` (lancé/visé).
     * La description de l'outil.
     * Le temps de charge maximum (optionnel).
 5.  **Enregistrement (Registry) :** Ajoutez l'outil dans le `ToolRegistry` pour lier l'identifiant (`ToolId`) à votre nouvelle classe.

@@ -8,8 +8,9 @@
 
 ## Ajouter une map spécifique :
 
-- Les dossiers de map sont à ajouter dans _**ressources/textures/map**_
+- Les dossiers de map sont à ajouter dans _**ressources/map**_
   - Un dossier ayant comme nom le nom de la map, contenant :
     - `map.txt` : fichier texte contenant pour chaque ligne et chaque colonne la lettre correspondant à la tile souhaitée à cette position.
         - **Conseil :** Idéalement, la map doit avoir une hauteur de 0.56 fois sa largeur (exemple : une dimension de 250x140 tiles).
     - `info.txt` : fichier contenant une courte description de la map.
+    - `image.png` : une image de la map.
