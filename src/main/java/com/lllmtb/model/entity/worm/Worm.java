@@ -1,34 +1,29 @@
 package com.lllmtb.model.entity.worm;
 
-import com.lllmtb.model.entity.Entity;
-import com.lllmtb.model.entity.team.Team;
-import com.lllmtb.model.entity.CollisionType;
-import com.lllmtb.physics.PhysicsBody;
-import com.lllmtb.physics.Position;
-import com.lllmtb.physics.Vector;
-import com.lllmtb.ui.graphical.animation.*;
-import java.awt.image.BufferedImage;
+import com.lllmtb.engine.commands.GameCommand;
+import com.lllmtb.engine.commands.RemoveEntityCommand;
+import com.lllmtb.engine.logger.Logger;
+import com.lllmtb.events.ui.graphical.NotificationEvent;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 import org.eclipse.jdt.annotation.NonNull;
 
-import java.util.Objects;
+import com.lllmtb.model.entity.CollisionType;
+import com.lllmtb.model.entity.Entity;
+import com.lllmtb.model.entity.effect.StatusEffect;
+import com.lllmtb.model.entity.team.Team;
+import com.lllmtb.physics.PhysicsBody;
+import com.lllmtb.physics.Position;
+import com.lllmtb.physics.Vector;
 
 /**
  * Represents a single worm entity in the game.
  * <p>A worm belongs to a {@link Team} and has its own {@link PhysicsBody} and {@link Statistics}.</p>
  */
 public class Worm extends Entity {
-
-    public static final BufferedImage[] standing = {SpriteWorm.getSprite(0, 0),
-                                                    SpriteWorm.getSprite(1, 0),
-                                                    SpriteWorm.getSprite(0, 1),
-                                                    SpriteWorm.getSprite(1, 1),
-                                                    SpriteWorm.getSprite(0, 2),
-                                                    SpriteWorm.getSprite(0, 2),
-                                                    SpriteWorm.getSprite(1, 1),
-                                                    SpriteWorm.getSprite(0, 1),
-                                                    SpriteWorm.getSprite(1, 0)};
 
     /**
      * The physical body of the worm used for physics simulation and position tracking.
@@ -38,7 +33,7 @@ public class Worm extends Entity {
     /**
      * The team this worm belongs to.
      */
-    private transient Team team;
+    private final transient Team team;
 
     /**
      * The name of the worm.
@@ -46,7 +41,7 @@ public class Worm extends Entity {
     public final String name;
 
     /**
-     * The statistics of the worm (ex health, speed, strength).
+     * The statistics of the worm (health)
      */
     private final Statistics stats;
 
@@ -61,19 +56,14 @@ public class Worm extends Entity {
     private final CollisionType collisionType = CollisionType.SLIDE;
 
     /**
-     * The current animation.
-     */
-    private transient Animation animation;
-
-    /**
      * Direction the worm is facing: 1 for right, -1 for left.
      */
     private int facingDirection = 1;
 
     /**
-     * Indicates if the worm is currently in contact with the ground.
+     * List of active status effects on the worm.
      */
-    private boolean isOnGround = false;
+    private final List<StatusEffect> statusEffects = new ArrayList<>();
 
     /**
      * Private constructor to initialize a worm with statistics, a team, a spawn point and animation.
@@ -88,8 +78,6 @@ public class Worm extends Entity {
         this.stats = Objects.requireNonNull(stats);
         this.team = Objects.requireNonNull(team);
         this.team.addWorm(this);
-        this.animation = new Animation(standing, 10);
-        this.animation.start();
     }
 
     /**
@@ -133,14 +121,6 @@ public class Worm extends Entity {
     @Override
     public CollisionType getCollisionType() {
         return this.collisionType;
-    }
-
-    /**
-     * Returns the current animation of the worm.
-     * @return the {@link Animation} of the worm
-     */
-    public Animation getAnimation() {
-        return this.animation;
     }
 
     /**
@@ -212,18 +192,113 @@ public class Worm extends Entity {
      * <p>If the worm's health (or other relevant stat) indicates it is dead,
      * this method will mark the worm as no longer alive.</p>
      */
-    private void setDeath() {
+    private GameCommand setDeath() {
         if (!this.stats.isAlive()) {
             this.alive = false;
+            Logger.logger.debug("Worm {} from the team {} is dead", this.name, this.team.name);
+            GameCommand gameCommand = (world -> {
+                new RemoveEntityCommand(this).execute(world);
+                world.getBus().postQueued(new NotificationEvent("Un ver de " + this.team.name + " est mort", "Skull", this.team));
+            });
+            statusEffects.clear();
+            return gameCommand;
         }
+        return null;
     }
 
-    public void damageWorm(int damage) {
+    /**
+     * @param damage : the damage worm will take
+     * @return GameCommand to set worm's death or not
+     */
+    public GameCommand damageWorm(double damage) {
         this.stats.damageTake(damage);
-        this.setDeath();
+        return this.setDeath();
     }
 
-    public static void setMaxHp(int maxHp) {
+    public static boolean isInTheSameTeam(Worm worm1, Worm worm2) {
+        return (worm1.team.equals(worm2.team));
+    }
+
+    /**
+     * Adds a status effect to the worm.
+     * If an effect of the same type already exists, it is replaced.
+     * @param effect the {@link StatusEffect} to add
+     */
+    public GameCommand addStatusEffect(StatusEffect effect) {
+        if (effect != null) {
+            for (StatusEffect existingEffect : this.statusEffects) {
+                if (existingEffect.getClass().equals(effect.getClass())) {
+                    this.statusEffects.remove(existingEffect);
+                    break;
+                }
+            }
+            this.statusEffects.add(effect);
+        }
+        return null;
+    }
+
+    /**
+     * Gets all active status effects on the worm.
+     * @return a list of {@link StatusEffect} currently applied to the worm
+     */
+    public List<StatusEffect> getStatusEffects() {
+        return this.statusEffects;
+    }
+
+    /**
+     * Removes a status effect from the worm.
+     * @param effect the {@link StatusEffect} to remove
+     */
+    public void removeStatusEffect(StatusEffect effect) {
+        this.statusEffects.remove(effect);
+    }
+
+    /**
+     * Removes all status effects from the worm.
+     * @return the GameCommand {@code null}
+     */
+    public GameCommand removeAllStatusEffects() {
+        this.statusEffects.clear();
+        return null;
+    }
+
+    /**
+     * Applies all active status effects to the worm.
+     * Inactive effects are automatically removed.
+     * @return a list of GameCommands generated by the effects (e.g., RemoveEntityCommand if worm dies)
+     */
+    public List<GameCommand> applyStatusEffects() {
+        List<GameCommand> commands = new ArrayList<>();
+        List<StatusEffect> expiredEffects = new ArrayList<>();
+        for (StatusEffect effect : new ArrayList<>(this.statusEffects)) {
+            if (effect.isActive()) {
+                effect.applyEffect(this);
+                commands.add(world -> world.getBus().postQueued(new NotificationEvent("Effet de statut appliqué: " + effect.getName(), effect.getName(), this.team)));
+                // Check again after application if the effect has expired
+                if (!effect.isActive()) {
+                    expiredEffects.add(effect);
+                }
+                // Check if worm died from the effect
+                GameCommand deathCommand = this.setDeath();
+                if (deathCommand != null) {
+                    commands.add(deathCommand);
+                }
+            } else {
+                expiredEffects.add(effect);
+            }
+        }
+        // Remove expired effects
+        for (StatusEffect effect : expiredEffects) {
+            this.statusEffects.remove(effect);
+        }
+        return commands;
+    }
+
+    /**
+     * Sets the maximum health points value for all worms in the game.
+     * @param maxHp : the maxHp all worms will have.
+     */
+    public static void setMaxHp(double maxHp) {
         Statistics.setMaxHp(maxHp);
     }
 

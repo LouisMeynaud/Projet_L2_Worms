@@ -71,15 +71,28 @@ public class Vector {
     }
 
     /**
-     * Checks if this vector is equal to another vector.
-     * @param other the vector to compare with
-     * @return true if the vectors are equal, false otherwise
+     * Calculates the angle of this vector in radians.
+     * @return the angle of the vector in radians
      */
-    public boolean equals(Vector other) {
-        if (other == null) {
-            return false;
-        }
-        return this.x == other.x && this.y == other.y;
+    public double angle() {
+        return Math.atan2(this.y, this.x);
+    }
+
+    /**
+     * Checks if this vector is equal to another object.
+     * @param obj the object to compare with
+     * @return true if the objects are equal vectors, false otherwise
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (!(obj instanceof Vector other)) return false;
+        return Double.compare(this.x, other.x) == 0 && Double.compare(this.y, other.y) == 0;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(x, y);
     }
 
     /**
@@ -97,5 +110,13 @@ public class Vector {
     @Override
     public String toString() {
         return "Vect(" + this.x + "," + this.y + ")";
+    }
+
+    /**
+     * Creates a copy of this vector.
+     * @return a new Vector that is a copy of this vector
+     */
+    public Vector copy() {
+        return new Vector(this.x, this.y);
     }
 }

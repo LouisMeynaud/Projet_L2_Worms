@@ -39,11 +39,11 @@ public class VectorTest {
         Vector v3 = new Vector(Double.MIN_VALUE,1);
         Vector v4 = new Vector(2,Double.POSITIVE_INFINITY);
 
-        assertFalse(v.equals(null));
-        assertTrue(v.equals(v1));  // true && true
-        assertFalse(v.equals(v2)); // true && false
-        assertFalse(v.equals(v3)); // false && true
-        assertFalse(v.equals(v4)); // false && false
+        assertNotEquals(null, v);
+        assertEquals(v, v1);  // true && true
+        assertNotEquals(v, v2); // true && false
+        assertNotEquals(v, v3); // false && true
+        assertNotEquals(v, v4); // false && false
     }
     @Test
     void testNewPos() {
@@ -57,5 +57,15 @@ public class VectorTest {
     void test4() {
         Vector v1 = new Vector(3,4);
         assertEquals("Vect(3.0,4.0)",v1.toString());
+    }
+    @Test
+    void testCopy() {
+        Vector v1 = new Vector(3, 4);
+        Vector v2 = v1.copy();
+        assertEquals(v1.getX(), v2.getX());
+        assertEquals(v1.getY(), v2.getY());
+        v2 = v2.add(new Vector(1, 1));
+        assertEquals(3, v1.getX());
+        assertEquals(4, v1.getY());
     }
 }

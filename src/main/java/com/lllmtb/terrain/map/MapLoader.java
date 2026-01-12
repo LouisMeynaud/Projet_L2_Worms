@@ -1,77 +1,91 @@
 package com.lllmtb.terrain.map;
 
-import java.io.File;
-import java.io.IOException;
+import com.lllmtb.engine.logger.Logger;
+import com.lllmtb.engine.save.SaveConfig;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public class MapLoader {
 
     /**
      * Load a map from a given map name.
-     * @param mapName
+     * @param directoryName the name of the directory where the map is stored.
      * @return the loaded Map object.
      */
-    public static Map loadMatrix(String mapName) {
-        String path;
-        if (mapName.contains("Test")) {
-            path = "src/test/resources/map/";
-        } else {
-            path = "src/main/resources/map/";
-        }
-
+    public static Map loadMapLoad(String directoryName) {
         try {
-            String mapPath = path + mapName + "/map.txt";
-            System.out.println("TEST " + mapPath);
-            String contentMap = Files.readString(Path.of(mapPath));
-            String[] row = contentMap.split("\n");
-            Map tileMatrix = new Map(row.length, row[0].length(), mapName + ".txt");
+            String stringPath = SaveConfig.SAVE_DIRECTORY + directoryName;
+            if (directoryName.contains("Test")) {
+                stringPath = "src/test/resources/savesTest/" + directoryName;
+            }
+            Path path = Paths.get(stringPath + "/map.txt");
 
-            for (int i = 0; i < row.length; i++) {
-                for (int j = 0; j < row[0].length(); j++) {
-                        tileMatrix.getMapMatrix()[i][j] = Tile.getByFileSymbol(row[i].charAt(j));
-                    }
-                }
-            return tileMatrix;
+            if (!Files.exists(path)) {
+                System.err.println("Aucune sauvegarde trouvée à : " + path.toAbsolutePath());
+                return null;
+            }
 
-        } catch (IOException e) { // we should propagate the exception instead so GameWorld can catch and respond accordingly
-            return null;
+            // Lecture du fichier externe
+            String contentMap = Files.readString(path, StandardCharsets.UTF_8);
+            return loadMatrix(contentMap, directoryName);
+
         } catch (Exception e) {
-            System.out.println(e); // NB. Il faudra mieux gérer cette exception
+            System.err.println("Erreur lors du chargement de la sauvegarde : " + e.getMessage());
             return null;
         }
     }
 
     /**
-     * Gets the list of map directories.
-     * @return an array of map directories.
+     * Load a map from a given map name.
+     * @param mapName the name of the map to load.
+     * @return the loaded Map object.
      */
-    public static File[] getListeDossiersMaps() {
-        String cheminDossierMaps = "src/main/resources/map";
-        return getListeDossiers(new File(cheminDossierMaps));
+    public static Map loadMap(String mapName) {
+        try (InputStream is = MapLoader.class.getResourceAsStream("/map/" + mapName + "/map.txt")) {
+            if (is == null) {
+                throw new RuntimeException("Resource not found: /map/" + mapName + "/map.txt");
+            }
+            String contentMap = new String(is.readAllBytes(), StandardCharsets.UTF_8);
+            return loadMatrix(contentMap, mapName);
+        } catch (Exception e) {
+            Logger.logger.error("Error while loading map {} : ", mapName, e);
+            throw new RuntimeException(e);
+        }
     }
 
     /**
-     * Gets the list of subdirectories in a given root directory.
-     * @param dossierRacine the root directory.
-     * @return an array of subdirectories.
+     * transform a string representation of map in a instance of map.
+     * @param contentMap the String representation of map
+     * @param name the name of the
+     * @return the instance of the map
      */
-    public static File[] getListeDossiers(File dossierRacine) {
-        if (!dossierRacine.exists() || !dossierRacine.isDirectory()) {
-            System.err.println("Erreur le chemin n'est pas bon : " + dossierRacine.getAbsolutePath());
-            return new File[0];
+    public static Map loadMatrix(String contentMap, String name) {
+        // use \R instead of \n for cross-platform compatibility
+        String[] row = contentMap.split("\\R");
+        Map tileMatrix = new Map(row.length, row[0].length(), name + ".txt");
+
+        for (int i = 0; i < row.length; i++) {
+            for (int j = 0; j < row[0].length(); j++) {
+                try {
+                    tileMatrix.getMapMatrix()[i][j] = Tile.getByFileSymbol(row[i].charAt(j));
+
+                } catch (IllegalArgumentException e) {
+                    Logger.logger.error("Invalid tile symbol at the position x" + j + " y" + i + " : " + row[i].charAt(j));
+                    throw new IllegalArgumentException("Invalid tile symbol at position (" + j + ", " + i + "): " + row[i].charAt(j), e);
+                }
+            }
         }
-        File[] sousDossiers = dossierRacine.listFiles(f -> MapLoader.predicatEstUnDossier(f));
-
-        if (sousDossiers == null) {
-            return new File[0];
-        }
-        return sousDossiers;
+        tileMatrix.initializeHeightWater();
+        return tileMatrix;
     }
-
-    private static boolean predicatEstUnDossier(File fichier) {
-        return fichier.isDirectory();
+    /**
+     * Get a list of available map names.
+     * @return Array of map names.
+     */
+    public static String[] getListeNomsMaps() {
+        return new String[] {"Chabichou du Poitou", "Chaussée aux moines", "Gorgonzola", "Roquefort", "Feta", "Cendré de Lune"};
     }
-
-
 }

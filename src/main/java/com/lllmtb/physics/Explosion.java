@@ -1,0 +1,108 @@
+package com.lllmtb.physics;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
+
+import com.lllmtb.engine.commands.GameCommand;
+import com.lllmtb.model.entity.worm.Worm;
+import com.lllmtb.terrain.map.Map;
+import com.lllmtb.terrain.map.Tile;
+
+public class Explosion {
+
+    /**
+     * create whole around the explosion (replace tile by AIR).
+     * @param position the position of center of explosion
+     * @param rayon    the rayon of the explosion
+     * @param map      the map
+     */
+    public static void explosionMapEffect(Position position, int rayon, Map map) {
+        for (int i = -rayon; i <= rayon; i++) {
+            for (int j = -rayon; j <= rayon; j++) {
+                if ((i * i + j * j) <= (rayon * rayon)) {
+                    Position tilePos = new Position(position.getX() + i, position.getY() + j);
+                    if (map.inMap(tilePos)) {
+                        if (map.isTileAt(tilePos, Tile.AIRVINES) || map.isTileAt(tilePos, Tile.TRAP)) {
+                            map.setTile(tilePos, Tile.AIR);
+                        } else if (!map.isTileAt(tilePos, Tile.AIR) && !map.isTileAt(tilePos, Tile.CAVERN) && !map.isTileAt(tilePos, Tile.WATER)) {
+                            map.setTile(tilePos, Tile.CAVERN);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+        /**
+         * projects entities that are within the explosion radius.
+         * @param position  the position of center of explosion
+         * @param suffleRadius  the radius of the wind created by the explosion
+         * @param explosionForce the force of the wind
+         * @param map  the map
+         * @param bodies the list of bodies in the game
+         */
+        public static void explosionSuffleEffect(Position position, int suffleRadius, double explosionForce, Map map, CopyOnWriteArrayList<PhysicsBody> bodies) {
+        if (suffleRadius <= 0) {
+            return;
+        }
+        for (PhysicsBody body : bodies) {
+            Position bodyPos = body.getPos();
+
+            double dx = bodyPos.getX() - position.getX();
+            double dy = bodyPos.getY() - position.getY();
+            double distance = Math.sqrt(dx * dx + dy * dy); // Distance to explosion center
+
+            if (distance <= suffleRadius) {
+                // Direction
+                Vector direction;
+                if (distance < 0.1) {
+                    direction = new Vector(0, 1);
+                } else {
+                    direction = new Vector(dx / distance, dy / distance);
+                }
+                double ratio = 1 - (distance / suffleRadius);
+                double suffleForce = explosionForce * ratio;
+
+                Vector pushForce = direction.scale(suffleForce);
+                pushForce = pushForce.add(new Vector(0, 10.0));
+                body.setVector(body.getVector().add(pushForce));
+
+                if (body.getEntity() instanceof Worm) {
+                    ((Worm) body.getEntity()).setOnGround(false);
+                }
+            }
+        }
+    }
+
+    /**
+     *
+     * @param position the position of the center of the explosion
+     * @param damageRadius the radius within which the entity takes damage
+     * @param maxDamage the maximun damage to the explosion (at the center)
+     * @param bodies the list of bodies
+     * @param heal true if the projectile heal worms , false if take damage
+     * @return the commandList to excecute.
+     */
+    public static List<GameCommand> explosionDamageEffect(Position position, int damageRadius, int maxDamage, CopyOnWriteArrayList<PhysicsBody> bodies, boolean heal) {
+        List<GameCommand> death = new ArrayList<>();
+        for (PhysicsBody body : bodies) {
+        Position bodyPos = body.getPos();
+        double dx = bodyPos.getX() - position.getX();
+        double dy = bodyPos.getY() - position.getY();
+        double distance = Math.sqrt(dx * dx + dy * dy);
+
+        if (distance <= damageRadius) {
+            double ratio = 1 - (distance / damageRadius);
+            int actualDamage = (int) (maxDamage * ratio);
+            if (body.getEntity() instanceof Worm worm) {
+                death.add(worm.damageWorm(actualDamage));
+                if (heal) {
+                    death.add(worm.removeAllStatusEffects());
+                }
+            }
+        }
+    }
+    return death;
+}
+}

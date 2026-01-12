@@ -1,15 +1,26 @@
 package com.lllmtb.model.entity.projectile;
 
-import com.lllmtb.model.entity.CollisionType;
-import com.lllmtb.model.item.UseParams;
 import org.eclipse.jdt.annotation.NonNull;
+
+import com.lllmtb.engine.commands.GameCommand;
+import com.lllmtb.model.entity.CollisionType;
+import com.lllmtb.model.entity.Entity;
+import com.lllmtb.model.item.UseParams;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public final class BulletProjectile extends Projectile {
     private static final double force  = 100.0;
-    private static final double mass   = 0.003;
+    private static final double mass   = 0.006;
     private static final double height = 1;
     private static final double width  = 1;
+    private static final int damage = 4;
 
+    /**
+     * Constructor for BulletProjectile.
+     * @param params UseParams containing initial parameters for the projectile.
+     */
     public BulletProjectile(@NonNull UseParams params) {
         super(params, force, mass, height, width);
     }
@@ -20,7 +31,15 @@ public final class BulletProjectile extends Projectile {
     }
 
     @Override
-    public void onImpact() {
-        // trigger the reaction chain (explosion, events...)
+    public List<GameCommand> onImpact(Entity entity) {
+        List<GameCommand> list = new ArrayList<>();
+        handleHit(list, entity, damage);
+        list.add(delete());
+        return list;
+    }
+
+    @Override
+    public double getDamage() {
+        return damage;
     }
 }

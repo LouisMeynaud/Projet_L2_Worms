@@ -21,11 +21,13 @@ import static org.mockito.Mockito.verify;
 import com.lllmtb.engine.GameSettings;
 import com.lllmtb.engine.GameWorld;
 import com.lllmtb.events.EventBus;
-import com.lllmtb.events.physics.ProjectileRegisteredEvent;
+import com.lllmtb.events.physics.EntityRegisteredEvent;
 import com.lllmtb.model.entity.Entity;
 import com.lllmtb.model.entity.projectile.Projectile;
+import com.lllmtb.physics.GameMode;
 import com.lllmtb.physics.PhysicsEngine;
 import com.lllmtb.physics.PhysicsModifier;
+import com.lllmtb.terrain.generation.ConfigMap;
 import com.lllmtb.terrain.generation.LandScape;
 
 
@@ -37,7 +39,8 @@ public class GameCommandTest {
 
     @BeforeEach
     void setUp() throws Exception {
-        GameSettings settings = new GameSettings("blabla", 1, new String[]{"Team"}, 1, 100, 10, false, null, false, 200, LandScape.FLAT,2);
+        ConfigMap configMap = new ConfigMap(100, 0, 0, false,0, LandScape.FLAT, GameMode.NORMAL);
+        GameSettings settings = new GameSettings("blabla", 1, new String[]{"Team"}, new boolean[1],1, 100, 10, false, null, configMap,2,GameMode.NORMAL, true, false);
         bus = mock(EventBus.class);
         world = new GameWorld(settings, bus);
 
@@ -66,20 +69,32 @@ public class GameCommandTest {
     }
 
     @Test
-    void whenRegisterProjectileCommandExecutesItAddsProjectileBodyAndPostsProjectileRegisteredEvent() {
-        Projectile projectile = mock(Projectile.class);
+    void postsProjectileRegisteredEventWhenRegisterProjectileCommandIsExecuted() {
+        Entity entity = mock(Projectile.class);
         Entity owner = mock(Entity.class);
 
-        RegisterProjectileCommand cmd = new RegisterProjectileCommand(projectile, owner);
+        RegisterEntityCommand cmd = new RegisterEntityCommand(entity, owner);
 
         cmd.execute(world);
 
         verify(physics).add(isNull());
         verify(bus).postQueued(argThat(e ->
-                e instanceof ProjectileRegisteredEvent
-                        && ((ProjectileRegisteredEvent) e).projectile() == projectile
-                        && ((ProjectileRegisteredEvent) e).source() == owner
+                e instanceof EntityRegisteredEvent
+                        && ((EntityRegisteredEvent) e).entity() == entity
+                        && ((EntityRegisteredEvent) e).source() == owner
         ));
+    }
+
+    @Test
+    void invokesPhysicsRemoveModifierWhenRemovePhysicsModifierCommandIsExecuted() {
+        Entity target = mock(Entity.class);
+        PhysicsModifier modifier = mock(PhysicsModifier.class);
+
+        RemovePhysicsModifierCommand cmd = new RemovePhysicsModifierCommand(target, modifier);
+
+        cmd.execute(world);
+
+        verify(physics).removeModifier(isNull(), same(modifier));
     }
 
     @Test

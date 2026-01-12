@@ -7,13 +7,15 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.Image;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
+import java.io.*;
+import java.net.URL;
 import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
+
+import com.lllmtb.engine.logger.Logger;
+import com.lllmtb.ui.graphical.Utilitaire.Utilitaire;
 
 
 public class PanelListe extends JPanel {
@@ -23,16 +25,16 @@ public class PanelListe extends JPanel {
     private final JList<InfoLigne> maListe;
 
     private static class InfoLigne {
-        String titre;
-        String description;
-        ImageIcon image;
-        File fichierMap;
+        final String titre;
+        final String description;
+        final ImageIcon image;
+        final String nomMap;
 
-        public InfoLigne(String titre, String info, ImageIcon image, File fichierMap) {
+        public InfoLigne(String titre, String info, ImageIcon image, String nomMap) {
             this.titre = titre;
             this.description = info;
             this.image = image;
-            this.fichierMap = fichierMap;
+            this.nomMap = nomMap;
         }
 
         @Override
@@ -44,20 +46,20 @@ public class PanelListe extends JPanel {
 
     /**
      * Constructor of the panel that displays the list of maps available in the maps folder.
-     * @param tableauDeDossiers an array of files representing the map directories.
+     * @param nomsMaps an array of Strings representing the map directory names.
+     * @param nomDossier the name of the dossier
+     * @param isExternal true if the search file is not in ressource , false else.
      */
-    public PanelListe(File[] tableauDeDossiers) {
+    public PanelListe(String[] nomsMaps, String nomDossier, boolean isExternal) {
         setBackground(Color.DARK_GRAY);
         this.setLayout(new BorderLayout());
 
         ArrayList<InfoLigne> donneeMap = new ArrayList<>();
 
-        if (tableauDeDossiers != null) {
-            for (File dossier : tableauDeDossiers) {
-                if (dossier.isDirectory()) {
-                    InfoLigne info = loadInfoDossier(dossier);
-                    donneeMap.add(info);
-                }
+        if (nomsMaps != null) {
+            for (String nom : nomsMaps) {
+                InfoLigne info = loadInfoRessource(nom, nomDossier, isExternal);
+                donneeMap.add(info);
             }
         }
 
@@ -78,64 +80,97 @@ public class PanelListe extends JPanel {
     }
 
     /**
-     * Gets the selected map file.
-     * @return the selected map file, or null if none is selected.
+     * Gets the selected map name.
+     * @return the selected map name, or null if none is selected.
      */
-    public File getFichierSelectionne() {
+    public String getSelectedMapName() {
         InfoLigne selection = maListe.getSelectedValue();
         if (selection != null) {
-            return selection.fichierMap;
+            return selection.nomMap;
         }
         return null;
     }
 
 
-    private InfoLigne loadInfoDossier(File dossier) {
-        String titre = dossier.getName();
+    private InfoLigne loadInfoRessource(String nomDossier, String mainDossier, boolean isExternal) {
+        String titre = nomDossier;
         String description = "";
         ImageIcon image = null;
 
         try {
-            File fichierTexte = new File(dossier, NOM_FICHIER_INFO);
-            if (fichierTexte.exists()) {
-                FileReader fileReader = new FileReader(fichierTexte);
-                BufferedReader buffereReader = new BufferedReader(fileReader);
+            if (isExternal) {
+                File folder = new File(mainDossier + nomDossier);
 
+                File infoFile = new File(folder, NOM_FICHIER_INFO);
+                if (infoFile.exists()) {
+                    BufferedReader bufferedReader = new BufferedReader(new FileReader(infoFile));
+                    description = bufferedReader.readLine();
+                    bufferedReader.close();
+                }
+                File imgFile = new File(folder, NOM_FICHIER_IMAGE);
+                if (imgFile.exists()) {
+                    try {
+                    Image img = ImageIO.read(imgFile);
+                    image = new ImageIcon(img.getScaledInstance(100, 100, Image.SCALE_SMOOTH));
+                    } catch (Exception imgException) {
+                        Logger.logger.warn("invalid image file: " + imgFile.getPath(), imgException);
+                        Image defaultImg = Utilitaire.loadDefaultImage();
+                        if (defaultImg != null) {
+                            image = new ImageIcon(defaultImg.getScaledInstance(100, 100, Image.SCALE_SMOOTH));
+                        } else {
+                            Logger.logger.warn("Default image could not be loaded.");
+                        }
+                    }
+                }
+            } else {
 
-                String ligne1 = buffereReader.readLine();
-                if (ligne1 != null) {
-                    description = ligne1;
+                String cheminInfo = mainDossier + nomDossier + "/" + NOM_FICHIER_INFO;
+                InputStream isText = getClass().getResourceAsStream(cheminInfo);
+
+                if (isText != null) {
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(isText));
+                    String ligne1 = reader.readLine();
+                    if (ligne1 != null) {
+                        description = ligne1;
+                    }
+                    reader.close();
+                } else {
+                    description = "Pas de fichier info";
                 }
 
-                buffereReader.close();
-                fileReader.close();
+            String cheminImage = mainDossier + nomDossier + "/" + NOM_FICHIER_IMAGE;
+            URL imageUrl = getClass().getResource(cheminImage);
 
-            } else {
-                titre = dossier.getName();
-                description = "Pas de fichier info";
-            }
-            File fichierImage = new File(dossier, NOM_FICHIER_IMAGE); //fait le chemin vers le fichier
-            if (fichierImage.exists()) {
-                Image imgOriginale = ImageIO.read(fichierImage); //charge l'image
+            if (imageUrl != null) {
+                try {
+                Image imgOriginale = ImageIO.read(imageUrl);
                 Image imgRedimensionnee = imgOriginale.getScaledInstance(100, 100, Image.SCALE_FAST);
                 image = new ImageIcon(imgRedimensionnee);
+                } catch (Exception imgException) {
+                    Image defaultImg = Utilitaire.loadDefaultImage();
+                    if (defaultImg != null) {
+                        image = new ImageIcon(defaultImg.getScaledInstance(100, 100, Image.SCALE_FAST));
+                    } else {
+                        Logger.logger.warn("Default image could not be loaded.");
+                    }
+                }
             }
-        } catch (Exception e) {
-            System.out.println("Probleme avec le dossier:" + dossier.getName());
-            e.printStackTrace();
-            titre = "erreur de lecture";
 
+                }
+        } catch (Exception e) {
+            Logger.logger.error("Problem loading map: {}", nomDossier, e);
+            titre = "erreur de lecture";
         }
-        return new InfoLigne(titre, description, image, dossier);
+        return new InfoLigne(titre, description, image, nomDossier);
     }
 
 
     private static class ListRenderer extends JPanel implements ListCellRenderer<InfoLigne> {
 
-        JLabel labelImage = new JLabel();
-        JLabel labelTitre = new JLabel();
-        JLabel labelDescription = new JLabel();
-        JPanel panelTextes = new JPanel();
+        final JLabel labelImage = new JLabel();
+        final JLabel labelTitre = new JLabel();
+        final JLabel labelDescription = new JLabel();
+        final JPanel panelTextes = new JPanel();
 
         public ListRenderer() {
             this.setLayout(new BorderLayout(10, 10));
@@ -168,11 +203,7 @@ public class PanelListe extends JPanel {
             labelImage.setIcon(valeur.image);
             setBackground(Color.GRAY);
 
-            if (isSelected) {
-                setOpaque(true);
-            } else {
-                setOpaque(false);
-            }
+            setOpaque(isSelected);
 
             return this;
         }

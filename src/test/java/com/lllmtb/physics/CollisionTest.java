@@ -1,17 +1,23 @@
 package com.lllmtb.physics;
 
-import com.lllmtb.events.EventBus;
-import com.lllmtb.model.entity.projectile.BulletProjectile;
-import com.lllmtb.model.entity.worm.Worm;
-import com.lllmtb.model.entity.team.Team;
-import com.lllmtb.model.item.UseParams;
-import com.lllmtb.terrain.map.Map;
-import com.lllmtb.terrain.map.MapLoader;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import com.lllmtb.model.entity.projectile.GasProjectile;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import com.lllmtb.engine.GameSettings;
+import com.lllmtb.engine.GameWorld;
+import com.lllmtb.events.EventBus;
+import com.lllmtb.model.entity.projectile.BulletProjectile;
+import com.lllmtb.model.entity.team.Team;
+import com.lllmtb.model.entity.worm.Worm;
+import com.lllmtb.model.item.UseParams;
+import com.lllmtb.terrain.generation.ConfigMap;
+import com.lllmtb.terrain.generation.LandScape;
+import com.lllmtb.terrain.map.Map;
+import com.lllmtb.terrain.map.MapLoader;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class CollisionTest {
@@ -33,11 +39,11 @@ public class CollisionTest {
 
     @BeforeEach
     void setUp() {
-        map = MapLoader.loadMatrix("MapTestCollision");
-        Position posW1 = new Position(1, 14);
+        map = MapLoader.loadMap("MapTestCollision");
+        Position posW1 = new Position(0, 14);
         Position posW2 = new Position(14, 14);
         Position[] positions = {posW1, posW2};
-        team = new Team("Jeff team", 2, positions);
+        team = new Team("Jeff team", 2, positions,0);
         worm1 = new Worm("Jeff", team);
         worm2 = new Worm("José", team);
         team.addWorm(worm1);
@@ -45,11 +51,11 @@ public class CollisionTest {
         pBWorm1 = new PhysicsBody(worm1, posW1, new Vector(5, 0), 1, 2, 1);
         pBWorm2 = new PhysicsBody(worm2, posW2, new Vector(5, 0), 1, 2, 1);
         Position posBP1 = new Position(14, 18);
-        fP1 = new UseParams(0, posBP1, worm1);
+        fP1 = new UseParams(0, posBP1, worm1, 0);
         bP1 = new BulletProjectile(fP1);
         pBBP1 = new PhysicsBody(bP1, posBP1, new Vector(0,0), 1, 1, 1);
         Position posBP2 = new Position(4, 6);
-        fP2 = new UseParams(0, posBP2, worm2);
+        fP2 = new UseParams(0, posBP2, worm2, 0);
         bP2 = new BulletProjectile(fP2);
         pBBP2 = new PhysicsBody(bP2, posBP2, new Vector(1, 0), 1, 1, 1);
         bodies = new CopyOnWriteArrayList<>();
@@ -57,7 +63,7 @@ public class CollisionTest {
         bodies.add(pBWorm2);
         bodies.add(pBBP1);
         bodies.add(pBBP2);
-        collision = new Collision(map, bodies);
+        collision = new Collision(map, bodies, new EventBus());
     }
 
     @Test
@@ -81,8 +87,7 @@ public class CollisionTest {
         assertNull(impact.hitBody);
         assertEquals(14, impact.collisionPos.getX());
         assertEquals(14, impact.collisionPos.getY());
-        assertTrue(0.5 > impact.ti);
-        assertTrue(0.4 < impact.ti);
+        assertEquals(0.5, impact.ti);
         assertEquals(-1, impact.normal.getX());
         assertEquals(0, impact.normal.getY());
         assertTrue(impact.collided);
@@ -92,14 +97,13 @@ public class CollisionTest {
     @Test
     void Collision_whenWormHasCollisionWithMap2() {
         pBWorm1.setVector(new Vector(28, 0));
-        pBWorm1.setPos((new Position(1, 13)));
+        pBWorm1.setPos((new Position(0, 13)));
         Position posFinal = new Position(28, 13);
         Collision.Impact impact = collision.move(pBWorm1, posFinal);
         assertNull(impact.hitBody);
         assertEquals(14, impact.collisionPos.getX());
         assertEquals(13, impact.collisionPos.getY());
-        assertTrue(0.5 > impact.ti);
-        assertTrue(0.4 < impact.ti);
+        assertEquals(0.5, impact.ti);
         assertEquals(-1, impact.normal.getX());
         assertEquals(0, impact.normal.getY());
         assertTrue(impact.collided);
@@ -146,8 +150,7 @@ public class CollisionTest {
         assertEquals(pBBP1, impact.hitBody);
         assertEquals(14, impact.collisionPos.getX());
         assertEquals(16, impact.collisionPos.getY());
-        assertTrue(1.0 > impact.ti);
-        assertTrue(0.8 < impact.collisionPos.getY());
+        assertEquals(0.5, impact.ti);
         assertEquals(0, impact.normal.getX());
         assertEquals(-1, impact.normal.getY());
         assertTrue(impact.collided);
@@ -218,6 +221,7 @@ public class CollisionTest {
     @Test
     void TestSweptCircleTile_whenEndPosOutOfMap() {
         pBWorm1.setVector(new Vector(-10, 5));
+        pBWorm1.setPos(new Position(1, 14));
         Collision.Impact impact = collision.move(pBWorm1, new Position(-9, 19));
         assertNull(impact.hitBody);
         assertEquals(0.0, impact.collisionPos.getX());
@@ -276,11 +280,72 @@ public class CollisionTest {
     void slide() {
         pBWorm1.setPos(new Position(7, 10));
         pBWorm1.setVector(new Vector(5, -2));
+        ConfigMap configMap = new ConfigMap(100, 0, 0, true,0, LandScape.HILLY, GameMode.NORMAL);
+        GameSettings settings = new GameSettings("blabla", 1, new String[]{"José"}, new boolean[1], 1,100, 10, true, "mapTest", configMap, 2,GameMode.NORMAL, true,false);
+
+        EventBus eventBus = new EventBus();
+        GameWorld gw = new GameWorld(settings, eventBus);
         Position posFinal = new Position(12, 8);
         Collision.Impact impact = collision.move(pBWorm1, posFinal);
-        collision.slide(pBWorm1, impact, 1, new EventBus());
+        collision.slide(pBWorm1, impact, 1, gw);
         assertEquals(12, pBWorm1.getPos().getX());
         assertEquals(10.002, pBWorm1.getPos().getY());
+    }
+
+    @Test
+    void slideWithCollision() {
+        pBWorm1.setPos(new Position(6, 10));
+        pBWorm1.setVector(new Vector(5, -2));
+        ConfigMap configMap = new ConfigMap(100, 0,0, true,0, LandScape.HILLY, GameMode.NORMAL);
+        GameSettings settings = new GameSettings("blabla", 1, new String[]{"José"}, new boolean[1], 1,100, 10, true, "mapTest", configMap, 2,GameMode.NORMAL, true,false);
+
+        EventBus eventBus = new EventBus();
+        GameWorld gw = new GameWorld(settings, eventBus);
+        Collision.Impact impact = new Collision.Impact(0.0, new Vector(5,-2),pBWorm1, new Vector(1,0), null, false);
+        collision.slide(pBWorm1, impact, 1, gw);
+        assertEquals(6.002003999992, pBWorm1.getPos().getX());
+        assertEquals(10.001999996000013, pBWorm1.getPos().getY());
+    }
+
+    @Test
+    void slideWithNoMovement() {
+        pBWorm1.setPos(new Position(6, 10));
+        pBWorm1.setVector(new Vector(0, 0));
+
+
+        ConfigMap configMap = new ConfigMap(100, 0,0, true,0, LandScape.HILLY, GameMode.NORMAL);
+        GameSettings settings = new GameSettings("blabla", 1, new String[]{"José"}, new boolean[1], 1,100, 10, true, "mapTest", configMap, 2,GameMode.NORMAL, true,false);
+        EventBus eventBus = new EventBus();
+        GameWorld gw = new GameWorld(settings, eventBus);
+        Collision.Impact impact = new Collision.Impact(0.0, new Vector(5,-2),pBWorm1, new Vector(0,-1), null, false);
+        collision.slide(pBWorm1, impact, 1, gw);
+        assertEquals(6.0, pBWorm1.getPos().getX());
+        assertEquals(10.0, pBWorm1.getPos().getY());
+    }
+
+    @Test
+    void slideImpactNormalIs0() {
+        pBWorm1.setPos(new Position(7, 10));
+        Collision.Impact impact = new Collision.Impact(pBWorm1.getPos());
+        ConfigMap configMap = new ConfigMap(100, 0,0, true,0, LandScape.HILLY, GameMode.NORMAL);
+        GameSettings settings = new GameSettings("blabla", 1, new String[]{"José"}, new boolean[1], 1,100, 10, true, "mapTest", configMap, 2,GameMode.NORMAL, true,false);
+        EventBus eventBus = new EventBus();
+        GameWorld gw = new GameWorld(settings, eventBus);
+        collision.slide(pBWorm1, impact, 1, gw);
+        assertFalse(worm1.isOnGround());
+        assertEquals(0, pBWorm1.getVector().getX());
+    }
+
+    @Test
+    void slideImpactNormalIs0NotWorm() {
+        pBBP1.setPos(new Position(7, 10));
+        Collision.Impact impact = new Collision.Impact(pBBP1.getPos());
+        ConfigMap configMap = new ConfigMap(100, 0,0, true,0, LandScape.HILLY, GameMode.NORMAL);
+        GameSettings settings = new GameSettings("blabla", 1, new String[]{"José"}, new boolean[1], 1,100, 10, true, "mapTest", configMap, 2,GameMode.NORMAL, true,false);
+        EventBus eventBus = new EventBus();
+        GameWorld gw = new GameWorld(settings, eventBus);
+        collision.slide(pBBP1, impact, 1, gw);
+        assertEquals(0, pBBP1.getVector().getX());
     }
 
     @Test
@@ -301,7 +366,8 @@ public class CollisionTest {
         Position posFinal = new Position(28, 14);
         Collision.Impact impact = collision.move(pBWorm1, posFinal);
         collision.touch(pBWorm1, impact);
-        assertEquals(impact.collisionPos, pBWorm1.getPos());
+        assertEquals(13.998, pBWorm1.getPos().getX());
+        assertEquals(14.0, pBWorm1.getPos().getY());
         assertEquals(0, pBWorm1.getVector().getX());
         assertEquals(0, pBWorm1.getVector().getY());
     }
@@ -311,5 +377,62 @@ public class CollisionTest {
         Position pos = new Position(5, 12);
         collision.cross(pBWorm1, pos);
         assertEquals(pos, pBWorm1.getPos());
+    }
+
+    @Test
+    void testinSpecialTile_WhenNull() {
+        assertNull(collision.inSpecialTile(pBWorm1));
+    }
+
+    @Test
+    void testinSpecialTile_WhenInLava1() {
+        pBWorm1.setPos(new Position(27, 6));
+        assertEquals("LAVA", collision.inSpecialTile(pBWorm1).name());
+    }
+
+    @Test
+    void testinSpecialTile_WhenInLava2() {
+        pBWorm1.setPos(new Position(27, 7));
+        assertEquals("LAVA", collision.inSpecialTile(pBWorm1).name());
+    }
+
+    @Test
+    void testinSpecialTile_WhenInLava3() {
+        pBWorm1.setPos(new Position(26.5, 6));
+        assertEquals("LAVA", collision.inSpecialTile(pBWorm1).name());
+    }
+
+    @Test
+    void testinSpecialTile_WhenInLava4() {
+        pBWorm1.setPos(new Position(26.5, 7));
+        assertEquals("LAVA", collision.inSpecialTile(pBWorm1).name());
+    }
+
+    @Test
+    void testinSpecialTile_WhenInLava5() {
+        pBWorm1.setPos(new Position(27, 5.5));
+        assertEquals("LAVA", collision.inSpecialTile(pBWorm1).name());
+    }
+
+    @Test
+    void testinSpecialTile_WhenInLava6() {
+        pBWorm1.setPos(new Position(26.5, 5.5));
+        assertEquals("LAVA", collision.inSpecialTile(pBWorm1).name());
+    }
+
+    @Test
+    void testinSpecialTile_WhenNull2() {
+        pBWorm1.setPos(new Position(0.5, 5.5));
+        assertNull(collision.inSpecialTile(pBWorm1));
+    }
+
+    @Test
+    void testTypeCross() {
+        GasProjectile gas = new GasProjectile(fP1);
+        Position pos = new Position(2, 4);
+        PhysicsBody pBGas = new PhysicsBody(gas, pos, new Vector(-4, 0), 1, 1, 1);
+        Collision.Impact impact = collision.move(pBGas, new Position(-2, 4));
+        assertNull(impact.hitBody);
+        assertTrue(impact.die);
     }
 }

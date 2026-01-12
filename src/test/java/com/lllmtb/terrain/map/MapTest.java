@@ -8,13 +8,15 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import com.lllmtb.physics.Position;
+import com.lllmtb.terrain.generation.ConfigMap;
+import com.lllmtb.terrain.generation.LandScape;
 
 public class MapTest {
     private Map m;
 
     @BeforeEach
     public void setUp() {
-        m = MapLoader.loadMatrix("mapTest");
+        m = MapLoader.loadMap("mapTest");
     }
 
     @AfterEach
@@ -85,7 +87,7 @@ public class MapTest {
 
     @Test
     public void toStringTest() {
-        String attentue = "width : 5, height : 6, matrice : \n" +
+        String expected = "width : 5, height : 6, matrice : \n" +
                 "\n" +
                 "     \n" +
                 "   ~ \n" +
@@ -93,9 +95,7 @@ public class MapTest {
                 "#oo##\n" +
                 "ooooo\n" +
                 "ooooo";
-        System.out.println(attentue);
-        System.out.println(m);
-        assertEquals(attentue, m.toString());
+        assertEquals(expected, m.toString());
     }
 
     @Test
@@ -109,7 +109,7 @@ public class MapTest {
     @Test
     void testSetFiles(){
         m.setFilesTxt("test");
-        assertEquals(m.getFilesTxt(), "test");
+        assertEquals("test", m.getFilesTxt());
     }
 
     @Test
@@ -142,4 +142,68 @@ public class MapTest {
         assertEquals(Tile.WATER, m.getTile(position));
     }
 
+    @Test
+    public void testRisingWater() {
+        int width = 4;
+        int height = 5;
+        Map map = new Map(height, width, "test.txt");
+
+        for (int x = 0; x < width; x++) {
+            map.setTile(new Position(x, 0), Tile.WATER);
+            map.setTile(new Position(x, 1), Tile.WATER);
+        }
+        for (int x = 0; x < width; x++) {
+            for (int y = 2; y < height; y++) {
+                map.setTile(new Position(x, y), Tile.AIR);
+            }
+        }
+
+        map.setHeightWater(2);
+        assertEquals(2, map.getHeightWater());
+        boolean result = map.risingWater(1);
+        assertTrue(result);
+        assertEquals(3, map.getHeightWater());
+        assertEquals(Tile.WATER, map.getTile(new Position(3, 2)));
+        assertEquals(Tile.AIR, map.getTile(new Position(2, 3)));
+    }
+
+    @Test
+    public void testInitializeHeightWater() {
+        int width = 4;
+        int height = 5;
+        Map map = new Map(height, width, "test.txt");
+
+        for (int x = 0; x < width; x++) {
+            map.setTile(new Position(x, 0), Tile.WATER);
+            map.setTile(new Position(x, 1), Tile.WATER);
+        }
+        for (int x = 0; x < width; x++) {
+            for (int y = 2; y < height; y++) {
+                map.setTile(new Position(x, y), Tile.AIR);
+            }
+        }
+
+        map.initializeHeightWater();
+        assertEquals(2, map.getHeightWater());
+    }
+
+    @Test
+    public void testRisingWaterWithHeightToHeight() {
+        int width = 4;
+        int height = 5;
+        Map map = new Map(height, width, "test.txt");
+
+        for (int x = 0; x < width; x++) {
+            map.setTile(new Position(x, 0), Tile.WATER);
+            map.setTile(new Position(x, 1), Tile.WATER);
+            map.setTile(new Position(x, 2), Tile.WATER);
+            map.setTile(new Position(x, 3), Tile.WATER);
+            map.setTile(new Position(x, 4), Tile.WATER);
+        }
+
+        map.setHeightWater(5);
+        assertEquals(5, map.getHeightWater());
+        boolean result = map.risingWater(1);
+        assertFalse(result);
+    }
 }

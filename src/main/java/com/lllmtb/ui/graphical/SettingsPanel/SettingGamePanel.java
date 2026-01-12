@@ -8,16 +8,19 @@ import java.awt.Insets;
 
 import javax.swing.BorderFactory;
 import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
 
-import com.lllmtb.ui.graphical.Utilitaire;
+import com.lllmtb.physics.GameMode;
+import com.lllmtb.ui.graphical.Utilitaire.Utilitaire;
 
 
 public class SettingGamePanel extends JPanel {
     public JTextField[] champsNomsEquipes;
+    public JCheckBox[] botCheckBoxes;
     public static final int MAX_EQUIPES = 4;
     public static final int MAX_WORM = 6;
     public static final int MAX_TIME = 40;
@@ -29,9 +32,11 @@ public class SettingGamePanel extends JPanel {
     public JSlider turnDurationSlider;
     public JCheckBox windCheckBox;
     public JCheckBox friendlyFireCheckBox;
+    public JCheckBox coinCheatBox;
     public JSlider maxJumpSlider;
     public JSlider maxLifeSlider;
     public JTextField gameTitleField;
+    public JComboBox<GameMode> gameModeBox;
 
 
     /**
@@ -95,7 +100,9 @@ public class SettingGamePanel extends JPanel {
 
         //teams names
         champsNomsEquipes = new JTextField[MAX_EQUIPES];
+        botCheckBoxes = new JCheckBox[MAX_EQUIPES];
         for (int i = 0; i < MAX_EQUIPES; i++) {
+            gbc.gridwidth = 1;
             gbc.gridx = 0;
             gbc.gridy = row;
 
@@ -103,8 +110,12 @@ public class SettingGamePanel extends JPanel {
             contentGrid.add(labelEquipe, gbc);
 
             gbc.gridx = 1;
-            champsNomsEquipes[i] = new JTextField("Équipe " + (i + 1), 15);
+            champsNomsEquipes[i] = new JTextField("" + (i + 1), 15);
             contentGrid.add(champsNomsEquipes[i], gbc);
+
+            gbc.gridx = 2;
+            botCheckBoxes[i] = new JCheckBox("Bot");
+            contentGrid.add(botCheckBoxes[i], gbc);
             row++;
         }
 
@@ -148,7 +159,7 @@ public class SettingGamePanel extends JPanel {
         gbc.gridwidth = 2;
         gbc.gridx = 0;
         gbc.gridy = row++;
-        JLabel titre2 = new JLabel("PARAMETRES PHYSIQUE");
+        JLabel titre2 = new JLabel("PARAMETRES PHYSIQUES");
         titre2.setFont(new Font("Arial", Font.BOLD, 16));
         contentGrid.add(titre2, gbc);
 
@@ -181,9 +192,35 @@ public class SettingGamePanel extends JPanel {
         contentGrid.add(maxJumpSlider, gbc);
         row++;
 
+        //gameMode
+        gbc.gridx = 0;
+        gbc.gridy = row;
+        JLabel gameModeLabel = new JLabel("Mode de jeu :");
+        contentGrid.add(gameModeLabel, gbc);
 
+        gbc.gridx = 1;
+        this.gameModeBox = new JComboBox<>(GameMode.values());
+        contentGrid.add(gameModeBox, gbc);
+        row++;
+
+
+
+    //cheat parametter
+        gbc.gridwidth = 2;
+        gbc.gridx = 0;
+        gbc.gridy = row++;
+        JLabel titre3 = new JLabel("Mode de triche");
+        titre3.setFont(new Font("Arial", Font.BOLD, 16));
+        contentGrid.add(titre3, gbc);
+
+        //coin
+        gbc.gridwidth = 2;
+        gbc.gridx = 0;
+        gbc.gridy = row;
+        this.coinCheatBox = new JCheckBox("Pièces illimitées");
+        contentGrid.add(this.coinCheatBox, gbc);
+        row++;
     }
-
 
     ////////////GETTERS/////////////////
 
@@ -257,10 +294,39 @@ public class SettingGamePanel extends JPanel {
     }
 
     /**
-     * gets if the friendlyFire option is selected
-     * @return ture if selected.
+     * gets if the friendlyFire option is selected.
+     * @return true if selected.
      */
     public boolean getFriendlyFire() {
         return this.friendlyFireCheckBox.isSelected();
+    }
+
+    /**
+     * Gets the selected game mode from the combo box.
+     * @return the selected GameMode.
+     */
+    public GameMode getGameMode() {
+        return (GameMode) this.gameModeBox.getSelectedItem();
+    }
+
+    /**
+     * Gets if the coin cheat option is selected.
+     * @return true if coin cheat is selected, false otherwise.
+     */
+    public boolean getCoinCheat() {
+        return this.coinCheatBox.isSelected();
+    }
+
+    /**
+     * Gets bots status for each team
+     * @return an array of booleans indicating if a team is a bot
+     */
+    public boolean[] getIsBot() {
+        int nbEquipes = getNbEquipes();
+        boolean[] isBot = new boolean[nbEquipes];
+        for (int i = 0; i < nbEquipes; i++) {
+            isBot[i] = botCheckBoxes[i].isSelected();
+        }
+        return isBot;
     }
 }

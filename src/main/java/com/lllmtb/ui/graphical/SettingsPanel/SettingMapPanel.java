@@ -17,66 +17,52 @@ public class SettingMapPanel extends JPanel {
     public CardLayout cardLayout;
     public GenerateMapPanel generateMapPanel;
     public PanelListe panelListeMap;
-    public EventBus eventBus;
+    public EventBus systemBus;
     public boolean loadMap = true;
 
     /**
      *
-     * @param eventBus the event bus of the game
+     * @param systemBus the system bus of the game
      * This page contains  2 panel and 2 button for choose the panel
-     *
+     * </p>
      * 1: panelListeMap for choose a map
      * 2: generateMapPanel for create a map
      *
      */
-    public SettingMapPanel(EventBus eventBus) {
-        this.eventBus = eventBus;
+    public SettingMapPanel(EventBus systemBus) {
+        this.systemBus = systemBus;
         this.setBorder(BorderFactory.createTitledBorder(""));
         cardLayout = new CardLayout();
         this.setLayout(new BorderLayout());
         JPanel cardPanel = new JPanel(this.cardLayout);
         this.add(cardPanel);
 
-        JButton loadButton = new JButton("Load Map");
-        JButton generateButton = new JButton("Generate Map");
+        JButton loadButton = new JButton("Charger une carte");
+        JButton generateButton = new JButton("Générer une carte");
 
+        this.panelListeMap = new PanelListe(MapLoader.getListeNomsMaps(), "/map/", false);
         this.generateMapPanel = new GenerateMapPanel();
-        this.panelListeMap = new PanelListe(MapLoader.getListeDossiersMaps());
-
 
         cardPanel.add(this.panelListeMap, "panelListeMap");
         cardPanel.add(this.generateMapPanel, "generateMapPanel");
 
-
-        eventBus.subscribe(ScreenGenerateMap.class, event -> {
-            cardLayout.show(cardPanel, "generateMapPanel");
-            System.out.println("event generate recuperer");
-
-        });
-
-        eventBus.subscribe(ScreenLoadMap.class, event -> {
-            cardLayout.show(cardPanel, "panelListeMap");
-            System.out.println("event load recuperer");
-
-        });
+        systemBus.subscribe(ScreenLoadMap.class, event -> cardLayout.show(cardPanel, "panelListeMap"));
+        systemBus.subscribe(ScreenGenerateMap.class, event -> cardLayout.show(cardPanel, "generateMapPanel"));
 
         JPanel boutonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         boutonPanel.add(loadButton);
         boutonPanel.add(generateButton);
         this.add(boutonPanel, BorderLayout.NORTH);
 
-
         loadButton.addActionListener(e -> {
-            eventBus.postQueued(new ScreenLoadMap());
+            systemBus.postQueued(new ScreenLoadMap());
             this.loadMap = true;
         });
 
         generateButton.addActionListener(e -> {
-            eventBus.postQueued(new ScreenGenerateMap());
+            systemBus.postQueued(new ScreenGenerateMap());
             this.loadMap = false;
         });
-
-
     }
 
     /**

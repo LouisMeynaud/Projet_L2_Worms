@@ -1,22 +1,30 @@
 package com.lllmtb.engine;
 
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
-
 import org.eclipse.jdt.annotation.NonNull;
 
 import com.lllmtb.engine.commands.GameCommand;
 import com.lllmtb.engine.logger.Logger;
+import com.lllmtb.engine.save.GameSave;
+import com.lllmtb.engine.save.PhysicsBodySave;
+import com.lllmtb.engine.save.TeamSave;
 import com.lllmtb.engine.turn.TurnManager;
+import com.lllmtb.engine.turn.BotController;
+import com.lllmtb.engine.turn.Turn;
 import com.lllmtb.events.EventBus;
 import com.lllmtb.events.game.GameStateUpdatedEvent;
 import com.lllmtb.model.entity.Entity;
 import com.lllmtb.model.entity.team.Team;
 import com.lllmtb.model.entity.worm.Worm;
+import com.lllmtb.model.entity.projectile.Projectile;
+import com.lllmtb.model.shop.ShopManager;
+import com.lllmtb.physics.GameMode;
 import com.lllmtb.physics.Move;
 import com.lllmtb.physics.PhysicsEngine;
 import com.lllmtb.terrain.generation.ConfigMap;
@@ -29,66 +37,158 @@ public class GameWorld {
     private final Map map;
     private final EventBus bus;
     private final PhysicsEngine physics;
-    private final List<Team> teams;
-    private final GameLoop gameLoop;
-    private int indexTeam;
-    private final TurnManager turnManager;
-    private String gameName;
-    Thread loopThread;
-
+    private final String gameName;
+    private final GameMode gameMode;
+    private ConfigMap configMap;
+    private final ShopManager shopManager;
     private final BlockingQueue<GameCommand> commandQueue;
+    private final List<Team> teams;
+    private final TurnManager turnManager;
+    private final BotController botController;
+    private int indexTeam;
+    private final GameLoop gameLoop;
+    protected Thread loopThread;
 
+    public GameWorld(GameSave gameSave, Map map) {
+        Logger.logger.info("Loading GameWorld from save...");
+        GameSettings settings = gameSave.gameSettings;
+        this.gameName = gameSave.gameSettings.gameName;
+        this.indexTeam = gameSave.indexTeam;
+        // Init Map - fail if map is null
+        if (map == null) {
+            Logger.logger.error("Cannot load game: Map is null");
+            throw new IllegalArgumentException("Map cannot be null when loading a saved game");
+        }
+
+        this.map = map;
+        this.bus = new EventBus();
+        Move.setMaxjump(settings.maxJump);
+
+        // Init GameCommand queue
+        this.commandQueue = new LinkedBlockingQueue<>();
+
+        //Init gameMode
+        this.gameMode = settings.gameMode;
+
+
+        // Init PhysicsEngine
+        this.physics = new PhysicsEngine(map, this, settings.hasWind, settings.gameMode);
+        physics.getBodies().clear();
+        for (PhysicsBodySave physicsBodySave : gameSave.entities) {
+            physics.add(physicsBodySave.physicsBody);
+        }
+
+        // Init Teams
+        this.teams = new ArrayList<>();
+        for (TeamSave saveTeam :gameSave.teams) {
+            this.teams.add(new Team(saveTeam));
+        }
+        // Init GameLoop
+        this.gameLoop = new GameLoop(this);
+
+        //Init TurnManager
+        this.turnManager = gameSave.turnManager;
+
+        try {
+            Field worldField = TurnManager.class.getDeclaredField("world");
+            worldField.setAccessible(true);
+            worldField.set(this.turnManager, this);
+            Field turnField = TurnManager.class.getDeclaredField("turn");
+            turnField.setAccessible(true);
+            turnField.set(this.turnManager, new Turn(this.getPlayingTeam()));
+            Field restartField = TurnManager.class.getDeclaredField("restart");
+            restartField.setAccessible(true);
+            restartField.set(this.turnManager, true);
+            Field nbTurnField = TurnManager.class.getDeclaredField("nbTurn");
+            nbTurnField.setAccessible(true);
+            nbTurnField.set(this.turnManager, this.turnManager.getNbTurn() - 1);
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
+        this.turnManager.init();
+
+        //Init BotController
+        this.botController = new BotController(this);
+
+        //Init FriendlyFire
+        Projectile.setFriendlyFire(settings.friendlyFire);
+
+        //Init ShopManager
+        this.shopManager = new ShopManager(this.bus);
+
+        //Init credit from current Team
+        this.teams.get(indexTeam).removeCredits(150);
+
+        Logger.logger.info("Game successfully loaded from save");
+    }
 
     public GameWorld(GameSettings settings, EventBus eventBus) {
-        gameName = settings.mapFileName;
         Map tmap = null;
         this.gameName = settings.gameName;
-        // Init Map (we'll have to handle this better once MapLoader throws catchable exceptions)
+        // Try to load map from file
         if (settings.mapFileName != null) {
             try {
-                tmap = MapLoader.loadMatrix(settings.mapFileName);
+                tmap = MapLoader.loadMap(settings.mapFileName);
+                this.configMap = new ConfigMap(tmap.getWidth(), tmap.getHeightWater(), 0, false, 0, settings.terrainType, settings.gameMode);
             } catch (Exception e) {
+                Logger.logger.error("Failed to load map '{}'", settings.mapFileName, e);
                 throw new RuntimeException(e);
             }
         }
         if (tmap == null) {
-            System.out.println("Generating a new map...");
-            ConfigMap config = new ConfigMap(settings.widthMap, 4, 5, settings.floatingIsland, 17, settings.terrainType, settings.nbTeams, settings.nbWorms);
-            tmap = GenerateMap.createMap(config);
+            Logger.logger.info("Generating a new map...");
+
+            this.configMap = settings.configMap;
+            this.configMap.setGameMode(settings.gameMode);
+            tmap = GenerateMap.createMap(this.configMap);
         }
         this.map = tmap;
         this.map.setSpawnPoint(CreateSpawnPoint.createSpawnPoint(settings.nbTeams, settings.nbWorms, tmap));
-
         this.bus = eventBus;
         Move.setMaxjump(settings.maxJump);
 
         // Init GameCommand queue
         this.commandQueue = new LinkedBlockingQueue<>();
 
+        //Init gameMode
+        this.gameMode = settings.gameMode;
+
         // Init PhysicsEngine
-        this.physics = new PhysicsEngine(map, bus, settings.hasWind);
+        this.physics = new PhysicsEngine(map, this, settings.hasWind, gameMode);
 
         // Init Teams
         this.teams = new ArrayList<>();
         Logger.logger.info("Creating the Teams...");
+        Worm.setMaxHp(settings.maxHp);
         for (int i = 0; i < settings.nbTeams; i++) {
             try {
-                Worm.setMaxHp(settings.maxHp);
-                Team team = new Team(settings.teamNames[i], settings.nbWorms, tmap.getSpawnPoint()[i]);
+                int coin = settings.coinCheat ? -1 : 0;
+                Team team = new Team(settings.teamNames[i], settings.nbWorms, tmap.getSpawnPoint()[i], coin);
+                if (settings.isBot[i]) team.setBot(true);
                 teams.add(team);
                 team.getTeamWorms().forEach(this::registerEntity);
-                Logger.logger.info("{} | {} - {} - {}\n", i, team.name, team.id, team.teamColor);
+                Logger.logger.info("{} | {} - {} - {} [Bot: {}]\n", i, team.name, team.id, team.teamColor, team.isBot());
             } catch (ArrayIndexOutOfBoundsException e) {
                 break;
             }
         }
 
+        //Init FriendlyFire
+        Projectile.setFriendlyFire(settings.friendlyFire);
+
         // Init GameLoop
         this.gameLoop = new GameLoop(this);
-        Logger.logger.debug("Game initialised");
 
         //Init TurnManager
         this.turnManager = new TurnManager(this, settings.turnDuration);
+
+        //Init BotController
+        this.botController = new BotController(this);
+
+        //Init ShopManager
+        this.shopManager = new ShopManager(this.bus);
+
+        Logger.logger.info("Game successfully initialised");
     }
 
     public Map getMap() {
@@ -108,6 +208,8 @@ public class GameWorld {
     }
 
     public Team getPlayingTeam() {
+        if (teams.isEmpty()) return null;
+        if (indexTeam < 0) return teams.get(0);
         return teams.get(indexTeam);
     }
 
@@ -131,12 +233,25 @@ public class GameWorld {
         return gameName;
     }
 
+    public GameMode getGameMode() {
+        return gameMode;
+    }
+
+    public ShopManager getShopManager() {
+        return this.shopManager;
+    }
+
+    public ConfigMap getConfigMap() {
+        return this.configMap;
+    }
+
     public void start() {
         if (loopThread != null && loopThread.isAlive()) return;
         Logger.logger.debug("Starting the game loop...");
         loopThread = new Thread(gameLoop, "gameloop");
-        this.startTeamTurn();
         loopThread.start();
+        this.indexTeam--;
+        nextTeamTurn();
     }
 
     public void pause(boolean paused) {
@@ -148,6 +263,7 @@ public class GameWorld {
 
     public void stop() {
         Logger.logger.debug("Stopping the game loop...");
+        turnManager.cleanup();
         gameLoop.stop();
         if (loopThread != null) {
             loopThread.interrupt();
@@ -167,23 +283,26 @@ public class GameWorld {
         processCommands();
         physics.next(tickTime);
         turnManager.updateTurn(tickTime);
+        physics.update(tickTime);
         bus.postQueued(new GameStateUpdatedEvent());
     }
 
-    // TODO - find out why startTurn is called on the main engine-loop thread at the start
-    public void startTeamTurn() {
-        if (!teams.isEmpty()) {
-            this.turnManager.startTurn(teams.get(indexTeam));
-        }
-    }
-
     public void nextTeamTurn() {
-        if (!teams.isEmpty()) {
-            this.turnManager.startTurn(teams.get(indexTeam++));
-            if (indexTeam >= teams.size()) {
-                indexTeam = 0;
-            }
+        if (teams.isEmpty()) {
+            Logger.logger.warn("No teams available to take a turn.");
+            throw new IllegalArgumentException("List teams empty");
         }
+        int attempts = 0;
+        int maxAttempts = teams.size() + 1;
+        do {
+            indexTeam = (indexTeam + 1) % teams.size();
+            attempts++;
+        } while (!teams.get(indexTeam).oneAlive() && attempts < maxAttempts);
+        if (attempts >= maxAttempts) {
+            Logger.logger.error("No team available with a worm alive to take a turn");
+            throw new IllegalStateException("No team alive found to take a turn");
+        }
+        this.turnManager.startTurn(teams.get(indexTeam));
     }
 
     /**
@@ -204,6 +323,7 @@ public class GameWorld {
      * @return true if all commands were successfully queued, false otherwise
      */
     public boolean queueCommands(List<GameCommand> cmds) {
+        if (cmds == null || cmds.isEmpty()) return false;
         boolean allQueued = true;
         for (GameCommand cmd : cmds) {
             if (!queueCommand(cmd)) allQueued = false;
@@ -226,5 +346,13 @@ public class GameWorld {
                 Logger.logger.error("Error commands : {} ", ex.getMessage(), ex);
             }
         }
+    }
+
+    /**
+     * Get the BotController for managing bot-controlled teams.
+     * @return the BotController instance
+     */
+    public BotController getBotController() {
+        return botController;
     }
 }

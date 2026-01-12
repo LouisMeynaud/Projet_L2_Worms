@@ -5,12 +5,28 @@ stages:
   - build
   - test
   - package
+  - release
 
 variables:
-  MAVEN_CLI_OPTS: "-B -ntp -e" # non-interactive, no progress bars, show errors
-  MAVEN_OPTS: "-Dhttps.proxyHost=194.254.199.96 -Dhttps.proxyPort=3128 -Djava.awt.headless=true"  # proxy + disable gui
+  MAVEN_CLI_OPTS: "-B -ntp -e -Dmaven.repo.local=.m2/repository" # non-interactive, no progress bars, show errors
 
-#Validate - checkstyle before compile
+# Maven dependency cache (shared across jobs)
+cache:
+  key: maven
+  paths:
+    - .m2/repository
+
+before_script:
+  - |
+    if [[ "$RUNNER_PROFILE" == "personal" ]] || [[ "$USER" == "leo" ]]; then
+      echo "Proxy disabled"
+      export MAVEN_OPTS="-Djava.awt.headless=true"
+    else
+      echo "Proxy enabled"
+      export MAVEN_OPTS="-Dhttps.proxyHost=194.254.199.96 -Dhttps.proxyPort=3128 -Djava.awt.headless=true"
+    fi
+
+# Validate - checkstyle before compile
 validate:
   stage: validate
   script:
@@ -23,14 +39,13 @@ validate:
       - target/reports/checkstyle.html
       - target/reports/**
 
-
 # Compile - validates pom and compiles sources
 compile:
   stage: build
   script:
     - mvn $MAVEN_CLI_OPTS -DskipTests clean compile
 
-# Tests - runs jUnit tests & verifies JaCoCo coverage threshold + publish reports
+# Tests - runs JUnit tests & verifies JaCoCo coverage threshold + publish reports
 test:
   stage: test
   script:
@@ -53,11 +68,49 @@ package:
   stage: package
   script:
     - mvn $MAVEN_CLI_OPTS -DskipTests clean package
-  artifacts:
-    when: on_success
-    paths:
-      - target/*.jar
-    expire_in: 1 week
+  #artifacts:           # disabled because of new upload size restrictions in GitLab 
+  #  when: on_success
+  #  paths:
+  #    - target/*-fat.jar
+  #  expire_in: 1 week
   only:
     - main
     - dev
+
+# Upload the build artifact to the GitLab Package Registry on new tag
+upload_package:
+  stage: release
+  rules:
+    - if: $CI_COMMIT_TAG
+  script:
+    - VERSION="${CI_COMMIT_TAG#v}"
+    - JAR_NAME="worms-${VERSION}-fat.jar"
+
+    - mvn -DskipTests clean package
+    - mv target/*-fat.jar "target/${JAR_NAME}"
+
+    - PACKAGE_URL="$CI_API_V4_URL/projects/$CI_PROJECT_ID/packages/generic/worms/${VERSION}/${JAR_NAME}"
+
+    - |
+      curl --fail --header "JOB-TOKEN: $CI_JOB_TOKEN" \
+           --upload-file "target/${JAR_NAME}" \
+           "$PACKAGE_URL"
+
+# Release - create GitLab release on new tag, attach built jar
+release:
+  stage: release
+  image: registry.gitlab.com/gitlab-org/release-cli:latest
+  needs: [ "upload_package" ]
+  rules:
+    - if: $CI_COMMIT_TAG
+  script:
+    - VERSION="${CI_COMMIT_TAG#v}"
+    - JAR_NAME="worms-${VERSION}-fat.jar"
+    - PACKAGE_URL="$CI_API_V4_URL/projects/$CI_PROJECT_ID/packages/generic/worms/${VERSION}/${JAR_NAME}"
+    - |
+      release-cli create \
+        --name "Release v${VERSION}" \
+        --tag-name "$CI_COMMIT_TAG" \
+        --description "$(cat CHANGELOG.md)" \
+        --assets-link \
+          "{\"name\":\"Build Artifacts (fatjar)\",\"url\":\"${PACKAGE_URL}\"}"

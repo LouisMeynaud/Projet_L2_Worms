@@ -1,9 +1,25 @@
 package com.lllmtb.physics;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
+
+import com.lllmtb.model.entity.Coin;
+import com.lllmtb.model.entity.Drop;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+
+import com.lllmtb.engine.GameWorld;
+import com.lllmtb.engine.turn.TurnManager;
 import com.lllmtb.events.EventBus;
 import com.lllmtb.events.physics.PhysicsModifierAddedEvent;
 import com.lllmtb.events.physics.PhysicsModifierRemovedEvent;
 import com.lllmtb.model.entity.projectile.BulletProjectile;
+import com.lllmtb.model.entity.projectile.RocketProjectile;
 import com.lllmtb.model.entity.team.Team;
 import com.lllmtb.model.entity.worm.Worm;
 import com.lllmtb.model.item.ItemId;
@@ -12,35 +28,29 @@ import com.lllmtb.model.item.tool.ToolId;
 import com.lllmtb.model.item.weapon.WeaponId;
 import com.lllmtb.terrain.map.Map;
 import com.lllmtb.terrain.map.MapLoader;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicReference;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class PhysicsEngineTest {
     private Map map;
-    private EventBus bus;
+    private GameWorld world;
     private PhysicsEngine pE;
     private PhysicsBody pBWorm;
     private PhysicsBody pBBP;
+    private EventBus bus;
 
     @BeforeEach
     void setUp() {
-        map = MapLoader.loadMatrix("mapTest");
+        map = MapLoader.loadMap("mapTest");
         bus = new EventBus(4);
-        pE = new PhysicsEngine(map, bus, true);
+        world = Mockito.mock(GameWorld.class);
+        Mockito.when(world.getBus()).thenReturn(bus);
+        pE = new PhysicsEngine(map, world, true, GameMode.NORMAL);
         Position pw = new Position(4, 4);
-        Worm w = new Worm("José", new Team("Team", 1, new Position[]{pw}));
+        Worm w = new Worm("José", new Team("Team", 1, new Position[]{pw}, 0));
         assertTrue(map.inMap(pw));
         Position pBP = new Position(0, 5);
-        BulletProjectile bP = new BulletProjectile(new UseParams(0, pBP, w));
+        BulletProjectile bP = new BulletProjectile(new UseParams(0, pBP, w, 0));
         assertTrue(map.inMap(pw));
         pBWorm = w.getBody();
         pBBP = bP.getBody();
@@ -76,13 +86,13 @@ class PhysicsEngineTest {
 
     @Test
     void testChangeWind_whenNoWind() {
-        PhysicsEngine tpE = new PhysicsEngine(map, bus, false);
+        PhysicsEngine tpE = new PhysicsEngine(map, world, false, GameMode.NORMAL);
         tpE.add(pBWorm);
 
         Vector before = tpE.getWind();
         tpE.changeWind();
         Vector after = tpE.getWind();
-        assertTrue(before.equals(after));
+        assertEquals(before, after);
     }
 
     @Test
@@ -108,7 +118,7 @@ class PhysicsEngineTest {
     @Test
     void testNextStep_WhenNoCollisions() {
         double dt = 0;
-        PhysicsEngine tpE = new PhysicsEngine(map, bus, false);
+        PhysicsEngine tpE = new PhysicsEngine(map, world, false,GameMode.NORMAL);
         tpE.add(pBBP);
         pBBP.setPos(new Position(0, 5));
         pBBP.setVector(new Vector(0, 0));
@@ -120,13 +130,13 @@ class PhysicsEngineTest {
     @Test
     void testNextStep_WhenDie() {
         double dt = 0.0167;
-        PhysicsEngine tpE = new PhysicsEngine(map, bus, false);
+        PhysicsEngine tpE = new PhysicsEngine(map, world, false, GameMode.NORMAL);
         tpE.add(pBBP);
         pBBP.setPos(new Position(0, 5));
         pBBP.setVector(new Vector(-10, 0));
         tpE.nextStep(dt);
         assertEquals(5, pBBP.getPos().getY());
-        assertEquals(0, pBBP.getPos().getX());
+        assertEquals(0.002, pBBP.getPos().getX());
     }
 
     @Test
@@ -137,7 +147,7 @@ class PhysicsEngineTest {
         pE.nextStep(dt);
         Position newPos = pBWorm.getPos();
         Vector newVector = pBWorm.getVector();
-        assertEquals(4.0, newPos.getX());
+        assertEquals(3.91650697225, newPos.getX());
         assertEquals(4.002, newPos.getY());
         assertNotEquals(initialVector.getX(), newVector.getX());
         assertNotEquals(initialVector.getY(), newVector.getY());
@@ -146,20 +156,20 @@ class PhysicsEngineTest {
     @Test
     void testNextStep_whenCollision() {
         double dt = 0.0167;
-        PhysicsEngine tpE = new PhysicsEngine(map, bus, false);
+        PhysicsEngine tpE = new PhysicsEngine(map, world, false, GameMode.NORMAL);
         tpE.add(pBWorm);
         tpE.add(pBBP);
         tpE.nextStep(dt);
-        assertEquals(0, pBBP.getPos().getX());
-        assertEquals(4.92499394064, pBBP.getPos().getY());
-        assertEquals(4, pBWorm.getPos().getX());
+        assertEquals(0.0, pBBP.getPos().getX());
+        assertEquals(4.91678788128, pBBP.getPos().getY());
+        assertEquals(3.91650697225, pBWorm.getPos().getX());
         assertEquals(4.002, pBWorm.getPos().getY());
     }
 
     @Test
     void testNextStep_whenCollision2() {
         double dt = 0.0167;
-        PhysicsEngine tpE = new PhysicsEngine(map, bus, false);
+        PhysicsEngine tpE = new PhysicsEngine(map, world, false, GameMode.NORMAL);
         pBWorm.setVector(new Vector(0, 0));
         pBWorm.setPos(new Position(2, 4));
         pBBP.setPos(new Position(1, 5));
@@ -167,17 +177,60 @@ class PhysicsEngineTest {
         tpE.add(pBWorm);
         tpE.add(pBBP);
         tpE.nextStep(dt);
-        assertEquals(1.0001197841492524, pBBP.getPos().getX());
-        assertEquals(4.999988225378354, pBBP.getPos().getY());
-        assertEquals(2, pBWorm.getPos().getX());
+        assertEquals(1.000002000788798, pBBP.getPos().getX());
+        assertEquals(4.999999606640421, pBBP.getPos().getY());
+        assertEquals(2.0, pBWorm.getPos().getX());
         assertEquals(4.002, pBWorm.getPos().getY());
     }
 
     @Test
-    void testWindChangesEvery600Ticks() {
+    void testNextStep_dropOnOtherDrop() {
+        Drop drop1 = new Drop(new Position(0, 4), ToolId.PARACHUTE);
+        Drop drop2 = new Drop(new Position(0, 6), ToolId.PARACHUTE);
+        PhysicsBody body1 = drop1.getBody();
+        PhysicsBody body2 = drop2.getBody();
+        body1.setVector(new Vector(0, -3));
+        body2.setVector(new Vector(0, -3));
+        PhysicsEngine tpE = new PhysicsEngine(map, world, false, GameMode.NORMAL);
+        tpE.add(body1);
+        tpE.add(body2);
+        double dt = 1.0;
+        tpE.nextStep(dt);
+        assertEquals(0.0, body1.getPos().getX());
+        assertEquals(4.0, body1.getPos().getY());
+        assertEquals(0.0, body2.getPos().getX());
+        assertEquals(5.436491673103708, body2.getPos().getY());
+    }
+
+    @Test
+    void testNextStep_coinOnWorm() {
+        Coin coin = new Coin(new Position(4, 6), 10);
+        PhysicsBody coinBody = coin.getBody();
+        coinBody.setVector(new Vector(0, -3));
+        pBWorm.setVector(new Vector(0, 0));
+        PhysicsEngine tpE = new PhysicsEngine(map, world, false, GameMode.NORMAL);
+        tpE.add(pBWorm);
+        tpE.add(coinBody);
+        double dt = 1.0;
+        tpE.nextStep(dt);
+        assertEquals(4.0, pBWorm.getPos().getX());
+        assertEquals(4.002, pBWorm.getPos().getY());
+        assertFalse(tpE.getBodies().contains(coinBody));
+    }
+
+    @Test
+    void testWindChangesEvery1250Ticks() {
         double ticktime = 16.7;
+        TurnManager t = new TurnManager(world, 10000);
+        Map map = Mockito.mock(Map.class);
+        Mockito.when(map.getWidth()).thenReturn(100);
+        Mockito.when(map.getHeightWater()).thenReturn(0);
+        Team team = new Team("TestTeam", 1, new Position[]{new Position(2,4)}, 0);
+        Mockito.when(world.getTurnManager()).thenReturn(t);
+        Mockito.when(world.getMap()).thenReturn(map);
+        t.startTurn(team);
         Vector windBefore = pE.getWind();
-        for (int i = 0; i < 605; i++) {
+        for (int i = 0; i < 1260; i++) {
             pE.next(ticktime);
         }
         Vector windAfter = pE.getWind();
@@ -415,13 +468,320 @@ class PhysicsEngineTest {
     }
 
     @Test
-    void actualizeBodiesTest(){
-        Worm worm = new Worm("Test", new Team("TestTeam", 1, new Position[]{new Position(3,3)}));
-        pE.add(worm.getBody());
-        int size = pE.getBodies().size();
-        worm.damageWorm(worm.getStats().getHp());
-        pE.actualizeBodies();
-        assertEquals(pE.getBodies().size(), size-1);
+    void testCreateExplosion() {
+
+
+        Worm owner = (Worm) pBWorm.getEntity();
+        Position pos = new Position(10, 10);
+        RocketProjectile rocket = new RocketProjectile(new UseParams(0, pos, owner, 0));
+        pE.add(rocket.getBody());
+        pE.createExplosion(rocket, 10, 15, 30, 100, false);
+        assertEquals(2, bus.queuedEventCount());//verifie que les event sont bien crée(explosion et mapUpdate)
+    }
+
+    @Test
+    void fallDamageTest(){
+        Team team = Mockito.mock(Team.class);
+        Worm worm = new Worm("TestWorm", team);
+        worm.getBody().setVector(new Vector(0, -100));
+        PhysicsEngine.fallDamage(worm);
+        //Worm has 100 HP and check if it loses some
+        assertNotEquals(100, worm.getStats().getHp() );
+
+    }
+
+    @Test
+    void checkIfWormDeathAfterFallDamage(){
+        Team team = Mockito.mock(Team.class);
+        Worm worm = new Worm("TestWorm", team);
+        worm.damageWorm(90);
+        assertTrue(worm.isAlive());
+        worm.getBody().setVector(new Vector(0, -200));
+        PhysicsEngine.fallDamage(worm);
+        //Worm has 100 HP and check if it loses some
+        assertFalse(worm.isAlive());
+
+    }
+
+    @Test
+    void testFindClosestEnemyFromPosition_withEmptyList() {
+        Position searchPos = new Position(0, 0);
+        Team ownerTeam = Mockito.mock(Team.class);
+        Worm wormToExclude = Mockito.mock(Worm.class);
+        List<PhysicsBody> emptyList = List.of();
+        
+        Worm result = pE.findClosestEnemyFromPosition(searchPos, ownerTeam, wormToExclude, emptyList);
+        assertNull(result);
+    }
+
+    @Test
+    void testFindClosestEnemyFromPosition_bis() {
+        Position searchPos = new Position(0, 0);
+        Team ownerTeam = Mockito.mock(Team.class);
+        Worm wormToExclude = Mockito.mock(Worm.class);
+
+        Worm result = pE.findClosestEnemyFromPosition(searchPos, ownerTeam, wormToExclude);
+        assertEquals(pBWorm.getEntity(), result);
+    }
+
+    @Test
+    void testFindClosestEnemyFromPosition_withNoEnemies() {
+        Position searchPos = new Position(0, 0);
+        Team ownerTeam = new Team("OwnerTeam", 1, new Position[]{new Position(0,0)}, 0);
+        Worm ownerWorm = new Worm("Owner", ownerTeam);
+        
+        List<PhysicsBody> bodies = List.of(ownerWorm.getBody());
+        Worm result = pE.findClosestEnemyFromPosition(searchPos, ownerTeam, ownerWorm, bodies);
+        assertNull(result);
+    }
+
+    @Test
+    void testFindClosestEnemyFromPosition_withEnemies() {
+        Position searchPos = new Position(0, 0);
+        Team ownerTeam = new Team("OwnerTeam", 1, new Position[]{new Position(0,0)}, 0);
+        Team enemyTeam = new Team("EnemyTeam", 2, new Position[]{new Position(10,10), new Position(15,15)}, 0);
+        
+        Worm ownerWorm = new Worm("Owner", ownerTeam);
+        Worm enemyWorm1 = enemyTeam.getIndexWorm(0);
+        Worm enemyWorm2 = enemyTeam.getIndexWorm(1);
+        
+        ownerWorm.getBody().setPos(new Position(0, 0));
+        enemyWorm1.getBody().setPos(new Position(5, 5));
+        enemyWorm2.getBody().setPos(new Position(10, 10));
+        
+        List<PhysicsBody> bodies = List.of(ownerWorm.getBody(), enemyWorm1.getBody(), enemyWorm2.getBody());
+        Worm result = pE.findClosestEnemyFromPosition(searchPos, ownerTeam, ownerWorm, bodies);
+        assertEquals(enemyWorm1, result);
+    }
+
+    @Test
+    void testFindClosestEnemyFromPosition_withEnemies_whenExcluding() {
+        Position searchPos = new Position(0, 0);
+        Team ownerTeam = new Team("OwnerTeam", 1, new Position[]{new Position(0,0)}, 0);
+        Team enemyTeam = new Team("EnemyTeam", 2, new Position[]{new Position(10,10), new Position(15,15)}, 0);
+
+        Worm ownerWorm = new Worm("Owner", ownerTeam);
+        Worm enemyWorm1 = enemyTeam.getIndexWorm(0);
+        Worm enemyWorm2 = enemyTeam.getIndexWorm(1);
+
+        ownerWorm.getBody().setPos(new Position(0, 0));
+        enemyWorm1.getBody().setPos(new Position(5, 5));
+        enemyWorm2.getBody().setPos(new Position(10, 10));
+
+        List<PhysicsBody> bodies = List.of(ownerWorm.getBody(), enemyWorm1.getBody(), enemyWorm2.getBody());
+        Worm result = pE.findClosestEnemyFromPosition(searchPos, ownerTeam, enemyWorm1, bodies);
+        assertEquals(enemyWorm2, result);
+    }
+
+    @Test
+    void testCalculateAngleToBody() {
+        Position fromPos = new Position(0, 0);
+        PhysicsBody targetBody = Mockito.mock(PhysicsBody.class);
+        Position targetPos = new Position(1, 1);
+        Mockito.when(targetBody.getPos()).thenReturn(targetPos);
+        Mockito.when(targetBody.getWidth()).thenReturn(2.0);
+        Mockito.when(targetBody.getHeight()).thenReturn(2.0);
+        
+        double angle = PhysicsEngine.calculateAngleToBody(fromPos, targetBody);
+        assertEquals(Math.PI / 4, angle, 0.001);
+    }
+
+    @Test
+    void testNextStep_wormInLava() {
+        Map lavaMap = Mockito.mock(Map.class);
+        Mockito.when(lavaMap.inMap(Mockito.any())).thenReturn(true);
+        Mockito.when(lavaMap.isDamaging(Mockito.any())).thenReturn(true);
+        Mockito.when(lavaMap.getTile(Mockito.any())).thenReturn(com.lllmtb.terrain.map.Tile.LAVA);
+        Mockito.when(lavaMap.isSolid(Mockito.any())).thenReturn(false);
+
+        PhysicsEngine testPE = new PhysicsEngine(lavaMap, world, false, GameMode.NORMAL);
+        Position wormPos = new Position(4, 4);
+        Team team = new Team("TestTeam", 1, new Position[]{wormPos}, 0);
+        Worm worm = new Worm("Victim", team);
+        PhysicsBody wormBody = worm.getBody();
+        wormBody.setPos(wormPos);
+        wormBody.setVector(new Vector(0, 0));
+        testPE.add(wormBody);
+
+        testPE.nextStep(0.0167);
+
+        Mockito.verify(world, Mockito.atLeastOnce()).queueCommand(Mockito.any());
+    }
+
+    @Test
+    void testNextStep_wormInHolyWater() {
+        Map holyMap = Mockito.mock(Map.class);
+        Mockito.when(holyMap.inMap(Mockito.any())).thenReturn(true);
+        Mockito.when(holyMap.isDamaging(Mockito.any())).thenReturn(true);
+        Mockito.when(holyMap.getTile(Mockito.any())).thenReturn(com.lllmtb.terrain.map.Tile.HOLYWATER);
+        Mockito.when(holyMap.isSolid(Mockito.any())).thenReturn(false);
+
+        PhysicsEngine testPE = new PhysicsEngine(holyMap, world, false, GameMode.NORMAL);
+        Position wormPos = new Position(4, 4);
+        Team team = new Team("TestTeam", 1, new Position[]{wormPos}, 0);
+        Worm worm = new Worm("Healed", team);
+        PhysicsBody wormBody = worm.getBody();
+        wormBody.setPos(wormPos);
+        wormBody.setVector(new Vector(0, 0));
+        testPE.add(wormBody);
+
+        testPE.nextStep(0.0167);
+
+        Mockito.verify(world, Mockito.atLeastOnce()).queueCommand(Mockito.any());
+    }
+
+    @Test
+    void testNextStep_wormInTrap() {
+        Map trapMap = Mockito.mock(Map.class);
+        Mockito.when(trapMap.inMap(Mockito.any())).thenReturn(true);
+        Mockito.when(trapMap.isDamaging(Mockito.any())).thenReturn(true);
+        Mockito.when(trapMap.getTile(Mockito.any())).thenReturn(com.lllmtb.terrain.map.Tile.TRAP);
+        Mockito.when(trapMap.isSolid(Mockito.any())).thenReturn(false);
+
+        PhysicsEngine testPE = new PhysicsEngine(trapMap, world, false, GameMode.NORMAL);
+        Position wormPos = new Position(4, 4);
+        Team team = new Team("TestTeam", 1, new Position[]{wormPos}, 0);
+        Worm worm = new Worm("Poisoned", team);
+        PhysicsBody wormBody = worm.getBody();
+        wormBody.setPos(wormPos);
+        wormBody.setVector(new Vector(0, 0));
+        testPE.add(wormBody);
+
+        testPE.nextStep(0.0167);
+
+        Mockito.verify(world, Mockito.atLeastOnce()).queueCommand(Mockito.any());
+    }
+
+    @Test
+    void testNextStep_wormInTrapCavern() {
+        Map trapMap = Mockito.mock(Map.class);
+        Mockito.when(trapMap.inMap(Mockito.any())).thenReturn(true);
+        Mockito.when(trapMap.isDamaging(Mockito.any())).thenReturn(true);
+        Mockito.when(trapMap.getTile(Mockito.any())).thenReturn(com.lllmtb.terrain.map.Tile.TRAPCAVERN);
+        Mockito.when(trapMap.isSolid(Mockito.any())).thenReturn(false);
+
+        PhysicsEngine testPE = new PhysicsEngine(trapMap, world, false, GameMode.NORMAL);
+        Position wormPos = new Position(4, 4);
+        Team team = new Team("TestTeam", 1, new Position[]{wormPos}, 0);
+        Worm worm = new Worm("Poisoned", team);
+        PhysicsBody wormBody = worm.getBody();
+        wormBody.setPos(wormPos);
+        wormBody.setVector(new Vector(0, 0));
+        testPE.add(wormBody);
+
+        testPE.nextStep(0.0167);
+
+        Mockito.verify(world, Mockito.atLeastOnce()).queueCommand(Mockito.any());
+    }
+
+    @Test
+    void testNextStep_wormInAirVines() {
+        Map vinesMap = Mockito.mock(Map.class);
+        Mockito.when(vinesMap.inMap(Mockito.any())).thenReturn(true);
+        Mockito.when(vinesMap.isDamaging(Mockito.any())).thenReturn(true);
+        Mockito.when(vinesMap.getTile(Mockito.any())).thenReturn(com.lllmtb.terrain.map.Tile.AIRVINES);
+        Mockito.when(vinesMap.isSolid(Mockito.any())).thenReturn(false);
+
+        PhysicsEngine testPE = new PhysicsEngine(vinesMap, world, false, GameMode.NORMAL);
+        Position wormPos = new Position(4, 4);
+        Team team = new Team("TestTeam", 1, new Position[]{wormPos}, 0);
+        Worm worm = new Worm("Vined", team);
+        PhysicsBody wormBody = worm.getBody();
+        wormBody.setPos(wormPos);
+        wormBody.setVector(new Vector(5, -10));
+        testPE.add(wormBody);
+
+        testPE.nextStep(0.0167);
+
+        Mockito.verify(world, Mockito.atLeastOnce()).queueCommand(Mockito.any());
+    }
+
+    @Test
+    void testNextStep_wormInDirtVines() {
+        Map vinesMap = Mockito.mock(Map.class);
+        Mockito.when(vinesMap.inMap(Mockito.any())).thenReturn(true);
+        Mockito.when(vinesMap.isDamaging(Mockito.any())).thenReturn(true);
+        Mockito.when(vinesMap.getTile(Mockito.any())).thenReturn(com.lllmtb.terrain.map.Tile.DIRTVINES);
+        Mockito.when(vinesMap.isSolid(Mockito.any())).thenReturn(false);
+
+        PhysicsEngine testPE = new PhysicsEngine(vinesMap, world, false, GameMode.NORMAL);
+        Position wormPos = new Position(4, 4);
+        Team team = new Team("TestTeam", 1, new Position[]{wormPos}, 0);
+        Worm worm = new Worm("Vined", team);
+        PhysicsBody wormBody = worm.getBody();
+        wormBody.setPos(wormPos);
+        wormBody.setVector(new Vector(5, -10));
+        testPE.add(wormBody);
+
+        testPE.nextStep(0.0167);
+
+        Mockito.verify(world, Mockito.atLeastOnce()).queueCommand(Mockito.any());
+    }
+
+    @Test
+    void testNextStep_wormInGrassVines() {
+        Map vinesMap = Mockito.mock(Map.class);
+        Mockito.when(vinesMap.inMap(Mockito.any())).thenReturn(true);
+        Mockito.when(vinesMap.isDamaging(Mockito.any())).thenReturn(true);
+        Mockito.when(vinesMap.getTile(Mockito.any())).thenReturn(com.lllmtb.terrain.map.Tile.GRASSVINES);
+        Mockito.when(vinesMap.isSolid(Mockito.any())).thenReturn(false);
+
+        PhysicsEngine testPE = new PhysicsEngine(vinesMap, world, false, GameMode.NORMAL);
+        Position wormPos = new Position(4, 4);
+        Team team = new Team("TestTeam", 1, new Position[]{wormPos}, 0);
+        Worm worm = new Worm("Vined", team);
+        PhysicsBody wormBody = worm.getBody();
+        wormBody.setPos(wormPos);
+        wormBody.setVector(new Vector(5, -10));
+        testPE.add(wormBody);
+
+        testPE.nextStep(0.0167);
+
+        Mockito.verify(world, Mockito.atLeastOnce()).queueCommand(Mockito.any());
+    }
+
+    @Test
+    void testNextStep_wormInCavernVines() {
+        Map vinesMap = Mockito.mock(Map.class);
+        Mockito.when(vinesMap.inMap(Mockito.any())).thenReturn(true);
+        Mockito.when(vinesMap.isDamaging(Mockito.any())).thenReturn(true);
+        Mockito.when(vinesMap.getTile(Mockito.any())).thenReturn(com.lllmtb.terrain.map.Tile.CAVERNVINES);
+        Mockito.when(vinesMap.isSolid(Mockito.any())).thenReturn(false);
+
+        PhysicsEngine testPE = new PhysicsEngine(vinesMap, world, false, GameMode.NORMAL);
+        Position wormPos = new Position(4, 4);
+        Team team = new Team("TestTeam", 1, new Position[]{wormPos}, 0);
+        Worm worm = new Worm("Vined", team);
+        PhysicsBody wormBody = worm.getBody();
+        wormBody.setPos(wormPos);
+        wormBody.setVector(new Vector(5, -10));
+        testPE.add(wormBody);
+
+        testPE.nextStep(0.0167);
+
+        Mockito.verify(world, Mockito.atLeastOnce()).queueCommand(Mockito.any());
+    }
+
+    @Test
+    void testNextStep_wormNotInSpecialTile() {
+        Map normalMap = Mockito.mock(Map.class);
+        Mockito.when(normalMap.inMap(Mockito.any())).thenReturn(true);
+        Mockito.when(normalMap.isDamaging(Mockito.any())).thenReturn(false);
+        Mockito.when(normalMap.getTile(Mockito.any())).thenReturn(com.lllmtb.terrain.map.Tile.AIR);
+        Mockito.when(normalMap.isSolid(Mockito.any())).thenReturn(false);
+
+        PhysicsEngine testPE = new PhysicsEngine(normalMap, world, false, GameMode.NORMAL);
+        Position wormPos = new Position(4, 4);
+        Team team = new Team("TestTeam", 1, new Position[]{wormPos}, 0);
+        Worm worm = new Worm("Safe", team);
+        PhysicsBody wormBody = worm.getBody();
+        wormBody.setPos(wormPos);
+        wormBody.setVector(new Vector(0, 0));
+        testPE.add(wormBody);
+
+        testPE.nextStep(0.0167);
+
+        Mockito.verify(world, Mockito.never()).queueCommand(Mockito.any());
     }
 }
 

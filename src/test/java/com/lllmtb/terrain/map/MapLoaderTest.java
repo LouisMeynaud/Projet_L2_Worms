@@ -1,22 +1,24 @@
 package com.lllmtb.terrain.map;
 
-import static org.junit.jupiter.api.Assertions.*;
-
-import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.List;
 
+import com.lllmtb.engine.save.Load;
+import com.lllmtb.engine.save.SaveConfig;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import com.lllmtb.terrain.map.MapLoader;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class MapLoaderTest {
-    public static String mapText;
+    private static final String TEMP_TEST_DIR = "junit_test_map_999";
     public static Map m;
-    public static String path;
-    public static Tile[][] expectedMatrix = {
+    public static final Tile[][] expectedMatrix = {
         {Tile.AIR,  Tile.AIR,  Tile.AIR,  Tile.AIR,  Tile.AIR},
         {Tile.AIR,  Tile.AIR,  Tile.AIR,  Tile.CAVERN,  Tile.AIR},
         {Tile.DIRT, Tile.DIRT, Tile.DIRT, Tile.GRASS, Tile.DIRT},
@@ -24,12 +26,10 @@ public class MapLoaderTest {
         {Tile.WATER, Tile.WATER, Tile.WATER, Tile.WATER, Tile.WATER},
         {Tile.WATER, Tile.WATER, Tile.WATER, Tile.WATER, Tile.WATER}
     };
+
     @BeforeAll
-    public static void setUp() throws IOException {
-        // path = "src/main/resources/map/mapTest/map.txt";
-        // mapText = Files.readString(Path.of(path));
-        m = MapLoader.loadMatrix("mapTest");
-        System.out.println(m);
+    public static void setUp() {
+        m = MapLoader.loadMap("mapTest");
     }
 
     @Test
@@ -38,9 +38,8 @@ public class MapLoaderTest {
     }
 
     @Test
-    void createMatrix_createsIncorrectMatrixFromFile() {
-        m = MapLoader.loadMatrix("mapIncorrectTest");
-        assertEquals(m, null);;
+    void loadMap_whenIncorrectMapFile() {
+        assertThrows(Exception.class, () -> MapLoader.loadMap("mapIncorrectTest"));
     }
 
     @Test
@@ -49,60 +48,63 @@ public class MapLoaderTest {
     }
 
     @Test
-    void createMatrix_createsInexistantMatrixFromFile() {
-        m = MapLoader.loadMatrix("mapinexistante");
-        assertEquals(m, null);;
+    void loadMap_whenInexistantMapFile() {
+        assertThrows(Exception.class, () -> MapLoader.loadMap("mapinexistante"));
     }
 
     @Test
-    public void testGetListeDossiersMaps_Fonctionne() {
-        File dossierRacine = new File("src/main/resources/map");
-        if (!dossierRacine.exists()) {
-            dossierRacine.mkdirs();
+    public void testGetListeDossiersMaps() {
+        String[] resultats = MapLoader.getListeNomsMaps();
+
+        assertNotNull(resultats, "Ne doit pas retourner null");
+        
+        boolean trouver = false;
+        for (String nom : resultats) {
+            if (nom.equals("Roquefort")) {
+                trouver = true;
+                break;
+            }
         }
-        File dossierTest = new File(dossierRacine, "MapTestUnit");
-        dossierTest.mkdir(); 
+        assertTrue(trouver, "La méthode aurait dû trouver le dossier 'Roquefort'");
+    }
+
+    @Test
+    void testLoadMapLoad_Success() throws IOException {
+        Path testDirPath = Paths.get(SaveConfig.SAVE_DIRECTORY, TEMP_TEST_DIR);
+        Files.createDirectories(testDirPath);
+        Path mapFile = testDirPath.resolve("map.txt");
+        String content = "AAA\nDDD";
+        Files.writeString(mapFile, content, StandardCharsets.UTF_8);
+        try {
+            Map result = MapLoader.loadMapLoad(TEMP_TEST_DIR);
+            assertNotNull(result);
+            assertEquals(2, result.getMapMatrix().length);
+            assertEquals(Tile.AIR, result.getMapMatrix()[0][0]);
+            assertEquals(Tile.DIRT, result.getMapMatrix()[1][0]);
+        } finally {
+            Files.deleteIfExists(mapFile);
+            Files.deleteIfExists(testDirPath);
+        }
+    }
+
+    @Test
+    void testLoadMapLoad_FileNotFound() {
+        Map result = MapLoader.loadMapLoad("dossier_totalement_imaginaire_123");
+        assertNull(result);
+    }
+
+    @Test
+    void testGetListeNomsLoads_WithActualFolder() throws IOException {
+        Path testPath = Paths.get(SaveConfig.SAVE_DIRECTORY, "temp_test_list");
+        Files.createDirectories(testPath);
 
         try {
-            File[] resultats = MapLoader.getListeDossiersMaps();
-
-            assertNotNull(resultats, "Ne doit pas retourner null");
-            
-            boolean aTrouveMonDossier = false;
-            for (File f : resultats) {
-                if (f.getName().equals("MapTestUnit")) {
-                    aTrouveMonDossier = true;
-                    break;
-                }
-            }
-            assertTrue(aTrouveMonDossier, "La méthode aurait dû trouver le dossier 'MapTestUnit'");
-
+            String[] saves = Load.getListeNomsLoads();
+            assertNotNull(saves);
+            List<String> list = Arrays.asList(saves);
+            assertTrue(list.contains("temp_test_list"));
         } finally {
-            dossierTest.delete();
+            Files.deleteIfExists(testPath);
         }
     }
-
-    @Test
-    void testGetListeDossiers_AvecDossierInexistant() {
-        File dossierFantome = new File("src/main/resources/DossierQuiNExistePasDuTout");
-        
-        
-        File[] resultats = MapLoader.getListeDossiers(dossierFantome);
-        
-        assertEquals(0, resultats.length, "Doit renvoyer vide si le dossier n'existe pas");
-    }
-
-    @Test
-    void testGetListeDossiers_AvecUnFichier() throws IOException {
-        
-        File fichierTemp = File.createTempFile("test", ".txt");
-        fichierTemp.deleteOnExit();
-
-       
-        File[] resultats = MapLoader.getListeDossiers(fichierTemp);
-        
-        assertEquals(0, resultats.length, "Doit renvoyer vide si on donne un fichier au lieu d'un dossier");
-    }
-
-
 }
