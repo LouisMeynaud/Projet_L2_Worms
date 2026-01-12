@@ -145,7 +145,7 @@ public class GameUIPanel extends JPanel {
             g2d.setColor(Color.WHITE);
             g2d.setFont(new Font("Arial", Font.BOLD, 12));
 
-            int vitesse = (int) Math.round(force);
+            double vitesse = Math.round(force * 100.0) / 100.0;
             String windText = vitesse + " m/s";
 
             g2d.drawString(windText, 20, height - 15);
