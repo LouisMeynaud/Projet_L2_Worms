@@ -253,18 +253,27 @@ NB. Après les mises à jour GitLab de Noël, une limite de taille a été impos
 En cette période de fêtes, Ginette, le runner GitLab de l’université, peinait à exécuter nos pipelines. De ce fait, la solution qui a été prise fut la suivante : rajouter deux runners personnels au projet (*le remplaçant de Ginette* et *Fred*). Depuis, nos pipelines sont quasiment instantanées.
 
 ### 4.3 Stratégie de Tests
-*   **Tests Unitaires** : Utilisation de **JUnit 5** et **Mockito** pour tester isolément la logique métier (ex: calculs de vecteurs, gestion d'inventaire).
-*   **Tests d'Intégration** : Tests end-to-end (`GameWorldTest`) simulants une partie complète (chargement de map, initialisation physique, tours) pour garantir la cohérence globale.
-*   **Tests de Robustesse** : Validation stricte des entrées (chargement de fichiers corrompus, paramètres invalides) et gestion des exceptions pour éviter les crashs.
-*   * Utilisation du **fuzzing** pour vérifier la robustesse du chargeur de map face à des entrées aléatoires.
-*   **Tests de Performance** : Monitoring de la durée des "ticks" (boucle de jeu) pour assurer un framerate fluide (120Hz visé) même avec beaucoup de particules.
+*   **Tests Unitaires**
+    * Utilisation de **JUnit 5** et **Mockito** pour tester isolément la logique (ex: calculs de vecteurs, gestion d'inventaire).
+*   **Tests d'Intégration**
+    * Tests end-to-end (`GameWorldTest`) simulants une partie complète (chargement de map, initialisation physique, tours) pour garantir la cohérence globale.
+    * Mise en situation des interactions entre plusieurs composants (ex: armes générant des projectiles, collisions, dégâts, déplacement d'entités...).
+*   **Tests de Robustesse**
+    * Validation stricte des entrées (chargement de fichiers corrompus, paramètres invalides) et gestion des exceptions pour éviter les crashs.
+    * Utilisation du **fuzzing** pour vérifier la robustesse du chargeur de map face à des entrées aléatoires.
+*   **Tests de Performance**
+    * Monitoring de la durée des "ticks" (boucle de jeu) pour assurer un framerate fluide (120Hz visé).
+    * Essais avec des configurations matérielles limitées pour garantir une expérience jouable partout.
+    * Parties avec beaucoup d'entités, d'explosions... La durée moyenne d'un tick reste inférieure à 8ms, assurant une fluidité optimale.
+
+> **527** tests JUnit ont été écrits.
 
 ### TESTÉ SUR:
 - WINDOWS 11
 - DEBIAN 13
 - UBUNTU 22.04
 - ARCH 6.18
-- MACOS VENTURA
+- MACOS SONOMA
 
 ## 5. Problèmes Rencontrés et Solutions
 
