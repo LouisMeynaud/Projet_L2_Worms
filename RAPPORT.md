@@ -124,6 +124,7 @@ Pour ajouter une arme, il suffit de :
 1. Ajouter une entrée dans l'enum `WeaponId`.
 2. Créer une classe étendant `Weapon` (ex : `BazookaWeapon`).
 3. Implémenter sa méthode `fire(UseParams params)` qui retourne une liste de `GameCommand`.
+4. Enregistrer l'arme dans le `WeaponRegistry`.
 
 Exemple de simplicité d'ajout (`Bazooka`) :
 ```java
@@ -175,13 +176,10 @@ Le système de tour par tour est géré par la classe `TurnManager`. Elle orches
 
 #### Vue Graphique (`GraphicalUI`)
 *   Utilisation de **Java Swing/AWT** pour l'affichage.
-*
 *   Pour l’ambiance visuelle, nous avons réalisé des **textures** (`TextureManager`) et des **animations** (`AnimationManager`).
 *   D'une part une animation *continue* pour le ver.
 *   D'autre part des animations jouées *une seule fois* (`VisualEffect`), réservées aux explosions (mais code générique étendable à d’autres ajouts, comme les particules).
-*
 *   Un menu **audio** a également été implémenté, que l'on peut retrouver dans le menu principal ainsi que dans le menu pause. Il permet de gérer le choix de la musique en cours, son volume et le volume des effets sonores. À chaque arme est associé un effet sonore.
-*
 *   Les visuels et effets sonores/musiques ont été implémentés de telle sorte qu’il soit facile d’en ajouter ou d’en supprimer dans un but de modulabilité.
 
 #### Vue Console (`ConsoleUI`)
@@ -192,7 +190,12 @@ Le système de tour par tour est géré par la classe `TurnManager`. Elle orches
 *   Affichage des informations de jeu (stats des worms, inventaire, tour en cours) dans des panneaux dédiés.
 
 ### 2.6 Persistance et Sauvegarde
-Thomas faut compléter ici
+La gestion de la sauvegarde est gérée par la classe statique `Save` à partir d'une classe conteneur `GameSave`:
+*   Utilisation de la **Gson** pour la sérialisation de l'instance de `GameSave` à sauvegarder.
+*   Commence par transformer une instance de `GameWorld` en `GameSave`
+*   Sérialise l'instance de `GameSave` pour le transformer en un String.
+*   Sauvegarde ce String dans un fichier json à part.
+*   La map est, quant à elle, sauvegardé dans un fichier textuel à part.
 
 ## 3. Fonctionnalités Implémentées
 
