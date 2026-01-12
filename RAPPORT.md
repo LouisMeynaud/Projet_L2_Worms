@@ -124,6 +124,7 @@ Pour ajouter une arme, il suffit de :
 1. Ajouter une entrée dans l'enum `WeaponId`.
 2. Créer une classe étendant `Weapon` (ex : `BazookaWeapon`).
 3. Implémenter sa méthode `fire(UseParams params)` qui retourne une liste de `GameCommand`.
+4. Enregistrer l'arme dans le `WeaponRegistry`.
 
 Exemple de simplicité d'ajout (`Bazooka`) :
 ```java
