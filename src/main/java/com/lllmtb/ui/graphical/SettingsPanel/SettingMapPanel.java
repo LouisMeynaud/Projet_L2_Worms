@@ -17,20 +17,20 @@ public class SettingMapPanel extends JPanel {
     public CardLayout cardLayout;
     public GenerateMapPanel generateMapPanel;
     public PanelListe panelListeMap;
-    public EventBus eventBus;
+    public EventBus systemBus;
     public boolean loadMap = true;
 
     /**
      *
-     * @param eventBus the event bus of the game
+     * @param systemBus the system bus of the game
      * This page contains  2 panel and 2 button for choose the panel
      * </p>
      * 1: panelListeMap for choose a map
      * 2: generateMapPanel for create a map
      *
      */
-    public SettingMapPanel(EventBus eventBus) {
-        this.eventBus = eventBus;
+    public SettingMapPanel(EventBus systemBus) {
+        this.systemBus = systemBus;
         this.setBorder(BorderFactory.createTitledBorder(""));
         cardLayout = new CardLayout();
         this.setLayout(new BorderLayout());
@@ -46,8 +46,8 @@ public class SettingMapPanel extends JPanel {
         cardPanel.add(this.panelListeMap, "panelListeMap");
         cardPanel.add(this.generateMapPanel, "generateMapPanel");
 
-        eventBus.subscribe(ScreenLoadMap.class, event -> cardLayout.show(cardPanel, "panelListeMap"));
-        eventBus.subscribe(ScreenGenerateMap.class, event -> cardLayout.show(cardPanel, "generateMapPanel"));
+        systemBus.subscribe(ScreenLoadMap.class, event -> cardLayout.show(cardPanel, "panelListeMap"));
+        systemBus.subscribe(ScreenGenerateMap.class, event -> cardLayout.show(cardPanel, "generateMapPanel"));
 
         JPanel boutonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         boutonPanel.add(loadButton);
@@ -55,12 +55,12 @@ public class SettingMapPanel extends JPanel {
         this.add(boutonPanel, BorderLayout.NORTH);
 
         loadButton.addActionListener(e -> {
-            eventBus.postQueued(new ScreenLoadMap());
+            systemBus.postQueued(new ScreenLoadMap());
             this.loadMap = true;
         });
 
         generateButton.addActionListener(e -> {
-            eventBus.postQueued(new ScreenGenerateMap());
+            systemBus.postQueued(new ScreenGenerateMap());
             this.loadMap = false;
         });
     }

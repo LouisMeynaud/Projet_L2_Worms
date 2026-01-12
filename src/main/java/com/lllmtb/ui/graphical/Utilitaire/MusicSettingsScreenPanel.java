@@ -20,9 +20,9 @@ public class MusicSettingsScreenPanel extends JPanel {
 
     /**
      * The page is used to set the music settings or to back to the home screen game.
-     * @param eventBus the eventBus of the game.
+     * @param systemBus the systemBus of the game.
      */
-    public MusicSettingsScreenPanel(EventBus eventBus) {
+    public MusicSettingsScreenPanel(EventBus systemBus) {
         this.setLayout(new GridBagLayout());
 
         GridBagConstraints gbc = new GridBagConstraints();
@@ -56,7 +56,7 @@ public class MusicSettingsScreenPanel extends JPanel {
         soundEffectVolumeSlider.setForeground(Color.WHITE);
 
 
-        backButton.addActionListener(e -> eventBus.postQueued(new ScreenHomeEvent()));
+        backButton.addActionListener(e -> systemBus.postQueued(new ScreenHomeEvent()));
 
         musiqueVolumeSlider.addChangeListener(e ->  SoundPlayer.setMusiqueVolume(musiqueVolumeSlider.getValue()));
         soundEffectVolumeSlider.addChangeListener(e -> SoundPlayer.setSoundEffectVolume(soundEffectVolumeSlider.getValue()));
