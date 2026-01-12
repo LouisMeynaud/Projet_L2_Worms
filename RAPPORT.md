@@ -74,7 +74,7 @@ Voici une liste exhaustive des différentes armes et outils :
 * Le nombre de sauts autorisés.
 * Plusieurs modes jouables pour diversifier les parties.
 * L’activation du vent est implémentée. L’intensité du vent et sa direction sont quant à elles visibles grâce à la boussole en bas à droite de l’écran en jeu.
-* l’option « bot » offrant la possibilité de jouer contre une ou plusieurs équipe(s) contrôlée(s) par ordinateur. Le bot prend des décisions cohérentes avec la situation. Il se déplace et tire en direction de ses ennemis.
+* L’option « bot » offrant la possibilité de jouer contre une ou plusieurs équipe(s) contrôlée(s) par ordinateur. Le bot prend des décisions cohérentes avec la situation. Il se déplace et tire en direction de ses ennemis.
 * Une option « Mode de triche » permet l’obtention de pièces illimités facilitant le test du jeu et des fonctionnalités qu’il offre.
 * Concernant la carte, on retrouve deux fonctionnalités, sélectionnables dans les paramètres, soit décider de jouer sur une carte pré faite, dans le panel de choix qui s’offre à l’utilisateur. Soit décider de générer une nouvelle carte avec plusieurs paramètres personnalisables comme la largeur de la carte, le type de relief, la possibilité de jouer sur une île volante ou encore d’autres fonctionnalités avancées.
 
