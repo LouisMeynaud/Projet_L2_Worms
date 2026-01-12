@@ -36,7 +36,7 @@ import com.lllmtb.ui.graphical.Utilitaire.SoundPlayer;
 
 public class GameWorldPanel extends JPanel {
     //--core--//
-    private final EventBus eventBus;
+    private final EventBus systemBus;
     protected GameWorld world;
     private WorldRenderer renderer;
     protected final int tileSize = 12;
@@ -67,10 +67,10 @@ public class GameWorldPanel extends JPanel {
 
     /**
      * Constructor for GameWorldPanel.
-     * @param eventBus The EventBus for event handling.
+     * @param systemBus The SystemBus for event handling.
      */
-    public GameWorldPanel(EventBus eventBus) {
-        this.eventBus = eventBus;
+    public GameWorldPanel(EventBus systemBus) {
+        this.systemBus = systemBus;
         setFocusable(true);
         initWindowListeners();
         initInputListeners();
@@ -237,12 +237,12 @@ public class GameWorldPanel extends JPanel {
      */
     public void subscribeToSystemEvents() {
 
-        eventBus.subscribe(WorldCreatedEvent.class, event -> {
+        systemBus.subscribe(WorldCreatedEvent.class, event -> {
             this.world = event.world();
 
             if (this.world != null) {
                 this.world.getBus().subscribe(ScreenEndGameEvent.class, e -> {
-                    eventBus.postQueued(e);
+                    systemBus.postQueued(e);
                     this.world.stop();
                 });
             }

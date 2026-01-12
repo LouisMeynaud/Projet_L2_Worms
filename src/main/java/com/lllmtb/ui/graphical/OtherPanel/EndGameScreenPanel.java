@@ -24,9 +24,9 @@ public class EndGameScreenPanel extends JPanel {
 
     /**
      * This page is used for the endgame.
-     * @param eventBus the eventBus of the game.
+     * @param systemBus the systemBus of the game.
      */
-    public EndGameScreenPanel(EventBus eventBus) {
+    public EndGameScreenPanel(EventBus systemBus) {
         this.setLayout(new GridBagLayout());
 
         GridBagConstraints gbc = new GridBagConstraints();
@@ -39,11 +39,11 @@ public class EndGameScreenPanel extends JPanel {
 
         restartButton.addActionListener(e -> {
             GameEngine.main(new String[]{});
-            eventBus.postQueued(new CloseGameEvent());
+            systemBus.postQueued(new CloseGameEvent());
         });
 
         closeButton.addActionListener(e -> {
-            eventBus.postQueued(new CloseGameEvent());
+            systemBus.postQueued(new CloseGameEvent());
         });
 
         gbc.gridy = 0;

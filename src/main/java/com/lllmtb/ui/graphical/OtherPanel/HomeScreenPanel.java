@@ -21,9 +21,9 @@ public class HomeScreenPanel extends JPanel {
 
     /**
      * The main page is used to open the settings, launch a game, or quit the game.
-     * @param eventBus the eventBus of the game.
+     * @param systemBus the systemBus of the game.
      */
-    public HomeScreenPanel(EventBus eventBus) {
+    public HomeScreenPanel(EventBus systemBus) {
         this.setLayout(new GridBagLayout());
 
         GridBagConstraints gbc = new GridBagConstraints();
@@ -34,9 +34,9 @@ public class HomeScreenPanel extends JPanel {
         JButton settingButton = Utilitaire.createImageButton(TextureManager.UI, "Panel", 280, 140, 280, 140, "Paramètres audio", "Arial", 23, Color.WHITE);
         JButton closeButton = Utilitaire.createImageButton(TextureManager.UI, "Panel", 280, 140, 280, 140, "Fermer", "Arial", 23, Color.WHITE);
 
-        playButton.addActionListener(e -> eventBus.postQueued(new ScreenNewOrLoadEvent()));
-        settingButton.addActionListener(e -> eventBus.postQueued(new ScreenMusicSettingsEvent()));
-        closeButton.addActionListener(e -> eventBus.postQueued(new CloseGameEvent()));
+        playButton.addActionListener(e -> systemBus.postQueued(new ScreenNewOrLoadEvent()));
+        settingButton.addActionListener(e -> systemBus.postQueued(new ScreenMusicSettingsEvent()));
+        closeButton.addActionListener(e -> systemBus.postQueued(new CloseGameEvent()));
 
         gbc.gridy = 0;
         this.add(playButton, gbc);

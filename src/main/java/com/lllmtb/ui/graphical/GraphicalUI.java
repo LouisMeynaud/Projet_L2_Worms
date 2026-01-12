@@ -30,7 +30,7 @@ import com.lllmtb.engine.GameWorld;
 public class GraphicalUI implements UI {
 
     public JFrame windows;
-    public EventBus eventBus;
+    public EventBus systemBus;
     public CardLayout cardLayout; // the container for all pages
     public JPanel mainPanel;
     public JPanel loadGamePanel;
@@ -38,11 +38,11 @@ public class GraphicalUI implements UI {
     private GameWorld currentWorld = null;
 
     /**
-     * @param eventbus the event bus of the game
-     * This class represents the window; it's the container for all our other pages.
+     * @param systemBus the system bus of the game
+     * This class represents the window; it's the container for all other pages.
      * We'll display the home screen, the game panel, the start setting screen, the settings, etc., inside it.
      */
-    public GraphicalUI(EventBus eventbus) {
+    public GraphicalUI(EventBus systemBus) {
 
         try {
             // recherche the style nimbus
@@ -57,7 +57,7 @@ public class GraphicalUI implements UI {
             Logger.logger.error("Could not set Nimbus Look and Feel", e);
         }
 
-        this.eventBus = eventbus;
+        this.systemBus = systemBus;
 
         // the windows
         windows = new JFrame();
@@ -69,7 +69,7 @@ public class GraphicalUI implements UI {
         windows.addWindowListener(new WindowAdapter() {
         @Override
         public void windowClosing(WindowEvent e) {
-            eventBus.postSync(new CloseGameEvent());
+            systemBus.postSync(new CloseGameEvent());
         }
         });
 
@@ -78,12 +78,12 @@ public class GraphicalUI implements UI {
         cardLayout = new CardLayout();
         mainPanel = new JPanel(cardLayout);
 
-        HomeScreenPanel homeScreen = new HomeScreenPanel(this.eventBus);
-        SettingsStartPanel startSettingScreen = new SettingsStartPanel(this.eventBus);
-        MusicSettingsScreenPanel musicSettingsScreen = new MusicSettingsScreenPanel(this.eventBus);
-        NewOrLoadPanel newOrLoadPanel = new NewOrLoadPanel(eventbus);
-        this.loadGamePanel = new LoadGamePanel(eventbus);
-        endGameScreen = new EndGameScreenPanel(eventbus);
+        HomeScreenPanel homeScreen = new HomeScreenPanel(this.systemBus);
+        SettingsStartPanel startSettingScreen = new SettingsStartPanel(this.systemBus);
+        MusicSettingsScreenPanel musicSettingsScreen = new MusicSettingsScreenPanel(this.systemBus);
+        NewOrLoadPanel newOrLoadPanel = new NewOrLoadPanel(systemBus);
+        this.loadGamePanel = new LoadGamePanel(systemBus);
+        endGameScreen = new EndGameScreenPanel(systemBus);
         mainPanel.add(homeScreen, "homeScreen"); // the principal page
         mainPanel.add(startSettingScreen, "startSettingScreen"); // the game launch settings page
         mainPanel.add(newOrLoadPanel, "newOrLoadPanel"); //The page allowing you to choose whether you want to load or create a game
@@ -100,62 +100,62 @@ public class GraphicalUI implements UI {
      * Subscribes to navigation events to switch between different screens.
      */
     private void subscribeToNavigationEvents() {
-        eventBus.subscribe(ScreenNewOrLoadEvent.class, event -> {
+        systemBus.subscribe(ScreenNewOrLoadEvent.class, event -> {
             cardLayout.show(mainPanel, "newOrLoadPanel");
             Logger.logger.debug("Show ScreenNewOrLoad");
 
         });
 
-        eventBus.subscribe(ScreenHomeEvent.class, event -> {
+        systemBus.subscribe(ScreenHomeEvent.class, event -> {
             cardLayout.show(mainPanel, "homeScreen");
             Logger.logger.debug("Show HomeScreen");
         });
 
-        eventBus.subscribe(StartGameEvent.class, event -> {
+        systemBus.subscribe(StartGameEvent.class, event -> {
             // Remove old game panel to prevent memory leak
             for (Component comp : mainPanel.getComponents()) {
                 if (comp instanceof GameScreen) mainPanel.remove(comp);
             }
-            GameScreen gamePanel = new GameScreen(this.eventBus);
+            GameScreen gamePanel = new GameScreen(this.systemBus);
             mainPanel.add(gamePanel, "gamePanel");
             cardLayout.show(mainPanel, "gamePanel");
             Logger.logger.debug("Show GameScreen");
         });
 
-        eventBus.subscribe(LoadEvent.class, event -> {
-            GameScreen gamePanel = new GameScreen(this.eventBus);
+        systemBus.subscribe(LoadEvent.class, event -> {
+            GameScreen gamePanel = new GameScreen(this.systemBus);
             mainPanel.add(gamePanel, "gamePanel"); // la page de jeu
             cardLayout.show(mainPanel, "gamePanel");
             Logger.logger.debug("Show GameScreen");
         });
 
-        eventBus.subscribe(ScreenSettingsGame.class, event -> {
+        systemBus.subscribe(ScreenSettingsGame.class, event -> {
             cardLayout.show(mainPanel, "startSettingScreen");
             Logger.logger.debug("Show SettingScreen");
         });
 
-        eventBus.subscribe(ScreenLoadGame.class, event -> {
-            this.loadGamePanel =  new LoadGamePanel(this.eventBus);
+        systemBus.subscribe(ScreenLoadGame.class, event -> {
+            this.loadGamePanel =  new LoadGamePanel(this.systemBus);
             mainPanel.add(loadGamePanel, "loadGamePanel");
             cardLayout.show(mainPanel, "loadGamePanel");
             Logger.logger.debug("Show loadGamePanel");
 
         });
 
-        eventBus.subscribe(ScreenMusicSettingsEvent.class, event -> {
+        systemBus.subscribe(ScreenMusicSettingsEvent.class, event -> {
             cardLayout.show(mainPanel, "musicSettingsScreen");
             Logger.logger.debug("Show musicSettingsScreen");
 
         });
 
-        eventBus.subscribe(ScreenEndGameEvent.class, event -> {
+        systemBus.subscribe(ScreenEndGameEvent.class, event -> {
             endGameScreen.setWinner(event.getTeam());
             cardLayout.show(mainPanel, "endGameScreen");
             Logger.logger.debug("Show endGameScreen");
 
         });
 
-        eventBus.subscribe(WorldCreatedEvent.class, event -> {
+        systemBus.subscribe(WorldCreatedEvent.class, event -> {
             this.currentWorld = event.world();
         });
     }
