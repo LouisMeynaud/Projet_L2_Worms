@@ -1,4 +1,4 @@
-package com.lllmtb.ui.graphical.Utilitaire;
+package com.lllmtb.ui.graphical.OtherPanel;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -15,6 +15,9 @@ import javax.swing.JSlider;
 
 import com.lllmtb.events.EventBus;
 import com.lllmtb.events.ui.graphical.ScreenHomeEvent;
+import com.lllmtb.ui.graphical.Utilitaire.SoundPlayer;
+import com.lllmtb.ui.graphical.Utilitaire.TextureManager;
+import com.lllmtb.ui.graphical.Utilitaire.Utilitaire;
 
 public class MusicSettingsScreenPanel extends JPanel {
 
