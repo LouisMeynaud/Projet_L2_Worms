@@ -146,6 +146,7 @@ public class EventsTest {
         NotificationEvent notificationEvent = new NotificationEvent("test", "image");
         assertEquals("test", notificationEvent.message());
         assertEquals("image", notificationEvent.imageName());
+        assertNull(notificationEvent.team());
     }
 
     @Test
@@ -167,6 +168,7 @@ public class EventsTest {
         new TurnEndEvent();
         new TurnStopEvent();
         new FinalSaveEvent();
+        new CloseGameEvent();
     }
 
     @Test

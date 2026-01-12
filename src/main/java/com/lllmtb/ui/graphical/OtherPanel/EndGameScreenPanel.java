@@ -11,10 +11,10 @@ import java.awt.image.BufferedImage;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
 
 import com.lllmtb.engine.GameEngine;
 import com.lllmtb.events.EventBus;
+import com.lllmtb.events.game.CloseGameEvent;
 import com.lllmtb.model.entity.team.Team;
 import com.lllmtb.ui.graphical.Utilitaire.TextureManager;
 import com.lllmtb.ui.graphical.Utilitaire.Utilitaire;
@@ -34,16 +34,16 @@ public class EndGameScreenPanel extends JPanel {
         gbc.insets = new Insets(15, 0, 15, 0);
 
         this.winnerLabel = new JLabel("");
-        JButton restartButton = Utilitaire.createImageButton(TextureManager.UI, "Panel", 256, 128, 256, 128, "Restart", "Arial", 23, Color.WHITE);
-        JButton closeButton = Utilitaire.createImageButton(TextureManager.UI, "Panel", 256, 128, 256, 128, "Close", "Arial", 23, Color.WHITE);
+        JButton restartButton = Utilitaire.createImageButton(TextureManager.UI, "Panel", 256, 128, 256, 128, "Rejouer", "Arial", 23, Color.WHITE);
+        JButton closeButton = Utilitaire.createImageButton(TextureManager.UI, "Panel", 256, 128, 256, 128, "Fermer", "Arial", 23, Color.WHITE);
 
         restartButton.addActionListener(e -> {
             GameEngine.main(new String[]{});
-            SwingUtilities.getWindowAncestor(this).dispose();
+            eventBus.postQueued(new CloseGameEvent());
         });
 
         closeButton.addActionListener(e -> {
-            SwingUtilities.getWindowAncestor(this).dispose();
+            eventBus.postQueued(new CloseGameEvent());
         });
 
         gbc.gridy = 0;
@@ -59,8 +59,13 @@ public class EndGameScreenPanel extends JPanel {
      * @param team the winning team
      */
     public void setWinner(Team team) {
-        winnerLabel.setText(" The Winner is : " + team.getTeamColor() + " Team " + team.getName());
-        winnerLabel.setForeground(Color.WHITE);
+        if (team.name.equals("Water")) {
+            winnerLabel.setText(" Tous les worms sont morts, l'eau a gagné ! ");
+            winnerLabel.setForeground(Color.WHITE);
+        } else {
+            winnerLabel.setText(" Le gagnant est : " + team.getName());
+            winnerLabel.setForeground(Utilitaire.getColorFromTeamColor(team.getTeamColor()));
+        }
         winnerLabel.setFont(new Font("Arial", Font.BOLD, 32));
     }
 

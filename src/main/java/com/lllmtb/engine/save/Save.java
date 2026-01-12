@@ -86,9 +86,7 @@ public class Save {
             Path folderPath = path.resolve("save.json");
             Files.write(folderPath, json.getBytes());
         } catch (IOException e) {
-            e.printStackTrace();
-        } catch (Exception e) {
-            e.printStackTrace();
+            Logger.logger.error("Error with the gameSave serialization file: {}", e.getMessage());
         }
     }
 
@@ -98,19 +96,16 @@ public class Save {
      *
      * @param map        The {@link Map} object to save.
      * @param stringPath The destination directory path.
-     * @return {@code true} if the save was successful, {@code false} otherwise.
      * @throws IOException If a critical I/O error occurs.
      */
-    public static  boolean saveMap(Map map, String stringPath) throws IOException {
+    public static void saveMap(Map map, String stringPath) throws IOException {
         try {
             Path path = Paths.get(stringPath);
             Files.createDirectories(path);
             Path filePath = path.resolve("map.txt");
             Files.writeString(filePath, SaveMap.mapToString(map));
-            return true;
         } catch (IOException e) {
-            e.printStackTrace();
-            return false;
+            Logger.logger.error("Map saving problem: {}", e.getMessage());
         }
     }
 
@@ -128,8 +123,7 @@ public class Save {
             Path filePath = path.resolve("info.txt");
             Files.writeString(filePath, info(gameWorld));
         } catch (IOException e) {
-            e.printStackTrace();
-
+            Logger.logger.error("Problem saving information: {}", e.getMessage());
         }
     }
 
@@ -151,6 +145,18 @@ public class Save {
         return info;
     }
 
+    /**
+     * Converts a {@link Map} instance into a rendered {@link BufferedImage}.
+     * <p>
+     * This method iterates through the map's tile matrix, draws a sky-blue background,
+     * and سپس overlays the corresponding tile textures retrieved via the {@link TextureManager}.
+     * Each tile is rendered with a fixed size of 12 pixels.
+     * </p>
+     *
+     * @param map The game map to be converted into an image.
+     * @return A {@link BufferedImage} graphically representing the map.
+     * @throws IOException If an error occurs during the handling of graphical resources.
+     */
     public static BufferedImage maptoBuffered(Map map) throws IOException {
         int tileSize = 12;
         int width = map.getWidth() * tileSize;
@@ -183,6 +189,17 @@ public class Save {
         return mapCache;
     }
 
+    /**
+     * Saves a {@link BufferedImage} to the local disk in PNG format.
+     * <p>
+     * The image is saved under the fixed filename {@code image.png} in the specified directory.
+     * If the provided image is {@code null}, the operation is aborted without error.
+     * </p>
+     *
+     * @param image      The image to save to the file system.
+     * @param stringPath The destination directory path.
+     * @throws IOException If a critical I/O error occurs while writing the file.
+     */
     public static void saveImage(BufferedImage image, String stringPath) throws IOException {
         if (image == null) {
             return;
@@ -192,7 +209,7 @@ public class Save {
             File outputFile = new File(stringPath + "/image.png");
             ImageIO.write(image, "png", outputFile);
         } catch (IOException e) {
-            e.printStackTrace();
+            Logger.logger.error("Image saving problem: {}", e.getMessage());
         }
     }
 
@@ -205,15 +222,19 @@ public class Save {
      */
     public static void saveAll() {
         String stringPath = SaveConfig.SAVE_DIRECTORY + gameWorld.getGameName();
+        if (gameWorld.getGameName().contains("Test")) {
+            stringPath = "src/test/resources/savesTest/" + gameWorld.getGameName();
+        }
         try {
             saveMap(gameWorld.getMap(), stringPath);
             saveGameWorld(gameWorld, stringPath);
             saveInfo(gameWorld, stringPath);
             BufferedImage image = maptoBuffered(gameWorld.getMap());
             saveImage(image, stringPath);
+            Logger.logger.debug("Save success.");
             gameWorld.pause(false);
         } catch (Exception e) {
-            Logger.logger.error("Error while saving game ", e);
+            Logger.logger.error("Error while saving game {}", e.getMessage());
         }
     }
 
@@ -223,7 +244,6 @@ public class Save {
         try {
             if (Files.exists(pathToBeDeleted)) {
                 Files.walk(pathToBeDeleted)
-                        .sorted(java.util.Comparator.reverseOrder())
                         .forEach(path -> {
                             try {
                                 Files.delete(path);
@@ -231,6 +251,7 @@ public class Save {
                                 Logger.logger.error("Error deleting save file: {}", path, e);
                             }
                         });
+                Files.deleteIfExists(pathToBeDeleted);
             } else {
                 Logger.logger.error("Save directory does not exist: {}", pathToBeDeleted);
             }

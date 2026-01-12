@@ -10,6 +10,7 @@ import java.awt.image.BufferedImage;
 import javax.swing.*;
 
 import com.lllmtb.events.EventBus;
+import com.lllmtb.events.game.CloseGameEvent;
 import com.lllmtb.events.ui.graphical.ScreenMusicSettingsEvent;
 import com.lllmtb.events.ui.graphical.ScreenNewOrLoadEvent;
 import com.lllmtb.ui.graphical.Utilitaire.SoundPlayer;
@@ -29,13 +30,13 @@ public class HomeScreenPanel extends JPanel {
         gbc.gridx = 0;
         gbc.insets = new Insets(15, 0, 15, 0);
 
-        JButton playButton = Utilitaire.createImageButton(TextureManager.UI, "Panel", 256, 128, 256, 128, "Start", "Arial", 23, Color.WHITE);
-        JButton settingButton = Utilitaire.createImageButton(TextureManager.UI, "Panel", 256, 128, 256, 128, "Audio Settings", "Arial", 23, Color.WHITE);
-        JButton closeButton = Utilitaire.createImageButton(TextureManager.UI, "Panel", 256, 128, 256, 128, "Close", "Arial", 23, Color.WHITE);
+        JButton playButton = Utilitaire.createImageButton(TextureManager.UI, "Panel", 280, 140, 280, 140, "Jouer", "Arial", 23, Color.WHITE);
+        JButton settingButton = Utilitaire.createImageButton(TextureManager.UI, "Panel", 280, 140, 280, 140, "Paramètres audio", "Arial", 23, Color.WHITE);
+        JButton closeButton = Utilitaire.createImageButton(TextureManager.UI, "Panel", 280, 140, 280, 140, "Fermer", "Arial", 23, Color.WHITE);
 
         playButton.addActionListener(e -> eventBus.postQueued(new ScreenNewOrLoadEvent()));
         settingButton.addActionListener(e -> eventBus.postQueued(new ScreenMusicSettingsEvent()));
-        closeButton.addActionListener(e -> SwingUtilities.getWindowAncestor(this).dispose());
+        closeButton.addActionListener(e -> eventBus.postQueued(new CloseGameEvent()));
 
         gbc.gridy = 0;
         this.add(playButton, gbc);

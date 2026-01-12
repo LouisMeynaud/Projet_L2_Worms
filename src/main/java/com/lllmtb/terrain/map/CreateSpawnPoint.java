@@ -48,8 +48,8 @@ public class CreateSpawnPoint {
                 Position headPos = new Position(x, y);
 
                 boolean headIsgood = !map.isSolid(new Position(x, y)) && map.getTile(new Position(x, y)).getDamage() == 0;
-                boolean bodyIsGood = !map.isSolid(new Position(x, y - 1)) && map.getTile(new Position(x, y)).getDamage() == 0;
-                boolean feetIsGood = map.isSolid(new Position(x, y - 2)) && map.getTile(new Position(x, y)).getDamage() == 0;
+                boolean bodyIsGood = !map.isSolid(new Position(x, y - 1)) && map.getTile(new Position(x, y - 1)).getDamage() == 0;
+                boolean feetIsGood = map.isSolid(new Position(x, y - 2)) && map.getTile(new Position(x, y - 2)).getDamage() == 0;
 
                 if (headIsgood && bodyIsGood && feetIsGood) {
                     boolean occupied = false;

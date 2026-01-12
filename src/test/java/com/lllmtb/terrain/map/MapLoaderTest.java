@@ -60,12 +60,12 @@ public class MapLoaderTest {
         
         boolean trouver = false;
         for (String nom : resultats) {
-            if (nom.equals("Camembert")) {
+            if (nom.equals("Roquefort")) {
                 trouver = true;
                 break;
             }
         }
-        assertTrue(trouver, "La méthode aurait dû trouver le dossier 'Camembert'");
+        assertTrue(trouver, "La méthode aurait dû trouver le dossier 'Roquefort'");
     }
 
     @Test

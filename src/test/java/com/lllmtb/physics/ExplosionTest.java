@@ -41,7 +41,7 @@ class ExplosionTest {
     @Test
     void testEffetExplosionMap_TrouDansTerre() {
         Explosion.explosionMapEffect(new Position(10, 10), 1, map);
-        assertEquals(Tile.AIR, map.getTile(new Position(10, 10)));
+        assertEquals(Tile.CAVERN, map.getTile(new Position(10, 10)));
     }
 
     @Test

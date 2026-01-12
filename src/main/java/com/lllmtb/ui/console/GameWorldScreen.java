@@ -351,8 +351,7 @@ public class GameWorldScreen implements Runnable {
             // Quit
             case 'q', 'Q' -> {
                 running = false;
-                world.stop();
-                System.exit(0);
+                systemBus.postQueued(new CloseGameEvent());
             }
 
             // Number keys for quick weapon selection

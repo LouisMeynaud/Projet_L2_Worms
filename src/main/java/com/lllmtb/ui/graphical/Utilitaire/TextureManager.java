@@ -26,6 +26,11 @@ public class TextureManager {
     public static final Map<String, BufferedImage> EFFECT = new HashMap<>();
     public static final Map<String, BufferedImage> NOTIFICATIONS = new HashMap<>();
 
+    /**
+     * Loads an image from the given path.
+     * @param path the path to the image.
+     * @return the loaded image or the default image if loading fails.
+     */
      public static BufferedImage loadImage(String path) {
         try {
             URL url = TextureManager.class.getResource(path);
@@ -33,15 +38,11 @@ public class TextureManager {
             return ImageIO.read(url);
         } catch (Exception e) {
             Logger.logger.warn("Error while loading textures : ", e);
-            try {
-                URL defaultUrl = TextureManager.class.getResource("/default.png");
-
-                if (defaultUrl == null) throw new Exception("Default texture missing at /default.png");
-                return ImageIO.read(defaultUrl);
-            } catch (Exception error) {
-                Logger.logger.error("Error while loading default textures : ", e);
-                throw new RuntimeException("critical error: Texture " + path + " is missing and /default.png could not be loaded. Program halted.", error);
+            BufferedImage defaultImage = Utilitaire.loadDefaultImage();
+            if (defaultImage == null) {
+                throw new RuntimeException("critical error: Texture " + path + " is missing and /default.png could not be loaded.", e);
             }
+            return defaultImage;
         }
     }
 
@@ -75,9 +76,9 @@ public class TextureManager {
         UI.put("ChangeWormsHover", loadImage("/textures/button/changeWorms.png"));
 
         ///////Background/////////
-        BACKGROUND.put("Background", loadImage("/textures/Background.png"));
-        BACKGROUND.put("Background2", loadImage("/textures/Background2.png"));
-        BACKGROUND.put("Background3", loadImage("/textures/Background3.png"));
+        BACKGROUND.put("Background", loadImage("/textures/background/Background.png"));
+        BACKGROUND.put("Background2", loadImage("/textures/background/Background2.png"));
+        BACKGROUND.put("Background3", loadImage("/textures/background/Background3.png"));
 
         //////Entities//////////
         for (TeamColor color: TeamColor.values()) {

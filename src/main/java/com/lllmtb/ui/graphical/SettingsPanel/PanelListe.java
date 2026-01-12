@@ -15,6 +15,7 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 
 import com.lllmtb.engine.logger.Logger;
+import com.lllmtb.ui.graphical.Utilitaire.Utilitaire;
 
 
 public class PanelListe extends JPanel {
@@ -108,8 +109,18 @@ public class PanelListe extends JPanel {
                 }
                 File imgFile = new File(folder, NOM_FICHIER_IMAGE);
                 if (imgFile.exists()) {
+                    try {
                     Image img = ImageIO.read(imgFile);
                     image = new ImageIcon(img.getScaledInstance(100, 100, Image.SCALE_SMOOTH));
+                    } catch (Exception imgException) {
+                        Logger.logger.warn("invalid image file: " + imgFile.getPath(), imgException);
+                        Image defaultImg = Utilitaire.loadDefaultImage();
+                        if (defaultImg != null) {
+                            image = new ImageIcon(defaultImg.getScaledInstance(100, 100, Image.SCALE_SMOOTH));
+                        } else {
+                            Logger.logger.warn("Default image could not be loaded.");
+                        }
+                    }
                 }
             } else {
 
@@ -131,9 +142,18 @@ public class PanelListe extends JPanel {
             URL imageUrl = getClass().getResource(cheminImage);
 
             if (imageUrl != null) {
+                try {
                 Image imgOriginale = ImageIO.read(imageUrl);
                 Image imgRedimensionnee = imgOriginale.getScaledInstance(100, 100, Image.SCALE_FAST);
                 image = new ImageIcon(imgRedimensionnee);
+                } catch (Exception imgException) {
+                    Image defaultImg = Utilitaire.loadDefaultImage();
+                    if (defaultImg != null) {
+                        image = new ImageIcon(defaultImg.getScaledInstance(100, 100, Image.SCALE_FAST));
+                    } else {
+                        Logger.logger.warn("Default image could not be loaded.");
+                    }
+                }
             }
 
                 }

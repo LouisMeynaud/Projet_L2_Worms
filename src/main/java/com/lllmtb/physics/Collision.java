@@ -9,6 +9,7 @@ import com.lllmtb.events.physics.GroundCheckCollision;
 import com.lllmtb.model.entity.Coin;
 import com.lllmtb.model.entity.CollisionType;
 import com.lllmtb.model.entity.projectile.CatConcreteProjectile;
+import com.lllmtb.model.entity.projectile.TowerProjectile;
 import com.lllmtb.model.entity.worm.Worm;
 import com.lllmtb.terrain.map.Map;
 import com.lllmtb.terrain.map.Tile;
@@ -116,7 +117,24 @@ public class Collision {
         // if the body has to cross everything to make it disappear if it goes out of map
         if (body.getEntity().getCollisionType() == CollisionType.CROSS) {
             Impact i = this.testSweptCircleTile(body, body.getPos(), body.getWidth() / 2, endPos, vector);
-            if (i.die) return i;
+            if (i.die) {
+                finalImpact = i;
+            }
+            for (PhysicsBody other : this.bodies) {
+                if (body != other && other.getEntity() instanceof Worm) {
+                    double radiusOther = other.getWidth() / 2;
+                    Position otherPos = new Position(other.getPos().getX() + 0.5, other.getPos().getY() + 0.5);
+                    Position otherHead = new Position(other.getPos().getX() + 0.5, other.getPos().getY() + 1.5);
+                    Impact bodyImpact = this.testSweptCircleCircle(body, body.getPos(), body.getWidth() / 2, other, otherPos, radiusOther, endPos, vector);
+                    Impact headImpact = this.testSweptCircleCircle(body, body.getPos(), body.getWidth() / 2, other, otherHead, radiusOther, endPos, vector);
+                    if (bodyImpact.ti < finalImpact.ti) {
+                        finalImpact = bodyImpact;
+                    }
+                    if (headImpact.ti < finalImpact.ti) {
+                        finalImpact = headImpact;
+                    }
+                }
+            }
             return finalImpact;
         }
 
@@ -137,7 +155,7 @@ public class Collision {
             }
             // test with other bodies on the map without other worms
             for (PhysicsBody other : this.bodies) {
-                if ((body != other) && !(other.getEntity() instanceof Worm)) {
+                if ((body != other) && !(other.getEntity() instanceof Worm) && !(other.getEntity() instanceof TowerProjectile)) {
 
                     // Special case for coins
                     if (other.getEntity() instanceof Coin) {
@@ -501,7 +519,7 @@ public class Collision {
         body.setPos(safePos);
 
         // if the collision is with a wall
-        if (impact.normal.getY() == 0) {
+        if (Math.abs(impact.normal.getY()) < 0.5) {
             body.setVector(new Vector(0, body.getVector().getY()));
             // Mark worm is not on ground when hitting a wall
             if (body.getEntity() instanceof Worm) {
@@ -513,12 +531,12 @@ public class Collision {
             }
             body.setVector(new Vector(body.getVector().getX(), 0));
             // if the worm touch the ground, it can jump again
-            if (impact.normal.getY() == 1) {
+            if (impact.normal.getY() > 0.5) {
                 if (body.getEntity() instanceof Worm) {
                     ((Worm) body.getEntity()).setOnGround(true);
                 }
                 world.getBus().postQueued(new GroundCheckCollision(body.getEntity()));
-            } else if (impact.normal.getY() == -1) {
+            } else if (impact.normal.getY() < -0.5) {
                 // Hit ceiling - mark as not on ground
                 if (body.getEntity() instanceof Worm) {
                     ((Worm) body.getEntity()).setOnGround(false);
@@ -619,7 +637,7 @@ public class Collision {
      * @param body the {@link PhysicsBody} to check
      * @return the {@link Tile} if the body is in damaging terrain, {@code null} otherwise
      */
-    public Tile inTrapOrLava(PhysicsBody body) {
+    public Tile inSpecialTile(PhysicsBody body) {
         Position pos = body.getPos();
 
         // Calculate the bounding box of the body

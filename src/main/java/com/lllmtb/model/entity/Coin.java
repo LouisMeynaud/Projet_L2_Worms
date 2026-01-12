@@ -11,11 +11,11 @@ public class Coin extends Entity {
     /**
      *
      * @param position the spawn position
-     * @param value the ammount that the coin give a are contact
+     * @param value the amount that the coin give a are contact
      */
     public Coin(Position position, int value) {
         this.value = value;
-        this.body = new PhysicsBody(this, position, new Vector(0, 0), 0.01, 2, 2);
+        this.body = new PhysicsBody(this, position, new Vector(0, 0), 0.01, 1.3, 1.3);
     }
     /**
      *

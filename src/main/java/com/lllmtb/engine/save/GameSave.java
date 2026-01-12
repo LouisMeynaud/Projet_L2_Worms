@@ -15,11 +15,11 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class GameSave {
-    public final CopyOnWriteArrayList<PhysicsBodySave> entities = new CopyOnWriteArrayList<>();
+    public final CopyOnWriteArrayList<PhysicsBodySave> entities;
     public final transient EventBus bus;
     public final int indexTeam;
     public final long turnDuration;
-    public final List<TeamSave> teams = new ArrayList<>();
+    public final List<TeamSave> teams;
     public final boolean hasWind;
     public final Vector wind;
     public final Vector gravity;
@@ -29,6 +29,7 @@ public class GameSave {
 
 
     public GameSave(GameWorld gameWorld) {
+        this.teams = new ArrayList<>();
         for (Team team : gameWorld.getTeams()) {
             this.teams.add(new TeamSave(team));
         }
@@ -43,26 +44,30 @@ public class GameSave {
         gameWorld.getPhysics().getModifiers().forEach((body, mods) -> {
            this.modifiers.put(body.getEntity().uuid, mods);
         });
+        this.entities = new CopyOnWriteArrayList<>();
         for (PhysicsBody body : gameWorld.getPhysics().getBodies()) {
             entities.add(new PhysicsBodySave(body));
         }
-
         String[] teamNames = new String[gameWorld.getTeams().size()];
         for (int i = 0; i < teamNames.length; i++) {
             teamNames[i] = gameWorld.getTeams().get(i).name;
         }
+        boolean[] isBot = new boolean[gameWorld.getTeams().size()];
+        for (int i = 0; i < isBot.length; i++) {
+            isBot[i] = gameWorld.getTeams().get(i).isBot();
+        }
+
         this.gameSettings = new GameSettings(
                 gameWorld.getGameName(),
                 gameWorld.getTeams().size(),
                 teamNames,
+                isBot,
                 1,
                 Statistics.getMaxHp(),
                 gameWorld.getTurnDuration(),
                 gameWorld.getPhysics().hasWind(),
                 gameWorld.getGameName(),
-                false,
-                gameWorld.getMap().getWidth(),
-                null,
+                gameWorld.getConfigMap(),
                 Move.getMaxjump(),
                 gameWorld.getGameMode(),
                 Projectile.isFriendlyfire(),

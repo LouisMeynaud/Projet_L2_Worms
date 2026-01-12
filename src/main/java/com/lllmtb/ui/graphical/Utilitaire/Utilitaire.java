@@ -9,6 +9,7 @@ import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.util.Map;
 
+import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -19,6 +20,7 @@ import javax.swing.SwingConstants;
 import javax.swing.border.BevelBorder;
 
 import com.lllmtb.engine.logger.Logger;
+import com.lllmtb.model.entity.team.TeamColor;
 import com.lllmtb.model.item.tool.ToolId;
 import com.lllmtb.model.item.weapon.WeaponId;
 
@@ -28,6 +30,19 @@ import com.lllmtb.model.item.weapon.WeaponId;
  * Contient par exemple des methode pour crée des bouton avec des image , des slider , generer un "hashCode" etc.
  */
 public class Utilitaire {
+
+    /**
+     * Loads the default image from resources.
+     * @return A BufferedImage with the default image, or null if it cannot be loaded.
+     */
+    public static BufferedImage loadDefaultImage() {
+        try {
+            return ImageIO.read(Utilitaire.class.getResource("/default.png"));
+        } catch (Exception e) {
+            Logger.logger.error("Failed to load default image", e);
+        }
+        return null;
+    }
 
 
     /**
@@ -266,5 +281,15 @@ public class Utilitaire {
         button.setVerticalTextPosition(SwingConstants.BOTTOM);
         button.setHorizontalTextPosition(SwingConstants.CENTER);
         return button;
+    }
+
+    public static Color getColorFromTeamColor(TeamColor teamColor) {
+        return switch (teamColor) {
+            case RED -> Color.RED;
+            case BLUE -> Color.BLUE;
+            case GREEN -> Color.GREEN;
+            case YELLOW -> Color.YELLOW;
+            default -> Color.BLACK;
+        };
     }
 }

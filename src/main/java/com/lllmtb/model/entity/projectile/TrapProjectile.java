@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public final class TrapProjectile extends Projectile {
-    private static final double force  = 100.0;
+    private static final double force  = 35;
     private static final double mass   = 0.01;
     private static final double height = 1;
     private static final double width  = 1;

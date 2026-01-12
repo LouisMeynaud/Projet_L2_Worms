@@ -10,7 +10,7 @@ import com.lllmtb.model.item.UseParams;
 import java.util.ArrayList;
 import java.util.List;
 
-public final class BowProjectile extends Projectile {
+public final class ArrowProjectile extends Projectile {
     private static final double force  = 60;
     private static final double mass   = 0.006;
     private static final double height = 2;
@@ -19,10 +19,10 @@ public final class BowProjectile extends Projectile {
 
 
     /**
-     * Constructor for BowProjectile.
+     * Constructor for ArrowProjectile.
      * @param params UseParams containing initial parameters for the projectile.
      */
-    public BowProjectile(@NonNull UseParams params) {
+    public ArrowProjectile(@NonNull UseParams params) {
         super(params, force * Math.min(params.duration / 100, 3) / 2, mass, height, width);
         this.damage = (int) (damage * Math.min(params.duration / 100, 3) / 2);
 

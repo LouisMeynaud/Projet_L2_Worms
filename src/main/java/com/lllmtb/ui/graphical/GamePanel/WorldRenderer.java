@@ -34,7 +34,6 @@ import com.lllmtb.ui.graphical.Utilitaire.animation.VisualEffect;
 
 /**
  * Classe responsable du rendu graphique de la partit.
- * </p>
  * elle gere le dessin de la carte (terrain), des entité(worms/projectile)
  * et des effet visuel(animation , barre de vie, current worms etc)
  */
@@ -463,13 +462,7 @@ public class WorldRenderer {
 
         int[] xPoints = {centerX - size, centerX + size, centerX };
         int[] yPoints = {bottomY - size, bottomY - size, bottomY };
-        Color paintColor = switch (color) {
-            case GREEN -> Color.GREEN;
-            case YELLOW -> Color.YELLOW;
-            case RED -> Color.RED;
-            case BLUE -> Color.BLUE;
-            default -> Color.BLACK;
-        };
+        Color paintColor = Utilitaire.getColorFromTeamColor(color);
         g2d.setColor(paintColor);
         g2d.fillPolygon(xPoints, yPoints, 3); //dessine le triange remplie
 
@@ -522,6 +515,8 @@ public class WorldRenderer {
      * @param yCenter le centre du vers a l'ecran
      */
     private void paintAim(Graphics2D g2d, double xCenter, double yCenter) {
+        if (world.getPlayingTeam().isBot()) return;
+
         Worm currentWorm = world.getTurnManager().getTurn().getWormPlayable();
         if (currentWorm == null) return;
 
@@ -579,7 +574,17 @@ public class WorldRenderer {
         AffineTransform tx = new AffineTransform();
         tx.translate(xCenter, yCenter);
 
-        double angle = Math.atan2(panel.mouseWorldY - yCenter, panel.mouseWorldX - xCenter); // permet a partir d'une distance y et x entre worm et point de trouver un angle.
+        double mouseX = panel.mouseWorldX;
+        double mouseY = panel.mouseWorldY;
+        if (world.getPlayingTeam().isBot()) {
+            Worm target = world.getBotController().getTarget();
+            if (target != null) {
+                mouseX = target.getBody().getPos().getX();
+                mouseY = target.getBody().getPos().getY();
+            }
+        }
+
+        double angle = Math.atan2(mouseY - yCenter, mouseX - xCenter); // permet a partir d'une distance y et x entre worm et point de trouver un angle.
         tx.rotate(angle);
 
         if (Math.abs(angle) > Math.PI / 2) { // pour retourner l'image quand on regarde de l'autre coter.
@@ -602,8 +607,8 @@ public class WorldRenderer {
         List<PhysicsModifier> modifiers = world.getPhysics().getModifiers().get(worm);
         if (modifiers == null) return;
 
-        Set<ToolId> activeTools = modifiers.stream()
-                .filter(modifier -> modifier.source instanceof ToolId)
+        Set<ToolId> activeTools = new ArrayList<>(modifiers).stream()
+                .filter(modifier -> modifier != null && modifier.source instanceof ToolId)
                 .map(modifier -> (ToolId) modifier.source)
                 .collect(Collectors.toSet());
 

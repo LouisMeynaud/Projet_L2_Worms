@@ -4,14 +4,14 @@ import com.lllmtb.model.item.ItemId;
 import com.lllmtb.model.item.ShootMode;
 
 public enum WeaponId implements ItemId {
-    GUN("A standard handgun for reliable, direct fire."),
-    BASEBALLBAT(ShootMode.NONE, "A melee weapon that pushes away nearby entities.", 1000),
-    BAZOOKA("Fires a heavy, explosive rocket.", 1000),
-    HEALINGBAZOOKA("Fires a medical rocket that heals allies in the blast radius.", 1000),
-    SHOTGUN("Fires a spread of pellets, devastating at close range."),
-    ELECTRONCANON("Fires an electron beam that bounces from enemy to enemy."),
-    GASGUN("Releases a devastating chemical cloud."),
-    BOW("A devastating bow, effective at both short and long range.", 3000),
+    GUN("Un pistolet standard pour un tir direct et fiable."),
+    BASEBALLBAT(ShootMode.NONE, "Une arme de mêlée qui repousse les entités proches.", 1000),
+    BAZOOKA("Tire une roquette lourde et explosive.", 1000),
+    HEALINGBAZOOKA("Tire une roquette qui soigne les alliés dans le rayon d'action de l'explosion.", 1000),
+    SHOTGUN("Tire une rafale de plombs, dévastatrice à courte portée."),
+    ELECTRONCANON("Tire un faisceau d'électrons qui rebondit d'un ennemi à l'autre."),
+    GASGUN("Libère un nuage chimique dévastateur."),
+    BOW("Un arc dévastateur, efficace à courte et longue distance.", 3000),
     NONE;
 
     private final ShootMode shootMode;
