@@ -77,8 +77,8 @@ package:
     - main
     - dev
 
-# Release - create GitLab release on new tag, attach built jar
-release:
+# Upload the build artifact to the GitLab Package Registry on new tag
+upload_package:
   stage: release
   rules:
     - if: $CI_COMMIT_TAG
@@ -96,10 +96,20 @@ release:
            --upload-file "target/${JAR_NAME}" \
            "$PACKAGE_URL"
 
+# Release - create GitLab release on new tag, attach built jar
+release:
+  stage: release
+  image: registry.gitlab.com/gitlab-org/release-cli:latest
+  needs: [ "upload_package" ]
+  rules:
+    - if: $CI_COMMIT_TAG
+  script:
+    - VERSION="${CI_COMMIT_TAG#v}"
+    - JAR_NAME="worms-${VERSION}-fat.jar"
+    - PACKAGE_URL="$CI_API_V4_URL/projects/$CI_PROJECT_ID/packages/generic/worms/${VERSION}/${JAR_NAME}"
     - |
       release-cli create \
         --name "Release v${VERSION}" \
         --tag-name "$CI_COMMIT_TAG" \
         --description "$(cat CHANGELOG.md)" \
         --assets-link \
-          "{\"name\":\"Build Artifacts (fatjar)\",\"url\":\"${PACKAGE_URL}\"}"
