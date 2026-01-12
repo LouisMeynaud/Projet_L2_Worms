@@ -7,64 +7,58 @@ from PIL import Image
 import numpy as np
 import io
 
-input_filename = "image.png"
-width = 250
-height = 140
+uploaded = files.upload()
+input_filename = next(iter(uploaded))
 
-# Définition des couleurs utilisées dans l'image
-COLOR_AIR = np.array([135, 206, 235])       # Bleu clair
-COLOR_DIRT = np.array([139, 69, 19])        # Marron
-COLOR_WATER = np.array([0, 0, 150])         # Bleu foncé
-COLOR_CAVERN = np.array([78, 52, 25])       # Marron foncé
-COLOR_GRASS = np.array([0, 241, 44])        # Vert kaki
-COLOR_UNDERDIRT = np.array([255, 0, 253])   # Rose bonbon
-COLOR_ICE = np.array([192, 135, 235])       # Violet
-COLOR_SNOW = np.array([255, 255, 255])      # Blanc
-COLOR_LAVA = np.array([255, 118, 0])        # Orange
-COLOR_MOONGRASS = np.array([148, 146, 145]) # Gris clair
-COLOR_MOONDIRT = np.array([77, 77, 75])     # Gris foncé
-COLOR_MOONUNDERDIRT = np.array([0, 0, 0])   # Noir
+map_width = 250
+map_height = 140
 
+# Color → character mapping
+COLOR_MAP = {
+    'A': np.array([135, 206, 235]),   # AIR #87CEEB
+    'D': np.array([139, 69, 19]),     # DIRT #8B4513
+    'W': np.array([0, 0, 150]),       # WATER #000096
+    'C': np.array([78, 52, 25]),      # CAVERN #4E3419
+    'G': np.array([0, 241, 44]),      # GRASS #00F12C
+    'U': np.array([255, 0, 253]),     # UNDERDIRT #FF00FD
+    'I': np.array([192, 135, 235]),   # ICE
+    'S': np.array([255, 255, 255]),   # SNOW
+    'Y': np.array([0, 0, 255]),       # ICEUNDERDIRT
+    'L': np.array([255, 118, 0]),     # LAVA #FF7600
+    'M': np.array([148, 146, 145]),   # MOONGRASS
+    'N': np.array([77, 77, 75]),      # MOONDIRT
+    'X': np.array([0, 0, 0]),         # MOONUNDERDIRT
+    'H': np.array([0, 255, 255]),     # HOLYWATER #00FFFF
+    'V': np.array([255, 255, 0]),     # VINE #FFFF00
+    'Q': np.array([100, 100, 50]),    # DIRTVINE #646432
+    'E': np.array([0, 150, 0]),       # GRASSVINE #009600
+    'K': np.array([0, 50, 0]),        # CAVERNVINE #003200
+    'T': np.array([255, 0, 150]),     # TRAP #FF0000
+    'Z': np.array([111, 62, 212]),    # TRAPCAVERN #6f3ed4
+}
 
-img = Image.open(io.BytesIO(uploaded[input_filename])).convert('RGB')
-pixels = np.array(img) #transforme l'image en tableau numpy
+def closest_char(pixel):
+    return min(
+        COLOR_MAP,
+        key=lambda c: np.linalg.norm(pixel - COLOR_MAP[c])
+    )
 
-output_lines = [] #crée le tableau qui contiendra les lignes du fichier txt
+try:
+    img = Image.open(io.BytesIO(uploaded[input_filename])).convert("RGB")
+    pixels = np.array(img)
 
+    output_lines = [
+        "".join(
+            closest_char(pixels[y, x])
+            for x in range(map_width)
+        )
+        for y in range(map_height)
+    ]
 
-for y in range(height):
-    line = ""
-    for x in range(width):
-        pixel = pixels[y][x]        
-        pixel_list = pixel.tolist() #convertit la liste numpy en liste python pour comparaison
-
-        if pixel_list == COLOR_WATER.tolist():
-            line += 'W'
-        elif pixel_list == COLOR_DIRT.tolist():
-            line += 'D'
-        elif pixel_list == COLOR_CAVERN.tolist():
-            line += 'C'
-        elif pixel_list == COLOR_GRASS.tolist():
-            line += 'G'
-        elif pixel_list == COLOR_UNDERDIRT.tolist():
-            line += 'U'
-        elif pixel_list == COLOR_ICE.tolist():
-            line += 'I'
-        elif pixel_list == COLOR_SNOW.tolist():
-            line += 'S'
-        elif pixel_list == COLOR_LAVA.tolist():
-            line += 'L'
-        elif pixel_list == COLOR_MOONGRASS.tolist():
-            line += 'M'
-        elif pixel_list == COLOR_MOONDIRT.tolist():
-            line += 'N'
-        elif pixel_list == COLOR_MOONUNDERDIRT.tolist():
-            line += 'X'
-        elif pixel_list == COLOR_AIR.tolist():
-            line += 'A'
-        output_lines.append(line)
-
-    with open('map.txt', 'w') as f:
+    with open("map.txt", "w") as f:
         f.write("\n".join(output_lines))
-    files.download('map.txt')
 
+    files.download("map.txt")
+
+except Exception as e:
+    print(f"Erreur : {e}")
