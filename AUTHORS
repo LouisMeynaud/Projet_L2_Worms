@@ -4,7 +4,7 @@ LORIOT Baptiste <baptiste.loriot@etu.u-paris.fr>
     Engine, Évènements, Maven, GitLab CI/CD, GameCommands, Physique, Bots, Textures, ConsoleUI, Inventaire/Items, Maps
 
 DENQUIN Léo <leo.denquin-mathelot@etu.u-paris.fr>
-    Terrain (chargement/génération), GraphicalUI, Inputs, Weapons, Son, Effets, Explosions, Notifications, Boutique/Argent
+    Terrain (chargement/génération/spawnpoint), Gamemode, GraphicalUI, Inputs, Weapons, Son, Effets, Explosions, Notifications, Boutique/Argent
 
 MEYNAUD Louis <louis.meynaud@etu.u-paris.fr>
     Inventaire, Collisions, Map, Altérations de statut, README, CONTRIBUTING, Drops
