@@ -14,6 +14,7 @@ Pour ajouter une arme fonctionnelle dans le jeu, suivez ces étapes :
     * Le temps de charge maximum (si nécessaire).
 5.  **Enregistrement (Registry) :** Ajoutez l'arme dans le `WeaponRegistry` pour lier l'identifiant (`WeaponId`) à votre nouvelle classe.
 6.  **Boutique (Shop) :** Enfin, ajoutez l'arme dans `ShopElement` pour la rendre disponible à l'achat, en définissant ses prix et quantités de munitions à acheter.
+7.  *(Optionnel)* **Son de tir :** Pour ajouter un effet sonore lors du tir, placez un fichier `.wav` dans le dossier _**resources/sound/**_. Le fichier doit être nommé selon le format : `<WeaponId>Shot.wav` (ex : `BAZOOKAShot.wav`).
 
 ---
 
