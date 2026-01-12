@@ -105,7 +105,7 @@ public class SettingsStartPanel extends JPanel {
         String[] nomsEquipes = gameSettingsPanel.getNomsEquipes();
         boolean[] isBot = gameSettingsPanel.getIsBot();
         boolean wind = gameSettingsPanel.getWind();
-        boolean friendlyFire = !gameSettingsPanel.getFriendlyFire();
+        boolean friendlyFire = gameSettingsPanel.getFriendlyFire();
         int turnDuration = gameSettingsPanel.getTurnDuration();
         int maxLife = gameSettingsPanel.getMaxLife();
         int maxJump = gameSettingsPanel.getMaxJumps();

@@ -3,7 +3,6 @@ package com.lllmtb.engine.save;
 import com.lllmtb.engine.GameSettings;
 import com.lllmtb.engine.GameWorld;
 import com.lllmtb.engine.turn.TurnManager;
-import com.lllmtb.events.EventBus;
 import com.lllmtb.model.entity.projectile.Projectile;
 import com.lllmtb.model.entity.team.Team;
 import com.lllmtb.model.entity.worm.Statistics;
@@ -11,19 +10,16 @@ import com.lllmtb.physics.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class GameSave {
     public final CopyOnWriteArrayList<PhysicsBodySave> entities;
-    public final transient EventBus bus;
     public final int indexTeam;
     public final long turnDuration;
     public final List<TeamSave> teams;
     public final boolean hasWind;
     public final Vector wind;
     public final Vector gravity;
-    public final transient ConcurrentHashMap<Integer, ArrayList<PhysicsModifier>> modifiers;
     public final GameSettings gameSettings;
     public final TurnManager turnManager;
 
@@ -36,14 +32,9 @@ public class GameSave {
         this.turnManager = gameWorld.getTurnManager();
         this.indexTeam = gameWorld.getIndexTeam();
         this.turnDuration = gameWorld.getTurnDuration() / 1000;
-        this.bus = gameWorld.getBus();
         this.hasWind = gameWorld.getPhysics().hasWind();
         this.wind = gameWorld.getPhysics().getWind();
         this.gravity = gameWorld.getPhysics().getGravity();
-        this.modifiers = new ConcurrentHashMap<>();
-        gameWorld.getPhysics().getModifiers().forEach((body, mods) -> {
-           this.modifiers.put(body.getEntity().uuid, mods);
-        });
         this.entities = new CopyOnWriteArrayList<>();
         for (PhysicsBody body : gameWorld.getPhysics().getBodies()) {
             entities.add(new PhysicsBodySave(body));
@@ -76,7 +67,6 @@ public class GameSave {
 
     @Override
     public String toString() {
-        System.out.println(this.modifiers.toString());
         for (PhysicsBodySave bodySave : this.entities) {
 
             System.out.println(bodySave.toString());

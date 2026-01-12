@@ -14,7 +14,7 @@
         "height": 2.0,
         "width": 1.0
       },
-      "uuid": 654,
+      "uuid": 740,
       "entity": {
         "type": "worm",
         "body": {
@@ -41,7 +41,7 @@
         "facingDirection": 1,
         "statusEffects": [],
         "isOnGround": false,
-        "uuid": 654
+        "uuid": 740
       }
     },
     {
@@ -58,7 +58,7 @@
         "height": 2.0,
         "width": 1.0
       },
-      "uuid": 655,
+      "uuid": 741,
       "entity": {
         "type": "worm",
         "body": {
@@ -85,7 +85,7 @@
         "facingDirection": 1,
         "statusEffects": [],
         "isOnGround": false,
-        "uuid": 655
+        "uuid": 741
       }
     },
     {
@@ -102,7 +102,7 @@
         "height": 2.0,
         "width": 1.0
       },
-      "uuid": 656,
+      "uuid": 742,
       "entity": {
         "type": "worm",
         "body": {
@@ -129,7 +129,7 @@
         "facingDirection": 1,
         "statusEffects": [],
         "isOnGround": false,
-        "uuid": 656
+        "uuid": 742
       }
     },
     {
@@ -146,7 +146,7 @@
         "height": 2.0,
         "width": 1.0
       },
-      "uuid": 657,
+      "uuid": 743,
       "entity": {
         "type": "worm",
         "body": {
@@ -173,7 +173,7 @@
         "facingDirection": 1,
         "statusEffects": [],
         "isOnGround": false,
-        "uuid": 657
+        "uuid": 743
       }
     }
   ],
@@ -208,7 +208,7 @@
             "facingDirection": 1,
             "statusEffects": [],
             "isOnGround": false,
-            "uuid": 654
+            "uuid": 740
           },
           {
             "body": {
@@ -235,13 +235,13 @@
             "facingDirection": 1,
             "statusEffects": [],
             "isOnGround": false,
-            "uuid": 655
+            "uuid": 741
           }
         ],
         "name": "Team1",
         "isBot": false,
         "numberOfWorms": 2,
-        "id": 302,
+        "id": 341,
         "currentWorm": {
           "body": {
             "position": {
@@ -267,10 +267,10 @@
           "facingDirection": 1,
           "statusEffects": [],
           "isOnGround": false,
-          "uuid": 654
+          "uuid": 740
         },
         "index": 0,
-        "teamColor": "RED",
+        "teamColor": "BLUE",
         "shootCount": 0,
         "maxChangeWormTeam": 1,
         "credits": 0
@@ -331,7 +331,7 @@
             "facingDirection": 1,
             "statusEffects": [],
             "isOnGround": false,
-            "uuid": 656
+            "uuid": 742
           },
           {
             "body": {
@@ -358,13 +358,13 @@
             "facingDirection": 1,
             "statusEffects": [],
             "isOnGround": false,
-            "uuid": 657
+            "uuid": 743
           }
         ],
         "name": "Team2",
         "isBot": true,
         "numberOfWorms": 2,
-        "id": 303,
+        "id": 342,
         "currentWorm": {
           "body": {
             "position": {
@@ -390,10 +390,10 @@
           "facingDirection": 1,
           "statusEffects": [],
           "isOnGround": false,
-          "uuid": 656
+          "uuid": 742
         },
         "index": 0,
-        "teamColor": "BLUE",
+        "teamColor": "RED",
         "shootCount": 0,
         "maxChangeWormTeam": 1,
         "credits": 0

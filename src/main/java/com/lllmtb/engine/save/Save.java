@@ -13,6 +13,9 @@ import com.lllmtb.engine.logger.Logger;
 import com.lllmtb.model.entity.Coin;
 import com.lllmtb.model.entity.Drop;
 import com.lllmtb.model.entity.Entity;
+import com.lllmtb.model.entity.effect.BurnEffect;
+import com.lllmtb.model.entity.effect.PoisonEffect;
+import com.lllmtb.model.entity.effect.StatusEffect;
 import com.lllmtb.model.entity.projectile.MineProjectile;
 import com.lllmtb.model.entity.projectile.Projectile;
 import com.lllmtb.model.entity.projectile.TowerProjectile;
@@ -70,12 +73,17 @@ public class Save {
                 .registerSubtype(Worm.class, "worm")
                 .registerSubtype(Coin.class, "coin")
                 .registerSubtype(Drop.class, "drop")
-                .registerSubtype(TowerProjectile.class, "Tower")
-                .registerSubtype(MineProjectile.class, "Mine");
+                .registerSubtype(TowerProjectile.class, "tower")
+                .registerSubtype(MineProjectile.class, "mine");
+
+        RuntimeTypeAdapterFactory<StatusEffect> effectAdapter = RuntimeTypeAdapterFactory.of(StatusEffect.class, "type")
+                .registerSubtype(BurnEffect.class, "burnEffect")
+                .registerSubtype(PoisonEffect.class, "poisonEffect");
 
         Gson gson = new GsonBuilder()
                 .setPrettyPrinting()
                 .registerTypeAdapterFactory(entityAdapter)
+                .registerTypeAdapterFactory(effectAdapter)
                 .serializeSpecialFloatingPointValues()
                 .create();
         GameSave gameSave = new GameSave(gameWorld);
