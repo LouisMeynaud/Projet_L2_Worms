@@ -29,6 +29,10 @@
 - Ajout d’une description sur les armes dans l’inventaire
 - Ajout d’un menu audio
 - Ajout de nouvelles textures
+- ajout de la tiles liane permettant de grimper
+- ajout de la tiles eau bénite permettant d'annuler les effets de brûlure et poison
+- Ajout de deux maps implémentant les mécaniques de piège, liane et eau bénite
+- Ajout d'un visuel de munitions lors de l'équipement d'une arme
 
 ## Armes / Outils ajoutés :
 
