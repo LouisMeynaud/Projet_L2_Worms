@@ -35,6 +35,18 @@ Le jar exécutable se trouve dans le répertoire `target` sous le nom `worms-2.0
 
 ---
 
+### Pour charger la partie de démo :
+- Télécharger les fichiers de sauvegarde [ici](https://moule.informatique.univ-paris-diderot.fr/3lmtb/worms-mi4/-/blob/main/documentation/Demo.zip).
+- Placer le dossier `Demo` dans le répertoire des sauvegardes :
+
+| Unix                 | Windows                       |
+|----------------------|-------------------------------|
+| `$HOME/Worms/saves/` | `%USERPROFILE%/Worms/saves/`  |
+
+- Lancer le jeu et cliquer sur "Jouer" -> "Charger une partie", puis sélectionner la sauvegarde.
+
+---
+
 ## Description :
 
 ### Presentation du jeu et objectif :
@@ -210,14 +222,7 @@ choix et cliquez sur "Commencer".
 
 ## Comment contribuer ?
 
-Pour contribuer à ce projet, se référer à [ce fichier](/CONTRIBUTING.md).
-
-## Où sont stockées les saves ?
-
-Les saves sont stockées dans :
-```bash
-répertoire_personnel/Worms/saves/
-```
+Pour contribuer à ce projet, se référer au fichier [CONTRIBUTING.md](/CONTRIBUTING.md).
 
 ## Licence
 
