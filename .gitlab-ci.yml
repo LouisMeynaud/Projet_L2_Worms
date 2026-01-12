@@ -87,7 +87,6 @@ upload_package:
     - JAR_NAME="worms-${VERSION}-fat.jar"
 
     - mvn -DskipTests clean package
-    - mv target/*-fat.jar "target/${JAR_NAME}"
 
     - PACKAGE_URL="$CI_API_V4_URL/projects/$CI_PROJECT_ID/packages/generic/worms/${VERSION}/${JAR_NAME}"
 
