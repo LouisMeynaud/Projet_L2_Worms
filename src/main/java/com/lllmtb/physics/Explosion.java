@@ -23,10 +23,10 @@ public class Explosion {
                 if ((i * i + j * j) <= (rayon * rayon)) {
                     Position tilePos = new Position(position.getX() + i, position.getY() + j);
                     if (map.inMap(tilePos)) {
-                        if (!map.isTileAt(tilePos, Tile.AIR) && !map.isTileAt(tilePos, Tile.CAVERN) && !map.isTileAt(tilePos, Tile.WATER)) {
-                            map.setTile(tilePos, Tile.CAVERN);
-                        } else if (map.isTileAt(tilePos, Tile.AIRVINES)) {
+                        if (map.isTileAt(tilePos, Tile.AIRVINES) || map.isTileAt(tilePos, Tile.TRAP)) {
                             map.setTile(tilePos, Tile.AIR);
+                        } else if (!map.isTileAt(tilePos, Tile.AIR) && !map.isTileAt(tilePos, Tile.CAVERN) && !map.isTileAt(tilePos, Tile.WATER)) {
+                            map.setTile(tilePos, Tile.CAVERN);
                         }
                     }
                 }
