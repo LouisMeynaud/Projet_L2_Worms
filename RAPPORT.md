@@ -99,94 +99,31 @@ Le projet suit rigoureusement le pattern MVC :
     *   Une vue textuelle (`ConsoleUI`) utilisant JLine3, permettant de jouer entièrement en terminal.
 *   **Contrôleur (`com.lllmtb.engine`)** : Orchestre la boucle de jeu, la gestion des tours et les interactions entre le modèle et la vue.
 
-#### Diagramme de Classes Global
+#### Architecture Globale des packages
 
-```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│                                    ARCHITECTURE                                 │
-└─────────────────────────────────────────────────────────────────────────────────┘
-
-                                    ┌─────────────────┐
-                                    │   GameEngine    │
-                                    │    (Main)       │
-                                    └────────┬────────┘
-                                             │ crée
-                         ┌───────────────────┼───────────────────┐
-                         │                   │                   │
-                         ▼                   ▼                   ▼
-              ┌──────────────────┐  ┌──────────────────┐  ┌──────────────────┐
-              │    EventBus      │  │    GameWorld     │  │       UI         │
-              │   (Système)      │  │   (Controller)   │  │   (Interface)    │
-              └──────────────────┘  └────────┬─────────┘  └────────┬─────────┘
-                                             │                     │
-                                             │                     │
-                         ┌───────────────────┼                     │
-                         │                   │                     │
-                         ▼                   ▼                     ▼
-              ┌──────────────────┐  ┌──────────────────┐  ┌───────────────────────┐
-              │   PhysicsEngine  │  │   TurnManager    │  │ GraphicalUI/ConsoleUI │
-              └──────────────────┘  └──────────────────┘  └───────────────────────┘
-
-┌─────────────────────────────────────────────────────────────────────────────────────┐
-│                                      MODEL                                          │
-└─────────────────────────────────────────────────────────────────────────────────────┘
-
-                                    ┌─────────────────┐
-                                    │  <<abstract>>   │
-                                    │     Entity      │
-                                    │─────────────────│
-                                    │ +uuid: int      │
-                                    │ +getBody()      │
-                                    │ +getCollision() │
-                                    └────────┬────────┘
-                                             │
-               ┌─────────────────────────────┼───────────────────────────┐
-               │                             │                           │
-               ▼                             ▼                           ▼
-      ┌─────────────────┐           ┌─────────────────┐          ┌─────────────────┐
-      │      Worm       │           │  <<abstract>>   │          │      Coin       │
-      │─────────────────│           │   Projectile    │          │─────────────────│
-      │ +team: Team     │           │─────────────────│          │ +value: int     │
-      │ +stats: Stats   │           │ +owner: Worm    │          └─────────────────┘
-      │ +team: Team     │           │ +onImpact()     │
-      └─────────────────┘           └─────────────────┘          ┌─────────────────┐
-                                                                 │      Drop       │
-                                                                 │─────────────────│
-                                                                 │ +itemId: ItemId │
-                                                                 └─────────────────┘
-```
-
+[ajouter image ici]
+    
 ### 3.1 Système d'Événements
 
-Pour découpler les composants (notamment la Vue du Modèle), nous avons implémenté un système de bus d'événements (`EventBus`).
-*   **Double Bus** : Nous utilisons deux bus distincts.
-    *   `systemBus` : Pour les événements globaux (Pause, Arrêt du jeu, UI).
-    *   `worldBus`  : Pour les événements de gameplay de la partie en cours.
-        Cette séparation permet de geler l'état du jeu (en pause) tout en continuant de traiter les entrées système (menus...).
+Pour découpler les composants (notamment la Vue du Modèle), nous avons implémenté un système de bus d'événements (`EventBus`). 
 
-```
-┌──────────────────────────────────────────────────────────────────────────┐
-│                                ÉVÈNEMENTS                                │
-└──────────────────────────────────────────────────────────────────────────┘
+On peut créer un `EventListener` qui s'abonne à un type d'événement spécifique. 
 
-                         ┌──────────────────────┐
-                         │       EventBus       │
-                         │──────────────────────│
-                         │ +subscribe(type, l)  │
-                         │ +postSync(event)     │
-                         │ +postQueued(event)   │
-                         │ +processQueued()     │
-                         └──────────────────────┘
+Lorsqu'un `Event` est posté sur le bus, tous les listeners abonnés sont notifiés, y compris ceux abonnés à un surtype de l'évènement. Cela permet une communication asynchrone et un faible couplage entre les modules. 
 
-            ┌─────────────────┐            ┌─────────────────┐
-            │  <<interface>>  │            │  <<interface>>  │
-            │      Event      │            │  EventListener  │
-            └─────────────────┘            └─────────────────┘
-```
+Il y a deux façons de poster un évènement :
+*   `postSync(event)` : L'évènement est traité immédiatement.
+*   `postQueued(event)` : L'évènement est mis en file d'attente et traité lors du prochain tick via `processQueued()`.
+
+De plus, nous avons opté pour une architecture à **double bus** :
+*   `systemBus` : Pour les événements globaux (Pause, Arrêt du jeu, UI).
+*   `worldBus`  : Pour les événements de gameplay de la partie en cours.
+
+Cette séparation permet de geler l'état du jeu (en pause) tout en continuant de traiter les entrées système (menus...).
 
 ### 3.2 Pattern Command et Généricité
 
-L'un des points forts de notre architecture est l'utilisation du pattern **Command** (`GameCommand`) combiné à un système d'items générique et modulaire.
+L'un des points forts de notre architecture est l'utilisation du **Pattern Command** (`GameCommand`) combiné à un système d'items générique et modulaire.
 
 #### Conception Modulaire des Armes et Outils
 L'ajout d'une nouvelle arme ou d'un nouvel outil a été rendu extrêmement simple grâce à l'abstraction `Item` et aux registres (`WeaponRegistry`, `ToolRegistry`).
@@ -196,6 +133,7 @@ Pour ajouter une arme, il suffit de :
 2. Créer une classe étendant `Weapon` (ex : `BazookaWeapon`).
 3. Implémenter sa méthode `fire(UseParams params)` qui retourne une liste de `GameCommand`.
 4. Enregistrer l'arme dans le `WeaponRegistry`.
+> Pour plus de détails, cf. [CONTRIBUTING.md](/CONTRIBUTING.md)
 
 Exemple de simplicité d'ajout (`Bazooka`) :
 ```java
