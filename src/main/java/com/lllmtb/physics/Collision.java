@@ -642,9 +642,14 @@ public class Collision {
 
         // Calculate the bounding box of the body
         int minX = (int) Math.floor(pos.getX());
-        int maxX = (int) Math.ceil(pos.getX() + body.getWidth());
+        int maxX;
+        if (minX == pos.getX()) {
+            maxX = minX;
+        } else {
+            maxX = (int) Math.floor(pos.getX() + body.getWidth());
+        }
         int minY = (int) Math.floor(pos.getY());
-        int maxY = (int) Math.ceil(pos.getY() + body.getHeight());
+        int maxY = (int) Math.floor(pos.getY() + body.getHeight());
 
         // Test all tiles in the bounding box
         for (int tx = minX; tx <= maxX; tx++) {

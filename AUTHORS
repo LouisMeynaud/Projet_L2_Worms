@@ -1,7 +1,19 @@
              WORMS - Groupe MI4
+
 LORIOT Baptiste <baptiste.loriot@etu.u-paris.fr>
+    Engine, Évènements, Maven, GitLab CI/CD, GameCommands, Physique, Bots, Textures, ConsoleUI, Inventaire/Items, Maps
+
 DENQUIN Léo <leo.denquin-mathelot@etu.u-paris.fr>
+    Terrain (chargement/génération/spawnpoint), Gamemode, GraphicalUI, Inputs, Weapons, Son, Effets, Explosions, Notifications, Boutique/Argent
+
 MEYNAUD Louis <louis.meynaud@etu.u-paris.fr>
+    Inventaire, Collisions, Map, Altérations de statut, README, CONTRIBUTING, Drops
+
 MONA Matthys <matthys.mona@etu.u-paris.fr>
+    Gestion des tours, Entités/Worms, Dégâts, Logger, Checkstyle, Drops
+
 MOSCARDI Lorenzo <lorenzo.moscardi@etu.u-paris.fr>
+    Physique, Graphismes, Items, Maps, Sons
+
 BRUNO Thomas <thomas.bruno@etu.u-paris.fr>
+    Sauvegarde, Chargement d'une partie, Gestion des inputs, License, Vecteurs, PhysicsBody
