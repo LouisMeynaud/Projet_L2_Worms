@@ -48,6 +48,9 @@ Le processus de sauvegarde consiste à créer une instance de `GameSave` à part
 
 Nous avons décidé de coder notre propre moteur physique, plutôt que d'utiliser une bibliothèque. 
 
-### A) Justification du choix : 
-1. **Pas de surcharge** du code avec des méthodes de la bibliothèque inutiles et une bibliothèque finalement très peu utilisé en général
+### Justification du choix : 
+1. **Pas de surcharge** du code avec des méthodes de la bibliothèque inutiles et une bibliothèque finalement très peu utilisé dans le projet.
 2. **Gestion des entités** : Une gestion des entités qui nous est propre, et qui est adaptable selon nos besoins grâce à une classe spécifique `PhysicsBody`.
+3. **Adaptabilité** : Possibilité d'adapter le moteur physique aux besoins spécifiques de notre jeu, comme la gestion des différentes réponses aux collisions, ou à l'implémentation choisie de la map.
+4. **Gestion des états du jeu** : Possibilité d'injecter des variables de gameplay directement dans le moteur physique, comme l'intégration des évènements ou des zones spéciales sur la map (lave, trap...).
+5. **Evolutivité** : Possibilité d'ajouter des fonctionnalités spécifiques au jeu, comme des comportements physiques particuliers.
