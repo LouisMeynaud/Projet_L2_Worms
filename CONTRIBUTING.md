@@ -1,22 +1,17 @@
 # Contribuer à Worms MI4
 
-1) Cloner la branche dev.
-2) Créer sa branche de travail avec un nom explicite.
-3) push sa branche pour définir la distante comme amont avec :
+1) Cloner le dépôt Git.
 ```bash
-git push --set-upstream origin <nom de la branche>
+git clone https://moule.informatique.univ-paris-diderot.fr/3lmtb/worms-mi4.git
 ```
-4) Faire ses changements.
-5) Commit ses changements avec : 
-```bash
-git add <fichier>...
-```
-puis
-```bash
-git commit -m "description concise mais explicite des changements"
-```
-6) push sa branche avec :
-```bash
-git push
-```
-7) Si la pipeline passe, créer une merge request sur dev.
+1) Depuis dev, créer sa branche de travail avec un nom explicite selon les conventions GitFlow (`feature/` ou `bugfix/`).
+2) Faire ses changements et commits avec des messages explicites.
+3) Pousser sa branche sur le dépôt distant.
+4) Créer une merge request (MR) de sa branche vers dev.
+5) La MR déclenche une pipeline CI/CD GitLab qui exécute les tests automatisés.
+6) Si la pipeline passe, demander une revue de code à un mainteneur du projet.
+7) Après approbation, la MR peut être fusionnée dans dev par le mainteneur.
+
+### Guides de contribution :
+* [Ajouter un Item (Weapon/Tool)](src/main/java/com/lllmtb/model/item/CONTRIBUTING.md)
+* [Ajouter une Map](src/main/java/com/lllmtb/terrain/map/CONTRIBUTING.md)
