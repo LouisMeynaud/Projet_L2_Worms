@@ -5,8 +5,8 @@
 
 ## Lancer le jeu :
 
-Téléchargez le jar dans la dernière [release](https://moule.informatique.univ-paris-diderot.fr/3lmtb/worms-mi4/-/releases)
-et utilisez la ligne de code suivante avec java 17 ou une version ultérieure :
+Téléchargez l'exécutable `.jar` publié dans la dernière [release](https://moule.informatique.univ-paris-diderot.fr/3lmtb/worms-mi4/-/releases)
+et utilisez la ligne de commande suivante avec Java 17 ou une version ultérieure :
 
 - en mode graphique :
 ```bash
@@ -17,6 +17,23 @@ java -jar worms-2.0-fat.jar
 ```bash
 java -jar worms-2.0-fat.jar console
 ```
+
+#### Compiler le jeu soi-même depuis le code source :
+Cloner le dépôt git :
+```bash
+git clone https://moule.informatique.univ-paris-diderot.fr/3lmtb/worms-mi4.git
+```
+Se placer dans le répertoire du projet :
+```bash
+cd worms-mi4
+```
+Compiler le projet avec Maven :
+```bash
+mvn clean package
+```
+Le jar exécutable se trouve dans le répertoire `target` sous le nom `worms-2.0-fat.jar`.
+
+---
 
 ## Description :
 
@@ -40,17 +57,17 @@ Les autres armes et outils sont disponibles dans le magasin ou dans les colis.
 
 ### Magasin :
 
-Le magasin permet d'acheter des armes et outils avec des coins. Chaque arme doit être 
+Le magasin permet d'acheter des armes et outils avec des pièces. Chaque arme doit être 
 achetée une seule fois avant d'en acheter les munitions et de pouvoir l'utiliser. Les
-outils eux sont utilisables directement après achat. L'obtention des coins se fait de 
-deux manières différentes : à chaque début de tour, le joueur actif reçoit 150 coins, 
-et des coins apparaissent aléatoirement sur la carte, le joueur peut les ramasser en
-déplaçant son ver actif dessus, ils rapportent 50 coins.
+outils eux sont utilisables directement après achat. L'obtention des pièces se fait de 
+deux manières différentes : à chaque début de tour, le joueur actif reçoit 150 pièces, 
+et des pièces apparaissent aléatoirement sur la carte, le joueur peut les ramasser en
+déplaçant son ver actif dessus, elles rapportent 50 pièces.
 
 ### Colis :
 
-A chaque tour, il y a une faible probabilité qu'un colis apparaisse aléatoirement sur 
-la carte. Ils contiennent une arme ou un outil aléatoire parmi ceux disponibles dans 
+À chaque tour, il y a une probabilité qu'un colis apparaisse aléatoirement sur 
+la carte. Ceux-ci contiennent une arme ou un outil aléatoire parmi ceux disponibles dans 
 le magasin, ainsi que des munitions pour cette arme. Le joueur peut ramasser le colis 
 en déplaçant son ver actif dessus.
 
@@ -59,8 +76,8 @@ en déplaçant son ver actif dessus.
 Chaque joueur joue à tour de rôle. Lorsqu'un joueur commence son tour, il peut
 déplacer son ver actif et utiliser des armes ou outils de son inventaire. Le joueur
 dispose d'un temps limité pour jouer son tour, une fois le temps écoulé, le
-tour passe au joueur suivant. Il dispose également de trois tirs maximum, une fois
-ceux-ci réalisés, le temps est réduit à cinq secondes pour finir son tour. Si le ver 
+tour passe au joueur suivant. Il dispose de trois tirs maximum par tour. Une fois
+ceux-ci réalisés, le temps est réduit à cinq secondes pour finir le tour. Si le ver 
 actif du joueur meurt avant la fin de son tour, le tour se termine immédiatement.
 Un tour ne peut se terminer que sous la condition que tous les worms soient au sol et 
 que tous les projectiles aient disparu (à l'exception des pièges, mines, tourelles). 
@@ -92,7 +109,7 @@ souris pour bouger la caméra ou utiliser la molette pour zoomer/dézoomer.
 touche pas, elle suit automatiquement le ver actif.
 
 
-- Possiblité de changer de ver pour le suivant dans son équipe une fois par tour.
+- Possibilité de changer de ver pour le suivant dans son équipe une fois par tour.
 
 
 - Terrain destructible.
